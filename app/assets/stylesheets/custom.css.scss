@@ -2,10 +2,13 @@
 
 /* mixins, variables, etc. */
 
+/*
 $grayMediumLight: #eaeaea;
+*/
 
 /* universal */
 
+/*
 html {
   overflow-y: scroll;
 }
@@ -28,9 +31,11 @@ textarea {
     margin-bottom: 10px;
   }
 }
+*/
 
 /* typography */
 
+/*
 h1, h2, h3, h4, h5, h6 {
   line-height: 1;
 }
@@ -48,17 +53,16 @@ h2 {
   margin-bottom: 30px;
   text-align: center;
   font-weight: normal;
-  color: $grayLight;
 }
 
 p {
   font-size: 1.1em;
   line-height: 1.7em;
 }
-
+*/
 
 /* header */
-
+/*
 #logo {
   float: left;
   margin-right: 10px;
@@ -74,9 +78,9 @@ p {
     text-decoration: none;
   }
 }
-
+*/
 /* footer */
-
+/*
 footer {
   margin-top: 45px;
   padding-top: 5px;
@@ -100,6 +104,7 @@ footer {
     }
   }
 }
+*/
 
 /* ... */
 

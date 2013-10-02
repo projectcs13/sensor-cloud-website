@@ -1,3 +1,4 @@
+<!--
 <footer class="footer">
   <small>
     <a href="#">Sensor Cloud</a>
@@ -9,4 +10,29 @@
       <li><%= link_to "Contact", contact_path %></li>
     </ul>
   </nav>
+</footer>
+-->
+
+<footer class="footer">
+  <div class="margin">
+    <ul class="left footer-links">
+      <li><%= link_to "Terms", '#' %></li>
+      <li><%= link_to "Privacy", '#' %></li>
+      <li><%= link_to "Security", '#' %></li>
+      <li><%= link_to "API", '#' %></li>
+    </ul>
+
+    <figure class="footer-logo">
+      <%= link_to image_tag("logos/ericsson-logo.gif", alt: "Brand Logo"), 'https://labs.ericsson.com/' %>
+      <figcaption class="footer-logo-caption">© 2013, Ericsson Research</figcaption>
+    </figure>
+
+    <ul class="right footer-links">
+      <li><%= link_to "FAQ", '#' %></li>
+      <li><%= link_to "Manual", '#' %></li>
+      <li><%= link_to "Contact", '#' %></li>
+      <li><%= link_to "About", '#' %></li>
+    </ul>
+    <div class="clear"></div>
+  </div>
 </footer>
