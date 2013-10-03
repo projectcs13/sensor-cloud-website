@@ -15,48 +15,50 @@
 </header>
 -->
 
-    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
-        <div class="margin">
-            <div class="left">
-                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="../" class="navbar-brand">SICS<sup>th</sup> Sense</a>
+<header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+  <div class="margin">
+      <div class="left">
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </button>
+          <a href="../" class="navbar-brand">SICS<sup>th</sup> Sense</a>
+      </div>
+
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li>
+        <!-- <li class="active"> -->
+            <!-- <a href="../getting-started">Getting started</a> -->
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search...">
             </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </li>
+        <li><%= link_to "My Streams", '#' %></li>
+        <li><%= link_to "My Resources", '#' %></li>
+      </ul>
 
-            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-                <ul class="nav navbar-nav">
-                    <li>
-                    <!-- <li class="active"> -->
-                        <!-- <a href="../getting-started">Getting started</a> -->
-                        <form class="navbar-form navbar-left" role="search">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search...">
-                            </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
-                        </form>
-                    </li>
-                    <li><%= link_to "My Streams", '#' %></li>
-                    <li><%= link_to "My Resources", '#' %></li>
-                </ul>
+      <ul class="nav navbar-nav right">
+        <li>
+          <a href="../profile">
+            <%= image_tag("anonymous.jpg", alt: "User's Avatar", :height => '32', :width => '32') %>
+            Logged In Data
+          </a>
+        </li>
+        <li>
+          <a href="../about">About</a>
+        </li>
+        <li>
+          <a href="../help">Help</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-                <ul class="nav navbar-nav right">
-                    <li>
-                        <a href="../profile">
-                            <%= image_tag("anonymous.jpg", alt: "User's Avatar", :height => '32', :width => '32') %>
-                            Logged In Data
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../about">About</a>
-                    </li>
-                    <li>
-                        <a href="../help">Help</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<section style="margin-top: 80px" class="margin">
