@@ -11,8 +11,11 @@
     <%= render 'layouts/shim' %>
   </head>
   <body>
+    <%= render 'layouts/modal' %>
     <%= render 'layouts/header' %>
-    <%= yield %>
+    <section style="margin-top: 80px" class="margin">
+      <%= yield %>
+    </section>
     <%= render 'layouts/footer' %>
   </body>
 </html>
