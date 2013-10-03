@@ -143,6 +143,9 @@ footer {
   }
 }
 
+.title {
+  @extend .left;
+}
 
 .resources {
   float: right;

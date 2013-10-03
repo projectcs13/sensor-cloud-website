@@ -11,52 +11,86 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :owner %><br>
-    <%= f.text_field :owner %>
-  </div>
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_field :description %>
-  </div>
-  <div class="field">
-    <%= f.label :manufacturer %><br>
-    <%= f.text_field :manufacturer %>
-  </div>
-  <div class="field">
-    <%= f.label :model %><br>
-    <%= f.text_field :model %>
-  </div>
-  <div class="field">
-    <%= f.label :privacy %><br>
-    <%= f.number_field :privacy %>
-  </div>
-  <div class="field">
-    <%= f.label :notes %><br>
-    <%= f.text_field :notes %>
-  </div>
-  <div class="field">
-    <%= f.label :last_updated %><br>
-    <%= f.date_select :last_updated %>
-  </div>
-  <div class="field">
-    <%= f.label :creation_date %><br>
-    <%= f.date_select :creation_date %>
-  </div>
-  <div class="field">
-    <%= f.label :update_freq %><br>
-    <%= f.number_field :update_freq %>
-  </div>
-  <div class="field">
-    <%= f.label :resource_type %><br>
-    <%= f.text_field :resource_type %>
-  </div>
-  <div class="actions">
+  <div class="actions right">
     <%= f.submit %>
   </div>
 
+  <div class="clear"></div>
+
+  <aside class="resources-sidebar">
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :name %></span>
+      <%= f.text_field :name, class: "form-control"  %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :description %></span>
+      <%= f.text_field :description, class: "form-control"  %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :manufacturer %></span>
+      <%= f.text_field :manufacturer, class: "form-control"  %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :model %></span>
+      <%= f.text_field :model, class: "form-control" %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :privacy %></span>
+      <%= f.number_field :privacy, class: "form-control" %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :notes %></span>
+      <%= f.text_field :notes, class: "form-control" %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :last_updated %></span>
+      <%= f.date_select :last_updated, class: "form-control" %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :creation_date %></span>
+      <%= f.date_select :creation_date, class: "form-control" %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :update_freq %></span>
+      <%= f.number_field :update_freq, class: "form-control" %>
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-addon"><%= f.label :resource_type %></span>
+      <%= f.text_field :resource_type, class: "form-control" %>
+    </div>
+  </aside>
+
+  <article class="resources-streams panel panel-default">
+    <div class="resources-streams-header panel-heading">
+      List of Streams associated with this resource
+    </div>
+
+    <div class="resources-streams-body panel-body">
+      <ul>
+        <li class="">
+
+        </li>
+
+        <li>
+        </li>
+
+        <li>
+
+        </li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="clear">
+
+  </div>
 <% end %>
