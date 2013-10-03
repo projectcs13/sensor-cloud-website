@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 80px;
 }
 
 section {
@@ -48,7 +48,7 @@ h2 {
   margin-bottom: 30px;
   text-align: center;
   font-weight: normal;
-  color: $grayLight;
+	//color: $grayLight;
 }
 
 p {
@@ -56,9 +56,9 @@ p {
   line-height: 1.7em;
 }
 
-
 /* header */
 
+/*
 #logo {
   float: left;
   margin-right: 10px;
@@ -74,9 +74,11 @@ p {
     text-decoration: none;
   }
 }
+*/
 
 /* footer */
 
+/*
 footer {
   margin-top: 45px;
   padding-top: 5px;
@@ -100,6 +102,7 @@ footer {
     }
   }
 }
+*/
 
 /* ... */
 
