@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe "streams/show" do
@@ -15,3 +17,5 @@ describe "streams/show" do
     rendered.should match(/1/)
   end
 end
+
+=end

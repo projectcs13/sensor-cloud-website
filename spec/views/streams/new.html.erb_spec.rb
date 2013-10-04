@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe "streams/new" do
@@ -18,3 +20,5 @@ describe "streams/new" do
     end
   end
 end
+
+=end
