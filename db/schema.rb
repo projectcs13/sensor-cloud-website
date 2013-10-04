@@ -11,9 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131003093900) do
-# ActiveRecord::Schema.define(version: 20131003083021) do
-
+#<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20131003140201) do
+#=======
+#ActiveRecord::Schema.define(version: 20131003093900) do
+#>>>>>>> sign-in-out
 
   create_table "resources", force: true do |t|
     t.string   "owner"
@@ -32,8 +34,19 @@ ActiveRecord::Schema.define(version: 20131003093900) do
   end
 
   create_table "streams", force: true do |t|
-    t.string   "description"
-    t.integer  "user_id"
+    t.string   "name"
+    t.text     "description"
+    t.integer  "private"
+    t.float    "deviation"
+    t.float    "longitude"
+    t.float    "latitude"
+    t.string   "type"
+    t.string   "unit"
+    t.float    "bound_max"
+    t.float    "bound_min"
+    t.integer  "state"
+    t.integer  "ranking"
+    t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

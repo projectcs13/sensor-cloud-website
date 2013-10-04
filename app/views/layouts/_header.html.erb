@@ -49,13 +49,10 @@
 						<%= image_tag("anonymous.jpg", alt: "User's Avatar", :height => '32', :width => '32') %>
 						Anonymous
 					<% end %>
-       	</li>
-				<li>
-					<%= link_to "About", about_path %>
-        </li>
-        <li>
-					<%= link_to "Help", help_path %>
-        </li>
+				</li>
+				<li><%= link_to "Home",    root_path %></li>
+				<li><%= link_to "Help", help_path %></li>
+				<li><%= link_to "Sign in", '#' %></li>
       </ul>
     </nav>
   </div>
