@@ -37,6 +37,7 @@
 
       <tbody>
         <% @resources.each do |resource| %>
+          <% @streams = resource.streams %>
           <tr>
             <!--
             <td><%= resource.owner %></td>
@@ -52,7 +53,11 @@
             <td><%= resource.description %></td>
             <td><%= resource.last_updated %></td>
             <td><%= resource.resource_type %></td>
+            <td><%= resource.resource_type %></td>
 
+            <% @streams.each do |stream| %>
+              <td><%= stream.name %></td>
+            <% end %>
             <!--
             <td><%= link_to 'Show', resource %></td>
             -->

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131004132311) do
+ActiveRecord::Schema.define(version: 20131004141445) do
 
   create_table "resources", force: true do |t|
     t.string   "owner"
@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 20131004132311) do
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "resource_id"
+    t.integer  "user_id"
   end
 
   create_table "users", force: true do |t|

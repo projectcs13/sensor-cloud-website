@@ -69,6 +69,6 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :private, :deviation, :longitude, :latitude, :type, :unit, :bound_max, :bound_min, :state, :ranking, :notes)
+      params.require(:stream).permit(:name, :description, :resource_id, :private, :deviation, :longitude, :latitude, :type, :unit, :bound_max, :bound_min, :state, :ranking, :notes)
     end
 end
