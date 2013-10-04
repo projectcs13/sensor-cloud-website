@@ -11,8 +11,17 @@
     <%= render 'layouts/shim' %>
   </head>
   <body>
-    <%= render 'layouts/header' %>
-    <%= yield %>
-    <%= render 'layouts/footer' %>
+    <%= render 'layouts/modal' %>
+		<%= render 'layouts/header' %>
+		<!-- <div class="container"> -->
+    <section class="margin">
+			<% flash.each do |key, value| %>
+				<div class="alert alert-<%= key %>"><%= value %></div>
+			<% end %>
+			<%= yield %>
+			<%= debug(params) if Rails.env.development? %>
+    </section>
+		<!-- </div> -->
+		<%= render 'layouts/footer' %>
   </body>
 </html>
