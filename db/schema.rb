@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131003140201) do
+ActiveRecord::Schema.define(version: 20131004132311) do
 
   create_table "resources", force: true do |t|
     t.string   "owner"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20131003140201) do
     t.string   "description"
     t.string   "manufacturer"
     t.string   "model"
-    t.integer  "privacy"
+    t.boolean  "privacy"
     t.string   "notes"
     t.date     "last_updated"
     t.date     "creation_date"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 20131003140201) do
     t.string   "resource_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "data_overview"
+    t.string   "serial_num"
+    t.string   "make"
+    t.string   "location"
+    t.string   "uri"
+    t.string   "data_format"
+    t.boolean  "mirror_proxy"
   end
 
   create_table "streams", force: true do |t|
