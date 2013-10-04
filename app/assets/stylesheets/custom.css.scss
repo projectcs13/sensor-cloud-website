@@ -213,6 +213,9 @@ input {
   }
 }
 
+.title {
+  @extend .left;
+}
 
 .resources {
   float: right;
@@ -250,7 +253,7 @@ input {
   bottom: 0;
 
   text-align: center;
-  padding: 2em 0;
+  padding: 3em 0;
   width: 100%;
 
   .footer-links {
@@ -258,7 +261,7 @@ input {
     list-style: none;
     margin: 0;
     padding-left: 0;
-    line-height: 5em;
+    /* line-height: 5em; */
   }
 
   .footer-links li {

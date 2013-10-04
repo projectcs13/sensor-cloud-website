@@ -1,55 +1,65 @@
-    <section class="margin">
-        <div class="page-header">
-            <h1>My Resources</h1>
-        </div>
+<div class="page-header">
+  <h1 class="title">My Resources</h1>
+  <%= link_to 'New Resource', new_resource_path, class: "btn btn-primary right" %>
+  <div class="clear"></div>
+</div>
 
-        <aside class="categories">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title cat-header-label">Categories</h3>
-                    <button type="button" class="btn btn-primary cat-header-btn">Add Category</button>
-                    <div class="clear"></div>
-                </div>
-                <div class="panel-body">
-                    <ul>
-                        <li>Category 1</li>
-                        <li>Category 2</li>
-                        <li>Category 3</li>
-                        <li>Category 4</li>
-                    </ul>
-                </div>
-            </div>
-        </aside>
+<aside class="categories">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title cat-header-label">Categories</h3>
+      <button type="button" class="btn btn-primary cat-header-btn">Add Category</button>
+      <div class="clear"></div>
+    </div>
+    <div class="panel-body">
+      <ul>
+        <li>Category 1</li>
+        <li>Category 2</li>
+        <li>Category 3</li>
+        <li>Category 4</li>
+      </ul>
+    </div>
+  </div>
+</aside>
 
-        <div class="resources">
-            <div class="panel panel-default">
-                <!-- Table -->
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+<div class="resources">
+  <div class="panel panel-default">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Manufacturer</th>
+          <th>Model</th>
+          <th>Description</th>
+          <th>Last Update</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @resources.each do |resource| %>
+          <tr>
+            <!--
+            <td><%= resource.owner %></td>
+            <td><%= resource.name %></td>
+            <td><%= resource.privacy %></td>
+            <td><%= resource.notes %></td>
+            <td><%= resource.creation_date %></td>
+            <td><%= resource.update_freq %></td>
+            -->
+
+            <td><%= resource.manufacturer %></td>
+            <td><%= resource.model %></td>
+            <td><%= resource.description %></td>
+            <td><%= resource.last_updated %></td>
+            <td><%= resource.resource_type %></td>
+            <!--
+            <td><%= link_to 'Show', resource %></td>
+            -->
+            <td><%= link_to 'Edit', edit_resource_path(resource) %></td>
+            <td><%= link_to 'Destroy', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      </table>
+  </div>
+</div>
