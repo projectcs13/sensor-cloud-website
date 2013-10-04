@@ -23,7 +23,7 @@ describe StreamsController do
   # This should return the minimal set of attributes required to create a valid
   # Stream. As you add validations to Stream, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "description" => "MyString" } }
+  let(:valid_attributes) { { "name" => "MyString" } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -85,14 +85,14 @@ describe StreamsController do
       it "assigns a newly created but unsaved stream as @stream" do
         # Trigger the behavior that occurs when invalid params are submitted
         Stream.any_instance.stub(:save).and_return(false)
-        post :create, {:stream => { "description" => "invalid value" }}, valid_session
+        post :create, {:stream => { "name" => "invalid value" }}, valid_session
         assigns(:stream).should be_a_new(Stream)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         Stream.any_instance.stub(:save).and_return(false)
-        post :create, {:stream => { "description" => "invalid value" }}, valid_session
+        post :create, {:stream => { "name" => "invalid value" }}, valid_session
         response.should render_template("new")
       end
     end
@@ -106,8 +106,8 @@ describe StreamsController do
         # specifies that the Stream created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        Stream.any_instance.should_receive(:update).with({ "description" => "MyString" })
-        put :update, {:id => stream.to_param, :stream => { "description" => "MyString" }}, valid_session
+        Stream.any_instance.should_receive(:update).with({ "name" => "MyString" })
+        put :update, {:id => stream.to_param, :stream => { "name" => "MyString" }}, valid_session
       end
 
       it "assigns the requested stream as @stream" do
@@ -128,7 +128,7 @@ describe StreamsController do
         stream = Stream.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Stream.any_instance.stub(:save).and_return(false)
-        put :update, {:id => stream.to_param, :stream => { "description" => "invalid value" }}, valid_session
+        put :update, {:id => stream.to_param, :stream => { "name" => "invalid value" }}, valid_session
         assigns(:stream).should eq(stream)
       end
 
@@ -136,7 +136,7 @@ describe StreamsController do
         stream = Stream.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Stream.any_instance.stub(:save).and_return(false)
-        put :update, {:id => stream.to_param, :stream => { "description" => "invalid value" }}, valid_session
+        put :update, {:id => stream.to_param, :stream => { "name" => "invalid value" }}, valid_session
         response.should render_template("edit")
       end
     end
