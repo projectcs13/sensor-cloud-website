@@ -213,6 +213,9 @@ input {
   }
 }
 
+.title {
+  @extend .left;
+}
 
 .resources {
   float: right;
