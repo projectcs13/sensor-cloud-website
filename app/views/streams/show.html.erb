@@ -1,13 +1,68 @@
 <p id="notice"><%= notice %></p>
 
 <p>
+  <strong>Name:</strong>
+  <%= @stream.name %>
+</p>
+
+<p>
   <strong>Description:</strong>
   <%= @stream.description %>
 </p>
 
 <p>
-  <strong>User:</strong>
-  <%= @stream.user_id %>
+  <strong>Private:</strong>
+  <%= @stream.private %>
+</p>
+
+<p>
+  <strong>Deviation:</strong>
+  <%= @stream.deviation %>
+</p>
+
+<p>
+  <strong>Longitude:</strong>
+  <%= @stream.longitude %>
+</p>
+
+<p>
+  <strong>Latitude:</strong>
+  <%= @stream.latitude %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @stream.type %>
+</p>
+
+<p>
+  <strong>Unit:</strong>
+  <%= @stream.unit %>
+</p>
+
+<p>
+  <strong>Bound max:</strong>
+  <%= @stream.bound_max %>
+</p>
+
+<p>
+  <strong>Bound min:</strong>
+  <%= @stream.bound_min %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @stream.state %>
+</p>
+
+<p>
+  <strong>Ranking:</strong>
+  <%= @stream.ranking %>
+</p>
+
+<p>
+  <strong>Notes:</strong>
+  <%= @stream.notes %>
 </p>
 
 <%= link_to 'Edit', edit_stream_path(@stream) %> |

@@ -3,8 +3,19 @@
 <table>
   <thead>
     <tr>
+      <th>Name</th>
       <th>Description</th>
-      <th>User</th>
+      <th>Private</th>
+      <th>Deviation</th>
+      <th>Longitude</th>
+      <th>Latitude</th>
+      <th>Type</th>
+      <th>Unit</th>
+      <th>Bound max</th>
+      <th>Bound min</th>
+      <th>State</th>
+      <th>Ranking</th>
+      <th>Notes</th>
       <th></th>
       <th></th>
       <th></th>
@@ -14,8 +25,19 @@
   <tbody>
     <% @streams.each do |stream| %>
       <tr>
+        <td><%= stream.name %></td>
         <td><%= stream.description %></td>
-        <td><%= stream.user_id %></td>
+        <td><%= stream.private %></td>
+        <td><%= stream.deviation %></td>
+        <td><%= stream.longitude %></td>
+        <td><%= stream.latitude %></td>
+        <td><%= stream.type %></td>
+        <td><%= stream.unit %></td>
+        <td><%= stream.bound_max %></td>
+        <td><%= stream.bound_min %></td>
+        <td><%= stream.state %></td>
+        <td><%= stream.ranking %></td>
+        <td><%= stream.notes %></td>
         <td><%= link_to 'Show', stream %></td>
         <td><%= link_to 'Edit', edit_stream_path(stream) %></td>
         <td><%= link_to 'Destroy', stream, method: :delete, data: { confirm: 'Are you sure?' } %></td>

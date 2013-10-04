@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe "resources/show" do
@@ -29,3 +31,5 @@ describe "resources/show" do
     rendered.should match(/Resource Type/)
   end
 end
+
+=end
