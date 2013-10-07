@@ -1,7 +1,7 @@
 <div class="page-header">
   <h1 class="title">My Resources</h1>
   <%= link_to 'New Resource', new_resource_path, class: "btn btn-primary right" %>
-  <div class="clear"></div>
+  <div class="clearfix"></div>
 </div>
 
 <aside class="categories">
@@ -9,7 +9,7 @@
     <div class="panel-heading">
       <h3 class="panel-title cat-header-label">Categories</h3>
       <button type="button" class="btn btn-primary cat-header-btn">Add Category</button>
-      <div class="clear"></div>
+      <div class="clearfix"></div>
     </div>
     <div class="panel-body">
       <ul>
@@ -54,10 +54,6 @@
             <td><%= resource.last_updated %></td>
             <td><%= resource.resource_type %></td>
             <td><%= resource.resource_type %></td>
-
-            <% @streams.each do |stream| %>
-              <td><%= stream.name %></td>
-            <% end %>
             <!--
             <td><%= link_to 'Show', resource %></td>
             -->

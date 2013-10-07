@@ -1,0 +1,25 @@
+<article class="resources-streams panel panel-default">
+  <div class="resources-streams-header panel-heading">
+    <h3 class="panel-title cat-header-label">List of Streams associated with this resource</h3>
+    <button type="button" id="addStreamButton" class="btn btn-primary cat-header-btn">
+      <i class="glyphicon glyphicon-plus"></i>
+      Add New Stream
+      </button>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="resources-streams-body panel-body">
+    <ul id="resources-streams-list">
+      <% @streams = @resource.streams %>
+      <% @streams.each_with_index do | stream, index | %>
+        <% @stream = stream %>
+        <% @index = index %>
+        <%= render 'resources/stream' %>
+      <% end %>
+
+      <% if @index == 0 %>
+        <%= render 'resources/stream' %>
+      <% end %>
+    </ul>
+  </div>
+</article>

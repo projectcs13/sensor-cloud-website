@@ -1,7 +1,9 @@
 SensorCloud::Application.routes.draw do
 	resources :users
   resources :streams
-  resources :resources
+  resources :resources do
+    resources :streams
+  end
 
   root  'static_pages#home'
   match '/signup',    to: 'users#new',            via: 'get'

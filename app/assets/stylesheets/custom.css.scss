@@ -12,12 +12,21 @@ $grayMediumLight: #eaeaea;
 
 /* universal */
 
-html {
-  overflow-y: scroll;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
 body {
   padding-top: 80px;
+  adding-bottom: 76px;
+}
+
+.parent {
+  position: relative;
+  min-height: 100%;
+  height: 100%;
 }
 
 section {
@@ -180,7 +189,6 @@ input {
 
 .left  { float: left;  }
 .right { float: right; }
-.clear { clear: both;  }
 
 .margin {
   padding: 0 15%;
@@ -201,6 +209,7 @@ input {
 .categories {
   float: left;
   width: 25%;
+}
 
   .cat-header-label {
     float: left;
@@ -211,7 +220,6 @@ input {
     float: right;
     padding: 5px 12px;
   }
-}
 
 .title {
   @extend .left;
@@ -222,7 +230,7 @@ input {
   width: 75%;
 }
 
-.table thead>tr>th {
+.table thead > tr > th {
   padding-bottom: 9px;
 }
 
@@ -253,7 +261,9 @@ input {
   bottom: 0;
 
   text-align: center;
-  padding: 3em 0;
+  padding: 2em 0;
+
+  height: 76px;
   width: 100%;
 
   .footer-links {

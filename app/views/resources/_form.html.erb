@@ -15,19 +15,19 @@
     <%= f.submit %>
   </div>
 
-  <div class="clear"></div>
+  <div class="clearfix"></div>
 
   <aside class="resources-sidebar">
-    <%= [:name, :resource_type, :uri, :data_format, :update_freq,
-         :mirror_proxy, :location, :manufacturer, :model, :make,
-         :serial_num, :data_overview, :last_updated, :creation_date,
-         :notes].each do | attr | %>
+    <% [:name, :resource_type, :uri, :data_format, :update_freq,
+        :mirror_proxy, :location, :manufacturer, :model, :make,
+        :serial_num, :data_overview, :last_updated, :creation_date,
+        :notes].each do | attr | %>
 
       <div class="input-group">
         <span class="input-group-addon"><%= f.label attr %></span>
 
         <% if attr == :update_freq %>
-          <%= f.text_field attr, class: "form-control" %>
+          <%= f.text_field attr, class: "form-control hotfix-update-freq" %>
           <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Frequency? <span class="caret"></span></button>
             <ul class="dropdown-menu pull-right">
@@ -41,7 +41,10 @@
           </div>
 
         <% elsif attr == :mirror_proxy %>
-          <%= select_tag :shopping_list_id, options_for_select([["false", "False"], ["true", "True"]]), class: "form-control" %>
+          <%= select_tag :mirror_proxy, options_for_select([
+            ["False", "false"],
+            ["True", "true"]
+          ]), class: "form-control" %>
 
         <% elsif attr == :last_updated or attr == :creation_date %>
           <%= f.text_field attr, class: "form-control", :disabled => 'disabled' %>
@@ -55,29 +58,31 @@
     <% end %>
   </aside>
 
+
   <article class="resources-streams panel panel-default">
     <div class="resources-streams-header panel-heading">
-      List of Streams associated with this resource
+      <h3 class="panel-title cat-header-label">List of Streams associated with this resource</h3>
+      <button type="button" id="addStreamButton" class="btn btn-primary cat-header-btn">
+        <i class="glyphicon glyphicon-plus"></i>
+        Add New Stream
+        </button>
+      <div class="clearfix"></div>
     </div>
 
     <div class="resources-streams-body panel-body">
-      <ul>
-        <li class="resources-stream">
-          Stream 1
-        </li>
+      <ul id="resources-streams-list">
+        <% @resource.streams.each_with_index do | stream, index | %>
+          <% @f = f %>
+          <% @stream = stream %>
+          <% @index = index %>
 
-        <li class="resources-stream">
-          Stream 2
-        </li>
+          <%= render 'resources/stream' %>
+        <% end %>
 
-        <li class="resources-stream">
-          Stream 3
-        </li>
       </ul>
     </div>
   </article>
 
-  <div class="clear">
+  <div class="clearfix"></div>
 
-  </div>
 <% end %>
