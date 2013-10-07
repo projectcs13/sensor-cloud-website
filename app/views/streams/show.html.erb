@@ -16,8 +16,8 @@
 </p>
 
 <p>
-  <strong>Deviation:</strong>
-  <%= @stream.deviation %>
+  <strong>Accuracy:</strong>
+  <%= @stream.accuracy %>
 </p>
 
 <p>
@@ -41,28 +41,48 @@
 </p>
 
 <p>
-  <strong>Bound max:</strong>
-  <%= @stream.bound_max %>
+  <strong>Max val:</strong>
+  <%= @stream.max_val %>
 </p>
 
 <p>
-  <strong>Bound min:</strong>
-  <%= @stream.bound_min %>
+  <strong>Min val:</strong>
+  <%= @stream.min_val %>
 </p>
 
 <p>
-  <strong>State:</strong>
-  <%= @stream.state %>
+  <strong>Active:</strong>
+  <%= @stream.active %>
 </p>
 
 <p>
-  <strong>Ranking:</strong>
-  <%= @stream.ranking %>
+  <strong>Tags:</strong>
+  <%= @stream.tags %>
 </p>
 
 <p>
-  <strong>Notes:</strong>
-  <%= @stream.notes %>
+  <strong>Resource:</strong>
+  <%= @stream.resource_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @stream.user_id %>
+</p>
+
+<p>
+  <strong>User ranking:</strong>
+  <%= @stream.user_ranking %>
+</p>
+
+<p>
+  <strong>History size:</strong>
+  <%= @stream.history_size %>
+</p>
+
+<p>
+  <strong>Subscribers:</strong>
+  <%= @stream.subscribers %>
 </p>
 
 <%= link_to 'Edit', edit_stream_path(@stream) %> |

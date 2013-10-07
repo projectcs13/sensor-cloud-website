@@ -6,16 +6,20 @@
       <th>Name</th>
       <th>Description</th>
       <th>Private</th>
-      <th>Deviation</th>
+      <th>Accuracy</th>
       <th>Longitude</th>
       <th>Latitude</th>
       <th>Type</th>
       <th>Unit</th>
-      <th>Bound max</th>
-      <th>Bound min</th>
-      <th>State</th>
-      <th>Ranking</th>
-      <th>Notes</th>
+      <th>Max val</th>
+      <th>Min val</th>
+      <th>Active</th>
+      <th>Tags</th>
+      <th>Resource</th>
+      <th>User</th>
+      <th>User ranking</th>
+      <th>History size</th>
+      <th>Subscribers</th>
       <th></th>
       <th></th>
       <th></th>
@@ -28,16 +32,20 @@
         <td><%= stream.name %></td>
         <td><%= stream.description %></td>
         <td><%= stream.private %></td>
-        <td><%= stream.deviation %></td>
+        <td><%= stream.accuracy %></td>
         <td><%= stream.longitude %></td>
         <td><%= stream.latitude %></td>
         <td><%= stream.type %></td>
         <td><%= stream.unit %></td>
-        <td><%= stream.bound_max %></td>
-        <td><%= stream.bound_min %></td>
-        <td><%= stream.state %></td>
-        <td><%= stream.ranking %></td>
-        <td><%= stream.notes %></td>
+        <td><%= stream.max_val %></td>
+        <td><%= stream.min_val %></td>
+        <td><%= stream.active %></td>
+        <td><%= stream.tags %></td>
+        <td><%= stream.resource_id %></td>
+        <td><%= stream.user_id %></td>
+        <td><%= stream.user_ranking %></td>
+        <td><%= stream.history_size %></td>
+        <td><%= stream.subscribers %></td>
         <td><%= link_to 'Show', stream %></td>
         <td><%= link_to 'Edit', edit_stream_path(stream) %></td>
         <td><%= link_to 'Destroy', stream, method: :delete, data: { confirm: 'Are you sure?' } %></td>

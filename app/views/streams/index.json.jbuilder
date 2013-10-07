@@ -1,4 +1,4 @@
 json.array!(@streams) do |stream|
-  json.extract! stream, :name, :description, :private, :deviation, :longitude, :latitude, :type, :unit, :bound_max, :bound_min, :state, :ranking, :notes
+  json.extract! stream, :name, :description, :private, :accuracy, :longitude, :latitude, :type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers
   json.url stream_url(stream, format: :json)
 end
