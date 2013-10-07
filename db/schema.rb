@@ -29,8 +29,28 @@ ActiveRecord::Schema.define(version: 20131007091606) do
     t.datetime "updated_at"
   end
 
-# Could not dump table "streams" because of following NoMethodError
-#   undefined method `[]' for nil:NilClass
+  create_table "streams", force: true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.boolean  "private"
+    t.float    "accuracy"
+    t.float    "longitude"
+    t.float    "latitude"
+    t.string   "type"
+    t.string   "unit"
+    t.float    "max_val"
+    t.float    "min_val"
+    t.boolean  "active"
+    t.integer  "ranking"
+    t.text     "tags"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "resource_id"
+    t.integer  "user_id"
+    t.float    "user_ranking"
+    t.integer  "history_size"
+    t.integer  "subscribers"
+  end
 
   create_table "users", force: true do |t|
     t.string   "name"
