@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(version: 20131007091606) do
     t.float    "max_val"
     t.float    "min_val"
     t.boolean  "active"
-    t.integer  "ranking"
     t.text     "tags"
     t.datetime "created_at"
     t.datetime "updated_at"
