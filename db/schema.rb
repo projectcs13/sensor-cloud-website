@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-#<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20131003140201) do
-#=======
-#ActiveRecord::Schema.define(version: 20131003093900) do
-#>>>>>>> sign-in-out
+ActiveRecord::Schema.define(version: 20131007091606) do
 
   create_table "resources", force: true do |t|
     t.string   "owner"
@@ -33,23 +29,8 @@ ActiveRecord::Schema.define(version: 20131003140201) do
     t.datetime "updated_at"
   end
 
-  create_table "streams", force: true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.integer  "private"
-    t.float    "deviation"
-    t.float    "longitude"
-    t.float    "latitude"
-    t.string   "type"
-    t.string   "unit"
-    t.float    "bound_max"
-    t.float    "bound_min"
-    t.integer  "state"
-    t.integer  "ranking"
-    t.text     "notes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+# Could not dump table "streams" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
 
   create_table "users", force: true do |t|
     t.string   "name"
