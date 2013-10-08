@@ -6,15 +6,15 @@ echo "Downloading RVM"
 echo "=============================================================================="
 curl -L https://get.rvm.io | bash -s
 
-echo "=============================================================================="
-echo "Set RVM command for access through bash shell"
-echo "=============================================================================="
-#grep -q -e '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' ~/.bash_profile || echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bash_profile
+#echo "=============================================================================="
+#echo "Set RVM command for access through bash shell"
+#echo "=============================================================================="
+grep -q -e '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' ~/.bash_profile || echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bash_profile
 
-echo "=============================================================================="
-echo "Set bash sources, needed for ruby"
-echo "=============================================================================="
-#grep -q -e 'source ~/.profile' ~/.bash_profile || echo 'source ~/.profile' >> ~/.bash_profile
+#echo "=============================================================================="
+#echo "Set bash sources, needed for ruby"
+#echo "=============================================================================="
+grep -q -e 'source ~/.profile' ~/.bash_profile || echo 'source ~/.profile' >> ~/.bash_profile
 
 echo "=============================================================================="
 echo "Reload bash profile"
@@ -30,6 +30,11 @@ echo "==========================================================================
 echo "Download and install latest RVM version"
 echo "=============================================================================="
 rvm get stable --auto-dotfiles
+
+echo "=============================================================================="
+echo "Reload bash profile"
+echo "=============================================================================="
+source ~/.bash_profile
 
 echo "=============================================================================="
 echo "Download and install any Ruby requirements"
