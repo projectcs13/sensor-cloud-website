@@ -29,5 +29,22 @@ describe Stream do
   it { should respond_to(:accuracy) }
   it { should respond_to(:longitude) }
   it { should respond_to(:latitude) }
+  it { should respond_to(:stream_type) }
+  it { should respond_to(:unit) }
+  it { should respond_to(:max_val) }
+  it { should respond_to(:min_val) }
+  it { should respond_to(:active) }
+  it { should respond_to(:tags) }
+  it { should respond_to(:resource_id) }
+  it { should respond_to(:user_ranking) }
+  it { should respond_to(:history_size) }
+  it { should respond_to(:subscribers) }
+
+  it { should be_valid }
+
+  describe "when name is not present" do
+	before { @stream.name = " " }
+	it { should_not be_valid }
+  end
 
 end
