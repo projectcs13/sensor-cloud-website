@@ -6,6 +6,8 @@ curl -L https://get.rvm.io
 # Set bash sources, needed for ruby
 grep -q -e 'source ~/.profile' ~/.bash_profile || sed -i '$ a \ source ~/.profile' ~/.bash_profile
 
+source ~/.bash_profile
+
 # Get latest rvm version
 rvm get stable
 
