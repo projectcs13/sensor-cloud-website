@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131007091606) do
+ActiveRecord::Schema.define(version: 20131008091104) do
 
   create_table "resources", force: true do |t|
     t.string   "owner"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20131007091606) do
     t.float    "accuracy"
     t.float    "longitude"
     t.float    "latitude"
-    t.string   "type"
+    t.string   "stream_type"
     t.string   "unit"
     t.float    "max_val"
     t.float    "min_val"
