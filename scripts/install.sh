@@ -2,7 +2,7 @@
 touch ~/.bash_profile
 
 # Download ruby
-curl -L https://get.rvm.io
+curl -L https://get.rvm.io | bash -s
 
 # Set rvm commandbash sources, needed for ruby
 grep -q -e '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' ~/.bash_profile || echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bash_profile
@@ -10,7 +10,7 @@ grep -q -e '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 # Set bash sources, needed for ruby
 grep -q -e 'source ~/.profile' ~/.bash_profile || echo 'source ~/.profile' >> ~/.bash_profile
 
-
+# Reload bash profile
 source ~/.bash_profile
 
 # Get latest rvm version
