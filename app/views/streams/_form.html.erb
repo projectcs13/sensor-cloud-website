@@ -21,11 +21,11 @@
   </div>
   <div class="field">
     <%= f.label :private %><br>
-    <%= f.number_field :private %>
+    <%= f.check_box :private %>
   </div>
   <div class="field">
-    <%= f.label :deviation %><br>
-    <%= f.text_field :deviation %>
+    <%= f.label :accuracy %><br>
+    <%= f.text_field :accuracy %>
   </div>
   <div class="field">
     <%= f.label :longitude %><br>
@@ -36,32 +36,48 @@
     <%= f.text_field :latitude %>
   </div>
   <div class="field">
-    <%= f.label :type %><br>
-    <%= f.text_field :type %>
+    <%= f.label :stream_type %><br>
+    <%= f.text_field :stream_type %>
   </div>
   <div class="field">
     <%= f.label :unit %><br>
     <%= f.text_field :unit %>
   </div>
   <div class="field">
-    <%= f.label :bound_max %><br>
-    <%= f.text_field :bound_max %>
+    <%= f.label :max_val %><br>
+    <%= f.text_field :max_val %>
   </div>
   <div class="field">
-    <%= f.label :bound_min %><br>
-    <%= f.text_field :bound_min %>
+    <%= f.label :min_val %><br>
+    <%= f.text_field :min_val %>
   </div>
   <div class="field">
-    <%= f.label :state %><br>
-    <%= f.number_field :state %>
+    <%= f.label :active %><br>
+    <%= f.check_box :active %>
   </div>
   <div class="field">
-    <%= f.label :ranking %><br>
-    <%= f.number_field :ranking %>
+    <%= f.label :tags %><br>
+    <%= f.text_area :tags %>
   </div>
   <div class="field">
-    <%= f.label :notes %><br>
-    <%= f.text_area :notes %>
+    <%= f.label :resource_id %><br>
+    <%= f.number_field :resource_id %>
+  </div>
+  <div class="field">
+    <%= f.label :user_id %><br>
+    <%= f.number_field :user_id %>
+  </div>
+  <div class="field">
+    <%= f.label :user_ranking %><br>
+    <%= f.text_field :user_ranking %>
+  </div>
+  <div class="field">
+    <%= f.label :history_size %><br>
+    <%= f.text_field :history_size %>
+  </div>
+  <div class="field">
+    <%= f.label :subscribers %><br>
+    <%= f.number_field :subscribers %>
   </div>
   <div class="actions">
     <%= f.submit %>
