@@ -1,5 +1,5 @@
 language: ruby
-script: bundle exec rspec spec/model
+script: bundle exec rspec spec
 rvm:
   - "2.0.0"
 
