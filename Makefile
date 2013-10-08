@@ -24,6 +24,7 @@ get_libs:
 	$(info You need to tick the box that says 'Run command as a login shell')
 	$(info You also need to restart your bash console after that is done.)
 	$(info = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =)
+	sudo apt-get install -y curl
 	@chmod +x scripts/install.sh
 	@scripts/install.sh
 

@@ -13,6 +13,9 @@ grep -q -e 'source ~/.profile' ~/.bash_profile || echo 'source ~/.profile' >> ~/
 echo "Reload bash profile"
 source ~/.bash_profile
 
+echo "Reload rvm"
+rvm reload
+
 echo "Get latest rvm version"
 rvm get stable
 
