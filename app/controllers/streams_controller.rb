@@ -67,7 +67,7 @@ class StreamsController < ApplicationController
   # DELETE /streams/1
   # DELETE /streams/1.json
   def destroy
-    @stream = @resource.streams.find(params[:id])
+    #@stream = @resource.streams.find(params[:id])
     @stream.destroy
     respond_to do |format|
       # format.html { redirect_to streams_url }

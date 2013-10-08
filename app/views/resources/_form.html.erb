@@ -57,29 +57,4 @@
 
     <% end %>
   </aside>
-
-
-  <article class="resources-streams panel panel-default">
-    <div class="resources-streams-header panel-heading">
-      <h3 class="panel-title cat-header-label">List of Streams associated with this resource</h3>
-        <%= link_to 'Add New Stream', new_resource_stream_path(@resource), class: "glyphicon glyphicon-plus" %>
-      <div class="clearfix"></div>
-    </div>
-
-    <div class="resources-streams-body panel-body">
-      <ul id="resources-streams-list">
-        <% @resource.streams.each_with_index do | stream, index | %>
-          <% @f = f %>
-          <% @stream = stream %>
-          <% @index = index %>
-
-          <%= render 'resources/stream' %>
-        <% end %>
-
-      </ul>
-    </div>
-  </article>
-
-  <div class="clearfix"></div>
-
 <% end %>

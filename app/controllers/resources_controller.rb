@@ -29,7 +29,7 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       if @resource.save
-        format.html { redirect_to action: 'index', status: :moved_permanently }
+        format.html { redirect_to edit_resource_path(@resource) }
         format.json { render action: 'show', status: :created, location: @resource }
       else
         format.html { render action: 'new' }

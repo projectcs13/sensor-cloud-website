@@ -13,7 +13,7 @@
     <%= form_for(@stream) do |f| %>
       <div class="input-group">
         <span class="input-group-addon"><%= f.label :name %></span>
-        <%= f.text_field :name, class: "form-control" %>
+        <%= f.text_field :name, class: "form-control", :disabled => 'disabled' %>
       </div>
 
       <div class="input-group">
@@ -21,7 +21,7 @@
         <%= select_tag :date, options_for_select([
           ["False", "false"],
           ["True", "true"]]
-        ), class: "form-control" %>
+        ), class: "form-control", :disabled => 'disabled'  %>
       </div>
 
       <div class="input-group">
@@ -30,18 +30,18 @@
           ["Celsius (C)", "celsius"],
           ["Farenheit (F)", "farenheit"],
           ["Kelvin (K)", "kelvin"]
-        ]), class: "form-control" %>
+        ]), class: "form-control", :disabled => 'disabled'  %>
       </div>
 
       <div class="input-group">
         <span class="input-group-addon"><%= f.label "Range" %></span>
-        <%= f.text_field :bound_min, class: "form-control half", placeholder: "min" %>
-        <%= f.text_field :bound_max, class: "form-control half", placeholder: "max" %>
+        <%= f.text_field :bound_min, class: "form-control half", placeholder: "min", :disabled => 'disabled'  %>
+        <%= f.text_field :bound_max, class: "form-control half", placeholder: "max", :disabled => 'disabled'  %>
       </div>
 
       <div class="input-group">
         <span class="input-group-addon"><%= f.label :description %></span>
-        <%= text_area :s, :description, class: "form-control", rows: "3", placeholder: "Insert tags separated by commas..." %>
+        <%= text_area :s, :description, class: "form-control", rows: "3", placeholder: "Insert tags separated by commas...", :disabled => 'disabled'  %>
       </div>
 
       <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
