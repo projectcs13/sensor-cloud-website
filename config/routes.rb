@@ -1,6 +1,6 @@
 SensorCloud::Application.routes.draw do
-	resources :users
-  resources :streams
+
+  resources :users
   resources :resources do
     resources :streams
   end

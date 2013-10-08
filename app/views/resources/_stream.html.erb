@@ -18,7 +18,7 @@
 
       <div class="input-group">
         <span class="input-group-addon"><%= f.label :date %></span>
-        <%= select_tag :date, options_for_select([
+        <%= select_tag :creation_date, options_for_select([
           ["False", "false"],
           ["True", "true"]]
         ), class: "form-control", :disabled => 'disabled'  %>
@@ -35,8 +35,8 @@
 
       <div class="input-group">
         <span class="input-group-addon"><%= f.label "Range" %></span>
-        <%= f.text_field :bound_min, class: "form-control half", placeholder: "min", :disabled => 'disabled'  %>
-        <%= f.text_field :bound_max, class: "form-control half", placeholder: "max", :disabled => 'disabled'  %>
+        <%= f.text_field :min_val, class: "form-control half", placeholder: "min", :disabled => 'disabled'  %>
+        <%= f.text_field :max_val, class: "form-control half", placeholder: "max", :disabled => 'disabled'  %>
       </div>
 
       <div class="input-group">

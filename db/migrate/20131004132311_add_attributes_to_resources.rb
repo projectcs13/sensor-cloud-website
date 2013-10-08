@@ -7,6 +7,7 @@ class AddAttributesToResources < ActiveRecord::Migration
     add_column :resources, :uri, :string
     add_column :resources, :data_format, :string
     add_column :resources, :mirror_proxy, :boolean
+
     change_column :resources, :privacy, :boolean
   end
 end
