@@ -25,7 +25,7 @@ rvm install 2.0.0 --with-openssl-dir=$HOME/.rvm/usr
 echo "Specify which rails version to use"
 rvm use 2.0.0@railstutorial_rails_4_0 --create --default
 
-echo "Download all the gems (libraries) specified in the Gemfile except the ones in the 'production' group"
+echo "Download all the gems specified in the Gemfile except the ones in the 'production' group"
 bundle install --without production
 
 echo "Create the database"
