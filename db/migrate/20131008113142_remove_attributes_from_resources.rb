@@ -6,10 +6,5 @@ class RemoveAttributesFromResources < ActiveRecord::Migration
     remove_column :resources, :created_at
     remove_column :resources, :updated_at
     remove_column :resources, :data_format
-
-    rename_column :resources, :update_freq, :polling_freq
-    rename_column :resources, :resource_type, :type
-
-    add_column :resources, :tags, :string
   end
 end

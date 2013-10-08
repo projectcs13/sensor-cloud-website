@@ -39,24 +39,9 @@
         <% @resources.each do |resource| %>
           <% @streams = resource.streams %>
           <tr>
-            <!--
-            <td><%= resource.owner %></td>
-            <td><%= resource.name %></td>
-            <td><%= resource.privacy %></td>
-            <td><%= resource.notes %></td>
-            <td><%= resource.creation_date %></td>
-            <td><%= resource.update_freq %></td>
-            -->
-
             <td><%= resource.manufacturer %></td>
             <td><%= resource.model %></td>
             <td><%= resource.description %></td>
-            <td><%= resource.last_updated %></td>
-            <td><%= resource.resource_type %></td>
-            <td><%= resource.resource_type %></td>
-            <!--
-            <td><%= link_to 'Show', resource %></td>
-            -->
             <td><%= link_to 'Edit', edit_resource_path(resource) %></td>
             <td><%= link_to 'Destroy', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
           </tr>

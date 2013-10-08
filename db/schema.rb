@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131008091104) do
+ActiveRecord::Schema.define(version: 20131008113142) do
 
   create_table "resources", force: true do |t|
     t.string  "owner"
@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20131008091104) do
     t.boolean  "active"
     t.text     "tags"
     t.datetime "last_updated"
-    t.integer  "resource_id"
     t.integer  "resource_id"
     t.integer  "user_id"
     t.float    "user_ranking"

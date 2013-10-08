@@ -10,23 +10,22 @@
   </h3>
 
   <div class="col-md-6 left">
-    <%= form_for(@stream) do |f| %>
       <div class="input-group">
-        <span class="input-group-addon"><%= f.label :name %></span>
-        <%= f.text_field :name, class: "form-control", :disabled => 'disabled' %>
+        <span class="input-group-addon"><%= label_tag @stream, :name %></span>
+        <%= text_field_tag @stream, @stream.name, class: "form-control", :disabled => 'disabled' %>
       </div>
 
       <div class="input-group">
-        <span class="input-group-addon"><%= f.label :date %></span>
-        <%= select_tag :creation_date, options_for_select([
-          ["False", "false"],
-          ["True", "true"]]
-        ), class: "form-control", :disabled => 'disabled'  %>
+        <span class="input-group-addon"><%= label_tag @stream, :date %></span>
+        <%# select_tag :creation_date, options_for_select([
+          #  ["False", "false"],
+          #  ["True", "true"]]
+          #), class: "form-control", :disabled => 'disabled' %>
       </div>
 
       <div class="input-group">
-        <span class="input-group-addon"><%= f.label :unit %></span>
-        <%= select_tag :unit, options_for_select([
+        <span class="input-group-addon"><%= label_tag @stream, :unit %></span>
+        <%= select_tag @stream.unit, options_for_select([
           ["Celsius (C)", "celsius"],
           ["Farenheit (F)", "farenheit"],
           ["Kelvin (K)", "kelvin"]
@@ -34,18 +33,17 @@
       </div>
 
       <div class="input-group">
-        <span class="input-group-addon"><%= f.label "Range" %></span>
-        <%= f.text_field :min_val, class: "form-control half", placeholder: "min", :disabled => 'disabled'  %>
-        <%= f.text_field :max_val, class: "form-control half", placeholder: "max", :disabled => 'disabled'  %>
+        <span class="input-group-addon"><%= label_tag @stream, "Range" %></span>
+        <%= text_field_tag @stream, @stream.min_val, class: "form-control half", placeholder: "min", :disabled => 'disabled'  %>
+        <%= text_field_tag @stream, @stream.max_val, class: "form-control half", placeholder: "max", :disabled => 'disabled'  %>
       </div>
 
       <div class="input-group">
-        <span class="input-group-addon"><%= f.label :description %></span>
-        <%= text_area :s, :description, class: "form-control", rows: "3", placeholder: "Insert tags separated by commas...", :disabled => 'disabled'  %>
+        <span class="input-group-addon"><%= label_tag @stream, :description %></span>
+        <%= text_area @stream, @stream.description, class: "form-control", rows: "3", placeholder: "Insert tags separated by commas...", :disabled => 'disabled'  %>
       </div>
 
       <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
-    <% end %>
   </div>
 
   <div class="col-md-6 right">
