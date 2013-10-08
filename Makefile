@@ -18,16 +18,14 @@ all:
 
 get_libs:
 	$(info = = = = = = = = = = = I M P O R T A N T !!! = = = = = = = = = = =)
-	$(info Before running this command, you need to set the bash shell to be)
-	$(info run as a login shell. This is done at the following location:)
+	$(info In order to be able to use ruby on rails properly, you need to set)
+	$(info bash to be run as a login shell. This is done here:)
 	$(info 'Edit' -> 'Profile Preferences' -> 'Title and command' -> 'Command')
 	$(info You need to tick the box that says 'Run command as a login shell')
 	$(info You also need to restart your bash console after that is done.)
-	$(info If that is not done, this script will fail)
 	$(info = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =)
-	$(info )
-	chmod +x install.sh
-	@./install.sh
+	@chmod +x scripts/install.sh
+	@scripts/install.sh
 
 clean_emacs_vsn_files:
 	rm -rf *~
