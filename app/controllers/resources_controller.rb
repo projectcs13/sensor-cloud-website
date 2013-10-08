@@ -10,6 +10,7 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
+    redirect_to :action => "edit"
   end
 
   # GET /resources/new

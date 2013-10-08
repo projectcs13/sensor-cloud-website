@@ -62,10 +62,7 @@
   <article class="resources-streams panel panel-default">
     <div class="resources-streams-header panel-heading">
       <h3 class="panel-title cat-header-label">List of Streams associated with this resource</h3>
-      <button type="button" id="addStreamButton" class="btn btn-primary cat-header-btn">
-        <i class="glyphicon glyphicon-plus"></i>
-        Add New Stream
-        </button>
+        <%= link_to 'Add New Stream', new_resource_stream_path(@resource), class: "glyphicon glyphicon-plus" %>
       <div class="clearfix"></div>
     </div>
 

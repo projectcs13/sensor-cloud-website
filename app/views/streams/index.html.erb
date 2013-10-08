@@ -38,9 +38,9 @@
         <td><%= stream.state %></td>
         <td><%= stream.ranking %></td>
         <td><%= stream.notes %></td>
-        <td><%= link_to 'Show', stream %></td>
-        <td><%= link_to 'Edit', edit_stream_path(stream) %></td>
-        <td><%= link_to 'Destroy', stream, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', resource_stream_path(@resource, stream) %></td>
+        <td><%= link_to 'Edit', edit_resource_stream_path(@resource, stream) %></td>
+        <td><%= link_to 'Destroy', [@resource, stream], confirm: 'Are you sure?', method: :delete %></td>
       </tr>
     <% end %>
   </tbody>
@@ -48,4 +48,4 @@
 
 <br>
 
-<%= link_to 'New Stream', new_stream_path %>
+<%= link_to 'New Stream', new_resource_stream_path(@resource) %>

@@ -1,4 +1,4 @@
-<%= form_for(@stream) do |f| %>
+<%= form_for([@resource, @stream]) do |f| %>
   <% if @stream.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@stream.errors.count, "error") %> prohibited this stream from being saved:</h2>

@@ -5,7 +5,8 @@
       <%= @index + 1 %>
     </label>
 
-    <i class="glyphicon glyphicon-remove right"></i>
+    <!-- <i class="glyphicon glyphicon-remove right"></i> -->
+    <td><%= link_to 'Destroy', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove right" %></td>
   </h3>
 
   <div class="col-md-6 left">
@@ -43,7 +44,7 @@
         <%= text_area :s, :description, class: "form-control", rows: "3", placeholder: "Insert tags separated by commas..." %>
       </div>
 
-      <%= f.submit %>
+      <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
     <% end %>
   </div>
 

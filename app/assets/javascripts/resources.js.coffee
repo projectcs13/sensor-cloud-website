@@ -46,5 +46,5 @@ $ ->
 
   stream = do template
 
-  $('body').on 'click', '#addStreamButton', addStream
-  $('body').on 'click', '.glyphicon-remove', removeStream
+  # $('body').on 'click', '#addStreamButton', addStream
+  # $('body').on 'click', '.glyphicon-remove', removeStream
