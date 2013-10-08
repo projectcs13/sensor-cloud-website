@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131007091533) do
+ActiveRecord::Schema.define(version: 20131008091104) do
 
   create_table "resources", force: true do |t|
     t.string   "owner"
@@ -32,19 +32,23 @@ ActiveRecord::Schema.define(version: 20131007091533) do
   create_table "streams", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "private"
-    t.float    "deviation"
+    t.boolean  "private"
+    t.float    "accuracy"
     t.float    "longitude"
     t.float    "latitude"
-    t.string   "type"
+    t.string   "stream_type"
     t.string   "unit"
-    t.float    "bound_max"
-    t.float    "bound_min"
-    t.integer  "state"
-    t.integer  "ranking"
-    t.text     "notes"
+    t.float    "max_val"
+    t.float    "min_val"
+    t.boolean  "active"
+    t.text     "tags"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "resource_id"
+    t.integer  "user_id"
+    t.float    "user_ranking"
+    t.integer  "history_size"
+    t.integer  "subscribers"
   end
 
   create_table "users", force: true do |t|

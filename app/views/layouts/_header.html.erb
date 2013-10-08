@@ -43,13 +43,23 @@
         <li><%= link_to "My Resources", resources_path %></li>
      	</ul>
 
-      <ul class="nav navbar-nav right">
-      	<li>
+			<ul class="nav navbar-nav right">
+				<% if signed_in? %>
+					<li>
+						<%= link_to user_path(current_user), id: "name" do %>
+							<%= gravatar_for current_user %>
+							<%= current_user.name %>
+						<% end %>
+					</li>
+				<% end %>
+				<!--
+				<li>
 					<%= link_to '#' do %>
 						<%= image_tag("anonymous.jpg", alt: "User's Avatar", :height => '32', :width => '32') %>
 						Anonymous
 					<% end %>
 				</li>
+				-->
 				<li><%= link_to "Home",    root_path %></li>
 				<li><%= link_to "Help", help_path %></li>
 				<% if signed_in? %>
@@ -60,7 +70,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li><%= link_to "Profile", current_user %></li>
-							<li><%= link_to "Settings", '#' %></li>
+							<li><%= link_to "Settings", edit_user_path(current_user) %></li>
 							<li class="divider"></li>
 							<li>
 								<%= link_to "Sign out", signout_path, method: "delete" %>
