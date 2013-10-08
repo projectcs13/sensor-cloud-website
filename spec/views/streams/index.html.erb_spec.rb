@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe "streams/index" do
@@ -54,3 +56,5 @@ describe "streams/index" do
     assert_select "tr>td", :text => "MyText".to_s, :count => 2
   end
 end
+
+=end

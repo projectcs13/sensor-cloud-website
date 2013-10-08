@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe "resources/new" do
@@ -32,3 +34,5 @@ describe "resources/new" do
     end
   end
 end
+
+=end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131008114739) do
+ActiveRecord::Schema.define(version: 20131008091104) do
 
   create_table "resources", force: true do |t|
     t.string  "owner"
@@ -35,19 +35,19 @@ ActiveRecord::Schema.define(version: 20131008114739) do
   create_table "streams", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.integer  "private"
+    t.boolean  "private"
     t.float    "accuracy"
-    t.string   "type"
+    t.string   "stream_type"
     t.string   "unit"
     t.float    "max_val"
     t.float    "min_val"
-    t.integer  "active"
-    t.integer  "user_ranking"
-    t.datetime "creation_date"
+    t.boolean  "active"
+    t.text     "tags"
     t.datetime "last_updated"
     t.integer  "resource_id"
+    t.integer  "resource_id"
     t.integer  "user_id"
-    t.string   "tags"
+    t.float    "user_ranking"
     t.integer  "history_size"
     t.integer  "subscribers"
   end
@@ -58,8 +58,10 @@ ActiveRecord::Schema.define(version: 20131008114739) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "password_digest"
+    t.string   "remember_token"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["remember_token"], name: "index_users_on_remember_token"
 
 end

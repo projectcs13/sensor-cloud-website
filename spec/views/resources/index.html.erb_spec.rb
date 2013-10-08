@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe "resources/index" do
@@ -42,3 +44,5 @@ describe "resources/index" do
     assert_select "tr>td", :text => "Resource Type".to_s, :count => 2
   end
 end
+
+=end
