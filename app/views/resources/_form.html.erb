@@ -42,6 +42,9 @@
           <% elsif key == "creation_date" %>
             <%= f.text_field key, class: "form-control", :disabled => 'disabled' %>
 
+          <% elsif key == "active" %>
+            <%= f.check_box key %>
+
           <% else %>
             <%= f.text_field key, class: "form-control" %>
 
