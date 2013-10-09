@@ -85,5 +85,5 @@
   <%= @stream.subscribers %>
 </p>
 
-<%= link_to 'Edit', edit_stream_path(@stream) %> |
-<%= link_to 'Back', streams_path %>
+<%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %> |
+<%= link_to 'Back', resource_streams_path(@resource) %>

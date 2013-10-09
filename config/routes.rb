@@ -1,7 +1,9 @@
 SensorCloud::Application.routes.draw do
-	resources :users
-  resources :streams
-  resources :resources
+
+  resources :users
+  resources :resources do
+    resources :streams
+  end
 	resources :sessions, only: [:new, :create, :destroy]
 
   root  'static_pages#home'

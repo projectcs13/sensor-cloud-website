@@ -11,22 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131008091104) do
+ActiveRecord::Schema.define(version: 20131008113142) do
 
   create_table "resources", force: true do |t|
-    t.string   "owner"
-    t.string   "name"
-    t.string   "description"
-    t.string   "manufacturer"
-    t.string   "model"
-    t.integer  "privacy"
-    t.string   "notes"
-    t.date     "last_updated"
-    t.date     "creation_date"
-    t.integer  "update_freq"
-    t.string   "resource_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string  "owner"
+    t.string  "name"
+    t.string  "description"
+    t.string  "manufacturer"
+    t.string  "model"
+    t.date    "creation_date"
+    t.integer "polling_freq"
+    t.string  "type"
+    t.string  "data_overview"
+    t.string  "serial_num"
+    t.string  "make"
+    t.string  "location"
+    t.string  "uri"
+    t.boolean "mirror_proxy"
+    t.string  "tags"
+    t.boolean "active"
   end
 
   create_table "streams", force: true do |t|
@@ -34,16 +37,13 @@ ActiveRecord::Schema.define(version: 20131008091104) do
     t.text     "description"
     t.boolean  "private"
     t.float    "accuracy"
-    t.float    "longitude"
-    t.float    "latitude"
     t.string   "stream_type"
     t.string   "unit"
     t.float    "max_val"
     t.float    "min_val"
     t.boolean  "active"
     t.text     "tags"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "last_updated"
     t.integer  "resource_id"
     t.integer  "user_id"
     t.float    "user_ranking"

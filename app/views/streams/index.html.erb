@@ -41,14 +41,12 @@
         <td><%= stream.min_val %></td>
         <td><%= stream.active %></td>
         <td><%= stream.tags %></td>
-        <td><%= stream.resource_id %></td>
-        <td><%= stream.user_id %></td>
         <td><%= stream.user_ranking %></td>
         <td><%= stream.history_size %></td>
         <td><%= stream.subscribers %></td>
-        <td><%= link_to 'Show', stream %></td>
-        <td><%= link_to 'Edit', edit_stream_path(stream) %></td>
-        <td><%= link_to 'Destroy', stream, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', resource_stream_path(@resource, stream) %></td>
+        <td><%= link_to 'Edit', edit_resource_stream_path(@resource, stream) %></td>
+        <td><%= link_to 'Destroy', [@resource, stream], confirm: 'Are you sure?', method: :delete %></td>
       </tr>
     <% end %>
   </tbody>
@@ -56,4 +54,4 @@
 
 <br>
 
-<%= link_to 'New Stream', new_stream_path %>
+<%= link_to 'New Stream', new_resource_stream_path(@resource) %>

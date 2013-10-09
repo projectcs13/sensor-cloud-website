@@ -15,83 +15,43 @@
     <%= f.submit %>
   </div>
 
-  <div class="clear"></div>
+  <div class="clearfix"></div>
 
   <aside class="resources-sidebar">
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :name %></span>
-      <%= f.text_field :name, class: "form-control"  %>
-    </div>
+    <% @resource.attributes.each do | key, value | %>
 
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :description %></span>
-      <%= f.text_field :description, class: "form-control"  %>
-    </div>
+      <% if key != "id" and key != "owner" and key != "mirror_proxy" %>
+        <div class="input-group">
+          <span class="input-group-addon"><%= f.label key %></span>
+          <!-- Don't do anything -->
 
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :manufacturer %></span>
-      <%= f.text_field :manufacturer, class: "form-control"  %>
-    </div>
+          <% if key == "polling_freq" %>
+            <%= f.text_field key, class: "form-control hotfix-update-freq" %>
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Frequency? <span class="caret"></span></button>
+              <ul class="dropdown-menu pull-right">
+                <li><a href="#">Select the frequency</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Seconds</a></li>
+                <li><a href="#">Minutes</a></li>
+                <li><a href="#">Hours</a></li>
+                <li><a href="#">Days</a></li>
+              </ul>
+            </div>
 
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :model %></span>
-      <%= f.text_field :model, class: "form-control" %>
-    </div>
+          <% elsif key == "creation_date" %>
+            <%= f.text_field key, class: "form-control", :disabled => 'disabled' %>
 
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :privacy %></span>
-      <%= f.number_field :privacy, class: "form-control" %>
-    </div>
+          <% elsif key == "active" %>
+            <%= f.check_box key %>
 
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :notes %></span>
-      <%= f.text_field :notes, class: "form-control" %>
-    </div>
+          <% else %>
+            <%= f.text_field key, class: "form-control" %>
 
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :last_updated %></span>
-      <%= f.date_select :last_updated, class: "form-control" %>
-    </div>
+          <% end %>
+        </div>
+      <% end %>
 
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :creation_date %></span>
-      <%= f.date_select :creation_date, class: "form-control" %>
-    </div>
-
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :update_freq %></span>
-      <%= f.number_field :update_freq, class: "form-control" %>
-    </div>
-
-    <div class="input-group">
-      <span class="input-group-addon"><%= f.label :resource_type %></span>
-      <%= f.text_field :resource_type, class: "form-control" %>
-    </div>
+    <% end %>
   </aside>
-
-  <article class="resources-streams panel panel-default">
-    <div class="resources-streams-header panel-heading">
-      List of Streams associated with this resource
-    </div>
-
-    <div class="resources-streams-body panel-body">
-      <ul>
-        <li class="resources-stream">
-          Stream 1
-        </li>
-
-        <li class="resources-stream">
-          Stream 2
-        </li>
-
-        <li class="resources-stream">
-          Stream 3
-        </li>
-      </ul>
-    </div>
-  </article>
-
-  <div class="clear">
-
-  </div>
 <% end %>
