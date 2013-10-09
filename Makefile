@@ -17,13 +17,6 @@ all:
 	rails s
 
 get_libs:
-	$(info = = = = = = = = = = = I M P O R T A N T !!! = = = = = = = = = = =)
-	$(info In order to be able to use ruby on rails properly, you need to set)
-	$(info bash to be run as a login shell. This is done here:)
-	$(info 'Edit' -> 'Profile Preferences' -> 'Title and command' -> 'Command')
-	$(info You need to tick the box that says 'Run command as a login shell')
-	$(info You also need to restart your bash console after that is done.)
-	$(info = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =)
 	sudo apt-get install -y curl
 	@chmod +x scripts/install.sh
 	@scripts/install.sh
@@ -46,6 +39,9 @@ install: get_libs
 ### Command: make run
 ### Downloads all depenedencies, bulds entire project and runs the project.
 run:
+	$(info =========================================================================)
+	$(info If this commands fails, run 'make help' and check the "Important" section)
+	$(info =========================================================================)
 	rails s
 
 
@@ -76,7 +72,15 @@ clean_docs:
 ### Command: make help
 ### Prints an explanation of the commands in this Makefile
 help:
-	@echo "###################################################################"
+	$(info ###################################################################)
+	$(info = = = = = = = = = = = I M P O R T A N T !!! = = = = = = = = = = = =)
+	$(info In order to be able to use ruby on rails properly, you need to set)
+	$(info bash to be run as a login shell. This is done here:)
+	$(info 'Edit' -> 'Profile Preferences' -> 'Title and command' -> 'Command')
+	$(info You need to tick the box that says 'Run command as a login shell')
+	$(info You also need to restart your bash console after that is done.)
+	$(info )
+	$(info = = = = = = = = = = = = C O M M A N D S = = = = = = = = = = = = = =)
 	@echo "Commands:"
 	@echo ""
 	@echo "'make'"
@@ -102,6 +106,7 @@ help:
 	@echo ""
 	@echo "'make help'"
 	@echo "Prints an explanation of the commands in this Makefile"
+
 	@echo "###################################################################"
 
 .PHONY: all install
