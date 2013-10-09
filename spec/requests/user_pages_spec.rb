@@ -68,7 +68,8 @@ describe "User pages" do
 		end
 
 		describe "with invalid information" do
-			before { click_button "Save changes" }
+			# before { click_button "Save changes" }
+			before { find('#edit-user-submit-button').click }		
 
 			it { should have_content('error') }
 		end
@@ -81,7 +82,8 @@ describe "User pages" do
 				fill_in "Email", 						with: new_email
 				fill_in "Password", 				with: user.password
 				fill_in "Confirm Password", with: user.password
-				click_button "Save changes"
+				#click_button "Save changes"
+				find('#edit-user-submit-button').click		
 			end
 
 			it { should have_title(new_name) }
