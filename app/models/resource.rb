@@ -1,3 +1,3 @@
 class Resource < ActiveRecord::Base
-	has_many :streams
+  has_many :streams
 end

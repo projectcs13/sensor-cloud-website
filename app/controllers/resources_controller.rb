@@ -10,6 +10,7 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
+    redirect_to :action => "edit"
   end
 
   # GET /resources/new
@@ -28,7 +29,7 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       if @resource.save
-        format.html { redirect_to action: 'index', status: :moved_permanently }
+        format.html { redirect_to edit_resource_path(@resource) }
         format.json { render action: 'show', status: :created, location: @resource }
       else
         format.html { render action: 'new' }
@@ -69,6 +70,6 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :privacy, :notes, :last_updated, :creation_date, :update_freq, :resource_type)
+      params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active)
     end
 end

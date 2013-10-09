@@ -1,4 +1,4 @@
-<%= form_for(@stream) do |f| %>
+<%= form_for([@resource, @stream]) do |f| %>
   <% if @stream.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@stream.errors.count, "error") %> prohibited this stream from being saved:</h2>
@@ -28,14 +28,6 @@
     <%= f.text_field :accuracy %>
   </div>
   <div class="field">
-    <%= f.label :longitude %><br>
-    <%= f.text_field :longitude %>
-  </div>
-  <div class="field">
-    <%= f.label :latitude %><br>
-    <%= f.text_field :latitude %>
-  </div>
-  <div class="field">
     <%= f.label :stream_type %><br>
     <%= f.text_field :stream_type %>
   </div>
@@ -58,14 +50,6 @@
   <div class="field">
     <%= f.label :tags %><br>
     <%= f.text_area :tags %>
-  </div>
-  <div class="field">
-    <%= f.label :resource_id %><br>
-    <%= f.number_field :resource_id %>
-  </div>
-  <div class="field">
-    <%= f.label :user_id %><br>
-    <%= f.number_field :user_id %>
   </div>
   <div class="field">
     <%= f.label :user_ranking %><br>
