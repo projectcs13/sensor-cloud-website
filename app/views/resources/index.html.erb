@@ -39,6 +39,7 @@
         <% @resources.each do |resource| %>
           <% @streams = resource.streams %>
           <tr>
+            <td><%= resource.name %></td>
             <td><%= resource.manufacturer %></td>
             <td><%= resource.model %></td>
             <td><%= resource.description %></td>
