@@ -5,4 +5,13 @@ FactoryGirl.define do
 		password "foobar"
 		password_confirmation "foobar"
 	end
+	factory :resource do 
+    	name "Example resource"
+    	description "Example description"
+    end
+	factory :stream do
+		name "Example stream"
+    	resource
+    end
+
 end
