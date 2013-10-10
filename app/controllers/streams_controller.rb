@@ -21,7 +21,8 @@ class StreamsController < ApplicationController
 
   # GET /streams/new
   def new
-    @stream = @resource.streams.new
+    # @stream = @resource.streams.new
+    @stream = Stream.new
   end
 
   # GET /streams/1/edit
@@ -32,16 +33,19 @@ class StreamsController < ApplicationController
   # POST /streams
   # POST /streams.json
   def create
-    # @stream = Stream.new(stream_params)
+    @stream = Stream.new(stream_params)
     # @stream = @resource.streams.new(params[:stream])
-    @stream = @resource.streams.new(stream_params)
+    # @stream = @resource.streams.new(stream_params)
+    # @stream.resource_id = 4
+    json = @stream.to_json
+    Faraday.post 'http://130.238.15.206:8000/streams', json
 
     respond_to do |format|
       if @stream.save
         # format.html { redirect_to @stream, notice: 'Stream was successfully created.' }
         # format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
         # format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
-        format.html { redirect_to @resource }
+        format.html { redirect_to streams_path(@streams) }
         format.json { render action: 'show', status: :created, location: @stream }
       else
         format.html { render action: 'new' }
