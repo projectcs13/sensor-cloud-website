@@ -3,6 +3,12 @@
 <table>
   <thead>
     <tr>
+      <th>index</th>
+      <th>id</th>
+      <th>Test</th>
+      <th>Owner_id</th>
+      <th>Resource_id</th>
+      <!--
       <th>Name</th>
       <th>Description</th>
       <th>Private</th>
@@ -23,30 +29,18 @@
       <th></th>
       <th></th>
       <th></th>
+      -->
     </tr>
   </thead>
 
   <tbody>
     <% @streams.each do |stream| %>
       <tr>
-        <td><%= stream.name %></td>
-        <td><%= stream.description %></td>
-        <td><%= stream.private %></td>
-        <td><%= stream.accuracy %></td>
-        <td><%= stream.longitude %></td>
-        <td><%= stream.latitude %></td>
-        <td><%= stream.stream_type %></td>
-        <td><%= stream.unit %></td>
-        <td><%= stream.max_val %></td>
-        <td><%= stream.min_val %></td>
-        <td><%= stream.active %></td>
-        <td><%= stream.tags %></td>
-        <td><%= stream.user_ranking %></td>
-        <td><%= stream.history_size %></td>
-        <td><%= stream.subscribers %></td>
-        <td><%= link_to 'Show', resource_stream_path(@resource, stream) %></td>
-        <td><%= link_to 'Edit', edit_resource_stream_path(@resource, stream) %></td>
-        <td><%= link_to 'Destroy', [@resource, stream], confirm: 'Are you sure?', method: :delete %></td>
+        <td><%= stream['_index'] %></td>
+        <td><%= stream['_id'] %></td>
+        <td><%= stream['_source']['test'] %></td>
+        <td><%= stream['_source']['owner_id'] %></td>
+        <td><%= stream['_source']['resource_id'] %></td>
       </tr>
     <% end %>
   </tbody>

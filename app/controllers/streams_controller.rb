@@ -1,12 +1,16 @@
+require 'json'
+
 class StreamsController < ApplicationController
 
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
-  before_filter :load_parent
+  before_filter :load_parent, only: [:show, :edit, :update, :destroy]
 
   # GET /streams
   # GET /streams.json
   def index
-    @streams = @resource.streams.all
+    res = Faraday.get 'http://130.238.15.206:8000/streams'
+    json = JSON.parse(res.body)
+    @streams = json["hits"]["hits"]
   end
 
   # GET /streams/1
