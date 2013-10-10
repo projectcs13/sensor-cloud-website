@@ -10,8 +10,8 @@ describe "groups/new" do
       :input => "MyString",
       :output => "MyString",
       :private => false,
-      :subscribers => "",
-      :user_ranking => ""
+      :subscribers => 10,
+      :user_ranking => 11
     ).as_new_record)
   end
 

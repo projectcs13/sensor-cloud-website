@@ -10,8 +10,8 @@ describe "groups/show" do
       :input => "Input",
       :output => "Output",
       :private => false,
-      :subscribers => "",
-      :user_ranking => ""
+      :subscribers => 10,
+      :user_ranking => 11
     ))
   end
 
@@ -25,7 +25,7 @@ describe "groups/show" do
     rendered.should match(/Input/)
     rendered.should match(/Output/)
     rendered.should match(/false/)
-    rendered.should match(//)
-    rendered.should match(//)
+    rendered.should match(/Subscribers/)
+    rendered.should match(/User ranking/)
   end
 end

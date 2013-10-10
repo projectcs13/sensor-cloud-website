@@ -11,8 +11,8 @@ describe "groups/index" do
         :input => "Input",
         :output => "Output",
         :private => false,
-        :subscribers => "",
-        :user_ranking => ""
+        :subscribers => 10,
+        :user_ranking => 11
       ),
       stub_model(Group,
         :owner => "Owner",
@@ -22,8 +22,8 @@ describe "groups/index" do
         :input => "Input",
         :output => "Output",
         :private => false,
-        :subscribers => "",
-        :user_ranking => ""
+        :subscribers => 10,
+        :user_ranking => 11
       )
     ])
   end
@@ -38,7 +38,7 @@ describe "groups/index" do
     assert_select "tr>td", :text => "Input".to_s, :count => 2
     assert_select "tr>td", :text => "Output".to_s, :count => 2
     assert_select "tr>td", :text => false.to_s, :count => 2
-    assert_select "tr>td", :text => "".to_s, :count => 2
-    assert_select "tr>td", :text => "".to_s, :count => 2
+    assert_select "tr>td", :text => 10.to_s, :count => 2
+    assert_select "tr>td", :text => 11.to_s, :count => 2
   end
 end

@@ -10,8 +10,8 @@ describe "groups/edit" do
       :input => "MyString",
       :output => "MyString",
       :private => false,
-      :subscribers => "",
-      :user_ranking => ""
+      :subscribers => 10,
+      :user_ranking => 11
     ))
   end
 
