@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131008113142) do
+ActiveRecord::Schema.define(version: 20131010104549) do
+
+  create_table "groups", force: true do |t|
+    t.string   "owner"
+    t.string   "name"
+    t.string   "description"
+    t.string   "tags"
+    t.string   "input"
+    t.string   "output"
+    t.boolean  "private"
+    t.date     "creation_date"
+    t.integer  "subscribers"
+    t.integer  "user_ranking"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "resources", force: true do |t|
     t.string  "owner"
