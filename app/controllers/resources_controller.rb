@@ -27,6 +27,9 @@ class ResourcesController < ApplicationController
   def create
     @resource = Resource.new(resource_params)
 
+    t = Time.new
+    @resource.creation_date = t.year.to_s + '/' + t.month.to_s + '/' + t.day.to_s
+
     respond_to do |format|
       if @resource.save
         format.html { redirect_to edit_resource_path(@resource) }
