@@ -3,13 +3,14 @@ require 'will_paginate/array'
 
 class StreamsController < ApplicationController
 
+  before_action :set_url
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
   before_filter :load_parent, only: [:show, :edit, :update, :destroy]
 
   # GET /streams
   # GET /streams.json
   def index
-    res = Faraday.get 'http://130.238.15.205:8000/streams'
+    res = Faraday.get @url_rest
     @json = JSON.parse(res.body)
     @streams = @json["hits"]["hits"]
 		@streams = @streams.paginate(:page => params[:page], :per_page => 20)
@@ -36,22 +37,21 @@ class StreamsController < ApplicationController
   # POST /streams.json
   def create
     @stream = Stream.new(stream_params)
-    # @stream = @resource.streams.new(params[:stream])
     # @stream = @resource.streams.new(stream_params)
-    # @stream.resource_id = 4
-    json = @stream.to_json
-    Faraday.post 'http://130.238.15.205:8000/streams', json
 
-    respond_to do |format|
-      if @stream.save
-        # format.html { redirect_to @stream, notice: 'Stream was successfully created.' }
-        # format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
-        # format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
-        format.html { redirect_to streams_path }
-        format.json { render action: 'show', status: :created, location: @stream }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @stream.errors, status: :unprocessable_entity }
+    res = Faraday.post @url_rest, @stream.to_json
+    res.on_complete do
+      respond_to do |format|
+        if @stream.save
+          # format.html { redirect_to @stream, notice: 'Stream was successfully created.' }
+          # format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
+          # format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
+          format.html { redirect_to streams_path }
+          format.json { render action: 'show', status: :created, location: @stream }
+        else
+          format.html { render action: 'new' }
+          format.json { render json: @stream.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -88,6 +88,10 @@ class StreamsController < ApplicationController
   end
 
   private
+    def set_url
+      @url_rest = 'http://130.238.15.205:8000/streams/'
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
       @stream = Stream.find(params[:id])
