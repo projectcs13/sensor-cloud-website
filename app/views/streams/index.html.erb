@@ -1,57 +1,61 @@
-<h1>Listing streams</h1>
+<div>
+  <h1 class="title">Listing Streams</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Private</th>
-      <th>Accuracy</th>
-      <th>Longitude</th>
-      <th>Latitude</th>
-      <th>Type</th>
-      <th>Unit</th>
-      <th>Max val</th>
-      <th>Min val</th>
-      <th>Active</th>
-      <th>Tags</th>
-      <th>Resource</th>
-      <th>User</th>
-      <th>User ranking</th>
-      <th>History size</th>
-      <th>Subscribers</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
+  <div class="corner">
+    <%= link_to 'New Stream', new_stream_path, class: "btn btn-primary right" %>
+    <p class="query-result"><em>Found <%= @json['hits']['total'] %> streams in <%= @json['took'] %> miliseconds</em></p>
+  </div>
 
-  <tbody>
-    <% @streams.each do |stream| %>
+  <div class="clearfix"></div>
+</div>
+
+<div class="center">
+  <%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3 %>
+</div>
+
+<div class="panel panel-default">
+  <table class="table">
+    <thead>
       <tr>
-        <td><%= stream.name %></td>
-        <td><%= stream.description %></td>
-        <td><%= stream.private %></td>
-        <td><%= stream.accuracy %></td>
-        <td><%= stream.longitude %></td>
-        <td><%= stream.latitude %></td>
-        <td><%= stream.stream_type %></td>
-        <td><%= stream.unit %></td>
-        <td><%= stream.max_val %></td>
-        <td><%= stream.min_val %></td>
-        <td><%= stream.active %></td>
-        <td><%= stream.tags %></td>
-        <td><%= stream.user_ranking %></td>
-        <td><%= stream.history_size %></td>
-        <td><%= stream.subscribers %></td>
-        <td><%= link_to 'Show', resource_stream_path(@resource, stream) %></td>
-        <td><%= link_to 'Edit', edit_resource_stream_path(@resource, stream) %></td>
-        <td><%= link_to 'Destroy', [@resource, stream], confirm: 'Are you sure?', method: :delete %></td>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Private</th>
+        <th>Accuracy</th>
+        <th>Type</th>
+        <th>Unit</th>
+        <th>Max val</th>
+        <th>Min val</th>
+        <th>Active</th>
+        <th>User ranking</th>
+        <th>Subscribers</th>
+        <!--
+        <th></th>
+        <th></th>
+        <th></th>
+        -->
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @streams.each do | stream | %>
+        <tr>
+          <td><%= stream['_source']['name'] %></td>
+          <td><%= stream['_source']['description'] %></td>
+          <td><%= stream['_source']['private'] %></td>
+          <td><%= stream['_source']['accuracy'] %></td>
+          <td><%= stream['_source']['type'] %></td>
+          <td><%= stream['_source']['unit'] %></td>
+          <td><%= stream['_source']['max_val'] %></td>
+          <td><%= stream['_source']['min_val'] %></td>
+          <td><%= stream['_source']['active'] %></td>
+          <td><%= stream['_source']['user_ranking'] %></td>
+          <td><%= stream['_source']['subscribers'] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
-<%= link_to 'New Stream', new_resource_stream_path(@resource) %>
+<div class="center">
+  <%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3, class: "center" %>
+</div>
