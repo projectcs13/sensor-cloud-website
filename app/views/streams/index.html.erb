@@ -9,7 +9,7 @@
   <div class="clearfix"></div>
 </div>
 
-<%= will_paginate @streams %>
+<%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3 %>
 
 <div class="panel panel-default">
   <table class="table">
@@ -64,6 +64,6 @@
 
 <br>
 
-<%= will_paginate @streams %>
+<%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3 %>
 
 
