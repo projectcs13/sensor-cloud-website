@@ -1,5 +1,5 @@
 <div>
-  <h1 class="title">Listing Streams from Elastic Search</h1>
+  <h1 class="title">Listing Streams</h1>
 
   <div class="corner">
     <%= link_to 'New Stream', new_stream_path, class: "btn btn-primary right" %>
@@ -26,11 +26,7 @@
         <th>Max val</th>
         <th>Min val</th>
         <th>Active</th>
-        <th>Tags</th>
-        <th>Resource</th>
-        <th>User</th>
         <th>User ranking</th>
-        <th>History size</th>
         <th>Subscribers</th>
         <!--
         <th></th>
@@ -52,11 +48,7 @@
           <td><%= stream['_source']['max_val'] %></td>
           <td><%= stream['_source']['min_val'] %></td>
           <td><%= stream['_source']['active'] %></td>
-          <td><%= stream['_source']['tags'] %></td>
-          <td><%= stream['_source']['resource_id'] %></td>
-          <td><%= stream['_source']['owner_id'] %></td>
           <td><%= stream['_source']['user_ranking'] %></td>
-          <td><%= stream['_source']['history_size'] %></td>
           <td><%= stream['_source']['subscribers'] %></td>
         </tr>
       <% end %>
