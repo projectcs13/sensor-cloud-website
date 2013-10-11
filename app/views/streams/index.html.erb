@@ -1,51 +1,62 @@
-<h1>Listing streams</h1>
+<div class="page-header">
+  <h1 class="title">Listing Streams from Elastic Search</h1>
+  <p class="right">
+    <em>Found <%= @json['hits']['total'] %> streams in <%= @json['took'] %> miliseconds</em>
+  </p>
+  <div class="clearfix"></div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>index</th>
-      <th>id</th>
-      <th>Test</th>
-      <th>Owner_id</th>
-      <th>Resource_id</th>
-      <!--
-      <th>Name</th>
-      <th>Description</th>
-      <th>Private</th>
-      <th>Accuracy</th>
-      <th>Longitude</th>
-      <th>Latitude</th>
-      <th>Type</th>
-      <th>Unit</th>
-      <th>Max val</th>
-      <th>Min val</th>
-      <th>Active</th>
-      <th>Tags</th>
-      <th>Resource</th>
-      <th>User</th>
-      <th>User ranking</th>
-      <th>History size</th>
-      <th>Subscribers</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      -->
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @streams.each do |stream| %>
+<div class="panel panel-default">
+  <table class="table">
+    <thead>
       <tr>
-        <td><%= stream['_index'] %></td>
-        <td><%= stream['_id'] %></td>
-        <td><%= stream['_source']['test'] %></td>
-        <td><%= stream['_source']['owner_id'] %></td>
-        <td><%= stream['_source']['resource_id'] %></td>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Private</th>
+        <th>Accuracy</th>
+        <th>Type</th>
+        <th>Unit</th>
+        <th>Max val</th>
+        <th>Min val</th>
+        <th>Active</th>
+        <th>Tags</th>
+        <th>Resource</th>
+        <th>User</th>
+        <th>User ranking</th>
+        <th>History size</th>
+        <th>Subscribers</th>
+        <!--
+        <th></th>
+        <th></th>
+        <th></th>
+        -->
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+
+    <tbody>
+      <% @streams.each do | stream | %>
+        <tr>
+          <td><%= stream['_source']['name'] %></td>
+          <td><%= stream['_source']['description'] %></td>
+          <td><%= stream['_source']['private'] %></td>
+          <td><%= stream['_source']['accuracy'] %></td>
+          <td><%= stream['_source']['type'] %></td>
+          <td><%= stream['_source']['unit'] %></td>
+          <td><%= stream['_source']['max_val'] %></td>
+          <td><%= stream['_source']['min_val'] %></td>
+          <td><%= stream['_source']['active'] %></td>
+          <td><%= stream['_source']['tags'] %></td>
+          <td><%= stream['_source']['resource_id'] %></td>
+          <td><%= stream['_source']['owner_id'] %></td>
+          <td><%= stream['_source']['user_ranking'] %></td>
+          <td><%= stream['_source']['history_size'] %></td>
+          <td><%= stream['_source']['subscribers'] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <br>
 
-<%= link_to 'New Stream', new_stream_path(@resource) %>
+<%= link_to 'New Stream', new_stream_path, class: "btn btn-primary" %>
