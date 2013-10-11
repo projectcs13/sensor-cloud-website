@@ -2,7 +2,7 @@ SensorCloud::Application.routes.draw do
 
   resources :users
 
-  resources :streams
+  # resources :streams
 
   resources :resources do
     resources :streams
