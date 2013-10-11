@@ -1,3 +1,19 @@
 // Place all the styles related to the Streams controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.corner {
+  float: right;
+  margin-top: 25px;
+  margin-bottom: 30px;
+  width: 35em;
+}
+
+  .corner .btn {
+    margin-left: 1em;
+  }
+
+  .corner .query-result {
+    float: right;
+    line-height: 2em;
+  }
