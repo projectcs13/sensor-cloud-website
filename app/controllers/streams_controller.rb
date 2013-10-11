@@ -1,16 +1,19 @@
 require 'json'
+require 'will_paginate/array'
 
 class StreamsController < ApplicationController
 
+  before_action :set_url
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
   before_filter :load_parent, only: [:show, :edit, :update, :destroy]
 
   # GET /streams
   # GET /streams.json
   def index
-    res = Faraday.get 'http://130.238.15.205:8000/streams'
+    res = Faraday.get @url_rest
     @json = JSON.parse(res.body)
     @streams = @json["hits"]["hits"]
+		@streams = @streams.paginate(:page => params[:page], :per_page => 20)
   end
 
   # GET /streams/1
@@ -36,7 +39,7 @@ class StreamsController < ApplicationController
     @stream = Stream.new(stream_params)
     # @stream = @resource.streams.new(stream_params)
 
-    res = Faraday.post 'http://130.238.15.205:8000/streams', @stream.to_json
+    res = Faraday.post @url_rest, @stream.to_json
     res.on_complete do
       respond_to do |format|
         if @stream.save
@@ -85,6 +88,10 @@ class StreamsController < ApplicationController
   end
 
   private
+    def set_url
+      @url_rest = 'http://130.238.15.205:8000/streams/'
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
       @stream = Stream.find(params[:id])
