@@ -1,16 +1,17 @@
-<div class="page-header">
+<div>
   <h1 class="title">Listing Streams from Elastic Search</h1>
 
-  <%= link_to 'New Stream', new_stream_path, class: "btn btn-primary right" %>
-
-  <p class="right">
-    <em>Found <%= @json['hits']['total'] %> streams in <%= @json['took'] %> miliseconds</em>
-  </p>
+  <div class="corner">
+    <%= link_to 'New Stream', new_stream_path, class: "btn btn-primary right" %>
+    <p class="query-result"><em>Found <%= @json['hits']['total'] %> streams in <%= @json['took'] %> miliseconds</em></p>
+  </div>
 
   <div class="clearfix"></div>
 </div>
 
-<%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3 %>
+<div class="center">
+  <%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3 %>
+</div>
 
 <div class="panel panel-default">
   <table class="table">
@@ -63,6 +64,6 @@
   </table>
 </div>
 
-<br>
-
-<%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3 %>
+<div class="center">
+  <%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3, class: "center" %>
+</div>
