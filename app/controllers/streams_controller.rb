@@ -1,4 +1,5 @@
 require 'json'
+require 'will_paginate/array'
 
 class StreamsController < ApplicationController
 
@@ -11,6 +12,7 @@ class StreamsController < ApplicationController
     res = Faraday.get 'http://130.238.15.205:8000/streams'
     @json = JSON.parse(res.body)
     @streams = @json["hits"]["hits"]
+		@streams = @streams.paginate(:page => params[:page], :per_page => 20)
   end
 
   # GET /streams/1

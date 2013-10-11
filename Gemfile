@@ -6,6 +6,7 @@ gem 'rails', '4.0.0'
 gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass', branch: '3'
 gem 'bcrypt-ruby', '3.0.1'
 gem 'faraday'
+gem 'will_paginate', '~> 3.0'
 
 group :development, :test do
   gem 'sqlite3', '1.3.8'

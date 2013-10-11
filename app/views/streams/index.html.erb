@@ -3,8 +3,13 @@
   <p class="right">
     <em>Found <%= @json['hits']['total'] %> streams in <%= @json['took'] %> miliseconds</em>
   </p>
+
+<%= link_to 'New Stream', new_stream_path, class: "btn btn-primary" %>
+
   <div class="clearfix"></div>
 </div>
+
+<%= will_paginate @streams %>
 
 <div class="panel panel-default">
   <table class="table">
@@ -59,4 +64,6 @@
 
 <br>
 
-<%= link_to 'New Stream', new_stream_path, class: "btn btn-primary" %>
+<%= will_paginate @streams %>
+
+
