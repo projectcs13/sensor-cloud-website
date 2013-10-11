@@ -1,5 +1,6 @@
 <div class="page-header">
   <h1 class="title">Listing Streams from Elastic Search</h1>
+  <%= link_to 'New Stream', new_stream_path, class: "btn btn-primary right" %>
   <p class="right">
     <em>Found <%= @json['hits']['total'] %> streams in <%= @json['took'] %> miliseconds</em>
   </p>
@@ -58,5 +59,3 @@
 </div>
 
 <br>
-
-<%= link_to 'New Stream', new_stream_path, class: "btn btn-primary" %>
