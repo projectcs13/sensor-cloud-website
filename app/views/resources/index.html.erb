@@ -27,11 +27,13 @@
     <table class="table">
       <thead>
         <tr>
+          <th>Name</th>
           <th>Manufacturer</th>
           <th>Model</th>
           <th>Description</th>
-          <th>Last Update</th>
           <th>Type</th>
+          <th></th>
+          <th></th>
         </tr>
       </thead>
 
@@ -43,6 +45,7 @@
             <td><%= resource.manufacturer %></td>
             <td><%= resource.model %></td>
             <td><%= resource.description %></td>
+            <td><%= resource.resource_type %></td>
             <td><%= link_to 'Edit', edit_resource_path(resource) %></td>
             <td><%= link_to 'Destroy', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
           </tr>
