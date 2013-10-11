@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= full_title(yield(:title)) %></title>
-    <%= stylesheet_link_tag "application", media: "all",
-                                           "data-turbolinks-track" => true %>
-    <%= csrf_meta_tags %>
-    <%= render 'layouts/shim' %>
-  </head>
-  <body>
-    <%= render 'layouts/modal' %>
+	<div id="container">
 
-		<%= render 'layouts/header' %>
+		<div id="header">
+	  	<head>
+	    	<meta charset="UTF-8">
+	    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    	<title><%= full_title(yield(:title)) %></title>
+	    	<%= stylesheet_link_tag "application", media: "all",
+		                                   "data-turbolinks-track" => true %>
+				<%= javascript_include_tag "application", 
+																	 "data-turbolinks-track" => true %>
+	    	<%= csrf_meta_tags %>
+	    	<%= render 'layouts/shim' %>
+			</head>
+		</div>
 
-    <section class="parent margin">
-			<% flash.each do |key, value| %>
-				<div class="alert alert-<%= key %>"><%= value %></div>
-			<% end %>
-			<%= yield %>
-			<%= debug(params) if Rails.env.development? %>
-    </section>
+		<div id="body">
+	  	<body>
+	    	<%= render 'layouts/modal' %>
 
-		<%= render 'layouts/footer' %>
+				<%= render 'layouts/header' %>
 
-    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  </body>
+	    	<section class="parent margin">
+					<% flash.each do |key, value| %>
+						<div class="alert alert-<%= key %>"><%= value %></div>
+					<% end %>
+					<%= yield %>
+					<%= debug(params) if Rails.env.development? %>
+	    	</section>
+			</body>
+		</div>
+
+		<div id="footer">
+			<%= render 'layouts/footer' %>
+		</div>
+
+	</div>
 </html>
