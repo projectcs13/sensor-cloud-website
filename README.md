@@ -15,3 +15,5 @@ Running tests:
 
 1. Run the tests
    $ make test
+=======
+[![Build Status](https://travis-ci.org/projectcs13/sensor-cloud-website.png)](https://travis-ci.org/projectcs13/sensor-cloud-website)
