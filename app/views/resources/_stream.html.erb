@@ -2,12 +2,6 @@
   <h3 class="stream-title left">
     <%= @stream.name %>
   </h3>
-
-  <div class="right">
-    <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
-    <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-primary" %>
-  </div>
-
   <div class="clearfix"></div>
 
   <div class="col-md-6 left">
@@ -41,6 +35,13 @@
     <figure>
       <%= image_tag("history.png", alt: "Stream's Historical Data", width: "100%") %>
     </figure>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <div class="right">
+    <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+    <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-primary" %>
   </div>
 
   <div class="clearfix"></div>
