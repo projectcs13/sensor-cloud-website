@@ -7,10 +7,8 @@
 
   <div class="resources-streams-body panel-body">
     <ul id="resources-streams-list">
-      <% @resource.streams.each_with_index do | stream, index | %>
+      <% @resource.streams.each do | stream | %>
         <% @stream = stream %>
-        <% @index = index %>
-
         <%= render 'resources/stream' %>
       <% end %>
 
