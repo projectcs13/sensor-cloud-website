@@ -33,7 +33,6 @@
           <th>Description</th>
           <th>Type</th>
           <th></th>
-          <th></th>
         </tr>
       </thead>
 
@@ -46,8 +45,10 @@
             <td><%= resource.model %></td>
             <td><%= resource.description %></td>
             <td><%= resource.resource_type %></td>
-            <td><%= link_to 'Edit', edit_resource_path(resource) %></td>
-            <td><%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            <td>
+              <%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove right" %>
+              <%= link_to 'Edit', edit_resource_path(resource), class: "glyphicon glyphicon-pencil right" %>
+            </td>
           </tr>
         <% end %>
       </tbody>
