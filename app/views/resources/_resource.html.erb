@@ -1,0 +1,37 @@
+<aside class="resources-sidebar">
+  <% @resource.attributes.each do | key, value | %>
+
+    <% if key != "id" and key != "owner" and key != "mirror_proxy" %>
+      <div class="input-group">
+        <span class="input-group-addon"><%= @f.label key %></span>
+        <!-- Don't do anything -->
+
+        <% if key == "polling_freq" %>
+          <%= @f.text_field key, class: "form-control hotfix-update-freq" %>
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Frequency? <span class="caret"></span></button>
+            <ul class="dropdown-menu pull-right">
+              <li><a href="#">Select the frequency</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Seconds</a></li>
+              <li><a href="#">Minutes</a></li>
+              <li><a href="#">Hours</a></li>
+              <li><a href="#">Days</a></li>
+            </ul>
+          </div>
+
+        <% elsif key == "creation_date" %>
+          <%= @f.text_field key, class: "form-control", :disabled => 'disabled' %>
+
+        <% elsif key == "active" %>
+          <%= @f.check_box key %>
+
+        <% else %>
+          <%= @f.text_field key, class: "form-control" %>
+
+        <% end %>
+      </div>
+    <% end %>
+
+  <% end %>
+</aside>
