@@ -1,13 +1,18 @@
 <li class="resources-stream">
-  <h3 class="stream-title">
+  <h3 class="stream-title left">
     Stream
     <label id="num" class="title-label">
       <%= @index + 1 %>
     </label>
+  </h3>
 
     <!-- <i class="glyphicon glyphicon-remove right"></i> -->
-    <td><%= link_to 'Destroy', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove right" %></td>
-  </h3>
+  <div class="right">
+    <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+    <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-primary" %>
+  </div>
+
+  <div class="clearfix"></div>
 
   <div class="col-md-6 left">
       <div class="input-group">
@@ -42,8 +47,6 @@
         <span class="input-group-addon"><%= label_tag @stream, :description %></span>
         <%= text_area @stream, @stream.description, class: "form-control", rows: "3", placeholder: "Insert tags separated by commas...", :disabled => 'disabled'  %>
       </div>
-
-      <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
   </div>
 
   <div class="col-md-6 right">
