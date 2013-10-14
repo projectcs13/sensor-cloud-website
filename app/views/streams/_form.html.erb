@@ -57,6 +57,7 @@
   </div>
   <div class="form-button">
     <%= f.submit "Create a stream", class: "btn btn-lg btn-primary" %>
+    <%= link_to 'Cancel', edit_resource_path(@resource), class: "btn btn-lg btn-disabled" %>
   </div>
 <% end %>
 </div>

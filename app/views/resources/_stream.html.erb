@@ -1,12 +1,8 @@
 <li class="resources-stream">
   <h3 class="stream-title left">
-    Stream
-    <label id="num" class="title-label">
-      <%= @index + 1 %>
-    </label>
+    <%= @stream.name %>
   </h3>
 
-    <!-- <i class="glyphicon glyphicon-remove right"></i> -->
   <div class="right">
     <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
     <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-primary" %>
@@ -16,16 +12,8 @@
 
   <div class="col-md-6 left">
       <div class="input-group">
-        <span class="input-group-addon"><%= label_tag @stream, :name %></span>
-        <%= text_field_tag @stream, @stream.name, class: "form-control", :disabled => 'disabled' %>
-      </div>
-
-      <div class="input-group">
         <span class="input-group-addon"><%= label_tag @stream, :date %></span>
-        <%# select_tag :creation_date, options_for_select([
-          #  ["False", "false"],
-          #  ["True", "true"]]
-          #), class: "form-control", :disabled => 'disabled' %>
+        <%= text_field_tag @stream, @stream.created_at.to_s[0..9], class: "form-control", :disabled => 'disabled'  %>
       </div>
 
       <div class="input-group">
