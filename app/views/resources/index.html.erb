@@ -27,6 +27,7 @@
     <table class="table">
       <thead>
         <tr>
+          <th>id</th>
           <th>Resource Name</th>
           <th>Manufacturer</th>
           <th>Model</th>
@@ -39,17 +40,14 @@
 
       <tbody>
         <% @resources.each do |resource| %>
-          <% @streams = resource.streams %>
+          <%# @streams = resource.streams %>
           <tr>
-            <td><%= resource.name %></td>
-            <td><%= resource.manufacturer %></td>
-            <td><%= resource.model %></td>
-            <td><%= resource.resource_type %></td>
-            <td><%= resource.location %></td>
-            <td><%= resource.creation_date %></td>
+            <td><%= resource._id %></td>
+            <td><%= resource._source['name'] %></td>
+            <td><%= resource._source['manufacturer'] %></td>
             <td>
               <%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove right" %>
-              <%= link_to 'Edit', edit_resource_path(resource), class: "glyphicon glyphicon-pencil right" %>
+              <%= link_to 'Edit', edit_resource_path(resource._id), class: "glyphicon glyphicon-pencil right" %>
             </td>
           </tr>
         <% end %>

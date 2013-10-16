@@ -28,8 +28,8 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(resource_params)
 
     t = Time.new
-    @resource.creation_date = t.year.to_s + '/' + t.month.to_s + '/' + t.day.to_s
-
+    # @resource.creation_date = t.year.to_s + '/' + t.month.to_s + '/' + t.day.to_s
+    logger.debug ">> Create Resource: #{@resource}"
     respond_to do |format|
       if @resource.save
         format.html { redirect_to edit_resource_path(@resource) }
@@ -45,7 +45,11 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
     respond_to do |format|
-      if @resource.update(resource_params)
+      # @resource.update_attributes(resource_params)
+      @resource._source['name'] = "Testing BLABLABLA"
+      # logger.debug ">>>>>>> Resource: #{@resource.methods.sort}"
+      logger.debug ">>>>>>> Resource: #{@resource.class}"
+      if @resource.name = @resource._source['name']
         format.html { redirect_to action: 'index', status: :moved_permanently }
         format.json { head :no_content }
       else
@@ -73,6 +77,6 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active)
+      params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active, :id, :_id, :_source)
     end
 end
