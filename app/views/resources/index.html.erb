@@ -42,12 +42,12 @@
         <% @resources.each do |resource| %>
           <%# @streams = resource.streams %>
           <tr>
-            <td><%= resource._id %></td>
-            <td><%= resource._source['name'] %></td>
-            <td><%= resource._source['manufacturer'] %></td>
+            <td><%= resource.id %></td>
+            <td><%= resource.name %></td>
+            <td><%= resource.manufacturer %></td>
             <td>
               <%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove right" %>
-              <%= link_to 'Edit', edit_resource_path(resource._id), class: "glyphicon glyphicon-pencil right" %>
+              <%= link_to 'Edit', edit_resource_path(resource.id), class: "glyphicon glyphicon-pencil right" %>
             </td>
           </tr>
         <% end %>

@@ -4,6 +4,12 @@ class ResourcesController < ApplicationController
   # GET /resources
   # GET /resources.json
   def index
+    r = Resource.new(name: "Alberto", owner: 0)
+    logger.debug("r.attributes: #{r.attributes}")
+    logger.debug("r.valid?: #{r.valid?}")
+    # r.save
+    # Faraday.post "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources", r.attributes.to_json
+    # Faraday.put "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/7F845um4SpCnmxpLm7SkFg/", { :name => 'Maguro' }
     @resources = Resource.all
   end
 
@@ -45,16 +51,20 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
     respond_to do |format|
-      # @resource.update_attributes(resource_params)
-      @resource._source['name'] = "Testing BLABLABLA"
-      # logger.debug ">>>>>>> Resource: #{@resource.methods.sort}"
-      logger.debug ">>>>>>> Resource: #{@resource.class}"
-      if @resource.name = @resource._source['name']
+    @resource.update_attributes(resource_params)
+    logger.debug ">> Resource: #{@resource.attributes}"
+    # url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/7F845um4SpCnmxpLm7SkFg"
+    #logger.debug url
+    logger.debug("@resource.attributes.to_json: #{@resource.attributes.to_json}")
+    res = Faraday.put "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/7F845um4SpCnmxpLm7SkFg/", @resource.attributes.to_json
+    res.on_complete do
+      if res
         format.html { redirect_to action: 'index', status: :moved_permanently }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
+      end
       end
     end
   end
@@ -77,6 +87,6 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active, :id, :_id, :_source)
+      params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active)
     end
 end

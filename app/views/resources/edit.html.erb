@@ -16,8 +16,8 @@
     <h1 class="title">Edit Resource</h1>
 
     <div class="actions right">
-      <%#= f.submit 'Update', class: "btn btn-primary" %>
-      <%= link_to 'Update', resource_path(@resource._id), method: :put, class: "btn btn-primary" %>
+      <%= f.submit 'Update', class: "btn btn-primary" %>
+      <%#= link_to 'Update', resource_path(@resource.id), method: :put, class: "btn btn-primary" %>
       <%= link_to 'Cancel', resources_path, class: "btn btn-default" %>
       <%= link_to 'Delete', @resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
     </div>
