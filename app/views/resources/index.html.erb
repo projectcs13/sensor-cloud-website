@@ -44,7 +44,7 @@
           <tr>
             <td><%= resource.id %></td>
             <td><%= resource.name %></td>
-            <td><%= resource.manufacturer %></td>
+
             <td>
               <%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove right" %>
               <%= link_to 'Edit', edit_resource_path(resource.id), class: "glyphicon glyphicon-pencil right" %>
