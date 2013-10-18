@@ -87,3 +87,30 @@
 
 <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %> |
 <%= link_to 'Back', resource_streams_path(@resource) %>
+
+
+<script type="text/javascript"> 
+    /* functionality for creating a chart and filling with
+        dummy data.
+        This is just a placeholder until real data is available
+      */
+        var parseDate = d3.time.format("%Y-%m-%d").parse;
+        var data = [];
+        var year = 2012;
+        var testchart = timeChart()
+                        .height(200)
+                        .x(function(d) { return parseDate(d.date) })
+                        .y(function(d) { return d.value});
+
+        setInterval(function(){
+                newvalue = Math.random() * 3000;
+                year += 2;
+                data.push({value:newvalue, date: year +"-12-12"});
+                d3.select("#example1")
+                .datum(data)
+                .call(testchart);
+
+        }, 2000);
+</script>
+
+<div id="example1"></div> <!-- this is the placeholde div for our chart -->

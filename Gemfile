@@ -9,6 +9,7 @@ gem 'faraday'
 gem 'will_paginate', '~> 3.0'
 gem 'will_paginate-bootstrap'
 gem 'faker', '1.1.2'
+gem "d3-rails"
 
 group :development, :test do
   gem 'sqlite3', '1.3.8'
