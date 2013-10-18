@@ -18,17 +18,11 @@ class ResourcesController < ApplicationController
   def new
     @resource = Resource.new
 
-    ## TODO remove this line to make it work for Resource.all.first
-    r = Resource.find("bNEuQ1-pQz6qVQvBqzvt3g")
+    r = Resource.all.first
     r.attributes.each do |attr|
-      key = attr[0]
-      val = attr[1]
-      if key == "id"
-        @resource.send("#{key}=", nil)
-      else
-        @resource.send("#{key}=", val)
-      end
+      @resource.send("#{attr[0]}=", nil)
     end
+
     @resource
   end
 
@@ -116,7 +110,7 @@ class ResourcesController < ApplicationController
 
     def new_connection
       logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
-      @conn = Faraday.new(:url => 'http://sushi.com') do |faraday|
+      @conn = Faraday.new(:url => 'http://srv1.csproj13.student.it.uu.se:8000/users/0/') do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP

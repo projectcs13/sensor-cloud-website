@@ -4,33 +4,6 @@
   </h3>
   <div class="clearfix"></div>
 
-  <div class="col-md-6 left">
-      <div class="input-group">
-        <span class="input-group-addon"><%= label_tag @stream, :date %></span>
-        <%= text_field_tag @stream, @stream.created_at.to_s[0..9], class: "form-control", :disabled => 'disabled'  %>
-      </div>
-
-      <div class="input-group">
-        <span class="input-group-addon"><%= label_tag @stream, :unit %></span>
-        <%= select_tag @stream.unit, options_for_select([
-          ["Celsius (C)", "celsius"],
-          ["Farenheit (F)", "farenheit"],
-          ["Kelvin (K)", "kelvin"]
-        ]), class: "form-control", :disabled => 'disabled'  %>
-      </div>
-
-      <div class="input-group">
-        <span class="input-group-addon"><%= label_tag @stream, "Range" %></span>
-        <%= text_field_tag @stream, @stream.min_val, class: "form-control half", placeholder: "min", :disabled => 'disabled'  %>
-        <%= text_field_tag @stream, @stream.max_val, class: "form-control half", placeholder: "max", :disabled => 'disabled'  %>
-      </div>
-
-      <div class="input-group">
-        <span class="input-group-addon"><%= label_tag @stream, :description %></span>
-        <%= text_area @stream, @stream.description, class: "form-control", rows: "3", placeholder: "Insert tags separated by commas...", :disabled => 'disabled'  %>
-      </div>
-  </div>
-
   <div class="col-md-6 right">
     <figure>
       <%= image_tag("history.png", alt: "Stream's Historical Data", width: "100%") %>

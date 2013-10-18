@@ -19,42 +19,7 @@
         <%= f.label :name %><br>
         <%= f.text_field :name, class: "form-control" %>
       </div>
-      <div class="form-group">
-        <%= f.label :description %><br>
-        <%= f.text_area :description, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :private %><br>
-        <%= f.check_box :private %>
-      </div>
-      <div class="form-group">
-        <%= f.label :accuracy %><br>
-        <%= f.text_field :accuracy, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :stream_type %><br>
-        <%= f.text_field :stream_type, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :unit %><br>
-        <%= f.text_field :unit, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :max_val %><br>
-        <%= f.text_field :max_val, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :min_val %><br>
-        <%= f.text_field :min_val, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :active %><br>
-        <%= f.check_box :active %>
-      </div>
-      <div class="form-group">
-        <%= f.label :tags %><br>
-        <%= f.text_area :tags, class: "form-control" %>
-      </div>
+
       <div class="form-button">
         <%= f.submit "Create a stream", class: "btn btn-lg btn-primary" %>
         <%= link_to 'Cancel', edit_resource_path(@resource), class: "btn btn-lg btn-disabled" %>
