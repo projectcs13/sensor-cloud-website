@@ -1,17 +1,16 @@
 class ResourcesController < ApplicationController
-  include HTTParty
-  debug_output $stdout
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
+
   # protect_from_forgery with: :null_session
   # protect_from_forgery secret: "1234567890123456789012345678901234"
-  #skip_before_filter:verify_authenticity_token
+  # skip_before_filter:verify_authenticity_token
 
   # uses one of the other session stores that uses a session_id value.
   #protect_from_forgery :secret => 'my-little-pony', :except => :index
 
   # you can disable csrf protection on controller-by-controller basis:
-  skip_before_filter :verify_authenticity_token
+  # skip_before_filter :verify_authenticity_token
 
   # GET /resources
   # GET /resources.json
@@ -42,7 +41,20 @@ class ResourcesController < ApplicationController
 
   # GET /resources/new
   def new
+    r = Resource.find("bNEuQ1-pQz6qVQvBqzvt3g")
+    logger.debug "#{r.attributes}"
     @resource = Resource.new
+    r.attributes.each do |attr|
+      key = attr[0]
+      val = attr[1]
+      if key == "id"
+        @resource.send("#{key}=", nil)
+      else
+        @resource.send("#{key}=", val)
+      end
+    end
+    logger.debug "#{@resource.attributes}"
+    @resource
   end
 
   # GET /resources/1/edit
@@ -53,13 +65,14 @@ class ResourcesController < ApplicationController
   # POST /resources.json
   def create
     @resource = Resource.new(resource_params)
-
-    t = Time.new
+    @resource.owner = 0
     # @resource.creation_date = t.year.to_s + '/' + t.month.to_s + '/' + t.day.to_s
-    logger.debug ">> Create Resource: #{@resource}"
+    logger.debug ">> Create Resource: #{@resource.attributes}"
+    res = post
     respond_to do |format|
-      if @resource.save
-        format.html { redirect_to edit_resource_path(@resource) }
+      if res.status == 200
+        id = JSON.parse(res.body)['_id']
+        format.html { redirect_to edit_resource_path(id) }
         format.json { render action: 'show', status: :created, location: @resource }
       else
         format.html { render action: 'new' }
@@ -72,21 +85,17 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
     respond_to do |format|
-    @resource.assign_attributes(resource_params)
-    # url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/7F845um4SpCnmxpLm7SkFg"
-    #logger.debug url
-    logger.debug("@resource.attributes.to_json: #{@resource.attributes}")
-    #res = HTTParty.put "http://srv1.csproj13.student.it.uu.se:8000/resources/7F845um4SpCnmxpLm7SkFg/", :body => { :name => "Quentin", :description => "description", :manufacturer => "myself", :owner => 0}, :options => { :headers => { 'ContentType' => 'application/json' }}
-    #res = @resource.save
-    res = HTTParty.put "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/#{@resource.id}", :body => @resource.attributes.to_json, :headers => { 'Content-Type' => 'application/json' }
-    logger.debug ">> RES: #{res}"
-
-      if res
-        format.html { redirect_to action: 'index', status: :moved_permanently }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @resource.errors, status: :unprocessable_entity }
+      @resource.assign_attributes(resource_params)
+      res = put
+      res.on_complete do
+        # logger.debug ">>>>> STATUS: #{res.status}"
+        if res.status == 200
+          format.html { redirect_to action: 'index', status: :moved_permanently }
+          format.json { head :no_content }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @resource.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -110,5 +119,39 @@ class ResourcesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
       params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active)
+    end
+
+    def post
+      new_connection
+      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/"
+      @conn.post do |req|
+        req.url url
+        req.headers['Content-Type'] = 'application/json'
+        req.body = @resource.attributes.to_json
+      end
+    end
+
+    def put
+      new_connection
+      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/"
+      target = url.to_s + @resource.id.to_s
+      #opts = { :headers => { 'Content-Type' => 'application/json' } }
+      #json = @resource.attributes.to_json
+      #logger.debug "JSON: #{json}"
+      # HTTParty.put target, :body => json, :options => opts
+      @conn.put do |req|
+        req.url target
+        req.headers['Content-Type'] = 'application/json'
+        req.body = @resource.attributes.to_json
+      end
+    end
+
+    def new_connection
+      logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
+      @conn = Faraday.new(:url => 'http://sushi.com') do |faraday|
+        faraday.request  :url_encoded             # form-encode POST params
+        faraday.response :logger                  # log requests to STDOUT
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
     end
 end

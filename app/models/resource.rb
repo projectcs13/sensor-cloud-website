@@ -1,6 +1,8 @@
 class Resource
   include Her::Model
-  attributes :name, :owner
+  include_root_in_json false
+  attributes :name
   # has_many :streams
   # validates :name, presence: true
+
 end
