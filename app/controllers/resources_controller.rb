@@ -2,34 +2,9 @@ class ResourcesController < ApplicationController
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
-  # protect_from_forgery with: :null_session
-  # protect_from_forgery secret: "1234567890123456789012345678901234"
-  # skip_before_filter:verify_authenticity_token
-
-  # uses one of the other session stores that uses a session_id value.
-  #protect_from_forgery :secret => 'my-little-pony', :except => :index
-
-  # you can disable csrf protection on controller-by-controller basis:
-  # skip_before_filter :verify_authenticity_token
-
   # GET /resources
   # GET /resources.json
   def index
-    #r = Resource.new(name: "Alberto", owner: 0)
-    #logger.debug("r.attributes: #{r.attributes}")
-    #logger.debug("r.valid?: #{r.valid?}")
-    # r.save
-    # Faraday.post "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources", r.attributes.to_json
-    # Faraday.put "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/7F845um4SpCnmxpLm7SkFg/", { :name => 'Maguro' }\
-    #h = {:name => 'Tomasaaaa Resource', :owner => 0}
-    #response2 = Faraday.post 'http://srv1.csproj13.student.it.uu.se:8000/users/0/resources', h.to_json
-    #logger.debug ">> #{response2.body}"
-    #response3 = Faraday.put 'http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/7F845um4SpCnmxpLm7SkFg', {:name => 'test2 jose'}.to_json
-    #logger.debug ">> #{response3.body}"
-    #js = { :name => "kkkkkkkk" }.to_json
-    #logger.debug ">> JS: #{js}"
-    #res = HTTParty.put "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/7F845um4SpCnmxpLm7SkFg", :body => js, :headers => { 'Content-Type' => 'application/json' }
-    #logger.debug ">> RES: #{res}"
     @resources = Resource.all
   end
 
@@ -41,9 +16,10 @@ class ResourcesController < ApplicationController
 
   # GET /resources/new
   def new
-    r = Resource.find("bNEuQ1-pQz6qVQvBqzvt3g")
-    logger.debug "#{r.attributes}"
     @resource = Resource.new
+
+    ## TODO remove this line to make it work for Resource.all.first
+    r = Resource.find("bNEuQ1-pQz6qVQvBqzvt3g")
     r.attributes.each do |attr|
       key = attr[0]
       val = attr[1]
@@ -53,7 +29,6 @@ class ResourcesController < ApplicationController
         @resource.send("#{key}=", val)
       end
     end
-    logger.debug "#{@resource.attributes}"
     @resource
   end
 
@@ -65,9 +40,8 @@ class ResourcesController < ApplicationController
   # POST /resources.json
   def create
     @resource = Resource.new(resource_params)
+    ## TODO remove this line to make it work for every user
     @resource.owner = 0
-    # @resource.creation_date = t.year.to_s + '/' + t.month.to_s + '/' + t.day.to_s
-    logger.debug ">> Create Resource: #{@resource.attributes}"
     res = post
     respond_to do |format|
       if res.status == 200
@@ -88,7 +62,6 @@ class ResourcesController < ApplicationController
       @resource.assign_attributes(resource_params)
       res = put
       res.on_complete do
-        # logger.debug ">>>>> STATUS: #{res.status}"
         if res.status == 200
           format.html { redirect_to action: 'index', status: :moved_permanently }
           format.json { head :no_content }
@@ -122,25 +95,20 @@ class ResourcesController < ApplicationController
     end
 
     def post
-      new_connection
       url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/"
-      @conn.post do |req|
-        req.url url
-        req.headers['Content-Type'] = 'application/json'
-        req.body = @resource.attributes.to_json
-      end
+      send_data(:post, url)
     end
 
     def put
+      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/" + @resource.id.to_s
+      send_data(:put, url)
+    end
+
+    def send_data(method, url)
       new_connection
-      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/"
-      target = url.to_s + @resource.id.to_s
-      #opts = { :headers => { 'Content-Type' => 'application/json' } }
-      #json = @resource.attributes.to_json
-      #logger.debug "JSON: #{json}"
-      # HTTParty.put target, :body => json, :options => opts
-      @conn.put do |req|
-        req.url target
+
+      @conn.send(method) do |req|
+        req.url url
         req.headers['Content-Type'] = 'application/json'
         req.body = @resource.attributes.to_json
       end
