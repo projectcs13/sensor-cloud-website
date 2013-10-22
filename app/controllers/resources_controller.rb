@@ -2,10 +2,14 @@ class ResourcesController < ApplicationController
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
+  ### TODO Testing Purposes
+  current_user = { id: 0 }
+
   # GET /resources
   # GET /resources.json
   def index
-    @resources = Resource.all
+    @resources = Resource.all(_user_id: current_user.id)
+    logger.debug ">> RES: #{@resources}"
   end
 
   # GET /resources/1
@@ -17,13 +21,11 @@ class ResourcesController < ApplicationController
   # GET /resources/new
   def new
     @resource = Resource.new
-
-    r = Resource.all.first
-    r.attributes.each do |attr|
-      @resource.send("#{attr[0]}=", nil)
+    attributes = [:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    attributes.each do |attr|
+      @resource.send("#{attr}=", nil)
     end
-
-    @resource
+    # @resource.send("#{user_id}=", current_user.id)
   end
 
   # GET /resources/1/edit
@@ -33,9 +35,10 @@ class ResourcesController < ApplicationController
   # POST /resources
   # POST /resources.json
   def create
-    @resource = Resource.new(resource_params)
-    ## TODO remove this line to make it work for every user
-    @resource.owner = 0
+    ### TODO Remove the owner
+    @resource = Resource.new(resource_params, user_id: current_user.id)
+    @resource.owner = current_user.id
+
     res = post
     respond_to do |format|
       if res.status == 200
@@ -70,6 +73,7 @@ class ResourcesController < ApplicationController
   # DELETE /resources/1
   # DELETE /resources/1.json
   def destroy
+    # @resource.user_id = 0
     @resource.destroy
     respond_to do |format|
       format.html { redirect_to resources_url }
@@ -77,25 +81,27 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def post
+    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/"
+    send_data(:post, url)
+  end
+
+  def put
+    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/" + @resource.id.to_s
+    send_data(:put, url)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_resource
-      @resource = Resource.find(params[:id])
+      @resource = Resource.find(params[:id], user_id: current_user.id)
+      # @resource.streams = Stream.all(:resource_id => :id)
+      #logger.debug "#{@resource.streams}"
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
       params.require(:resource).permit(:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active)
-    end
-
-    def post
-      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/"
-      send_data(:post, url)
-    end
-
-    def put
-      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/" + @resource.id.to_s
-      send_data(:put, url)
     end
 
     def send_data(method, url)
@@ -110,7 +116,7 @@ class ResourcesController < ApplicationController
 
     def new_connection
       logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
-      @conn = Faraday.new(:url => 'http://srv1.csproj13.student.it.uu.se:8000/users/0/') do |faraday|
+      @conn = Faraday.new(:url => "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP

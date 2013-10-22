@@ -15,8 +15,12 @@ class StreamsController < ApplicationController
 
   # GET /streams/new
   def new
-    @stream = Stream.new
-    # @resource.streams.push @stream
+    @stream = @resource.streams.build
+    attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers]
+    attributes.each do |attr|
+      @stream.send("#{attr}=", nil)
+    end
+    @stream
   end
 
   # GET /streams/1/edit
@@ -26,9 +30,13 @@ class StreamsController < ApplicationController
   # POST /streams
   # POST /streams.json
   def create
-    # @stream = @resource.streams.new(stream_params)
-    @stream = Stream.new(stream_params)
-    @resource.streams.push @stream
+    @stream = @resource.streams.create(stream_params)
+    # @stream = Stream.new(stream_params)
+    logger.debug ">>>>> Attributes}"
+    logger.debug "#{@resource.attributes}"
+    logger.debug "#{@stream.attributes}"
+    # @stream.post
+    # @resource.put
 
     respond_to do |format|
       res = post
@@ -67,6 +75,9 @@ class StreamsController < ApplicationController
   # DELETE /streams/1.json
   def destroy
     @stream.destroy
+    @resource.streams.delete @stream.id
+    @resource.put
+
     respond_to do |format|
       # format.html { redirect_to streams_url }
       # format.html { redirect_to resource_streams_path(@resource) }
@@ -89,7 +100,7 @@ class StreamsController < ApplicationController
 
     ### TODO doc
     def load_parent
-      @resource = Resource.find(params[:resource_id])
+      @resource = Resource.find(params[:resource_id], _user_id: 0)
     end
 
     def post
