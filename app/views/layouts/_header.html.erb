@@ -30,6 +30,7 @@
     </div>
 
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+			<% if signed_in? %>
     	<ul class="nav navbar-nav">
       	<li>
         	<form class="navbar-form navbar-left" role="search">
@@ -42,6 +43,7 @@
         <li><%= link_to "My Resources", resources_path %></li>
         <li><%#= link_to "My Streams", streams_path %></li>
      	</ul>
+			<% end %>
 
 			<ul class="nav navbar-nav right">
 				<% if signed_in? %>

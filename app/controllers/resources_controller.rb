@@ -3,13 +3,16 @@ class ResourcesController < ApplicationController
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
   ### TODO Testing Purposes
-  current_user = { id: 0 }
+  # current_user = { id: 0 }
 
   # GET /resources
   # GET /resources.json
   def index
     @resources = Resource.all(_user_id: current_user.id)
-    logger.debug ">> RES: #{@resources}"
+		logger.debug ">> @resources: #{@resources.inspect}"
+		#@resources.each do | r |
+    #  logger.debug ">> RES: #{r.attributes}"
+		#end
   end
 
   # GET /resources/1
@@ -36,8 +39,8 @@ class ResourcesController < ApplicationController
   # POST /resources.json
   def create
     ### TODO Remove the owner
-    @resource = Resource.new(resource_params, user_id: current_user.id)
-    @resource.owner = current_user.id
+    @resource = Resource.new(resource_params)
+    @resource.user_id = current_user.id
 
     res = post
     respond_to do |format|
