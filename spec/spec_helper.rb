@@ -12,6 +12,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
+=begin
 RSpec.configure do |config|
   # ## Mock Framework
   #
@@ -40,4 +41,20 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
   config.include Capybara::DSL
+end
+=end
+
+RSpec.configure do |config|
+  config.include(Module.new do
+    def stub_api_for(klass)
+      klass.use_api (api = Her::API.new)
+
+      # Here, you would customize this for your own API (URL, middleware, etc)
+      # like you have done in your application’s initializer
+      api.setup url: "http://srv1.csproj13.student.it.uu.se:8000/" do |c|
+        c.use Her::Middleware::FirstLevelParseJSON
+        c.adapter(:test) { |s| yield(s) }
+      end
+    end
+  end)
 end
