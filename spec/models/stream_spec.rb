@@ -52,10 +52,13 @@ describe Stream do
   end
 
   before {
-    # resource = Resource.all(_user_id: user_id)
-    # @stream  = resource.streams.find(_resource_id: 1)
-    # @streams = Stream.all(_user_id: 0, resource_id: 1)
+    resource = Resource.all(_user_id: user_id).first
+    # resource.streams = Stream.all({resource_id: resource.id, _user_id: user_id})
+    # @streams = resource.streams
+    @streams = Stream.all({resource_id: resource.id, _user_id: user_id})
   }
+
+  subject { @streams }
 
   describe "fetch all streams which belong to a specific resource" do
     its(:length) { should == 1 }
