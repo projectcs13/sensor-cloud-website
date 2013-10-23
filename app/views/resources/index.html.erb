@@ -38,9 +38,10 @@
         </tr>
       </thead>
 
-      <tbody>
+			<tbody>
+				<%#= @resources %>
         <% @resources.each do |resource| %>
-          <%# @streams = resource.streams %>
+          <% @streams = resource.streams %>
           <tr>
             <td><%= resource.id %></td>
             <td><%= resource.name %></td>

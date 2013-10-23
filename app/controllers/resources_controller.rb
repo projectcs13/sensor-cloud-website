@@ -9,7 +9,7 @@ class ResourcesController < ApplicationController
   # GET /resources.json
   def index
     @resources = Resource.all(_user_id: current_user.id)
-		logger.debug ">> @resources: #{@resources.inspect}"
+		# logger.debug ">> @resources: #{@resources.inspect}"
 		#@resources.each do | r |
     #  logger.debug ">> RES: #{r.attributes}"
 		#end
