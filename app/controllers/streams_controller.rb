@@ -30,13 +30,13 @@ class StreamsController < ApplicationController
   # POST /streams
   # POST /streams.json
   def create
-    @stream = @resource.streams.create(stream_params)
-    # @stream = Stream.new(stream_params)
+    # @stream = @resource.streams.create(stream_params)
+    @stream = Stream.new(stream_params)
+		@resource.streams.push @stream
+
     logger.debug ">>>>> Attributes}"
     logger.debug "#{@resource.attributes}"
     logger.debug "#{@stream.attributes}"
-    # @stream.post
-    # @resource.put
 
     respond_to do |format|
       res = post
@@ -75,8 +75,8 @@ class StreamsController < ApplicationController
   # DELETE /streams/1.json
   def destroy
     @stream.destroy
-    @resource.streams.delete @stream.id
-    @resource.put
+    # @resource.streams.delete @stream.id
+    # @resource.put
 
     respond_to do |format|
       # format.html { redirect_to streams_url }
@@ -89,8 +89,8 @@ class StreamsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      # @stream = Stream.find(params[:id])
-      @stream = @resource.streams.find(params[:id])
+      @stream = Stream.find(params[:id], _resource_id: @resource.id, _user_id: current_user.id)
+      # @stream = @resource.streams.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -100,7 +100,7 @@ class StreamsController < ApplicationController
 
     ### TODO doc
     def load_parent
-      @resource = Resource.find(params[:resource_id], _user_id: 0)
+      @resource = Resource.find(params[:resource_id], _user_id: current_user.id)
     end
 
     def post
