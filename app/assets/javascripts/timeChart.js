@@ -27,7 +27,7 @@
 *
 */
 function timeChart() {
-  var margin = {top: 40, right: 20, bottom: 20, left: 40},
+  var margin = {top: 40, right: 20, bottom: 20, left: 50},
       parseDate = d3.time.format("%Y-%m-%d").parse;
       width = 760,
       height = 120,
@@ -42,7 +42,6 @@ function timeChart() {
 
   function chart(selection) {
     selection.each(function(data) {
-
       // Convert data to standard representation greedily;
       // this is needed for nondeterministic accessors.
       data = data.map(function(d, i) {
@@ -66,7 +65,7 @@ function timeChart() {
       // Otherwise, create the skeletal chart.
       var gEnter = svg.enter().append("svg").append("g");
         gEnter.append("path").attr("class", "area");
-        gEnter.append("path").attr("class", "line");
+        gEnter.append("path").attr("class", "line").attr("d", line);
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
         gEnter.append("g").attr("class", "datapoints");
@@ -81,17 +80,23 @@ function timeChart() {
 
       // Update the area path.
       g.select(".area")
+          .data([data]) // set the new data
+          .attr("transform", "translate(" + 40 + ")")
+          .attr("d", area.y0(yScale.range()[0]))
           .transition()
           .duration(200)
-          //.ease("linear")
-          .attr("d", area.y0(yScale.range()[0]));
+          .attr("transform", "translate(" + "0" + ")");
 
+      var twoYear = parseDate("2028-12-12");
+      var zeroYear = parseDate("2026-12-12");
       // Update the line path.
       g.select(".line")
-          .transition()
-          .duration(200)
-          //.ease("linear")
-          .attr("d", line);
+          .data([data]) // set the new data
+          .attr("transform", "translate(" + 40 + ")") // set the transform to the right by x(1) pixels (6 for the scale we've set) to hide the new value
+          .attr("d", line) // apply the new data values ... but the new value is hidden at this point off the right of the canvas
+          .transition() // start a transition to bring the new value into view
+          .duration(200) // for this demo we want a continual slide so set this to the same as the setInterval amount below
+          .attr("transform", "translate(" + "0" + ")");
 
       // Update the x-axis.
       g.select(".x.axis")
@@ -104,7 +109,7 @@ function timeChart() {
 
       // Select all datapoints if they exist
       var datapoints = g.select(".datapoints").selectAll("circle")
-                        .data(data);
+                        .data(data, function(d){return d[0]});
 
       // Add datapoints that don't exist
       datapoints
@@ -123,7 +128,11 @@ function timeChart() {
           .duration(200)
           //.ease("linear")
           .attr("cx", function(d) {return xScale(d[0])})
-          .attr("cy", function(d) {return yScale(d[1])})
+          .attr("cy", function(d) {return yScale(d[1])});
+
+      datapoints
+        .exit()
+        .remove()
 
     });
   }
