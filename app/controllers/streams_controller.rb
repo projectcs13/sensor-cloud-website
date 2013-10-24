@@ -39,17 +39,22 @@ class StreamsController < ApplicationController
     logger.debug "#{@stream.attributes}"
 
     respond_to do |format|
-      res = post
-      if res.status == 200
-        # format.html { redirect_to @stream, notice: 'Stream was successfully created.' }
-        # format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
-        # format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
-        format.html { redirect_to @resource }
-        format.json { render action: 'show', status: :created, location: @stream }
-      else
+			if @stream.valid?
+      	res = post
+      	if res.status == 200
+        	# format.html { redirect_to @stream, notice: 'Stream was successfully created.' }
+        	# format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
+        	# format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
+        	format.html { redirect_to @resource }
+        	format.json { render action: 'show', status: :created, location: @stream }
+      	else
+        	format.html { render action: 'new' }
+        	format.json { render json: @stream.errors, status: :unprocessable_entity }
+      	end
+			else
         format.html { render action: 'new' }
         format.json { render json: @stream.errors, status: :unprocessable_entity }
-      end
+			end
     end
   end
 
@@ -58,16 +63,21 @@ class StreamsController < ApplicationController
   def update
     respond_to do |format|
       @stream.assign_attributes(stream_params)
-      res = put
-      res.on_complete do
-        if res.status == 200
-          format.html { redirect_to edit_resource_path(@resource) }
-          format.json { head :no_content }
-        else
-          format.html { render action: 'edit' }
-          format.json { render json: @stream.errors, status: :unprocessable_entity }
-        end
-      end
+			if @stream.valid?
+      	res = put
+      	res.on_complete do
+        	if res.status == 200
+          	format.html { redirect_to edit_resource_path(@resource) }
+          	format.json { head :no_content }
+        	else
+          	format.html { render action: 'edit' }
+          	format.json { render json: @stream.errors, status: :unprocessable_entity }
+        	end
+      	end
+			else
+      	format.html { render action: 'edit' }
+        format.json { render json: @stream.errors, status: :unprocessable_entity }
+			end
     end
   end
 

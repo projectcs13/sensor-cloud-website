@@ -2,8 +2,9 @@ class Stream
   include Her::Model
 
   attributes :name
-  validates :name, presence: true
-	validates :resource_id, presence: true
+  # validates :name, presence: true
+	validates :name,  presence: true, length: { maximum:50 }
+	#	validates :resource_id, presence: true
 
   belongs_to :resource
   # belongs_to :group
