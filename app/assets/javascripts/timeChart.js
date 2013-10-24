@@ -31,12 +31,13 @@ function timeChart() {
       parseDate = d3.time.format("%Y-%m-%d").parse;
       width = 760,
       height = 120,
+      unit = "",
       xValue = function(d) { return d.date; },
       yValue = function(d) { return d.value; },
       xScale = d3.time.scale(),
       yScale = d3.scale.linear(),
       xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickSize(6, 0),
-      yAxis = d3.svg.axis().scale(yScale).orient("left"),
+      yAxis = d3.svg.axis().scale(yScale).orient("left").tickSize(10),
       area = d3.svg.area().x(X).y(Y),
       line = d3.svg.line().x(X).y(Y);
 
@@ -44,31 +45,40 @@ function timeChart() {
     selection.each(function(data) {
       // Convert data to standard representation greedily;
       // this is needed for nondeterministic accessors.
+      var pdata = data.pdata;
+      data = data.data;
+      pdata = pdata.map(function(d, i) {
+        return [xValue.call(pdata, d, i), yValue.call(pdata, d, i)];
+      });
       data = data.map(function(d, i) {
         return [xValue.call(data, d, i), yValue.call(data, d, i)];
       });
 
+      alert(data);
+      alert(pdata);
       // Update the x-scale.
       xScale
-          .domain(d3.extent(data, function(d) { return d[0]; }))
+          .domain(d3.extent([].concat(data,pdata), function(d) { return d[0]; }))
           .range([0, width - margin.left - margin.right]);
 
       // Update the y-scale.
       yScale
-          .domain([0, d3.max(data, function(d) { return d[1]; })])
+          .domain([0, d3.max([].concat(data,pdata), function(d) { return d[1]; })])
           .range([height - margin.top - margin.bottom, 0]);
 
       // Select the svg element, if it exists.
-      var svg = d3.select(this).selectAll("svg").data([data]);
+      var svg = d3.select(this).selectAll("svg").data([1]);
       
 
       // Otherwise, create the skeletal chart.
       var gEnter = svg.enter().append("svg").append("g");
         gEnter.append("path").attr("class", "area");
-        gEnter.append("path").attr("class", "line").attr("d", line);
+        gEnter.append("path").attr("class", "line");
+        gEnter.append("path").attr("class", "pline");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
         gEnter.append("g").attr("class", "datapoints");
+        gEnter.append("g").attr("class", "pdatapoints");
       
       // Update the outer dimensions.
       svg .attr("width", width)
@@ -80,23 +90,14 @@ function timeChart() {
 
       // Update the area path.
       g.select(".area")
-          .data([data]) // set the new data
-          .attr("transform", "translate(" + 40 + ")")
-          .attr("d", area.y0(yScale.range()[0]))
-          .transition()
-          .duration(200)
-          .attr("transform", "translate(" + "0" + ")");
+          .attr("d", area.y0(yScale.range()[0]));
 
-      var twoYear = parseDate("2028-12-12");
-      var zeroYear = parseDate("2026-12-12");
       // Update the line path.
       g.select(".line")
-          .data([data]) // set the new data
-          .attr("transform", "translate(" + 40 + ")") // set the transform to the right by x(1) pixels (6 for the scale we've set) to hide the new value
-          .attr("d", line) // apply the new data values ... but the new value is hidden at this point off the right of the canvas
-          .transition() // start a transition to bring the new value into view
-          .duration(200) // for this demo we want a continual slide so set this to the same as the setInterval amount below
-          .attr("transform", "translate(" + "0" + ")");
+          .attr("d", line(data));
+
+      g.select(".pline")
+          .attr("d", line(pdata));
 
       // Update the x-axis.
       g.select(".x.axis")
@@ -124,13 +125,33 @@ function timeChart() {
       
       // Update the datapoints
       datapoints
-          .transition()
-          .duration(200)
-          //.ease("linear")
           .attr("cx", function(d) {return xScale(d[0])})
           .attr("cy", function(d) {return yScale(d[1])});
 
       datapoints
+        .exit()
+        .remove()
+
+      var pdatapoints = g.select(".pdatapoints").selectAll("circle")
+                        .data(pdata, function(d){return d[0]});
+
+      // Add pdatapoints that don't exist
+      pdatapoints
+          .enter()
+          .append("circle")
+          .attr("cx", function(d) {return xScale(d[0])})
+          .attr("cy", function(d) {return yScale(d[1])})
+          .attr("r", 4)
+          .attr("class", "datapoint")
+          .append("title")
+          .text( function(d) {return d[1]});
+      
+      // Update the pdatapoints
+      pdatapoints
+          .attr("cx", function(d) {return xScale(d[0])})
+          .attr("cy", function(d) {return yScale(d[1])});
+
+      pdatapoints
         .exit()
         .remove()
 
@@ -174,6 +195,12 @@ function timeChart() {
   chart.y = function(_) {
     if (!arguments.length) return yValue;
     yValue = _;
+    return chart;
+  };
+
+  chart.unit = function(_) {
+    if (!arguments.length) return unit;
+    unit = _;
     return chart;
   };
 
