@@ -35,6 +35,6 @@ window.onload = function() {
         
         graph.datum({data: dummy_data, pdata: dummy_pdata})
              .call(testchart);
-        }
+}
 
      
