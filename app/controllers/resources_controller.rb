@@ -42,17 +42,24 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(resource_params)
     @resource.user_id = current_user.id
 
-    res = post
-    respond_to do |format|
-      if res.status == 200
-        id = JSON.parse(res.body)['_id']
-        format.html { redirect_to edit_resource_path(id) }
-        format.json { render action: 'show', status: :created, location: @resource }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @resource.errors, status: :unprocessable_entity }
-      end
-    end
+		if @resource.valid?
+    	res = post
+    	respond_to do |format|
+      	if res.status == 200
+        	id = JSON.parse(res.body)['_id']
+        	format.html { redirect_to edit_resource_path(id) }
+        	format.json { render action: 'show', status: :created, location: @resource }
+      	else
+        	format.html { render action: 'new' }
+        	format.json { render json: @resource.errors, status: :unprocessable_entity }
+      	end
+    	end
+		else
+			respond_to do |format|
+    		format.html { render action: 'new' }
+      	format.json { render json: @resource.errors, status: :unprocessable_entity }
+			end
+		end
   end
 
   # PATCH/PUT /resources/1
@@ -60,16 +67,21 @@ class ResourcesController < ApplicationController
   def update
     respond_to do |format|
       @resource.assign_attributes(resource_params)
-      res = put
-      res.on_complete do
-        if res.status == 200
-          format.html { redirect_to action: 'index', status: :moved_permanently }
-          format.json { head :no_content }
-        else
-          format.html { render action: 'edit' }
-          format.json { render json: @resource.errors, status: :unprocessable_entity }
-        end
-      end
+			if @resource.valid?
+      	res = put
+      	res.on_complete do
+        	if res.status == 200
+          	format.html { redirect_to action: 'index', status: :moved_permanently }
+          	format.json { head :no_content }
+        	else
+          	format.html { render action: 'edit' }
+          	format.json { render json: @resource.errors, status: :unprocessable_entity }
+					end
+      	end
+			else
+      	format.html { render action: 'edit' }
+        format.json { render json: @resource.errors, status: :unprocessable_entity }
+			end
     end
   end
 

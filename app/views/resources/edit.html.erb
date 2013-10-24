@@ -1,16 +1,5 @@
 <%= form_for(@resource) do |f| %>
   <% @f = f %>
-  <% if @resource.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@resource.errors.count, "error") %> prohibited this resource from being saved:</h2>
-
-      <ul>
-      <% @resource.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
 
   <div class="page-header">
     <h1 class="title">Edit Resource</h1>
@@ -24,6 +13,19 @@
 
     <div class="clearfix"></div>
   </div>
+
+	<% if @resource.errors.any? %>
+		<div id="error_explanation">
+			<div class="alert alert-danger">
+				The form contains <%= pluralize(@resource.errors.count, "error") %>.
+			</div>           
+			<ul>
+				<% @resource.errors.full_messages.each do |msg| %>
+					<li>* <%= msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
 
   <%= render 'resource' %>
   <%= render 'streams' %>
