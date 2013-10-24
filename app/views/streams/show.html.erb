@@ -1,4 +1,6 @@
 <%= javascript_include_tag "streams_graph" %>
+<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
+<%= javascript_include_tag "streams_map"%>
 
 <div class="row title-row">
   <div class="col-lg-8">
@@ -48,7 +50,12 @@
 <%= link_to 'Back', resource_streams_path(@resource) %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
-    <%= image_tag("mapplaceholder.png", width: '100%')%>
+    <!--<%= image_tag("mapplaceholder.png", width: '100%')%>-->
+    <div id="map-canvas">
+      <script>
+         initialize(<%= @stream.latitude %>, <%=@stream.longitude %>);
+      </script>
+    </div>
     <div class="row">
       <div class="col-lg-6">longitude: <%= @stream.longitude %></div>
       <div class="col-lg-6">latitude: <%= @stream.latitude %></div>
