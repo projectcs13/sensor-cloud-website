@@ -4,7 +4,7 @@
   <div class="col-lg-8">
     <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
   <div class="col-lg-4 text-right">
-          <p><span class=<% if not @stream.private  %> "label label-danger">Private
+          <p><span class=<% if @stream.private  %> "label label-danger">Private
                               <% else %> "label label-success"> Public <% end %>
 
           </span>
@@ -17,7 +17,7 @@
 
 <div class="row">
   <div class="col-lg-8">
-    <h4>Type: Temperature</h4>
+    <h4>Type: <%= @stream.stream_type %></h4>
   </div>
   <div class="col-lg-4">
     <h4>Location</h4>

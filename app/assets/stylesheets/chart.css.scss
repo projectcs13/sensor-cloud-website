@@ -24,30 +24,41 @@ $secondary_color: #A0BFDE;
   stroke-width: 1.5px;
 }
 
-.pline {
+.p-line {
   fill: none;
-  stroke: #ffbbaa;
+  stroke: #ff0000;
   stroke-width: 1.5px;
 }
 
-.area {
-  fill: $secondary_color;
+.p-area-95 {
+  fill: #ff0000;
+  opacity: 0.3;
+  :hover {
+  fill: #4C83BA;
+  }
+}
+.p-area-80 {
+  fill: #555555;
+  opacity: 0.3;
   :hover {
   fill: #4C83BA;
   }
 }
 
-.datapoint {
+.datapoints {
   fill: $secondary_color;
 	stroke: $primary_color;
   stroke-width: 2px;
   :hover {
   fill: #135B87;
   }
-
-.pdatapoints
-  .datapoint {
+}
+.p-datapoints{
+  stroke: #ff3333;
+  stroke-width: 2px;
   fill: #ffbbaa;
 }
 
+.delimiter{
+  stroke:#000000;
 }
