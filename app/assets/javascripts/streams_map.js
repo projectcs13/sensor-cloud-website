@@ -13,7 +13,7 @@ function initialize(latitude, longtitude){
     			map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
                 
                 var marker = new google.maps.Marker({
-                    position: map.getCenter(),
+                    position: new google.maps.latLng(latitude, longtitude),
                     map: map,
                     title: 'sensor`s location'
                 });
