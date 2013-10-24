@@ -16,7 +16,7 @@ class StreamsController < ApplicationController
   # GET /streams/new
   def new
     @stream = @resource.streams.build
-    attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers]
+    attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at]
     attributes.each do |attr|
       @stream.send("#{attr}=", nil)
     end
@@ -45,7 +45,8 @@ class StreamsController < ApplicationController
         	# format.html { redirect_to @stream, notice: 'Stream was successfully created.' }
         	# format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
         	# format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
-        	format.html { redirect_to @resource }
+        	sleep(1.0)
+					format.html { redirect_to @resource }
         	format.json { render action: 'show', status: :created, location: @stream }
       	else
         	format.html { render action: 'new' }
@@ -67,6 +68,7 @@ class StreamsController < ApplicationController
       	res = put
       	res.on_complete do
         	if res.status == 200
+						sleep(1.0)
           	format.html { redirect_to edit_resource_path(@resource) }
           	format.json { head :no_content }
         	else
@@ -87,7 +89,7 @@ class StreamsController < ApplicationController
     @stream.destroy
     # @resource.streams.delete @stream.id
     # @resource.put
-
+		sleep(1.0)
     respond_to do |format|
       # format.html { redirect_to streams_url }
       # format.html { redirect_to resource_streams_path(@resource) }
@@ -105,7 +107,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers)
+      params.require(:stream).permit(:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :created_at)
     end
 
     ### TODO doc

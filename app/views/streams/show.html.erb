@@ -11,7 +11,7 @@
           <span class=<% if @stream.active  %> "label label-success"> Active
                               <% else %> "label label-danger"> Inactive <% end %>
           </span></p><p>
-          <small>Created: <%= @stream.created_at.to_formatted_s(:short) %></small></p>
+          <small>Created: <%#= @stream.created_at.to_formatted_s(:short) %></small></p>
   </div>
 </div>
 
@@ -45,7 +45,7 @@
         <span class="label label-default">SICS</span>
       </div>
       <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %> |
-<%= link_to 'Back', resource_streams_path(@resource) %>
+<%= link_to 'Back', edit_resource_path(@resource) %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
     <%= image_tag("mapplaceholder.png", width: '100%')%>

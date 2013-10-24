@@ -13,6 +13,7 @@
   <div class="clearfix"></div>
 
   <div class="right">
+    <%= link_to 'Show', resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-eye-open btn btn-primary" %>
     <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
     <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-primary" %>
   </div>

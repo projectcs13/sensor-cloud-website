@@ -44,6 +44,7 @@ class ResourcesController < ApplicationController
 
 		if @resource.valid?
     	res = post
+			sleep(1.0)
     	respond_to do |format|
       	if res.status == 200
         	id = JSON.parse(res.body)['_id']
@@ -69,6 +70,7 @@ class ResourcesController < ApplicationController
       @resource.assign_attributes(resource_params)
 			if @resource.valid?
       	res = put
+				sleep(1.0)
       	res.on_complete do
         	if res.status == 200
           	format.html { redirect_to action: 'index', status: :moved_permanently }
@@ -90,6 +92,7 @@ class ResourcesController < ApplicationController
   def destroy
     # @resource.user_id = 0
     @resource.destroy
+		sleep(1.0)
     respond_to do |format|
       format.html { redirect_to resources_url }
       format.json { head :no_content }
