@@ -1,89 +1,70 @@
-<p id="notice"><%= notice %></p>
+<%= javascript_include_tag "streams_graph" %>
 
-<p>
-  <strong>Name:</strong>
-  <%= @stream.name %>
-</p>
+<div class="row title-row">
+  <div class="col-lg-8">
+    <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
+  <div class="col-lg-4 text-right">
+          <p>
+            <% if @stream.private == "true" %>
+              <span class="label label-danger">Private</span>
+            <% else %>
+              <span class="label label-success">Public</span>
+            <% end %>
 
-<p>
-  <strong>Description:</strong>
-  <%= @stream.description %>
-</p>
+            <% if @stream.active == "true" %>
+              <span class="label label-success">Active</span>
+            <% else %>
+              <span class="label label-danger">Inactive</span>
+            <% end %>
+          </p>
 
-<p>
-  <strong>Private:</strong>
-  <%= @stream.private %>
-</p>
+          <p><small>Created: <%#= @stream.created_at.to_formatted_s(:short) %></small></p>
+  </div>
+</div>
 
-<p>
-  <strong>Accuracy:</strong>
-  <%= @stream.accuracy %>
-</p>
+<div class="row">
+  <div class="col-lg-8">
+    <h4>Type: Temperature</h4>
+  </div>
+  <div class="col-lg-4">
+    <h4>Location</h4>
+  </div>
+</div>
 
-<p>
-  <strong>Longitude:</strong>
-  <%= @stream.longitude %>
-</p>
+<div class="row">
+  <div class="col-lg-8"> <!-- Left side -->
+    <div class="stream-graph" id="stream-graph"></div> <!-- Placeholder Id for placeholder Graph-->
+      <div><small>
+        Last udate: <%= @stream.updated_at %>
+        History: <%= @stream.history_size %>
+        Accuracy: <%= @stream.accuracy %>
+        Min Value: <%= @stream.min_val %>
+        Max Value: <%= @stream.max_val %>
+        </small>
+      </div>
+      <h4>Description: </h4>
+      <div class="stream-description well"><%= @stream.description %></div>
+      <h4>Tags: </h4>
+      <div class="stream-tags well">
+        <span class="label label-info">Temperature</span>
+        <span class="label label-warning">Uppsala</span>
+        <span class="label label-default">Ericsson</span>
+        <span class="label label-default">SICS</span>
+      </div>
 
-<p>
-  <strong>Latitude:</strong>
-  <%= @stream.latitude %>
-</p>
+      <%#= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
+      <%#= link_to 'Back', edit_resource_path(@resource) %>
+      <%= link_to 'Back', edit_resource_path(@resource), class: "glyphicon glyphicon-chevron-left btn btn-primary" %>
+      <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+      <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+  </div>
+  <div class="col-md-4"> <!-- Right side -->
+    <%= image_tag("mapplaceholder.png", width: '100%')%>
+    <div class="row">
+      <div class="col-lg-6">longitude: <%= @stream.longitude %></div>
+      <div class="col-lg-6">latitude: <%= @stream.latitude %></div>
+    </div>
+  </div>
+</div>
+<div id="update">Update graph</div>
 
-<p>
-  <strong>Type:</strong>
-  <%= @stream.stream_type %>
-</p>
-
-<p>
-  <strong>Unit:</strong>
-  <%= @stream.unit %>
-</p>
-
-<p>
-  <strong>Max val:</strong>
-  <%= @stream.max_val %>
-</p>
-
-<p>
-  <strong>Min val:</strong>
-  <%= @stream.min_val %>
-</p>
-
-<p>
-  <strong>Active:</strong>
-  <%= @stream.active %>
-</p>
-
-<p>
-  <strong>Tags:</strong>
-  <%= @stream.tags %>
-</p>
-
-<p>
-  <strong>Resource:</strong>
-  <%= @stream.resource_id %>
-</p>
-
-<p>
-  <strong>User:</strong>
-  <%= @stream.user_id %>
-</p>
-
-<p>
-  <strong>User ranking:</strong>
-  <%= @stream.user_ranking %>
-</p>
-
-<p>
-  <strong>History size:</strong>
-  <%= @stream.history_size %>
-</p>
-
-<p>
-  <strong>Subscribers:</strong>
-  <%= @stream.subscribers %>
-</p>
-
-<%= link_to 'Edit', edit_stream_path(@stream) %> |
-<%= link_to 'Back', streams_path %>

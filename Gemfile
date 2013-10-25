@@ -3,8 +3,15 @@ ruby '2.0.0'
 #ruby-gemset=railstutorial_rails_4_0
 
 gem 'rails', '4.0.0'
+gem 'her'
 gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass', branch: '3'
 gem 'bcrypt-ruby', '3.0.1'
+gem 'httparty'
+gem 'faraday'
+gem 'will_paginate', '~> 3.0'
+gem 'will_paginate-bootstrap'
+gem 'faker', '1.1.2'
+gem "d3-rails"
 
 group :development, :test do
   gem 'sqlite3', '1.3.8'

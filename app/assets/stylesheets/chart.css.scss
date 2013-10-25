@@ -1,0 +1,53 @@
+$primary_color: #135B87;
+$secondary_color: #A0BFDE;
+
+.axis path,
+.axis line pline{
+  fill: none;
+  stroke: $primary_color;
+  
+}
+
+.axis text {
+
+  fill: $primary_color;
+  
+}
+
+.x.axis path {
+ 
+}
+
+.line {
+  fill: none;
+  stroke: $primary_color;
+  stroke-width: 1.5px;
+}
+
+.pline {
+  fill: none;
+  stroke: #ffbbaa;
+  stroke-width: 1.5px;
+}
+
+.area {
+  fill: $secondary_color;
+  :hover {
+  fill: #4C83BA;
+  }
+}
+
+.datapoint {
+  fill: $secondary_color;
+	stroke: $primary_color;
+  stroke-width: 2px;
+  :hover {
+  fill: #135B87;
+  }
+
+.pdatapoints
+  .datapoint {
+  fill: #ffbbaa;
+}
+
+}

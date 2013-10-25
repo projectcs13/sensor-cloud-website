@@ -1,0 +1,20 @@
+<article class="resources-streams panel panel-default">
+  <div class="resources-streams-header panel-heading">
+    <h3 class="panel-title cat-header-label">List of Streams associated with this resource</h3>
+    <%= link_to 'New Stream', new_resource_stream_path(@resource), class: "glyphicon glyphicon-plus btn btn-primary right" %>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="resources-streams-body panel-body">
+    <ul id="resources-streams-list">
+      <% logger.debug "Res: #{@resource.attributes}" %>
+      <% logger.debug "Str: #{@resource.streams}" %>
+      <% unless @resource.streams.nil? %>
+        <% @resource.streams.each do | stream | %>
+          <% @stream = stream %>
+          <%= render 'resources/stream' %>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+</article>

@@ -1,3 +1,5 @@
+=begin
+
 require "spec_helper"
 
 describe StreamsController do
@@ -33,3 +35,5 @@ describe StreamsController do
 
   end
 end
+
+=end

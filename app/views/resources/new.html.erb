@@ -1,10 +1,62 @@
-<h1 class="">Add New Resource</h1>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <h1 class="title">Create a Resource</h1>
+    <div class="clearfix"></div>
 
-<%= render 'form' %>
-<!--
-<div class="actions">
-  <%= link_to 'Add Resource', resources_path(@resource), method: :create, class: "btn btn-primary" %>
-  <%= link_to 'Cancel', @resource, class: "btn btn-default" %>
+    <%= form_for(@resource) do |f| %>
+      <% if @resource.errors.any? %>
+        <div id="error_explanation">
+          <div class="alert alert-danger">
+            The form contains <%= pluralize(@resource.errors.count, "error") %>.
+          </div>
+
+          <ul>
+            <% @resource.errors.full_messages.each do |msg| %>
+              <li>* <%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% @resource.attributes.each do | key, value | %>
+        <% if  key != "id" and
+               key != "owner" and
+               key != "mirror_proxy" and
+               key != "creation_date" %>
+          <div class="form-group">
+            <%= f.label key %>
+
+            <% if key == "polling_freq" %>
+              <%= f.text_field key[0], class: "form-control" %>
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Frequency? <span class="caret"></span></button>
+                <ul class="dropdown-menu pull-right">
+                  <li><a href="#">Select the frequency</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">Seconds</a></li>
+                  <li><a href="#">Minutes</a></li>
+                  <li><a href="#">Hours</a></li>
+                  <li><a href="#">Days</a></li>
+                </ul>
+              </div>
+
+            <% elsif key == "active" %>
+              <!-- TODO Check if this is necessary for the future -->
+              <%= f.check_box key %>
+
+            <% else %>
+              <%= f.text_field key, class: "form-control" %>
+
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <div class="form-button">
+        <%= f.submit "Create Resource", class: "btn btn-lg btn-primary" %>
+        <%= link_to 'Cancel', resources_path, class: "btn btn-lg btn-disabled" %>
+      </div>
+
+    <% end %>
+  </div>
 </div>
--->
-

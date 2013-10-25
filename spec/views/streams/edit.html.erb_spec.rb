@@ -25,7 +25,7 @@ describe "streams/edit" do
     render
 
     # Run the generator again with the --webrat flag if you want to use webrat matchers
-    assert_select "form[action=?][method=?]", stream_path(@stream), "post" do
+    assert_select "form[action=?][method=?]", resource_stream_path(@stream), "post" do
       assert_select "input#stream_name[name=?]", "stream[name]"
       assert_select "textarea#stream_description[name=?]", "stream[description]"
       assert_select "input#stream_private[name=?]", "stream[private]"

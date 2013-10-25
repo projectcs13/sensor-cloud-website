@@ -11,22 +11,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131008091104) do
+ActiveRecord::Schema.define(version: 20131014115546) do
 
-  create_table "resources", force: true do |t|
+  create_table "groups", force: true do |t|
     t.string   "owner"
     t.string   "name"
     t.string   "description"
-    t.string   "manufacturer"
-    t.string   "model"
-    t.integer  "privacy"
-    t.string   "notes"
-    t.date     "last_updated"
+    t.string   "tags"
+    t.string   "input"
+    t.string   "output"
+    t.boolean  "private"
     t.date     "creation_date"
-    t.integer  "update_freq"
-    t.string   "resource_type"
+    t.integer  "subscribers"
+    t.integer  "user_ranking"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "resources", force: true do |t|
+    t.string  "owner"
+    t.string  "name"
+    t.string  "description"
+    t.string  "manufacturer"
+    t.string  "model"
+    t.date    "creation_date"
+    t.integer "update_freq"
+    t.string  "resource_type"
+    t.string  "data_overview"
+    t.string  "serial_num"
+    t.string  "make"
+    t.string  "location"
+    t.string  "uri"
+    t.boolean "mirror_proxy"
   end
 
   create_table "streams", force: true do |t|
@@ -58,6 +74,7 @@ ActiveRecord::Schema.define(version: 20131008091104) do
     t.datetime "updated_at"
     t.string   "password_digest"
     t.string   "remember_token"
+    t.boolean  "admin",           default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

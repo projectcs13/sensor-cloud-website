@@ -30,6 +30,7 @@
     </div>
 
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+			<% if signed_in? %>
     	<ul class="nav navbar-nav">
       	<li>
         	<form class="navbar-form navbar-left" role="search">
@@ -39,9 +40,10 @@
             <button type="submit" class="btn btn-default">Submit</button>
           </form>
         </li>
-        <li><%= link_to "My Streams", '#' %></li>
         <li><%= link_to "My Resources", resources_path %></li>
+        <li><%#= link_to "My Streams", streams_path %></li>
      	</ul>
+			<% end %>
 
 			<ul class="nav navbar-nav right">
 				<% if signed_in? %>
@@ -61,9 +63,9 @@
 				</li>
 				-->
 				<li><%= link_to "Home",    root_path %></li>
-				<li><%= link_to "Help", help_path %></li>
+				<li><%#= link_to "Help", help_path %></li>
 				<% if signed_in? %>
-					<li><%= link_to "Users", '#' %></li>
+					<li><%= link_to "Users", users_path %></li>
 					<li id="fat-menu" class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Account <b class="caret"></b>
@@ -79,6 +81,7 @@
 					</li>
 				<% else %>
 					<li><%= link_to "Sign in", signin_path %></li>
+          <li><%= link_to "Sign up", signup_path %></li>
 				<% end %>
       </ul>
     </nav>

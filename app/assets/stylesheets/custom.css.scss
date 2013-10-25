@@ -3,6 +3,7 @@
 /* mixins, variables, etc. */
 
 $grayMediumLight: #eaeaea;
+$grayLighter: #eee;
 
 @mixin box_sizing {
 	-moz-box-sizing: border-box;
@@ -12,12 +13,21 @@ $grayMediumLight: #eaeaea;
 
 /* universal */
 
-html {
-  overflow-y: scroll;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
 body {
   padding-top: 80px;
+  adding-bottom: 76px;
+}
+
+.parent {
+  position: relative;
+  min-height: 100%;
+  height: 100%;
 }
 
 section {
@@ -49,7 +59,7 @@ h1 {
 }
 
 h2 {
-  font-size: 1.2em;
+  //font-size: 1.2em;
   letter-spacing: -1px;
   margin-bottom: 30px;
   text-align: center;
@@ -88,6 +98,22 @@ p {
 }
 
 /* footer */
+
+#container {
+	min-height: 100%;
+	position:relative;
+}
+
+#body {
+	padding-bottom: 96px; /* Height of the footer + 20px */
+}
+
+#footer {
+	position:absolute;
+	bottom: 0;
+	width: 100%;
+	height: 76px; /* Height of the footer */
+}
 
 /*
 footer {
@@ -146,6 +172,7 @@ aside {
 			letter-spacing: -1px;
 			margin-bottom: 3px;
 			margin-top: 0px;
+			margin-left: 15px;
 		}
 	}
 }
@@ -165,6 +192,21 @@ input, textarea, select, .uneditable-input {
 	@include box_sizing;
 }
 */
+
+/* Users index */
+
+.users {
+	list-style: none;
+	margin: 0;
+	li {
+		overflow: auto;
+		padding: 10px 0;
+		border-top: 1px solid $grayLighter;
+		&:last-child {
+			border-bottom: 1px solid $grayLighter;
+		}
+	}
+}
 
 input {
 	height: auto !important;
@@ -190,7 +232,6 @@ input {
 
 .left  { float: left;  }
 .right { float: right; }
-.clear { clear: both;  }
 
 .margin {
   padding: 0 15%;
@@ -211,6 +252,7 @@ input {
 .categories {
   float: left;
   width: 25%;
+}
 
   .cat-header-label {
     float: left;
@@ -221,7 +263,6 @@ input {
     float: right;
     padding: 5px 12px;
   }
-}
 
 .title {
   @extend .left;
@@ -232,7 +273,7 @@ input {
   width: 75%;
 }
 
-.table thead>tr>th {
+.table thead > tr > th {
   padding-bottom: 9px;
 }
 
@@ -263,7 +304,9 @@ input {
   bottom: 0;
 
   text-align: center;
-  padding: 3em 0;
+  padding: 2em 0;
+
+  height: 76px;
   width: 100%;
 
   .footer-links {
