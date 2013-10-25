@@ -6,15 +6,15 @@
 
   <div class="col-md-6 left">
     <p>Description: <%= @stream.description %></p>
-    <p>Updated at: <%= @stream.updated_at %></p>
+   <p>Updated at: <%#= @stream.updated_at %></p>
     <p>
-      <% if @stream.private == "true" %>
+      <% if @stream.private %>
         <span class="label label-danger">Private</span>
       <% else %>
         <span class="label label-success">Public</span>
       <% end %>
 
-      <% if @stream.active == "true" %>
+      <% if @stream.active %>
         <span class="label label-success">Active</span>
       <% else %>
         <span class="label label-danger">Inactive</span>

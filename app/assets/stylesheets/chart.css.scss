@@ -1,17 +1,19 @@
-$primary_color: #135B87;
-$secondary_color: #A0BFDE;
+$dark_blue: #135B87;
+$light_blue: #A0BFDE;
+$dark_grey: #444455;
+$light_grey: #555555;
+$light_orange: #ED8540;
+$dark_orange: #ED6040;
+
 
 .axis path,
 .axis line pline{
   fill: none;
-  stroke: $primary_color;
-  
+  stroke: $dark_grey;
 }
 
 .axis text {
-
-  fill: $primary_color;
-  
+  fill: $dark_grey;
 }
 
 .x.axis path {
@@ -20,34 +22,37 @@ $secondary_color: #A0BFDE;
 
 .line {
   fill: none;
-  stroke: $primary_color;
+  stroke: $dark_blue;
   stroke-width: 1.5px;
 }
 
-.pline {
+.p-line {
   fill: none;
-  stroke: #ffbbaa;
+  stroke: $dark_orange;
   stroke-width: 1.5px;
 }
 
-.area {
-  fill: $secondary_color;
-  :hover {
-  fill: #4C83BA;
-  }
+.p-area-95 {
+  fill: $light_blue;
+  opacity: 0.3;
+}
+.p-area-80 {
+  fill: $light_grey;
+  opacity: 0.3;
 }
 
-.datapoint {
-  fill: $secondary_color;
-	stroke: $primary_color;
-  stroke-width: 2px;
-  :hover {
-  fill: #135B87;
-  }
-
-.pdatapoints
-  .datapoint {
-  fill: #ffbbaa;
+.datapoints {
+  fill: $light_blue;
+	stroke: $dark_blue;
+  stroke-width: 1px;
 }
 
+.p-datapoints{
+  stroke: $dark_orange;
+  stroke-width: 1px;
+  fill: $light_orange;
+}
+
+.delimiter{
+  stroke:$light_grey;
 }
