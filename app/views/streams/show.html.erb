@@ -17,13 +17,13 @@ window.onload = function(){
     <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
   <div class="col-lg-4 text-right">
           <p>
-            <% if @stream.private == "true" %>
+            <% if @stream.private %>
               <span class="label label-danger">Private</span>
             <% else %>
               <span class="label label-success">Public</span>
             <% end %>
 
-            <% if @stream.active == "true" %>
+            <% if @stream.active %>
               <span class="label label-success">Active</span>
             <% else %>
               <span class="label label-danger">Inactive</span>
@@ -80,5 +80,5 @@ window.onload = function(){
     </div>
   </div>
 </div>
-<div id="update">Update graph</div>
+
 
