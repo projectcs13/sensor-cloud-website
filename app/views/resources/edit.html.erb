@@ -1,19 +1,34 @@
-<h1 class="title">Edit Resource</h1>
+<%= form_for(@resource) do |f| %>
+  <% @f = f %>
 
-<%= render 'form' %>
-<%= render 'streams' %>
+  <div class="page-header">
+    <h1 class="title">Edit Resource</h1>
 
-<div class="clearfix"></div>
-<!--
-<div class="actions">
-  <%= link_to 'Update', @resource, method: :update, class: "btn btn-primary" %>
-  <%= link_to 'Cancel', @resource, class: "btn btn-default" %>
-  <%= link_to "Delete", "#modal", id: "delete", class: "btn btn-danger" %>
-</div>
+    <div class="actions right">
+      <%= f.submit 'Update', class: "btn btn-primary" %>
+      <%#= link_to 'Update', resource_path(@resource.id), method: :put, class: "btn btn-primary" %>
+      <%= link_to 'Cancel', resources_path, class: "btn btn-default" %>
+      <%= link_to 'Delete', @resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+    </div>
 
-<script type="text/javascript">
-  $('#delete').on('click', function() {
-    $('#modal').modal();
-  });
-</script>
--->
+    <div class="clearfix"></div>
+  </div>
+
+	<% if @resource.errors.any? %>
+		<div id="error_explanation">
+			<div class="alert alert-danger">
+				The form contains <%= pluralize(@resource.errors.count, "error") %>.
+			</div>           
+			<ul>
+				<% @resource.errors.full_messages.each do |msg| %>
+					<li>* <%= msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+
+  <%= render 'resource' %>
+  <%= render 'streams' %>
+
+  <div class="clearfix"></div>
+<% end %>

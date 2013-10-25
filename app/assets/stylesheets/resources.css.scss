@@ -91,3 +91,15 @@ ul {
   width: 12em;
   margin: 0.6em;
 }
+
+.btn.glyphicon {
+  padding: 7px 12px 10px 10px;
+}
+
+.resources .glyphicon {
+  margin-right: 10px;
+}
+
+.resources .glyphicon:first-child {
+  margin-right: 0;
+}

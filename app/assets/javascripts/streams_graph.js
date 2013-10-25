@@ -3,9 +3,7 @@
 
  */
 
-window.onload = function() {
-        var height = $('#map-canvas').width();
-        $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
+function show_graph() {
         var dummy_data = [];
         var year = 2012;
         for (var i = 0; i <= 9; i++) {
@@ -16,10 +14,10 @@ window.onload = function() {
         var dummy_pdata = [];
         for (var i = 0; i <= 5; i++) {
                 var newvalue = Math.random() * 2000;
-                var hi80 = newvalue + Math.random() * 500,
-                    lo80 = newvalue - Math.random() * 500;
-                    hi95 = hi80 + Math.random() * 500,
-                    lo95 = lo80 - Math.random() * 500,
+                var hi80 = newvalue + Math.random() * 400 + 100,
+                    lo80 = newvalue - Math.random() * 400 - 100;
+                    hi95 = hi80 + Math.random() * 400 + 100,
+                    lo95 = lo80 - Math.random() * 400 - 100,
                 year += 2;
                 dummy_pdata.push({value:newvalue, date: year +"-12-12", hi95:hi95, lo95:lo95, hi80:hi80, lo80:lo80})
               

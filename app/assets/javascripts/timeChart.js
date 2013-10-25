@@ -130,11 +130,17 @@ function timeChart() {
           .append("circle")
           .attr("cx", function(d) {return X(d)})
           .attr("cy", function(d) {return Y(d)})
-          .attr("r", 4)
+          .attr("r", 3)
+          .on("mouseover", function(){
+            d3.select(this).transition().attr("r", 5);
+          })
+          .on("mouseout", function(){
+            d3.select(this).transition().attr("r", 3);
+          })
           //.attr("class", "datapoint")
           .append("title")
-          .text( function(d) {return d.value});
-      
+          .text( function(d) {return d.value})
+
       // Update the datapoints
       datapoints
           .attr("cx", function(d) {return X(d)})
@@ -161,7 +167,13 @@ function timeChart() {
           .append("circle")
           .attr("cx", function(d) {return xScale(d.date)})
           .attr("cy", function(d) {return yScale(d.value)})
-          .attr("r", 4)
+          .attr("r", 3)
+          .on("mouseover", function(){
+            d3.select(this).transition().attr("r", 5);
+          })
+          .on("mouseout", function(){
+            d3.select(this).transition().attr("r", 3);
+          })
           //.attr("class", "datapoint")
           .append("title")
           .text( function(d) {return d.value});

@@ -4,16 +4,16 @@
 */
 var map;
 
-function initialize_map(latitude, longtitude){
+function initialize_map(latitude, longitude){
     			var mapOptions = {
-    				center: new google.maps.LatLng(latitude, longtitude),
-    				zoom: 8,
+    				center: new google.maps.LatLng(latitude, longitude),
+    				zoom: 10,
     				mapTypeId: google.maps.MapTypeId.ROADMAP
     			};
     			map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
                 
                 var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(latitude, longtitude),
+                    position: new google.maps.LatLng(latitude, longitude),
                     map: map,
                     title: 'sensor`s location'
                 });

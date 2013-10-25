@@ -1,25 +1,42 @@
 <%= javascript_include_tag "streams_graph" %>
 <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
 <%= javascript_include_tag "streams_map"%>
+<script type="text/javascript">
+window.onload = function(){
+  var longitude = parseFloat(<%= @stream.longitude %>);
+  var latitude = parseFloat(<%= @stream.latitude %>);
+  var height = $('#map-canvas').width();
+  $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
+  show_graph();
+  initialize_map(latitude, longitude);
+}
+</script>
 
 <div class="row title-row">
   <div class="col-lg-8">
     <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
   <div class="col-lg-4 text-right">
-          <p><span class=<% if @stream.private  %> "label label-danger">Private
-                              <% else %> "label label-success"> Public <% end %>
+          <p>
+            <% if @stream.private == "true" %>
+              <span class="label label-danger">Private</span>
+            <% else %>
+              <span class="label label-success">Public</span>
+            <% end %>
 
-          </span>
-          <span class=<% if @stream.active  %> "label label-success"> Active
-                              <% else %> "label label-danger"> Inactive <% end %>
-          </span></p><p>
-          <small>Created: <%= @stream.created_at.to_formatted_s(:short) %></small></p>
+            <% if @stream.active == "true" %>
+              <span class="label label-success">Active</span>
+            <% else %>
+              <span class="label label-danger">Inactive</span>
+            <% end %>
+          </p>
+
+          <p><small>Created: <%#= @stream.created_at.to_formatted_s(:short) %></small></p>
   </div>
 </div>
 
 <div class="row">
   <div class="col-lg-8">
-    <h4>Type: <%= @stream.stream_type %></h4>
+    <h4>Type: <%#= @stream.stream_type %></h4>
   </div>
   <div class="col-lg-4">
     <h4>Location</h4>
@@ -30,8 +47,8 @@
   <div class="col-lg-8"> <!-- Left side -->
     <div class="stream-graph" id="stream-graph"></div> <!-- Placeholder Id for placeholder Graph-->
       <div><small>
-        Last udate: <%= @stream.updated_at %>
-        History: <%= @stream.history_size %> 
+        Last udate: <%#= @stream.updated_at %>
+        History: <%= @stream.history_size %>
         Accuracy: <%= @stream.accuracy %>
         Min Value: <%= @stream.min_val %>
         Max Value: <%= @stream.max_val %>
@@ -46,15 +63,16 @@
         <span class="label label-default">Ericsson</span>
         <span class="label label-default">SICS</span>
       </div>
-      <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %> |
-<%= link_to 'Back', resource_streams_path(@resource) %>
+
+      <%#= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
+      <%#= link_to 'Back', edit_resource_path(@resource) %>
+      <%= link_to 'Back', edit_resource_path(@resource), class: "glyphicon glyphicon-chevron-left btn btn-primary" %>
+      <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+      <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
     <!--<%= image_tag("mapplaceholder.png", width: '100%')%>-->
     <div id="map-canvas">
-      <script>
-         initialize_map(36.0, 400.0);
-      </script>
     </div>
     <div class="row">
       <div class="col-lg-6">longitude: <%= @stream.longitude %></div>

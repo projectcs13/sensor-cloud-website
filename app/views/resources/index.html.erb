@@ -27,27 +27,33 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Resource Name</th>
           <th>Manufacturer</th>
           <th>Model</th>
-          <th>Description</th>
           <th>Type</th>
-          <th></th>
+          <th>Location</th>
+          <!-- <th>Creation Date</th> -->
           <th></th>
         </tr>
       </thead>
 
-      <tbody>
+			<tbody>
+				<%#= @resources %>
         <% @resources.each do |resource| %>
           <% @streams = resource.streams %>
           <tr>
             <td><%= resource.name %></td>
             <td><%= resource.manufacturer %></td>
             <td><%= resource.model %></td>
-            <td><%= resource.description %></td>
             <td><%= resource.resource_type %></td>
-            <td><%= link_to 'Edit', edit_resource_path(resource) %></td>
-            <td><%= link_to 'Destroy', resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            <td><%= resource.location %></td>
+            <!-- <td>
+              <%#= resource.creation_date %>
+            </td> -->
+            <td>
+              <%= link_to 'Delete', resource, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove right" %>
+              <%= link_to 'Edit', edit_resource_path(resource.id), class: "glyphicon glyphicon-pencil right" %>
+            </td>
           </tr>
         <% end %>
       </tbody>
