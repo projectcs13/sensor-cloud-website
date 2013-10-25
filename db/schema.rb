@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131014115546) do
+ActiveRecord::Schema.define(version: 20131025093333) do
 
   create_table "groups", force: true do |t|
     t.string   "owner"
@@ -26,45 +26,6 @@ ActiveRecord::Schema.define(version: 20131014115546) do
     t.integer  "user_ranking"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "resources", force: true do |t|
-    t.string  "owner"
-    t.string  "name"
-    t.string  "description"
-    t.string  "manufacturer"
-    t.string  "model"
-    t.date    "creation_date"
-    t.integer "update_freq"
-    t.string  "resource_type"
-    t.string  "data_overview"
-    t.string  "serial_num"
-    t.string  "make"
-    t.string  "location"
-    t.string  "uri"
-    t.boolean "mirror_proxy"
-  end
-
-  create_table "streams", force: true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.boolean  "private"
-    t.float    "accuracy"
-    t.float    "longitude"
-    t.float    "latitude"
-    t.string   "stream_type"
-    t.string   "unit"
-    t.float    "max_val"
-    t.float    "min_val"
-    t.boolean  "active"
-    t.text     "tags"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "resource_id"
-    t.integer  "user_id"
-    t.float    "user_ranking"
-    t.integer  "history_size"
-    t.integer  "subscribers"
   end
 
   create_table "users", force: true do |t|
