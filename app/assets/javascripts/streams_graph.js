@@ -4,6 +4,8 @@
  */
 
 window.onload = function() {
+        var height = $('#map-canvas').width();
+        $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
         var dummy_data = [];
         var year = 2012;
         for (var i = 0; i <= 9; i++) {

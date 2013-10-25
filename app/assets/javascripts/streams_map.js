@@ -4,7 +4,7 @@
 */
 var map;
 
-function initialize(latitude, longtitude){
+function initialize_map(latitude, longtitude){
     			var mapOptions = {
     				center: new google.maps.LatLng(latitude, longtitude),
     				zoom: 8,
@@ -18,10 +18,3 @@ function initialize(latitude, longtitude){
                     title: 'sensor`s location'
                 });
     		};
-
-window.onload = function() {
-    var height = $('#map-canvas').width();
-    $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
-    //initialize();
-}
-
