@@ -32,6 +32,11 @@ class StreamsController < ApplicationController
   def create
     # @stream = @resource.streams.create(stream_params)
     @stream = Stream.new(stream_params)
+    if @stream.private == "0"
+      @stream.private = "false"
+    else
+      @stream.private = "true"
+    end
 		@resource.streams.push @stream
 
     logger.debug ">>>>> Attributes}"

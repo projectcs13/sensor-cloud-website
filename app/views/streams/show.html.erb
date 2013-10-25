@@ -17,7 +17,7 @@ window.onload = function(){
     <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
   <div class="col-lg-4 text-right">
           <p>
-            <% if @stream.private %>
+            <% if @stream.private == "true" %>
               <span class="label label-danger">Private</span>
             <% else %>
               <span class="label label-success">Public</span>
