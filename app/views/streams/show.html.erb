@@ -1,4 +1,16 @@
 <%= javascript_include_tag "streams_graph" %>
+<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
+<%= javascript_include_tag "streams_map"%>
+<script type="text/javascript">
+window.onload = function(){
+  var longitude = parseFloat(<%= @stream.longitude %>);
+  var latitude = parseFloat(<%= @stream.latitude %>);
+  var height = $('#map-canvas').width();
+  $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
+  show_graph();
+  initialize_map(latitude, longitude);
+}
+</script>
 
 <div class="row title-row">
   <div class="col-lg-8">
@@ -24,7 +36,7 @@
 
 <div class="row">
   <div class="col-lg-8">
-    <h4>Type: Temperature</h4>
+    <h4>Type: <%#= @stream.stream_type %></h4>
   </div>
   <div class="col-lg-4">
     <h4>Location</h4>
@@ -35,7 +47,7 @@
   <div class="col-lg-8"> <!-- Left side -->
     <div class="stream-graph" id="stream-graph"></div> <!-- Placeholder Id for placeholder Graph-->
       <div><small>
-        Last udate: <%= @stream.updated_at %>
+        Last udate: <%#= @stream.updated_at %>
         History: <%= @stream.history_size %>
         Accuracy: <%= @stream.accuracy %>
         Min Value: <%= @stream.min_val %>
@@ -59,7 +71,9 @@
       <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
-    <%= image_tag("mapplaceholder.png", width: '100%')%>
+    <!--<%= image_tag("mapplaceholder.png", width: '100%')%>-->
+    <div id="map-canvas">
+    </div>
     <div class="row">
       <div class="col-lg-6">longitude: <%= @stream.longitude %></div>
       <div class="col-lg-6">latitude: <%= @stream.latitude %></div>
