@@ -37,6 +37,12 @@ class StreamsController < ApplicationController
     else
       @stream.private = "true"
     end
+
+    if @stream.active == "0"
+      @stream.active = "false"
+    else
+      @stream.active = "true"
+    end
 		@resource.streams.push @stream
 
     logger.debug ">>>>> Attributes}"
