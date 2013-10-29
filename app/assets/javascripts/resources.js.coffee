@@ -4,16 +4,16 @@
 
 $ ->
 
+  form = $('#new_resource')
+
   suggest = (event) ->
     do event.preventDefault
-    form = $('#new_resource')
     form.attr('action', '/suggest')
     form.data('remote', 'true')
     do form.submit
 
   create = (event) ->
     do event.preventDefault
-    form = $('#new_resource')
     form.attr('action', '/resources')
     # form.data('remote', null)
     do form.submit
