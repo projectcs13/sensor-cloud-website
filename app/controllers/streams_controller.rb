@@ -6,6 +6,7 @@ class StreamsController < ApplicationController
   # GET /streams
   # GET /streams.json
   def index
+    @streams = Stream.search(params[:search])
   end
 
   # GET /streams/1
