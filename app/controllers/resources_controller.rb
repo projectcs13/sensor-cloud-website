@@ -12,9 +12,9 @@ class ResourcesController < ApplicationController
     @resources = Resource.all(_user_id: current_user.id)
 
 
-		@resources.each do | r |
-      r.send("id=", "l6c-3LytRyO8KLrQhKA8qQ")
-		end
+		#@resources.each do | r |
+    #  r.send("id=", "l6c-3LytRyO8KLrQhKA8qQ")
+		#end
   end
 
   # GET /resources/1
@@ -27,15 +27,20 @@ class ResourcesController < ApplicationController
   def suggest
     model = params[:resource][:model]
 		logger.debug "+++++ model +++++: #{model}"
-    res = Faraday.get "http://130.238.15.218:8000/suggest/#{model}"
-		
-    answers = []
+    res = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/suggest/#{model}"
+
     suggestion = JSON.parse(res.body)['testsuggest'][0]
     if suggestion
         opt = suggestion['options'].last
         payload = opt['payload']
 
 				@resource = Resource.new
+        attributes = [:owner, :name, :description, :manufacturer, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+        attributes.each do |attr|
+          @resource.send("#{attr}=", "")
+        end
+        @resource.send("model=", model)
+
 				payload.each do | attr, val |
 					@resource.send("#{attr}=", val)
 				end
