@@ -25,25 +25,27 @@ class ResourcesController < ApplicationController
 
   # GET /suggest/1.json
   def suggest
-    model = params[:model]
-    res = Faraday.get "http://localhost:8000/suggest/#{model}"
-
-    logger.debug "#{JSON.parse(res.body)}"
+    model = params[:resource][:model]
+		logger.debug "+++++ model +++++: #{model}"
+    res = Faraday.get "http://130.238.15.218:8000/suggest/#{model}"
+		
     answers = []
-    suggestions = JSON.parse(res.body)['testsuggest']
-    if suggestions
-      suggestions.each do | sug |
-        opt = sug['options'].last
+    suggestion = JSON.parse(res.body)['testsuggest'][0]
+    if suggestion
+        opt = suggestion['options'].last
         payload = opt['payload']
-        answers.push payload
-      end
+
+				@resource = Resource.new
+				payload.each do | attr, val |
+					@resource.send("#{attr}=", val)
+				end
     end
 
-    if answers
-      render :json => answers, :status => 200
-    else
-      render :json => "Not found", :status => 404
-    end
+		logger.debug "RES: #{@resource.attributes}"
+
+		respond_to do |format|
+			format.js
+		end
   end
 
   # GET /resources/new
