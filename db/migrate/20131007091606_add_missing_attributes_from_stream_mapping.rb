@@ -9,6 +9,6 @@ class AddMissingAttributesFromStreamMapping < ActiveRecord::Migration
   	rename_column :streams, :deviation, :accuracy
   	rename_column :streams, :bound_max, :max_val
   	rename_column :streams, :bound_min, :min_val
-  	rename_column :streams, :state, :active
+  	#rename_column :streams, :state, :active
   end
 end

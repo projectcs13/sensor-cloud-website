@@ -33,6 +33,17 @@ class StreamsController < ApplicationController
   def create
     # @stream = @resource.streams.create(stream_params)
     @stream = Stream.new(stream_params)
+    if @stream.private == "0"
+      @stream.private = "false"
+    else
+      @stream.private = "true"
+    end
+
+    if @stream.active == "0"
+      @stream.active = "false"
+    else
+      @stream.active = "true"
+    end
 		@resource.streams.push @stream
 
     logger.debug ">>>>> Attributes}"
@@ -66,6 +77,17 @@ class StreamsController < ApplicationController
     respond_to do |format|
       @stream.assign_attributes(stream_params)
 			if @stream.valid?
+if @stream.private == "0"
+      @stream.private = "false"
+    else
+      @stream.private = "true"
+    end
+
+    if @stream.active == "0"
+      @stream.active = "false"
+    else
+      @stream.active = "true"
+    end
       	res = put
       	res.on_complete do
         	if res.status == 200

@@ -3,19 +3,24 @@
 
  */
 
-window.onload = function() {
+function show_graph() {
         var dummy_data = [];
         var year = 2012;
-        for (var i = 0; i <= 10; i++) {
-                var newvalue = Math.random() * 3000;
-                year += 2*i;
+        for (var i = 0; i <= 9; i++) {
+                var newvalue = Math.random() * 2000;
+                year += 2;
                 dummy_data.push({value:newvalue, date: year +"-12-12"});
             };
-        var predicted_data = [];
-        for (var i = 0; i <= 3; i++) {
-                var newvalue = Math.random() * 3000;
-                year += 2*i;
-                predicted_data.push({value:newvalue, date: year +"-12-12"});
+        var dummy_pdata = [];
+        for (var i = 0; i <= 5; i++) {
+                var newvalue = Math.random() * 2000;
+                var hi80 = newvalue + Math.random() * 400 + 100,
+                    lo80 = newvalue - Math.random() * 400 - 100;
+                    hi95 = hi80 + Math.random() * 400 + 100,
+                    lo95 = lo80 - Math.random() * 400 - 100,
+                year += 2;
+                dummy_pdata.push({value:newvalue, date: year +"-12-12", hi95:hi95, lo95:lo95, hi80:hi80, lo80:lo80})
+              
             };
         var parseDate = d3.time.format("%Y-%m-%d").parse;
         var testchart = timeChart()
@@ -28,14 +33,8 @@ window.onload = function() {
 
         var graph = d3.select("#stream-graph");
         
-        graph.datum({data: dummy_data, pdata: predicted_data})
+        graph.datum({data: dummy_data, pdata: dummy_pdata})
              .call(testchart);
-
-        $("#update").on("click", function() {
-            year += 2;
-            dummy_data.push({value:Math.random()*3000, date:year+"-12-12"});
-            graph.datum(dummy_data).call(testchart);
-            });
-        }
+}
 
      
