@@ -9,12 +9,7 @@
     <ul id="resources-streams-list">
       <% logger.debug "Res: #{@resource.attributes}" %>
       <% logger.debug "Str: #{@resource.streams}" %>
-      <% unless @resource.streams.nil? %>
-        <% @resource.streams.each do | stream | %>
-          <% @stream = stream %>
-          <%= render 'resources/stream' %>
-        <% end %>
-      <% end %>
+
     </ul>
   </div>
 </article>

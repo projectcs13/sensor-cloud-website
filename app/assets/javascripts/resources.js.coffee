@@ -3,6 +3,21 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $ ->
+
+  suggest = (event) ->
+    do event.preventDefault
+    model = $('#resource_model').val()
+    res = $.getJSON "http://localhost:3000/suggest/#{model}"
+    res.done (json) ->
+      json = json[0]
+      for k, v of json
+        $("#resource_#{k}").val v
+      @
+
+  $('body').on 'click', '#suggest-btn', suggest
+
+###
+$ ->
   modal  = $ '#modal'
   list   = $ '#resources-streams-list'
   num    = 0
@@ -48,3 +63,4 @@ $ ->
 
   # $('body').on 'click', '#addStreamButton', addStream
   # $('body').on 'click', '.glyphicon-remove', removeStream
+###

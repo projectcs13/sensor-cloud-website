@@ -1,6 +1,7 @@
 class ResourcesController < ApplicationController
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
+  # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
   ### TODO Testing Purposes
   # current_user = { id: 0 }
@@ -9,16 +10,40 @@ class ResourcesController < ApplicationController
   # GET /resources.json
   def index
     @resources = Resource.all(_user_id: current_user.id)
-		# logger.debug ">> @resources: #{@resources.inspect}"
-		#@resources.each do | r |
-    #  logger.debug ">> RES: #{r.attributes}"
-		#end
+
+
+		@resources.each do | r |
+      r.send("id=", "l6c-3LytRyO8KLrQhKA8qQ")
+		end
   end
 
   # GET /resources/1
   # GET /resources/1.json
   def show
     redirect_to :action => "edit"
+  end
+
+  # GET /suggest/1.json
+  def suggest
+    model = params[:model]
+    res = Faraday.get "http://localhost:8000/suggest/#{model}"
+
+    logger.debug "#{JSON.parse(res.body)}"
+    answers = []
+    suggestions = JSON.parse(res.body)['testsuggest']
+    if suggestions
+      suggestions.each do | sug |
+        opt = sug['options'].last
+        payload = opt['payload']
+        answers.push payload
+      end
+    end
+
+    if answers
+      render :json => answers, :status => 200
+    else
+      render :json => "Not found", :status => 404
+    end
   end
 
   # GET /resources/new
@@ -113,6 +138,7 @@ class ResourcesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_resource
       @resource = Resource.find(params[:id], user_id: current_user.id)
+      logger.debug "id: #{@resource.id} - model: #{@resource.model}"
       # @resource.streams = Stream.all(:resource_id => :id)
       #logger.debug "#{@resource.streams}"
     end
