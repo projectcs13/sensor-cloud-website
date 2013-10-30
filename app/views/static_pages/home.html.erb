@@ -1,15 +1,15 @@
-<div class="center jumbotron" id="search-window">
+<div class="center jumbotron">
 	<%#= link_to image_tag("logos/sensorcloud.png", alt: "Brand Logo"), 'https://github.com/projectcs13' %>
-	<h1>Sensor Cloud App</h1>
+	<!--<h1>Sensor Cloud App</h1>-->
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
 			<form role="search" action="search" method="get">
-			 		<div class="form-group">	
-		        <input name="search" type="text" class="form-control" placeholder="Example: Temperature in Uppsala" />
-					</div>
-					<div class="form-button">
-		        <button type="submit" class="btn btn-lg btn-primary">Search</button>
-					</div>
+				<div class="col-md-11">	
+		        	<input name="search" type="text" class="form-control input-lg" placeholder="Example: Temperature in Uppsala" />
+				</div>
+				<div class="col-md-1">
+		        	<button type="submit" class="btn btn-lg btn-primary">Search</button>
+				</div>
 		    </form>
 		</div>
 	</div>
