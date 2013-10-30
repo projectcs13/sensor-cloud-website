@@ -14,8 +14,9 @@ $custom-brown-dark:   #5b4f57 !default;
 $custom-grey-dark:    #7f7f7f !default;
 $custom-grey:         #d3d4d7 !default;
 $custom-grey-light:   #f5f2f3 !default;
-$custom-blue:         #89b8cf !default;
-$custom-blue-light:   #b7d3e0 !default;
+$custom-blue:	      #4670bd !default;
+$custom-blue-light:   #89b8cf !default;
+$custom-blue-lighter: #b7d3e0 !default;
 
 // Global values
 // --------------------------------------------------
@@ -32,7 +33,7 @@ $gray-lighter:           lighten(#000, 93.5%) !default; // #eee
 // Brand colors
 // -------------------------
 
-$brand-primary:         #428bca !default;
+$brand-primary:         $custom-blue !default;
 $brand-success:         #5cb85c !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #d9534f !default;
@@ -41,7 +42,7 @@ $brand-info:            #5bc0de !default;
 // Scaffolding
 // -------------------------
 
-$body-bg:               #fff !default;
+$body-bg:               $custom-grey-light !default;
 $text-color:            $gray-dark !default;
 
 // Links
@@ -283,12 +284,12 @@ $navbar-default-toggle-border-color:       #ddd !default;
 //
 // Reset inverted navbar basics
 $navbar-inverse-color:                      $gray-light !default;
-$navbar-inverse-bg:                         #222 !default;
+$navbar-inverse-bg:                         $custom-blue-darker !default;
 $navbar-inverse-border:                     darken($navbar-inverse-bg, 10%) !default;
 
 // Inverted navbar links
-$navbar-inverse-link-color:                 $gray-light !default;
-$navbar-inverse-link-hover-color:           #fff !default;
+$navbar-inverse-link-color:                 #fff !default;
+$navbar-inverse-link-hover-color:           $gray-light !default;
 $navbar-inverse-link-hover-bg:              transparent !default;
 $navbar-inverse-link-active-color:          $navbar-inverse-link-hover-color !default;
 $navbar-inverse-link-active-bg:             darken($navbar-inverse-bg, 10%) !default;
@@ -368,7 +369,7 @@ $pager-disabled-color:                 $gray-light !default;
 
 $jumbotron-padding:              30px !default;
 $jumbotron-color:                inherit !default;
-$jumbotron-bg:                   $gray-lighter !default;
+$jumbotron-bg:                   white !default;
 
 $jumbotron-heading-color:        inherit !default;
 

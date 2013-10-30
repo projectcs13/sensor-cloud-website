@@ -18,7 +18,7 @@ html, body {
 }
 
 body {
-  padding-top: 80px;
+  padding-top: 120px;
   
 }
 
@@ -189,6 +189,18 @@ input, textarea, select, .uneditable-input {
 	@include box_sizing;
 }
 */
+
+#login-form {
+	background-color: white;
+	padding: 40px;
+	border: 1px solid $custom-grey;
+	border-radius: 6px;
+}
+
+#search-window {
+	border: 1px solid $custom-grey;
+	border-radius: 6px;
+}
 
 /* Users index */
 
