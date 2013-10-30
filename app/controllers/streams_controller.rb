@@ -98,6 +98,19 @@ class StreamsController < ApplicationController
     end
   end
 
+  def fetch_datapoints
+    res = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/streams/" + params[:id] + "/data/_search"
+    respond_to do |format|
+      format.json { render json: res.body, status: 200 }
+    end
+  end
+  def fetch_prediction
+    res = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/streams/" + params[:id] + "/_analyse"
+    respond_to do |format|
+      format.json { render json: res.body, status: 200 }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stream

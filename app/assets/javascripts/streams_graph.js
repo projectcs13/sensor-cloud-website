@@ -7,60 +7,86 @@
 
  */
 
-function show_graph() {
-        var stream_chart = timeChart();
+function show_graph(stream_id) {
+    var DATA_URL = "/datapoints/"+stream_id;
+    var P_DATA_URL = "/prediction/"+stream_id;
+    var width = $("#stream-graph").width();
+    var parse_date = d3.time.format("%Y%m%dT%H%M%S.%L0").parse;
+    var stream_chart = timeChart();
+        stream_chart.width(width).height(200);
+    var graph = d3.select("#stream-graph");
+    var data = [];
+    var p_data = [];
+    $("#live-update-btn").on('switch-change', function (e, data) {
+        var value = data.value;
+        toggle(value);
+        });
+    
+    $("#prediction-btn").on('click', function (e, data){
+        fetch_prediction_data();
+    });
 
-        var width = $("#stream-graph").width(); // Get width of div containing graph
-        stream_chart.width(width)   // Set width and height attribute of the chart
-                    .height(250);
-        var graph = d3.select("#stream-graph");
-
-        // Generate dummy data
-        var dummy_data = [];
-        var year = 2012;
-        var parseDate = d3.time.format("%Y-%m-%d").parse;
-        for (var i = 0; i <= 9; i++) {
-                var newvalue = Math.random() * 2000;
-                year += 2;
-                var theDate = parseDate(year +"-12-12");
-                dummy_data.push({value:newvalue, date: theDate});
-            };
-        var dummy_pdata = [];
-        
+    function draw_graph(){
+        var s_data = {data:data,  pdata: p_data};
         graph
-            .datum({data: dummy_data, pdata: []}) // Append data to the graph
-            .call(stream_chart);    // Call function to draw graph
+            .datum(s_data)
+            .call(stream_chart);
+        }
 
-        // Append last element of data to the predicted data to serve as
-        // origin for prediction line and area
-        var last_elem = dummy_data[dummy_data.length-1];
-        dummy_pdata.unshift({value:last_elem.value, 
-                             date: last_elem.date, 
-                             hi95:last_elem.value, 
-                             lo95:last_elem.value, 
-                             hi80:last_elem.value, 
-                             lo80:last_elem.value});
+    function fetch_data(){
+        $.get(DATA_URL, function( result ) {     
+            result = result.hits //parse the response
+            console.log(result);
+            var jsonstr = JSON.stringify(result);
 
-        // Interval to generate dummy prediction data
-        setInterval(function(){
-                var newvalue = Math.random() * 2000;
-                var hi80 = newvalue + Math.random() * 400 + 100,
-                    lo80 = newvalue - Math.random() * 400 - 100,
-                    hi95 = hi80 + Math.random() * 400 + 100,
-                    lo95 = lo80 - Math.random() * 400 - 100;
-                year += 2;
-                var theDate = parseDate(year +"-12-12");
-                dummy_pdata.push({value:newvalue, 
-                                  date: theDate, 
-                                  hi95:hi95, 
-                                  lo95:lo95, 
-                                  hi80:hi80, 
-                                  lo80:lo80});
+            // HERE you do the transform
+            var new_jsonstr = jsonstr.split("timestamp").join("date");
 
-                graph
-                    .datum({data: dummy_data, pdata: dummy_pdata})
-                    .call(stream_chart);
-        }, 5000);
+            // You probably want to parse the altered string later
+            var new_obj = JSON.parse(new_jsonstr);
+            data = new_obj;
+            data.map(function(d){d.date = parse_date(d.date)});
+            console.log(data);
+            draw_graph();
+        });
+    }
+
+    function fetch_prediction_data(){
+        var time_origin = data[data.length-1].date;
+       console.log("hello");
+        var time_diff = time_origin - data[data.length-2].date;
+        
+        res = $.get(P_DATA_URL);
+        res.done(function( result ) {
+            console.log("helloooo!?");
+            result = result.predictions;
+            console.log(result);
+            var i = 0;
+            result.map(function(d){ 
+                d['date'] = "test";
+                //new Date(time_origin.getTime()+time_diff*i);
+                //i += 1;
+            });
+            console.log(result);
+            p_data = result;
+            draw_graph();
+        });
+        res.fail(function (e, result) {
+            //result = result.predictions;
+            
+            console.log(e);
+        });
+
+    }
+
+    function add_single_datapoint(datapoint){
+
+    }
+    // function timestepInterval() {
+    //     var origin_date =  data[data.length-1]
+    //     var interval = origin_date - data[data.length-2]    
+    draw_graph();
+    fetch_data();
 }
 
      

@@ -98,12 +98,43 @@ function timeChart() {
         gEnter.append("path").attr("class", "area p-area-80");
         gEnter.append("path").attr("class", "p-line");
         gEnter.append("path").attr("class", "p-area80");
-        gEnter.append("line").attr("class", "delimiter");
+        //gEnter.append("line").attr("class", "delimiter");
+        //var labels = gEnter.append("g").attr("class", "labels");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
         gEnter.append("g").attr("class", "p-datapoints");
         gEnter.append("g").attr("class", "datapoints");
       
+      // Setup labels for showing prediciton colors
+      /*labels
+        .attr("transform", "translate(" + (width/2) + "," + (-margin.top) + ")");
+      labels
+          .append("circle")
+          .attr("class", "prediction-80")
+          .attr("cx", 0)
+          .attr("cy", 10)
+          .attr("r", 5);    
+      labels
+          .append("text")
+          .attr("fill", "black")
+          .attr("x",  10)
+          .attr("y", 15)
+          .text("80% Confidence Interval");
+      labels
+          .append("circle")
+          .attr("class", "prediction-95")
+          .attr("cx", 0)
+          .attr("cy", 20)
+          .attr("r", 5);       
+      labels
+          .append("text")
+          .attr("fill", "black")
+          .attr("x", 10)
+          .attr("y", 25)
+          .text("95% Confidence Interval");*/
+
+
+
       // Update the outer dimensions.
       svg .attr("width", width)
           .attr("height", height);
@@ -128,7 +159,7 @@ function timeChart() {
         g.select(".p-line")
          .datum(predicted_data)
          .attr("d", line);
-
+          
       // Update the x-axis.
       g.select(".x.axis")
           .attr("transform", "translate(0," + yScale.range()[0] + ")")

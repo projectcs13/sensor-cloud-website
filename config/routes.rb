@@ -13,6 +13,8 @@ SensorCloud::Application.routes.draw do
 	resources :sessions, only: [:new, :create, :destroy]
 
   root  'static_pages#home'
+  match '/datapoints/:id',    to: 'streams#fetch_datapoints',         via: 'get'
+  match '/prediction/:id',    to: 'streams#fetch_prediction',         via: 'get'
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
