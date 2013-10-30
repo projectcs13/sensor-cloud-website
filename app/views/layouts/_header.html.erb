@@ -38,9 +38,11 @@
             </div>
             <button type="submit" class="btn btn-default">Submit</button>
           </form>
-        </li>
-        <li><%= link_to "My Resources", resources_path %></li>
-        <li><%#= link_to "My Streams", streams_path %></li>
+				</li>
+				<% if signed_in? %>
+        	<li><%= link_to "My Resources", resources_path %></li>
+        	<li><%#= link_to "My Streams", streams_path %></li>
+				<% end %>
      	</ul>
 
 			<ul class="nav navbar-nav right">

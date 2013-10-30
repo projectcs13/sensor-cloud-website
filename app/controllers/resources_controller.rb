@@ -1,8 +1,8 @@
 class ResourcesController < ApplicationController
 
-  before_action :set_resource, only: [:show, :edit, :update, :destroy]
+  before_action :set_resource, 	 only: [:show, :edit, :update, :destroy]
 
-  ### TODO Testing Purposes
+  ### TODO Testing Purpeses
   # current_user = { id: 0 }
 
   # GET /resources
