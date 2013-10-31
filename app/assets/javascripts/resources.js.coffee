@@ -2,6 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+###
 $ ->
 
   form = $('#new_resource')
@@ -29,7 +30,6 @@ $ ->
     model = $('#resource_model').val()
     res = $.getJSON "http://localhost:3000/suggest/#{model}"
     res.done (json) ->
-      json = json[0]
       for k, v of json
         $("#resource_#{k}").val v
       @

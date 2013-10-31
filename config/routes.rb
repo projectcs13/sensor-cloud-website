@@ -13,8 +13,8 @@ SensorCloud::Application.routes.draw do
 	resources :sessions, only: [:new, :create, :destroy]
 
   root  'static_pages#home'
-  #match '/suggest/:model', to: 'resources#suggest',    via: 'get'
-  match '/suggest',        to: 'resources#suggest',    via: 'post'
+  match '/suggest/:model', to: 'resources#suggest',    via: 'get'
+  #match '/suggest',        to: 'resources#suggest',    via: 'post'
   match '/signup',         to: 'users#new',            via: 'get'
   match '/signin',         to: 'sessions#new',         via: 'get'
   match '/signout',        to: 'sessions#destroy',     via: 'delete'
