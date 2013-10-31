@@ -5,8 +5,10 @@
 // Custom values
 // --------------------------------------------------
 
-$custom-blue-darker:  #394254 !default;
-$custom-blue-dark:    #455067 !default;
+//$custom-blue-darker:  #394254 !default;
+$custom-blue-darker:    #2b313a !default;
+//$custom-blue-dark:    #455067 !default;
+$custom-blue-dark:    #3d4858 !default;
 $custom-orange:       #d25f44 !default;
 $custom-green:        #2ea377 !default;
 $custom-brown-darker: #574b53 !default;
@@ -15,8 +17,10 @@ $custom-grey-dark:    #7f7f7f !default;
 $custom-grey:         #d3d4d7 !default;
 $custom-grey-light:   #f5f2f3 !default;
 $custom-blue:	        #4670bd !default;
-$custom-blue-light:   #89b8cf !default;
+//$custom-blue-light:   #89b8cf !default;
+$custom-blue-light:   #59b7d3 !default;
 $custom-blue-lighter: #b7d3e0 !default;
+$custom-greyish-blue: #93a4bf !default;
 
 // Global values
 // --------------------------------------------------
@@ -289,7 +293,7 @@ $navbar-inverse-border:                     darken($navbar-inverse-bg, 10%) !def
 
 // Inverted navbar links
 $navbar-inverse-link-color:                 #fff !default;
-$navbar-inverse-link-hover-color:           $gray-light !default;
+$navbar-inverse-link-hover-color:           $custom-greyish-blue !default;
 $navbar-inverse-link-hover-bg:              transparent !default;
 $navbar-inverse-link-active-color:          $navbar-inverse-link-hover-color !default;
 $navbar-inverse-link-active-bg:             darken($navbar-inverse-bg, 10%) !default;
