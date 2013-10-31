@@ -14,7 +14,7 @@ $custom-brown-dark:   #5b4f57 !default;
 $custom-grey-dark:    #7f7f7f !default;
 $custom-grey:         #d3d4d7 !default;
 $custom-grey-light:   #f5f2f3 !default;
-$custom-blue:	      #4670bd !default;
+$custom-blue:	        #4670bd !default;
 $custom-blue-light:   #89b8cf !default;
 $custom-blue-lighter: #b7d3e0 !default;
 
@@ -37,7 +37,7 @@ $brand-primary:         $custom-blue !default;
 $brand-success:         #5cb85c !default;
 $brand-warning:         #f0ad4e !default;
 $brand-danger:          #d9534f !default;
-$brand-info:            #5bc0de !default;
+$brand-info:            $custom-blue-light !default;
 
 // Scaffolding
 // -------------------------
