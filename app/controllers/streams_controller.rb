@@ -3,6 +3,10 @@ class StreamsController < ApplicationController
   before_action :load_parent
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
 
+  # BASE_URL = srv1.csproj13.student.it.uu.se
+  BASE_URL = "130.238.15.194"
+  PORT = "8000"
+
   # GET /streams
   # GET /streams.json
   def index
@@ -139,12 +143,14 @@ class StreamsController < ApplicationController
     end
 
     def post
-      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/" + @resource.id.to_s + "/streams/"
+      cid = current_user.id
+      url = "http://#{BASE_URL}:#{PORT}/users/#{cid}/resources/" + @resource.id.to_s + "/streams/"
       send_data(:post, url)
     end
 
     def put
-      url = "http://srv1.csproj13.student.it.uu.se:8000/users/0/resources/" + @resource.id.to_s + "/streams/" + @stream.id.to_s
+      cid = current_user.id
+      url = "http://#{BASE_URL}:#{PORT}/users/#{cid}/resources/" + @resource.id.to_s + "/streams/" + @stream.id.to_s
       send_data(:put, url)
     end
 
@@ -160,7 +166,8 @@ class StreamsController < ApplicationController
 
     def new_connection
       logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
-      @conn = Faraday.new(:url => 'http://srv1.csproj13.student.it.uu.se:8000/users/0/') do |faraday|
+      cid = current_user.id
+      @conn = Faraday.new(:url => "http://#{BASE_URL}:#{PORT}/users/#{cid}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
