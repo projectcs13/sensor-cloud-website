@@ -22,6 +22,7 @@ class SearchController < ApplicationController
           faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
       end
       res = conn.post do |req|
+        # req.url '/_search?from=0&size=20'
         req.url '/_search'
         req.headers['Content-Type'] = 'application/json'
         req.body = '{"query" : {"query_string" : { "query" : "' + params['search'] + '"}}}'
