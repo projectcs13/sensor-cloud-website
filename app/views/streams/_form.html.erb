@@ -21,21 +21,6 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :private %><br>
-        <%= f.check_box :private, class: "form-control" %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :active %><br>
-        <%= f.check_box :active, class: "form-control" %>
-			</div>
-
-      <div class="form-group">
-        <%#= f.label :updated_at %><br>
-        <%#= f.text_field :updated_at, class: "form-control" %>
-			</div>
-
-      <div class="form-group">
         <%= f.label :history_size %><br>
         <%= f.text_field :history_size, class: "form-control" %>
 			</div>
@@ -70,9 +55,23 @@
         <%= f.text_field :latitude, class: "form-control" %>
 			</div>
 
+			<br/>
+
+      <div class="form-group">
+        <%= f.label :private %><br>
+        <%= f.check_box :private, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :active %><br>
+        <%= f.check_box :active, class: "form-control" %>
+			</div>
+
+			<br/>
+
       <div class="form-button">
         <%= f.submit "Create a stream", class: "btn btn-lg btn-primary" %>
-        <%= link_to 'Cancel', edit_resource_path(@resource), class: "btn btn-lg btn-danger pull-right" %>
+        <%= link_to 'Cancel', edit_resource_path(@resource), class: "btn btn-lg btn-default pull-right" %>
       </div>
     <% end %>
   </div>

@@ -40,12 +40,18 @@
               <!-- TODO Check if this is necessary for the future -->
               <%= f.check_box key %>
 
-            <% elsif key == "model" %>
-              <%= f.text_field key, class: "form-control" %>
+						<% elsif key == "model" %>
+							<div class="row">
+								<div class="col-md-9">
+              		<%= f.text_field key, class: "form-control" %>
+								</div>
+								<div class="col-md-3">
+        						<a href="#" id="suggest-btn" class="btn btn-default btn-primary">Suggest</a>
+								</div>
 							<!--
 							<a href="#" id="suggest-btn" class="btn btn-primary">Suggest</a>
 							-->
-
+							</div>
             <% else %>
               <%= f.text_field key, class: "form-control" %>
 
@@ -57,8 +63,7 @@
       <div class="form-button text-center">
         <%= f.submit "Create", id: "create-btn", class: "btn btn-lg btn-primary pull-left" %>
         <%#= link_to 'Suggest', nil, id: "suggest-btn", class: "btn btn-lg btn-primary" %>
-        <a href="#" id="suggest-btn" class="btn btn-default btn-lg">Suggest</a>
-        <%= link_to 'Cancel', resources_path, class: "btn btn-danger btn-lg pull-right" %>
+        <%= link_to 'Cancel', resources_path, class: "btn btn-default btn-lg pull-right" %>
       </div>
 
 		<% end %>
