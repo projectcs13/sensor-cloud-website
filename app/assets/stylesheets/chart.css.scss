@@ -15,9 +15,23 @@ $dark_orange: #ED6040;
 .axis text {
   fill: $dark_grey;
 }
+.labels text{
+  font-size: 10px
+}
 
 .x.axis path {
  
+}
+.prediction {
+
+}
+
+.prediction-80 {
+  fill: $dark_orange;
+}
+
+.prediction-95 {
+  fill: $light_orange;
 }
 
 .line {
