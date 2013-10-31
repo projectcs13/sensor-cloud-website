@@ -4,8 +4,8 @@ class ResourcesController < ApplicationController
   # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
   # BASE_URL = srv1.csproj13.student.it.uu.se
-  BASE_URL = 130.238.15.194
-  PORT = 8000
+  BASE_URL = "130.238.15.194"
+  PORT = "8000"
 
   # GET /resources
   # GET /resources.json
