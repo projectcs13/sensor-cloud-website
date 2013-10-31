@@ -3,9 +3,6 @@ class ResourcesController < ApplicationController
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
   # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
-  ### TODO Testing Purposes
-  # current_user = { id: 0 }
-
   # GET /resources
   # GET /resources.json
   def index
