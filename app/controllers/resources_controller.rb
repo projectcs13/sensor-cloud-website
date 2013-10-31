@@ -3,6 +3,10 @@ class ResourcesController < ApplicationController
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
   # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
+  # BASE_URL = srv1.csproj13.student.it.uu.se
+  BASE_URL = 130.238.15.194
+  PORT = 8000
+
   # GET /resources
   # GET /resources.json
   def index
@@ -18,7 +22,7 @@ class ResourcesController < ApplicationController
   # GET /suggest/1.json
   def suggest
     model = params[:model]
-    res = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/suggest/#{model}"
+    res = Faraday.get "http://#{BASE_URL}:#{PORT}/suggest/#{model}"
 
     logger.debug "#{JSON.parse(res.body)}"
 
@@ -111,12 +115,12 @@ class ResourcesController < ApplicationController
   end
 
   def post
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/"
+    url = "http://#{BASE_URL}:#{PORT}/users/#{current_user.id}/resources/"
     send_data(:post, url)
   end
 
   def put
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/" + @resource.id.to_s
+    url = "http://#{BASE_URL}:#{PORT}/users/#{current_user.id}/resources/" + @resource.id.to_s
     send_data(:put, url)
   end
 
@@ -146,7 +150,7 @@ class ResourcesController < ApplicationController
 
     def new_connection
       logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
-      @conn = Faraday.new(:url => "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/") do |faraday|
+      @conn = Faraday.new(:url => "http://#{BASE_URL}:#{PORT}/users/#{current_user.id}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
