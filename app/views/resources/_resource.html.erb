@@ -29,6 +29,12 @@
         <% elsif key == "active" %>
           <%= @f.check_box key %>
 
+        <% elsif key == "model" %>
+          <%= @f.text_field key, class: "form-control" %>
+          <%#= button_to "Suggest", @resource, remote: true, id: "suggest-btn", class: "btn btn-primary" %>
+          <%#= link_to "Suggest", nil, id: "suggest-btn", class: "btn btn-primary" %>
+          <!-- <a href="#" id="suggest-btn" class="btn btn-primary">Suggest</a> -->
+
         <% else %>
           <%= @f.text_field key, class: "form-control" %>
 

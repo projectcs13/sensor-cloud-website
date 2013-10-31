@@ -4,7 +4,7 @@ ruby '2.0.0'
 
 gem 'rails', '4.0.0'
 gem 'her'
-gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass', branch: '3'
+gem 'bootstrap-sass', '~> 3.0.0.0.rc'
 gem 'bcrypt-ruby', '3.0.1'
 gem 'httparty'
 gem 'faraday'

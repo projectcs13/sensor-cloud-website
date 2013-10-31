@@ -1,5 +1,3 @@
-@import "bootstrap";
-
 /* mixins, variables, etc. */
 
 $grayMediumLight: #eaeaea;
@@ -20,8 +18,15 @@ html, body {
 }
 
 body {
-  padding-top: 80px;
-  
+  padding-top: 120px;
+}
+
+body.homepage {
+  background: url('http://images.cdn.fotopedia.com/BJGsMXqQnoA-uugFhQX5L3k-ifill_1024x768.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 .parent {
@@ -41,7 +46,7 @@ textarea {
 .center {
   text-align: center;
   h1 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 }
 
@@ -192,6 +197,13 @@ input, textarea, select, .uneditable-input {
 }
 */
 
+#login-form {
+	background-color: white;
+	padding: 40px;
+	border: 1px solid $custom-grey;
+	border-radius: 6px;
+}
+
 /* Users index */
 
 .users {
@@ -295,8 +307,18 @@ input {
 }
 
 .footer {
-  background: whitesmoke;
-  border-top: 1px solid #DDD;
+  background: $custom-blue-dark;
+  border-top: 1px solid darken($custom-blue-dark, 6.5%);
+
+  color: white;
+
+  a {
+    color: white;
+    text-decoration: none;
+    &:hover {
+      color: white;
+    }
+  }
 
   display: block;
   position: absolute;
@@ -338,5 +360,67 @@ input {
 
   .footer-logo-caption {
     padding-top: 1em;
+  }
+}
+input.search-query {
+    padding-left:26px;
+}
+
+/* search index page */
+div#search_row {
+  position:relative;
+    form {
+
+      input.form-control {
+        width: 500px;
+        margin-left: 110px;
+      }
+    }
+}
+div.sidebar-nav {
+  position:relative;
+  border: 1px solid black;
+  border-radius: 5px;
+
+  ul.nav.nav-stacked {
+    margin: 5px;
+  }
+
+  ul.nav.nav-stacked:not(.nav-pills) li {
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    margin-top:0;
+    position: relative;
+
+    a {
+      padding: 10px;
+      width: 100%;
+      span:first-child {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      span:last-child {
+        position: absolute;
+        margin-right: 10px;
+        right:0;
+      }
+    }
+  }
+  ul.nav.nav-stacked:not(.nav-pills) li:first-child {
+    border-top: 1px solid black;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  ul.nav.nav-stacked:not(.nav-pills) li:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  div#filter {
+    width: 290px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
   }
 }

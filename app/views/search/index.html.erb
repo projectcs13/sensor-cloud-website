@@ -1,0 +1,97 @@
+<% provide(:title, 'Search') %>
+<!--<h1>Search</h1>-->
+<div id="search_row" class="navbar navbar-default" role="navigation">
+  <form class="navbar-form navbar-left" role="search">
+    <%= image_tag("search.jpg", :alt => "no picture", :size => "200x20")%>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Search">
+    </div>
+    <button type="submit" class="btn btn-default">Search</button>
+  </form>
+</div>
+<div class="row">
+            <div class="col-md-3">
+              <div class="sidebar-nav">
+                <!--
+                <ul class="nav nav-stacked">
+                  <li class="active"><a href="#streams" data-toggle="tab"> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
+                  <li><a href="#users" data-toggle="tab"> Users <span class="badge badge-info"><%= @count_users %></span></a></li>
+                </ul>
+              -->
+                <!--changed by lihao-->
+                <ul class="nav nav-stacked">
+                  <li><a href="#users" data-toggle="tab"><span class="glyphicon glyphicon-transfer"></span> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
+                  <li><a href="#users" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Groups <span class="badge badge-info"><%= @count_groups %></span></a></li>
+                  <li><a href="#users" data-toggle="tab"><span class="glyphicon glyphicon-user"></span> Users <span class="badge badge-info"><%= @count_users %></span></a></li>
+                </ul>
+                <!--the filter-->
+                <div id="filter" class="input-group">
+                  <ul class="nav nav-stacked nav-pills">
+                    <li><h4>Current Value</h4></li>
+                    <li><input name="current-value-input" type="text" class="form-control"></li>
+                    <li><h4>Min Value</h4></li>
+                    <li><input name="min-value-input" type="text" class="form-control"></li>
+                    <li><h4>Max Value</h4></li>
+                    <li><input name="max-value-input" type="text" class="form-control"></li>
+                    <li><h4>Description</h4></li>
+                    <li><input name="description-value-input" type="text" class="form-control"></li>
+                  </ul>
+                </div>
+                <!--change ends-->
+              </div>
+            </div>
+            <div class="col-md-9">
+              <div class="main-content">
+                <div id="myPillContent" class="pill-content">
+                  <div class="tab-content">
+                    <div class="tab-pane fade in active" id="streams">
+                      <% if @streams == [] and @users == [] %>
+                        <pre> No Results Found </pre> 
+                      <% end %>
+                      <table class="table">
+                        <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>ID</th>
+                              <th>Description</th>
+                              <th>User ID</th>
+                            </tr>
+                        </thead> 
+                        <tbody>
+                          <% @streams.each do |stream| %>
+                          <tr>
+                            <td><%= stream['_source']['name'] %></td>
+                            <td><%= stream['_id'] %></td>
+                            <td><%= stream['_source']['description'] %></td>
+                            <td><%= stream['_source']['user_id'] %></td>
+                          
+                          </tr>
+                          <% end %> 
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="tab-pane fade in" id="users">
+                      <% if @users == [] %>
+                        <pre> No Results Found </pre> 
+                      <% end %>
+                      <table class="table">
+                        <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>ID</th>
+                            </tr>
+                        </thead> 
+                        <tbody>
+                          <% @users.each do |user| %>
+                          <tr>
+                            <td><%= user['_source']['name'] %></td>
+                            <td><%= user['_id'] %></td>                          
+                          </tr>
+                          <% end %> 
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
