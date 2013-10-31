@@ -134,7 +134,7 @@ class StreamsController < ApplicationController
   end
 
   def fetch_prediction
-    res = Faraday.get "http://#{BASE_URL}:#{PORT}streams/" + params[:id] + "/_analyse"
+    res = Faraday.get "http://#{BASE_URL}:#{PORT}/streams/" + params[:id] + "/_analyse"
     respond_to do |format|
       format.json { render json: res.body, status: 200 }
     end
