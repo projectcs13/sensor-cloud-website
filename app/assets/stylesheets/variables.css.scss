@@ -33,9 +33,9 @@ $gray-lighter:           lighten(#000, 93.5%) !default; // #eee
 // -------------------------
 
 $brand-primary:         $custom-blue !default;
-$brand-success:         #5cb85c !default;
+$brand-success:         $custom-green !default;
 $brand-warning:         #f0ad4e !default;
-$brand-danger:          #d9534f !default;
+$brand-danger:          $custom-red !default;
 $brand-info:            $custom-blue-light !default;
 
 // Scaffolding
