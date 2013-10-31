@@ -4,7 +4,8 @@ class ResourcesController < ApplicationController
   # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
   # BASE_URL = srv1.csproj13.student.it.uu.se
-  BASE_URL = "130.238.15.194"
+  # BASE_URL = "130.238.15.194"
+  BASE_URL = "localhost"
   PORT = "8000"
 
   # GET /resources
@@ -128,7 +129,6 @@ class ResourcesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_resource
       @resource = Resource.find(params[:id], user_id: current_user.id)
-      logger.debug "id: #{@resource.id} - model: #{@resource.model}"
       # @resource.streams = Stream.all(:resource_id => :id)
       #logger.debug "#{@resource.streams}"
     end
