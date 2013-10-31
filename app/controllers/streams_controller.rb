@@ -4,7 +4,8 @@ class StreamsController < ApplicationController
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
 
   # BASE_URL = srv1.csproj13.student.it.uu.se
-  BASE_URL = "130.238.15.194"
+  # BASE_URL = "130.238.15.194"
+  BASE_URL = "localhost"
   PORT = "8000"
 
   # GET /streams
@@ -122,19 +123,6 @@ class StreamsController < ApplicationController
       # format.html { redirect_to resource_streams_path(@resource) }
       format.html { redirect_to edit_resource_path(@resource) }
       format.json { head :no_content }
-    end
-  end
-
-  def fetch_datapoints
-    res = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/streams/" + params[:id] + "/data/_search"
-    respond_to do |format|
-      format.json { render json: res.body, status: 200 }
-    end
-  end
-  def fetch_prediction
-    res = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/streams/" + params[:id] + "/_analyse"
-    respond_to do |format|
-      format.json { render json: res.body, status: 200 }
     end
   end
 

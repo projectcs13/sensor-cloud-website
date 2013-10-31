@@ -36,76 +36,60 @@ function timeChart() {
       yValue = function(d) { return d.value; },
       xScale = d3.time.scale(),
       yScale = d3.scale.linear(),
-      predicted_data = function(d) { return d.pdata },
-      real_data = function(d) { return d.data },
       xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickSize(6, 0),
       yAxis = d3.svg.axis().scale(yScale).orient("left").tickSize(10).ticks(5),
-      line = d3.svg.line().x(X).y(Y).interpolate("monotone"),
-      p_area_95 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo95)}).y1(function(d){return yScale(d.hi95)}).interpolate("monotone"),
-      p_area_80 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo80)}).y1(function(d){return yScale(d.hi80)}).interpolate("monotone");
+      //area = d3.svg.area().x(X).y(Y).interpolate("monotone"),
+      line = d3.svg.line().x(X).y(Y),
+      p_area_95 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo95)}).y1(function(d){return yScale(d.hi95)});
+      p_area_80 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo80)}).y1(function(d){return yScale(d.hi80)});
 
 
   function chart(selection) {
     selection.each(function(data) {
       // Convert data to standard representation greedily;
       // this is needed for nondeterministic accessors.
-
-      // Calculate the scales
-      var x_domain;
-      var y_domain;
-      var data_x_domain = d3.extent(data.data, function(d){
-        return d.date;
+      var pdata = data.pdata;
+      data = data.data;
+      pdata.map(function(d, i) {
+        d.date = parseDate(d.date);
       });
-      var data_y_domain = d3.extent(data.data, function(d){
-        return d.value;
+      data.map(function(d, i) {
+        d.date = parseDate(d.date);
       });
-      if(data.pdata && data.pdata.length > 0){
-        var pred_x_domain = d3.extent(data.pdata, function(d){
-          return d.date;
-        });
-        var pred_y_min = d3.min(data.pdata, function(d){
-          return Math.min(d.value, d.lo80, d.lo95);
-        });
-        var pred_y_max = d3.max(data.pdata, function(d){
-          return Math.max(d.value, d.hi80, d.hi95);
-        });
-      x_domain = [Math.min(data_x_domain[0], pred_x_domain[0]), 
-                  Math.max(data_x_domain[1], pred_x_domain[1])];
-      y_domain = [Math.min(data_y_domain[0], pred_y_min), Math.max(data_y_domain[1], pred_y_max)];
 
-      }else{
-      x_domain = data_x_domain;
-      y_domain = data_y_domain;
-      }
-
-      // Update the X-Scale
+      var alldata = [].concat(data, pdata);
+      var last_point = data[data.length-1];
+      var dummy_origin = {value:last_point.value, hi95:last_point.value, lo95:last_point.value, hi80:last_point.value, lo80:last_point.value, date:last_point.date};
+      pdata = [].concat(dummy_origin, pdata);
+      // Update the x-scale.
       xScale
-          .domain(x_domain)
+          .domain(d3.extent(alldata, function(d) { return d.date; }))
           .range([0, width - margin.left - margin.right]);
-      // Update the Y-Scale
+
+      // Update the y-scale.
       yScale
-          .domain(y_domain)
+          .domain([d3.min(alldata, function(d) { return Math.min(d.value, d.lo95, d.lo80); }), 
+                   d3.max(alldata, function(d) { return Math.max(d.value, d.hi95, d.hi80); })])
           .range([height - margin.top - margin.bottom, 0]);
 
       // Select the svg element, if it exists.
-      var svg = d3.select(this).selectAll("svg").data([data]);
+      var svg = d3.select(this).selectAll("svg").data([1]);
       
 
       // Otherwise, create the skeletal chart.
       var gEnter = svg.enter().append("svg").append("g");
+        //gEnter.append("path").attr("class", "area");
         gEnter.append("path").attr("class", "line");
-        gEnter.append("path").attr("class", "area prediction-95");
-        gEnter.append("path").attr("class", "area prediction-80");
-        gEnter.append("path").attr("class", "line prediciton");
-        //gEnter.append("path").attr("class", "p-area80");
-        //gEnter.append("line").attr("class", "delimiter");
-        //var labels = gEnter.append("g").attr("class", "labels");
+        gEnter.append("path").attr("class", "area p-area-95");
+        gEnter.append("path").attr("class", "area p-area-80");
+        gEnter.append("path").attr("class", "area p-line");
+        gEnter.append("path").attr("class", "p-area80");
+        gEnter.append("line").attr("class", "delimiter");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
-        gEnter.append("g").attr("class", "pdatapoints prediction");
         gEnter.append("g").attr("class", "datapoints");
+        gEnter.append("g").attr("class", "p-datapoints");
       
-
       // Update the outer dimensions.
       svg .attr("width", width)
           .attr("height", height);
@@ -115,22 +99,18 @@ function timeChart() {
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Update area for prediction with 95% confidence interval
-      g.select(".area.prediction-95")
-              .datum(predicted_data)
-              .attr("d", p_area_95);
+      g.select(".p-area-95")
+            .attr("d", p_area_95(pdata));
       // Update area for prediction with 80% confidence interval
-      g.select("area.prediction-80")
-              .datum(predicted_data)
-              .attr("d", p_area_80);
+      g.select(".p-area-80")
+            .attr("d", p_area_80(pdata));
       // Update the line path.
-       g.select(".line")
-          .datum(real_data)
-          .attr("d", line);
+      g.select(".line")
+          .attr("d", line(data));
 
-        g.select(".line.prediction")
-         .datum(predicted_data)
-         .attr("d", line);
-          
+      g.select(".p-line")
+          .attr("d", line(pdata));
+
       // Update the x-axis.
       g.select(".x.axis")
           .attr("transform", "translate(0," + yScale.range()[0] + ")")
@@ -140,14 +120,9 @@ function timeChart() {
           .attr("transform", "translate(0," + xScale.range()[0] + ")")
           .call(yAxis);
 
-      // Select all data-points if they exist
+      // Select all datapoints if they exist
       var datapoints = g.select(".datapoints").selectAll("circle")
-                        .data(real_data);
-
-      // Update existing data-points
-      datapoints
-          .attr("cx", function(d) {return X(d)})
-          .attr("cy", function(d) {return Y(d)});
+                        .data(data, function(d){return d.date});
 
       // Add datapoints that don't exist
       datapoints
@@ -157,7 +132,7 @@ function timeChart() {
           .attr("cy", function(d) {return Y(d)})
           .attr("r", 3)
           .on("mouseover", function(){
-            d3.select(this).transition().attr("r", 6);
+            d3.select(this).transition().attr("r", 5);
           })
           .on("mouseout", function(){
             d3.select(this).transition().attr("r", 3);
@@ -166,29 +141,35 @@ function timeChart() {
           .append("title")
           .text( function(d) {return d.value})
 
-      // Remove datapoints that don't exist
+      // Update the datapoints
+      datapoints
+          .attr("cx", function(d) {return X(d)})
+          .attr("cy", function(d) {return Y(d)});
+
       datapoints
         .exit()
-        .remove();
+        .remove()
 
+      var delimiter= pdata.shift();
 
-      // Select all predicted data-points if they exist
-      var pdatapoints = g.select(".pdatapoints").selectAll("circle")
-                         .data(predicted_data);
+      d3.select(".delimiter")
+        .attr("x1", xScale(delimiter.date))
+        .attr("y1", yScale.range()[0])
+        .attr("x2", xScale(delimiter.date))
+        .attr("y2", yScale.range()[1])
 
-      // Update the predicted data-points
-      pdatapoints
-           .attr("cx", function(d) {return X(d)})
-           .attr("cy", function(d) {return Y(d)});
-      // // Add pdatapoints that don't exist
+      var pdatapoints = g.select(".p-datapoints").selectAll("circle")
+                        .data(pdata, function(d){return d.date});
+
+      // Add pdatapoints that don't exist
       pdatapoints
           .enter()
           .append("circle")
-          .attr("cx", function(d) {return X(d)})
-          .attr("cy", function(d) {return Y(d)})
+          .attr("cx", function(d) {return xScale(d.date)})
+          .attr("cy", function(d) {return yScale(d.value)})
           .attr("r", 3)
           .on("mouseover", function(){
-            d3.select(this).transition().attr("r", 6);
+            d3.select(this).transition().attr("r", 5);
           })
           .on("mouseout", function(){
             d3.select(this).transition().attr("r", 3);
@@ -197,7 +178,11 @@ function timeChart() {
           .append("title")
           .text( function(d) {return d.value});
       
-      // Remove predicted data-points that don't exist anymore
+      // Update the pdatapoints
+      pdatapoints
+          .attr("cx", function(d) {return xScale(d.date)})
+          .attr("cy", function(d) {return yScale(d.value)});
+
       pdatapoints
         .exit()
         .remove()

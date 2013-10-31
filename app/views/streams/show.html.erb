@@ -1,13 +1,14 @@
+<%= javascript_include_tag "streams_graph" %>
 <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
-
+<%= javascript_include_tag "streams_map"%>
 <script type="text/javascript">
 window.onload = function(){
   var longitude = parseFloat(<%= @stream.longitude %>);
   var latitude = parseFloat(<%= @stream.latitude %>);
   var height = $('#map-canvas').width();
   $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
-  show_graph("<%= @stream.id %>");
- // initialize_map(latitude, longitude);
+  show_graph();
+  initialize_map(latitude, longitude);
 }
 </script>
 
@@ -44,17 +45,7 @@ window.onload = function(){
 
 <div class="row">
   <div class="col-lg-8"> <!-- Left side -->
-    <div class="stream-graph" id="stream-graph"></div> 
-    <span class="btn btn-primary" id="prediction-btn">Fetch Prediction</span>
-      <div id="prediction-description">
-        <span class="label prediction-80">80% Confidence interval</span>
-      <span class="label prediction-95">95% Confidence interval</span></div>
-        <div class="pull-right">Live update: 
-          <div class="make-switch switch-mini" id="live-update-btn">
-            <input id="live-update-checkbox" type="checkbox">
-          </div></div>
-
-    <!-- Placeholder Id for placeholder Graph-->
+    <div class="stream-graph" id="stream-graph"></div> <!-- Placeholder Id for placeholder Graph-->
       <div><small>
         Last udate: <%#= @stream.updated_at %>
         History: <%= @stream.history_size %>
