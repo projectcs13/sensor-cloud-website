@@ -86,10 +86,16 @@ function show_graph(stream_id) {
     }
     this.add_single_datapoint = function(datapoint){
         //var test = datapoint.substring(15, 30);
-        console.log(datapoint);
+        //console.log(datapoint);
         //parse the data and push to data
-        datapoint.date = parse_date(datapoint.date);
-        data.push(datapoint);
+        //datapoint.date = parse_date(datapoint.date);
+        datapoint = JSON.parse(datapoint);
+
+        var newDatapoint = {};
+        newDatapoint['date'] = parse_date(datapoint.timestamp);
+        newDatapoint['value'] = datapoint.value;
+        console.log(newDatapoint);
+        data.push(newDatapoint);
         draw_graph();
     }
     // function add_single_datapoint(datapoint){
@@ -101,9 +107,11 @@ function show_graph(stream_id) {
     // }
     // function timestepInterval() {
     //     var origin_date =  data[data.length-1]
-    //     var interval = origin_date - data[data.length-2]    
+    //     var interval = origin_date - data[data.length-2]
+    this.init = function(){  
     draw_graph();
     fetch_data();
+    }
 }
 
      

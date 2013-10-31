@@ -21,10 +21,10 @@ function connect() {
         });
     }
     console.log(stream_id);
-        socket = connect('http://130.138.15.194:8080/streams.'+stream_id);
+        socket = connect('http://130.238.15.194:8080/streams.'+stream_id);
         socket.on('message', function(data) {
-            show_graph.add_single_datapoint(data);
-            console.log(data);
+            graph_object.add_single_datapoint(data);
+            //console.log(data);
         });
     }else {
         socket.socket.reconnect();
