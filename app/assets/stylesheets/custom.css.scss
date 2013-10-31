@@ -1,5 +1,7 @@
 /* mixins, variables, etc. */
 
+@import 'variables';
+
 $grayMediumLight: #eaeaea;
 $grayLighter: #eee;
 
@@ -22,7 +24,7 @@ body {
 }
 
 body.homepage {
-  background: url('http://images.cdn.fotopedia.com/BJGsMXqQnoA-uugFhQX5L3k-ifill_1024x768.jpg') no-repeat center center fixed; 
+  background: url('http://images.cdn.fotopedia.com/BJGsMXqQnoA-uugFhQX5L3k-ifill_1024x768.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
