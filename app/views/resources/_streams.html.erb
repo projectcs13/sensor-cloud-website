@@ -7,12 +7,10 @@
 
   <div class="resources-streams-body panel-body">
     <ul id="resources-streams-list">
-      <% logger.debug "Res: #{@resource.attributes}" %>
-      <% logger.debug "Str: #{@resource.streams}" %>
       <% unless @resource.streams.nil? %>
         <% @resource.streams.each do | stream | %>
           <% @stream = stream %>
-          <%= render 'resources/stream' %>
+          <%= render 'stream' %>
         <% end %>
       <% end %>
     </ul>

@@ -28,9 +28,12 @@ GEM
     arel (4.0.1)
     atomic (1.1.14)
     bcrypt-ruby (3.0.1)
+<<<<<<< HEAD
+    bootstrap-switch-rails (1.8.1)
+=======
     bootstrap-sass (3.0.0.0.rc)
       sass (~> 3.2)
-    bootstrap-switch-rails (1.8.1)
+>>>>>>> 49719fb8a2fc0930c12cd6710aba4d29a5ab644d
     builder (3.1.4)
     capybara (2.1.0)
       mime-types (>= 1.16)
@@ -182,8 +185,12 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt-ruby (= 3.0.1)
-  bootstrap-sass (~> 3.0.0.0.rc)
+<<<<<<< HEAD
+  bootstrap-sass!
   bootstrap-switch-rails
+=======
+  bootstrap-sass (~> 3.0.0.0.rc)
+>>>>>>> 49719fb8a2fc0930c12cd6710aba4d29a5ab644d
   capybara (= 2.1.0)
   coffee-rails (= 4.0.0)
   d3-rails

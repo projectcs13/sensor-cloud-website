@@ -2,7 +2,7 @@
 <h1>Sign up</h1>
 
 <div class="row">
-	<div class="col-md-6 col-md-offset-3">
+	<div class="col-md-6 col-md-offset-3" id="login-form">
 		<%= form_for(@user) do |f| %>
 			<%= render 'shared/error_messages' %>
 
@@ -25,9 +25,10 @@
 				<%= f.label :password_confirmation, "Confirmation" %>
 				<%= f.password_field :password_confirmation, class: "form-control" %>
 			</div>
-
+			<br/>
 			<div class="form-button">
-				<%= f.submit "Create my account", class: "btn btn-lg btn-primary" %>
+				 Already an account? <%= link_to "Sign in!", signin_path %>
+				<%= f.submit "Sign up", class: "btn btn-lg btn-primary pull right" %>
 			</div>
 		<% end %>
 	</div>
