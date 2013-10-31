@@ -94,46 +94,17 @@ function timeChart() {
       // Otherwise, create the skeletal chart.
       var gEnter = svg.enter().append("svg").append("g");
         gEnter.append("path").attr("class", "line");
-        gEnter.append("path").attr("class", "area p-area-95");
-        gEnter.append("path").attr("class", "area p-area-80");
-        gEnter.append("path").attr("class", "p-line");
-        gEnter.append("path").attr("class", "p-area80");
+        gEnter.append("path").attr("class", "area prediction-95");
+        gEnter.append("path").attr("class", "area prediction-80");
+        gEnter.append("path").attr("class", "line prediciton");
+        //gEnter.append("path").attr("class", "p-area80");
         //gEnter.append("line").attr("class", "delimiter");
         //var labels = gEnter.append("g").attr("class", "labels");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
-        gEnter.append("g").attr("class", "p-datapoints");
+        gEnter.append("g").attr("class", "pdatapoints prediction");
         gEnter.append("g").attr("class", "datapoints");
       
-      // Setup labels for showing prediciton colors
-      /*labels
-        .attr("transform", "translate(" + (width/2) + "," + (-margin.top) + ")");
-      labels
-          .append("circle")
-          .attr("class", "prediction-80")
-          .attr("cx", 0)
-          .attr("cy", 10)
-          .attr("r", 5);    
-      labels
-          .append("text")
-          .attr("fill", "black")
-          .attr("x",  10)
-          .attr("y", 15)
-          .text("80% Confidence Interval");
-      labels
-          .append("circle")
-          .attr("class", "prediction-95")
-          .attr("cx", 0)
-          .attr("cy", 20)
-          .attr("r", 5);       
-      labels
-          .append("text")
-          .attr("fill", "black")
-          .attr("x", 10)
-          .attr("y", 25)
-          .text("95% Confidence Interval");*/
-
-
 
       // Update the outer dimensions.
       svg .attr("width", width)
@@ -144,11 +115,11 @@ function timeChart() {
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Update area for prediction with 95% confidence interval
-      g.select(".p-area-95")
+      g.select(".area.prediction-95")
               .datum(predicted_data)
               .attr("d", p_area_95);
       // Update area for prediction with 80% confidence interval
-      g.select(".p-area-80")
+      g.select("area.prediction-80")
               .datum(predicted_data)
               .attr("d", p_area_80);
       // Update the line path.
@@ -156,7 +127,7 @@ function timeChart() {
           .datum(real_data)
           .attr("d", line);
 
-        g.select(".p-line")
+        g.select(".line.prediction")
          .datum(predicted_data)
          .attr("d", line);
           
@@ -202,7 +173,7 @@ function timeChart() {
 
 
       // Select all predicted data-points if they exist
-      var pdatapoints = g.select(".p-datapoints").selectAll("circle")
+      var pdatapoints = g.select(".pdatapoints").selectAll("circle")
                          .data(predicted_data);
 
       // Update the predicted data-points

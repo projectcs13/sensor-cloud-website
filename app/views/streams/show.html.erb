@@ -45,13 +45,14 @@ window.onload = function(){
 <div class="row">
   <div class="col-lg-8"> <!-- Left side -->
     <div class="stream-graph" id="stream-graph"></div> 
-    <div class="btn" id="prediction-btn">Fetch Prediction</div>
-    <div class="description"><span class="label label-warning">80% Confidence interval</span>
-      <span class="label label-danger">95% Confidence interval</span></div>
-        Live update: 
+    <span class="btn btn-primary" id="prediction-btn">Fetch Prediction</span>
+      <div id="prediction-description">
+        <span class="label prediction-80">80% Confidence interval</span>
+      <span class="label prediction-95">95% Confidence interval</span></div>
+        <div class="pull-right">Live update: 
           <div class="make-switch switch-mini" id="live-update-btn">
             <input id="live-update-checkbox" type="checkbox">
-          </div>
+          </div></div>
 
     <!-- Placeholder Id for placeholder Graph-->
       <div><small>

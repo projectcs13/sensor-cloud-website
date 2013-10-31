@@ -23,7 +23,7 @@ function connect() {
     console.log(stream_id);
         socket = connect('http://srv1.csproj13.student.it.uu.se:8080/streams.'+stream_id);
         socket.on('message', function(data) {
-            //add_single_datapoint(data);
+            show_graph.add_single_datapoint(data);
             console.log(data);
         });
     }else {
