@@ -23,30 +23,82 @@ class ResourcesController < ApplicationController
     redirect_to :action => "edit"
   end
 
+  def parseSuggestion resBody
+    suggestion = JSON.parse(resBody)['testsuggest'][0]
+    if suggestion
+      opt = suggestion['options'].last
+      payload = opt['payload']
+    end
+  end
+
+  def createResource resourceJSON
+    @resource = Resource.new
+
+    # attributes = [:name, :description, :manufacturer, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    # attributes.each do |attr|
+    #   resource.send("#{attr}=", "")
+    # end
+
+    resourceJSON.each do |k, v|
+      @resource.send("#{k}=", v)
+    end
+
+    @resource
+  end
+
+  def createStreams streamsJSON
+    attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at]
+    logger.debug "Data: #{streamsJSON}"
+
+    res = []
+    streamsJSON.each do |stJSON|
+      stream = Stream.new
+
+      attributes.each do |a|
+        stream.send("#{a}=", "")
+      end
+
+      stJSON.each do |k, v|
+        stream.send("#{k}=", v)
+      end
+
+      res.push stream
+    end
+
+    @streams = res
+  end
+
   # GET /suggest/1.json
   def suggest
     model = params[:resource][:model]
-		logger.debug "+++++ model +++++: #{model}"
     res = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/suggest/#{model}"
 
-    suggestion = JSON.parse(res.body)['testsuggest'][0]
-    if suggestion
-        opt = suggestion['options'].last
-        payload = opt['payload']
+    payload = parseSuggestion res.body
+    if payload
+			@resource = createResource params[:resource]
 
-				@resource = Resource.new
-        attributes = [:owner, :name, :description, :manufacturer, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
-        attributes.each do |attr|
-          @resource.send("#{attr}=", "")
+      logger.debug "Resource: #{@resource}"
+      logger.debug "Resource: #{@resource.attributes}"
+      logger.debug "Payload: #{payload}"
+
+			payload.each do | attr, val |
+
+        logger.debug "Attr: #{attr}"
+        logger.debug "Val: #{val}"
+
+        if attr == 'streams'
+          @resource.send("#{attr}=", [])
+          streams = createStreams val
+          # streams.each do |st|
+          #   @resource.streams.push st
+          # end
+        else
+          @resource.send("#{attr}=", val)
         end
-        @resource.send("model=", model)
-
-				payload.each do | attr, val |
-					@resource.send("#{attr}=", val)
-				end
+			end
+		  logger.debug "RES: #{@resource.attributes}"
     end
 
-		logger.debug "RES: #{@resource.attributes}"
 
 		respond_to do |format|
 			format.js
@@ -70,8 +122,10 @@ class ResourcesController < ApplicationController
   # POST /resources
   # POST /resources.json
   def create
-    ### TODO Remove the owner
     @resource = Resource.new(resource_params)
+    # @resource.assign_attributes(resource_params)
+    logger.debug "CREATE: #{@resource.attributes}"
+    ### TODO Remove the user_id ???
     @resource.user_id = current_user.id
 
 		if @resource.valid?
@@ -79,8 +133,14 @@ class ResourcesController < ApplicationController
 			sleep(1.0)
     	respond_to do |format|
       	if res.status == 200
-        	id = JSON.parse(res.body)['_id']
-        	format.html { redirect_to edit_resource_path(id) }
+        	rid = JSON.parse(res.body)['_id']
+
+          # @streams.each do |st|
+          #   st.resource_id = rid
+          #   st.post rid
+          # end
+
+        	format.html { redirect_to edit_resource_path(rid) }
         	format.json { render action: 'show', status: :created, location: @resource }
       	else
         	format.html { render action: 'new' }
