@@ -1,20 +1,3 @@
-<!--
-<header class="navbar navbar-fixed-top navbar-inverse">
-  <div class="navbar-inner">
-    <div class="container">
-      <%= link_to "sensor cloud app", root_path, id: "logo" %>
-      <nav>
-        <ul class="nav pull-right">
-          <li><%= link_to "Home",    root_path %></li>
-          <li><%= link_to "Help",    help_path %></li>
-          <li><%= link_to "Sign in", '#' %></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</header>
--->
-
 <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
 	<div class="margin">
   	<div class="left">
@@ -25,8 +8,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-			<!--<a href="../" class="navbar-brand">SICS<sup>th</sup> Sense</a>-->
-			<%= link_to "Sensor Cloud App", root_path, class: "navbar-brand" %>
+			<%= link_to root_path, class: "navbar-brand", id: "logo" do %>
+				<span style=:"color:#000000; letter-spacing:-2px; font:26px/28px Arial, Helvetica, sans-serif;">Sensor</span><span style="color:#e64c4c; letter-spacing:-1px; font:bold 26px/28px Arial, Helvetica, sans-serif;"> Cloud</span>
+			<% end %>
     </div>
 
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
@@ -36,7 +20,7 @@
           	<div class="form-group">
             	<input name="search" type="text" class="form-control" placeholder="Search...">
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-info">Submit</button>
           </form>
 				</li>
 				<% if signed_in? %>
@@ -62,7 +46,7 @@
 					<% end %>
 				</li>
 				-->
-				<li><%= link_to "Home",    root_path %></li>
+				<li><%#= link_to "Home",    root_path %></li>
 				<li><%#= link_to "Help", help_path %></li>
 				<% if signed_in? %>
 					<li><%= link_to "Users", users_path %></li>
