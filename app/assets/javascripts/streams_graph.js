@@ -46,7 +46,7 @@ function show_graph(stream_id) {
             var new_obj = JSON.parse(new_jsonstr);
             data = new_obj;
             data.map(function(d){d.date = parse_date(d.date)});
-            data = data.slice(0, 50);
+            //data = data.slice(0, 50);
             console.log(data);
             draw_graph();
         });

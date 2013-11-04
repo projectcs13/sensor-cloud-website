@@ -93,10 +93,10 @@ function timeChart() {
 
       // Otherwise, create the skeletal chart.
       var gEnter = svg.enter().append("svg").append("g");
-        gEnter.append("path").attr("class", "line");
         gEnter.append("path").attr("class", "area prediction-95");
         gEnter.append("path").attr("class", "area prediction-80");
-        gEnter.append("path").attr("class", "line prediciton");
+        gEnter.append("path").attr("class", "prediction-line");
+	gEnter.append("path").attr("class", "line");
         //gEnter.append("path").attr("class", "p-area80");
         //gEnter.append("line").attr("class", "delimiter");
         //var labels = gEnter.append("g").attr("class", "labels");
@@ -119,7 +119,7 @@ function timeChart() {
               .datum(predicted_data)
               .attr("d", p_area_95);
       // Update area for prediction with 80% confidence interval
-      g.select("area.prediction-80")
+      g.select(".area.prediction-80")
               .datum(predicted_data)
               .attr("d", p_area_80);
       // Update the line path.
@@ -127,7 +127,7 @@ function timeChart() {
           .datum(real_data)
           .attr("d", line);
 
-        g.select(".line.prediction")
+        g.select(".prediction-line")
          .datum(predicted_data)
          .attr("d", line);
           

@@ -21,7 +21,7 @@ function connect() {
         });
     }
     console.log(stream_id);
-        socket = connect('http://130.138.15.194:8080/streams.'+stream_id);
+        socket = connect('http://localhost:8080/streams.'+stream_id);
         socket.on('message', function(data) {
             graph_object.add_single_datapoint(data);
             console.log(data);

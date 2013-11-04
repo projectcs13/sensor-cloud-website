@@ -27,11 +27,13 @@ $dark_orange: #ED6040;
 }
 
 .prediction-80 {
-  fill: $dark_orange;
+  fill: $light_grey;
+background-color: $light_grey;
 }
 
 .prediction-95 {
   fill: $light_orange;
+background-color:$light_orange;
 }
 
 .line {
@@ -40,7 +42,7 @@ $dark_orange: #ED6040;
   stroke-width: 1.5px;
 }
 
-.p-line {
+.prediction-line {
   fill: none;
   stroke: $dark_orange;
   stroke-width: 1.5px;
@@ -61,7 +63,7 @@ $dark_orange: #ED6040;
   stroke-width: 1px;
 }
 
-.p-datapoints{
+.pdatapoints{
   stroke: $dark_orange;
   stroke-width: 1px;
   fill: $light_orange;
