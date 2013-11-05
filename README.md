@@ -54,3 +54,5 @@ and read the 'Important' section and follow the instructions.
 [![Build Status](https://travis-ci.org/projectcs13/sensor-cloud-website.png)](https://travis-ci.org/projectcs13/sensor-cloud-website)
 
 ## Licence
+
+Sensor Cloud is released under the [Apache License] (http://opensource.org/licenses/Apache-2.0).
