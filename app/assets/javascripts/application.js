@@ -17,3 +17,5 @@
 //= require_tree .
 //= require bootstrap
 //= require d3
+//= require bootstrap-switch
+//= require socket.io

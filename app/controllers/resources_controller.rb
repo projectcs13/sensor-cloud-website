@@ -1,24 +1,40 @@
 class ResourcesController < ApplicationController
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
+  # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
-  ### TODO Testing Purposes
-  # current_user = { id: 0 }
+  # BASE_URL = srv1.csproj13.student.it.uu.se
+  # BASE_URL = "130.238.15.194"
+  BASE_URL = "localhost"
+  PORT = "8000"
 
   # GET /resources
   # GET /resources.json
   def index
     @resources = Resource.all(_user_id: current_user.id)
-		# logger.debug ">> @resources: #{@resources.inspect}"
-		#@resources.each do | r |
-    #  logger.debug ">> RES: #{r.attributes}"
-		#end
   end
 
   # GET /resources/1
   # GET /resources/1.json
   def show
     redirect_to :action => "edit"
+  end
+
+  # GET /suggest/1.json
+  def suggest
+    model = params[:model]
+    res = Faraday.get "http://#{BASE_URL}:#{PORT}/suggest/#{model}"
+
+    logger.debug "#{JSON.parse(res.body)}"
+
+    suggestion = JSON.parse(res.body)['testsuggest'][0]
+    if suggestion
+      opt = suggestion['options'].last
+      payload = opt['payload']
+      render :json => payload, :status => 200
+    else
+      render :json => "Not found", :status => 404
+    end
   end
 
   # GET /resources/new
@@ -42,25 +58,25 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(resource_params)
     @resource.user_id = current_user.id
 
-		if @resource.valid?
-    	res = post
-			sleep(1.0)
-    	respond_to do |format|
-      	if res.status == 200
-        	id = JSON.parse(res.body)['_id']
-        	format.html { redirect_to edit_resource_path(id) }
-        	format.json { render action: 'show', status: :created, location: @resource }
-      	else
-        	format.html { render action: 'new' }
-        	format.json { render json: @resource.errors, status: :unprocessable_entity }
-      	end
-    	end
-		else
-			respond_to do |format|
-    		format.html { render action: 'new' }
-      	format.json { render json: @resource.errors, status: :unprocessable_entity }
-			end
-		end
+    if @resource.valid?
+      res = post
+      sleep(1.0)
+      respond_to do |format|
+        if res.status == 200
+          id = JSON.parse(res.body)['_id']
+          format.html { redirect_to edit_resource_path(id) }
+          format.json { render action: 'show', status: :created, location: @resource }
+        else
+          format.html { render action: 'new' }
+          format.json { render json: @resource.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { render action: 'new' }
+        format.json { render json: @resource.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # PATCH/PUT /resources/1
@@ -68,22 +84,22 @@ class ResourcesController < ApplicationController
   def update
     respond_to do |format|
       @resource.assign_attributes(resource_params)
-			if @resource.valid?
-      	res = put
-				sleep(1.0)
-      	res.on_complete do
-        	if res.status == 200
-          	format.html { redirect_to action: 'index', status: :moved_permanently }
-          	format.json { head :no_content }
-        	else
-          	format.html { render action: 'edit' }
-          	format.json { render json: @resource.errors, status: :unprocessable_entity }
-					end
-      	end
-			else
-      	format.html { render action: 'edit' }
+      if @resource.valid?
+        res = put
+        sleep(1.0)
+        res.on_complete do
+          if res.status == 200
+            format.html { redirect_to action: 'index', status: :moved_permanently }
+            format.json { head :no_content }
+          else
+            format.html { render action: 'edit' }
+            format.json { render json: @resource.errors, status: :unprocessable_entity }
+          end
+        end
+      else
+        format.html { render action: 'edit' }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
-			end
+      end
     end
   end
 
@@ -92,7 +108,7 @@ class ResourcesController < ApplicationController
   def destroy
     # @resource.user_id = 0
     @resource.destroy
-		sleep(1.0)
+    sleep(1.0)
     respond_to do |format|
       format.html { redirect_to resources_url }
       format.json { head :no_content }
@@ -100,12 +116,12 @@ class ResourcesController < ApplicationController
   end
 
   def post
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/"
+    url = "http://#{BASE_URL}:#{PORT}/users/#{current_user.id}/resources/"
     send_data(:post, url)
   end
 
   def put
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/" + @resource.id.to_s
+    url = "http://#{BASE_URL}:#{PORT}/users/#{current_user.id}/resources/" + @resource.id.to_s
     send_data(:put, url)
   end
 
@@ -134,7 +150,7 @@ class ResourcesController < ApplicationController
 
     def new_connection
       logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
-      @conn = Faraday.new(:url => "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/") do |faraday|
+      @conn = Faraday.new(:url => "http://#{BASE_URL}:#{PORT}/users/#{current_user.id}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
