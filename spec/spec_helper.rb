@@ -51,7 +51,7 @@ RSpec.configure do |config|
 
       # Here, you would customize this for your own API (URL, middleware, etc)
       # like you have done in your application’s initializer
-      api.setup url: "http://srv1.csproj13.student.it.uu.se:8000/" do |c|
+      api.setup url: "#{CONF['API_URL']}" do |c|
         c.use Her::Middleware::FirstLevelParseJSON
         c.adapter(:test) { |s| yield(s) }
       end

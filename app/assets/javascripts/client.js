@@ -1,4 +1,7 @@
 //Needs machine ip + port and type.
+//var HOST = "localhost"
+var HOST = "srv1.csproj13.student.it.uu.se"
+var PORT = 8080
 
 var socket = null;
 var url = window.location.href.split("/");
@@ -21,7 +24,7 @@ function connect() {
         });
     }
     console.log(stream_id);
-        socket = connect('http://localhost:8080/streams.'+stream_id);
+        socket = connect('http://' + HOST + ':' + PORT + '/streams.'+stream_id);
         socket.on('message', function(data) {
             graph_object.add_single_datapoint(data);
             console.log(data);
