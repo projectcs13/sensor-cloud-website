@@ -1,5 +1,7 @@
 # Welcome to Sensor Cloud
 
+Sensor Cloud is a computation engine for sensor stream data.
+
 ## Requirements
 
 * Linux
