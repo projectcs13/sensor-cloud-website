@@ -33,7 +33,11 @@ and read the 'Important' section and follow the instructions.
 
         bundle exec rake db:migrate
 
-3. Start the Rails server:
+3. If you are running the Sensor Cloud API locally, then you should modify the API_URL variable declared in the config/config.yml file:
+
+        API_URL: "<Put your base URL here>:<put your port here>" 
+
+4. Start the Rails server:
 
         rails s
 
@@ -42,6 +46,10 @@ and read the 'Important' section and follow the instructions.
 1. Run the tests
  
         make test
+
+## More information
+
+You can take a look at the wiki [here] (https://github.com/projectcs13/sensor-cloud-website/wiki).
 
 ## Contributing
 
