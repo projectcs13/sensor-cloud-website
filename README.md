@@ -47,6 +47,10 @@ and read the 'Important' section and follow the instructions.
  
         make test
 
+## More information
+
+You can take a look at the wiki [here] (https://github.com/projectcs13/sensor-cloud-website/wiki).
+
 ## Contributing
 
 1. Fork it
