@@ -13,13 +13,13 @@ class Stream
 
   def post rid
     uid = current_user.id
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{uid}/resources/#{rid.to_s}/streams/"
+    url = "#{CONF['API_URL']}/users/#{uid}/resources/#{rid.to_s}/streams/"
     send_data(:post, url)
   end
 
   def put rid, sid
     uid = current_user.id
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{uid}/resources/#{rid.to_s}/streams/#{sid.to_s}"
+    url = "#{CONF['API_URL']}/users/#{uid}/resources/#{rid.to_s}/streams/#{sid.to_s}"
     send_data(:put, url)
   end
 
@@ -35,7 +35,7 @@ class Stream
     end
 
     def new_connection
-      @conn = Faraday.new(:url => 'http://srv1.csproj13.student.it.uu.se:8000') do |faraday|
+      @conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
