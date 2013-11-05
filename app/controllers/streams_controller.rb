@@ -3,7 +3,6 @@ class StreamsController < ApplicationController
   before_action :load_parent
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
 
-
   # GET /streams
   # GET /streams.json
   def index
