@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-6 col-md-offset-3">
+  <div class="col-md-6 col-md-offset-3" id="login-form">
     <%= form_for([@resource, @stream]) do |f| %>
       <% if @stream.errors.any? %>
         <div id="error_explanation">
@@ -19,21 +19,6 @@
         <%= f.label :name %><br>
         <%= f.text_field :name, class: "form-control" %>
       </div>
-
-      <div class="form-group">
-        <%= f.label :private %><br>
-        <%= f.check_box :private, class: "form-control" %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :active %><br>
-        <%= f.check_box :active, class: "form-control" %>
-			</div>
-
-      <div class="form-group">
-        <%#= f.label :updated_at %><br>
-        <%#= f.text_field :updated_at, class: "form-control" %>
-			</div>
 
       <div class="form-group">
         <%= f.label :history_size %><br>
@@ -70,9 +55,23 @@
         <%= f.text_field :latitude, class: "form-control" %>
 			</div>
 
+			<br/>
+
+      <div class="form-group">
+        <%= f.label :private %><br>
+        <%= f.check_box :private, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :active %><br>
+        <%= f.check_box :active, class: "form-control" %>
+			</div>
+
+			<br/>
+
       <div class="form-button">
         <%= f.submit "Create a stream", class: "btn btn-lg btn-primary" %>
-        <%= link_to 'Cancel', edit_resource_path(@resource), class: "btn btn-lg btn-disabled" %>
+        <%= link_to 'Cancel', edit_resource_path(@resource), class: "btn btn-lg btn-default pull-right" %>
       </div>
     <% end %>
   </div>

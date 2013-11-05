@@ -1,12 +1,16 @@
 <div class="center jumbotron">
-  <h1>Welcome to the Sensor Cloud App</h1>
-
-  <h2>
-    This is the home page for the
-    <a href="https://github.com/projectcs13">Sensor Cloud</a>
-    application.
-  </h2>
-
-	<%= link_to "Sign up now!", signup_path,
-		  class: "btn btn-lg btn-primary" %>
+	<%#= link_to image_tag("logos/sensorcloud.png", alt: "Brand Logo"), 'https://github.com/projectcs13' %>
+	<!--<h1>Sensor Cloud App</h1>-->
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<form role="search" action="search" method="get">
+				<div class="col-md-11">	
+		        	<input name="search" type="text" class="form-control input-lg" placeholder="Example: Temperature in Uppsala" />
+				</div>
+				<div class="col-md-1">
+		        	<button type="submit" class="btn btn-lg btn-primary">Search</button>
+				</div>
+		    </form>
+		</div>
+	</div>
 </div>
