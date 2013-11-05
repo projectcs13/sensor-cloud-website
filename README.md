@@ -2,23 +2,38 @@
 
 ## Requirements
 
+* Linux
+* Ruby 1.9.3 (Ruby 2.0 preferred) 
+
 ## Installation
 
-1.  You need to set an option for your shell in order for all of the software to work. Run 
+1. You need to set an option for your shell in order for all of the software to work. Run 
 
         make help
 
 and read the 'Important' section and follow the instructions.
 
-2.  Download and compile the dependencies, and compile the project sources
+2. Download and compile the dependencies, and compile the project sources
  
         make install
 
-3.  Run the application
+3. Run the application
  
         make run
 
 ## Usage
+
+1. Install the gems needed:
+
+        bundle install
+
+2. Migrate the database:
+
+        bundle exec rake db:migrate
+
+3. Start the Rails server:
+
+        rails s
 
 ## Running tests
 
