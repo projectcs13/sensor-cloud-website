@@ -50,8 +50,8 @@ class StreamsController < ApplicationController
         	# format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
         	# format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
 
-					# The API is currently sending back the response before the database has 
-					# been updated. The line below will be removed once this bug is fixed. 
+					# The API is currently sending back the response before the database has
+					# been updated. The line below will be removed once this bug is fixed.
         	sleep(1.0)
 
 					format.html { redirect_to @resource }
@@ -127,6 +127,18 @@ class StreamsController < ApplicationController
     end
   end
 
+  def post
+    cid = current_user.id
+    url = "#{CONF['API_URL']}/users/#{cid}/resources/" + @resource.id.to_s + "/streams/"
+    send_data(:post, url)
+  end
+
+  def put
+    cid = current_user.id
+    url = "#{CONF['API_URL']}/users/#{cid}/resources/" + @resource.id.to_s + "/streams/" + @stream.id.to_s
+    send_data(:put, url)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
@@ -142,18 +154,6 @@ class StreamsController < ApplicationController
     ### TODO doc
     def load_parent
       @resource = Resource.find(params[:resource_id], _user_id: current_user.id)
-    end
-
-    def post
-      cid = current_user.id
-      url = "#{CONF['API_URL']}/users/#{cid}/resources/" + @resource.id.to_s + "/streams/"
-      send_data(:post, url)
-    end
-
-    def put
-      cid = current_user.id
-      url = "#{CONF['API_URL']}/users/#{cid}/resources/" + @resource.id.to_s + "/streams/" + @stream.id.to_s
-      send_data(:put, url)
     end
 
     def send_data(method, url)
