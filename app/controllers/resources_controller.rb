@@ -1,62 +1,71 @@
 class ResourcesController < ApplicationController
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
-  # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
-  # GET /resources
-  # GET /resources.json
   def index
     @resources = Resource.all(_user_id: current_user.id)
   end
 
-  # GET /resources/1
-  # GET /resources/1.json
   def show
     redirect_to :action => "edit"
   end
 
-  # GET /suggest/1.json
-  def suggest
-    model = params[:model]
+  def make_suggestion_by model
     res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}"
 
-    logger.debug "#{JSON.parse(res.body)}"
-
     suggestion = JSON.parse(res.body)['testsuggest'][0]
-    if suggestion
-      opt = suggestion['options'].last
-      payload = opt['payload']
-      render :json => payload, :status => 200
-    else
-      render :json => "Not found", :status => 404
+    # if suggestion
+    #   opt = suggestion['options'].last
+    #   payload = opt['payload']
+    # else
+    #   payload = []
+    # end
+    opt = suggestion['options'].last
+    opt['payload']
+  end
+
+  def create_streams_by model
+    payload = make_suggestion_by model
+    streams = payload['streams']
+    streams.each do |st|
+      s = Stream.new st.attributes
+      s.resource_id = @resource.id
+      s.post
     end
   end
 
-  # GET /resources/new
+  def suggest
+    data = make_suggestion_by params[:model]
+    status = if data then 200 else 404 end
+    render :json => data, :status => status
+  end
+
   def new
     @resource = Resource.new
     attributes = [:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
     attributes.each do |attr|
       @resource.send("#{attr}=", nil)
     end
-    # @resource.send("#{user_id}=", current_user.id)
   end
 
-  # GET /resources/1/edit
   def edit
   end
 
-  # POST /resources
-  # POST /resources.json
   def create
     @resource = Resource.new(resource_params)
     @resource.user_id = current_user.id
 
     if @resource.valid?
       res = post
-      sleep(1.0)
+
       respond_to do |format|
         if res.status == 200
+
+          create_streams_by @resource.model
+          # The API is currently sending back the response before the database has
+          # been updated. The line below will be removed once this bug is fixed.
+          sleep(1.0)
+
           id = JSON.parse(res.body)['_id']
           format.html { redirect_to edit_resource_path(id) }
           format.json { render action: 'show', status: :created, location: @resource }
@@ -73,8 +82,6 @@ class ResourcesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /resources/1
-  # PATCH/PUT /resources/1.json
   def update
     respond_to do |format|
       @resource.assign_attributes(resource_params)
@@ -97,10 +104,7 @@ class ResourcesController < ApplicationController
     end
   end
 
-  # DELETE /resources/1
-  # DELETE /resources/1.json
   def destroy
-    # @resource.user_id = 0
     @resource.destroy
     sleep(1.0)
     respond_to do |format|
@@ -143,7 +147,6 @@ class ResourcesController < ApplicationController
     end
 
     def new_connection
-      logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
       @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{current_user.id}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT

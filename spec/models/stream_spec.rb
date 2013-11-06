@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe Stream do
@@ -22,7 +24,7 @@ describe Stream do
     	subscribers: 120,
     	)
   end
-=end
+#=end
 
   user_id = 0
 
@@ -84,7 +86,7 @@ describe Stream do
     it { should respond_to(:user_ranking) }
     it { should respond_to(:history_size) }
     it { should respond_to(:subscribers) }
-=end
+#=end
     it { should be_valid }
 
 =begin
@@ -113,8 +115,10 @@ describe Stream do
       	it { should_not be_valid }
     	end
     end
-=end
+#=end
 
   end
 
 end
+
+=end

@@ -1,10 +1,8 @@
 SensorCloud::Application.routes.draw do
 
-  resources :groups
 
   resources :users
-
-  # resources :streams
+  resources :searches
 
   resources :resources do
     resources :streams

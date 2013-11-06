@@ -5,7 +5,6 @@ class Stream
 	validates :name,  presence: true, length: { maximum:50 }
 
   belongs_to :resource
-  # belongs_to :group
 
   collection_path "/users/:user_id/resources/:resource_id/streams"
   include_root_in_json false

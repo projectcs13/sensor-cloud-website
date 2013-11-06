@@ -1,2 +1,5 @@
 development:
   API_URL: "http://srv1.csproj13.student.it.uu.se:8000" 
+
+test:
+  API_URL: "http://srv1.csproj13.student.it.uu.se:8000" 
