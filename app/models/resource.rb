@@ -2,7 +2,6 @@ class Resource
   include Her::Model
 
   attributes :name
-  # validates :name, presence: true
 	validates :name,  presence: true, length: { maximum:50 }
 
   belongs_to :user

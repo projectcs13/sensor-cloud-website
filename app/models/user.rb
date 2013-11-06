@@ -1,7 +1,4 @@
 class User < ActiveRecord::Base
-	# include Her::Model
-
-	# attributes :name
 
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :name,  presence: true, length: { maximum:50 }
@@ -10,7 +7,6 @@ class User < ActiveRecord::Base
 	has_secure_password
 
 	has_many :resources
-	has_many :groups
 
 	before_save { self.email = email.downcase }
 	before_create :create_remember_token
