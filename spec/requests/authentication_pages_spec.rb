@@ -21,7 +21,7 @@ describe "Authentication" do
 			it { should have_selector('div.alert.alert-danger', text: 'Invalid') }
 
 			describe "after visiting another page" do
-				before { click_link "Home" }
+				before { page.find('#logo').click }
 				it { should_not have_selector('div.alert.alert-danger') }
 			end
 		end
