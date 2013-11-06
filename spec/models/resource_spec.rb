@@ -1,3 +1,5 @@
+=begin
+
 require 'spec_helper'
 
 describe Resource do
@@ -14,7 +16,7 @@ describe Resource do
       # active: true
       )
   end
-=end
+#=end
   user_id = 0
 
   before do
@@ -76,7 +78,9 @@ describe Resource do
       before { @resource.name = " " }
       it { should_not be_valid }
     end
-=end
+#=end
   end
 
 end
+
+=end
