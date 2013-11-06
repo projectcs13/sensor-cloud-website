@@ -9,7 +9,7 @@
         <span class="input-group-addon"><%= @f.label key %></span>
         <!-- Don't do anything -->
 
-        <% if key == "update_freq" %>
+        <% if key == "polling_freq" %>
           <%= @f.text_field key, class: "form-control hotfix-update-freq" %>
           <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Frequency? <span class="caret"></span></button>

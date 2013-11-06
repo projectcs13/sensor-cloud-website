@@ -10,19 +10,34 @@ class ResourcesController < ApplicationController
     redirect_to :action => "edit"
   end
 
-  def suggest
-    model = params[:model]
+  def make_suggestion_by model
     res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}"
-    logger.debug "#{JSON.parse(res.body)}"
-    suggestion = JSON.parse(res.body)['testsuggest'][0]
 
-    if suggestion
-      opt = suggestion['options'].last
-      payload = opt['payload']
-      render :json => payload, :status => 200
-    else
-      render :json => "Not found", :status => 404
+    suggestion = JSON.parse(res.body)['testsuggest'][0]
+    # if suggestion
+    #   opt = suggestion['options'].last
+    #   payload = opt['payload']
+    # else
+    #   payload = []
+    # end
+    opt = suggestion['options'].last
+    opt['payload']
+  end
+
+  def create_streams_by model
+    payload = make_suggestion_by model
+    streams = payload['streams']
+    streams.each do |st|
+      s = Stream.new st.attributes
+      s.resource_id = @resource.id
+      s.post
     end
+  end
+
+  def suggest
+    data = make_suggestion_by params[:model]
+    status = if data then 200 else 404 end
+    render :json => data, :status => status
   end
 
   def new
@@ -43,12 +58,14 @@ class ResourcesController < ApplicationController
     if @resource.valid?
       res = post
 
-			# The API is currently sending back the response before the database has 
-			# been updated. The line below will be removed once this bug is fixed. 
-      sleep(1.0)
-
       respond_to do |format|
         if res.status == 200
+
+          create_streams_by @resource.model
+          # The API is currently sending back the response before the database has
+          # been updated. The line below will be removed once this bug is fixed.
+          sleep(1.0)
+
           id = JSON.parse(res.body)['_id']
           format.html { redirect_to edit_resource_path(id) }
           format.json { render action: 'show', status: :created, location: @resource }
