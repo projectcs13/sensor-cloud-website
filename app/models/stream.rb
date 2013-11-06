@@ -10,15 +10,13 @@ class Stream
   include_root_in_json false
   parse_root_in_json :hits, format: :active_model_serializers
 
-  def post rid
-    uid = current_user.id
-    url = "#{CONF['API_URL']}/users/#{uid}/resources/#{rid.to_s}/streams/"
+  def post uid, rid
+    url = "#{CONF['API_URL']}/users/#{uid.to_s}/resources/#{rid.to_s}/streams/"
     send_data(:post, url)
   end
 
-  def put rid, sid
-    uid = current_user.id
-    url = "#{CONF['API_URL']}/users/#{uid}/resources/#{rid.to_s}/streams/#{sid.to_s}"
+  def put uid, rid, sid
+    url = "#{CONF['API_URL']}/users/#{uid.to_s}/resources/#{rid.to_s}/streams/#{sid.to_s}"
     send_data(:put, url)
   end
 

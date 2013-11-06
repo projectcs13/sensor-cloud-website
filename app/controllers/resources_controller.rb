@@ -13,36 +13,38 @@ class ResourcesController < ApplicationController
   def make_suggestion_by model
     res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}"
 
-    suggestion = JSON.parse(res.body)['testsuggest'][0]
-    # if suggestion
-    #   opt = suggestion['options'].last
-    #   payload = opt['payload']
-    # else
-    #   payload = []
-    # end
-    opt = suggestion['options'].last
-    opt['payload']
+    if res.status == 404
+      data = {}
+    else
+      suggestion = JSON.parse(res.body)['testsuggest'][0]
+      opt = suggestion['options'].last
+      data = opt['payload']
+    end
+
+    data
   end
 
-  def create_streams_by model
-    payload = make_suggestion_by model
-    streams = payload['streams']
-    streams.each do |st|
-      s = Stream.new st.attributes
-      s.resource_id = @resource.id
-      s.post
+  def create_streams_to_resource
+    sug = make_suggestion_by @resource.model
+    streams = sug['streams']
+    if streams
+      streams.each do |st|
+        s = Stream.new st
+        s.resource_id = @resource.id
+        s.post current_user.id, @resource.id
+      end
     end
   end
 
   def suggest
-    data = make_suggestion_by params[:model]
-    status = if data then 200 else 404 end
-    render :json => data, :status => status
+    sug = make_suggestion_by params[:model]
+    status = if sug then 200 else 404 end
+    render :json => sug, :status => status
   end
 
   def new
     @resource = Resource.new
-    attributes = [:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    attributes = [:owner, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
     attributes.each do |attr|
       @resource.send("#{attr}=", nil)
     end
@@ -60,14 +62,21 @@ class ResourcesController < ApplicationController
 
       respond_to do |format|
         if res.status == 200
+          @resource.id = JSON.parse(res.body)['_id']
 
-          create_streams_by @resource.model
+          if params[:suggestion] == "1"
+            create_streams_to_resource
+          end
+
+          # TODO API should skip this attribute
+          # @resource.attributes.delete 'suggestion'
+
           # The API is currently sending back the response before the database has
           # been updated. The line below will be removed once this bug is fixed.
           sleep(1.0)
 
-          id = JSON.parse(res.body)['_id']
-          format.html { redirect_to edit_resource_path(id) }
+
+          format.html { redirect_to edit_resource_path(@resource.id) }
           format.json { render action: 'show', status: :created, location: @resource }
         else
           format.html { render action: 'new' }
@@ -133,7 +142,7 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:user_id, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active)
+      params.require(:resource).permit(:user_id, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active, :suggestion)
     end
 
     def send_data(method, url)
