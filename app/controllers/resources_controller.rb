@@ -1,28 +1,21 @@
 class ResourcesController < ApplicationController
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
-  # before_action :set_resource, only: [:show, :edit, :update, :destroy, :suggest]
 
-  # GET /resources
-  # GET /resources.json
   def index
     @resources = Resource.all(_user_id: current_user.id)
   end
 
-  # GET /resources/1
-  # GET /resources/1.json
   def show
     redirect_to :action => "edit"
   end
 
-  # GET /suggest/1.json
   def suggest
     model = params[:model]
     res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}"
-
     logger.debug "#{JSON.parse(res.body)}"
-
     suggestion = JSON.parse(res.body)['testsuggest'][0]
+
     if suggestion
       opt = suggestion['options'].last
       payload = opt['payload']
@@ -32,29 +25,28 @@ class ResourcesController < ApplicationController
     end
   end
 
-  # GET /resources/new
   def new
     @resource = Resource.new
     attributes = [:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
     attributes.each do |attr|
       @resource.send("#{attr}=", nil)
     end
-    # @resource.send("#{user_id}=", current_user.id)
   end
 
-  # GET /resources/1/edit
   def edit
   end
 
-  # POST /resources
-  # POST /resources.json
   def create
     @resource = Resource.new(resource_params)
     @resource.user_id = current_user.id
 
     if @resource.valid?
       res = post
+
+			# The API is currently sending back the response before the database has 
+			# been updated. The line below will be removed once this bug is fixed. 
       sleep(1.0)
+
       respond_to do |format|
         if res.status == 200
           id = JSON.parse(res.body)['_id']
@@ -73,8 +65,6 @@ class ResourcesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /resources/1
-  # PATCH/PUT /resources/1.json
   def update
     respond_to do |format|
       @resource.assign_attributes(resource_params)
@@ -97,10 +87,7 @@ class ResourcesController < ApplicationController
     end
   end
 
-  # DELETE /resources/1
-  # DELETE /resources/1.json
   def destroy
-    # @resource.user_id = 0
     @resource.destroy
     sleep(1.0)
     respond_to do |format|
@@ -143,7 +130,6 @@ class ResourcesController < ApplicationController
     end
 
     def new_connection
-      logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
       @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{current_user.id}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT

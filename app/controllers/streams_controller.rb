@@ -3,18 +3,13 @@ class StreamsController < ApplicationController
   before_action :load_parent
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
 
-  # GET /streams
-  # GET /streams.json
   def index
     @streams = Stream.search(params[:search])
   end
 
-  # GET /streams/1
-  # GET /streams/1.json
   def show
   end
 
-  # GET /streams/new
   def new
     @stream = @resource.streams.build
     attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at]
@@ -24,12 +19,9 @@ class StreamsController < ApplicationController
     @stream
   end
 
-  # GET /streams/1/edit
   def edit
   end
 
-  # POST /streams
-  # POST /streams.json
   def create
     # @stream = @resource.streams.create(stream_params)
     @stream = Stream.new(stream_params)
@@ -57,7 +49,11 @@ class StreamsController < ApplicationController
         	# format.html { redirect_to @stream, notice: 'Stream was successfully created.' }
         	# format.html { redirect_to [@resource, @stream], notice: 'Child was successfully created.' }
         	# format.html { redirect_to @resource, notice: 'Stream was successfully created.' }
+
+					# The API is currently sending back the response before the database has 
+					# been updated. The line below will be removed once this bug is fixed. 
         	sleep(1.0)
+
 					format.html { redirect_to @resource }
         	format.json { render action: 'show', status: :created, location: @stream }
       	else
@@ -71,8 +67,6 @@ class StreamsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /streams/1
-  # PATCH/PUT /streams/1.json
   def update
     respond_to do |format|
       @stream.assign_attributes(stream_params)
@@ -106,8 +100,6 @@ class StreamsController < ApplicationController
     end
   end
 
-  # DELETE /streams/1
-  # DELETE /streams/1.json
   def destroy
     @stream.destroy
     # @resource.streams.delete @stream.id
