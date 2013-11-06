@@ -32,7 +32,7 @@ function timeChart() {
       width = 760,
       height = 120,
       unit = "",
-      xValue = function(d) { return d.date; },
+      xValue = function(d) { return d.timestamp; },
       yValue = function(d) { return d.value; },
       xScale = d3.time.scale(),
       yScale = d3.scale.linear(),
@@ -54,14 +54,14 @@ function timeChart() {
       var x_domain;
       var y_domain;
       var data_x_domain = d3.extent(data.data, function(d){
-        return d.date;
+        return d.timestamp;
       });
       var data_y_domain = d3.extent(data.data, function(d){
         return d.value;
       });
       if(data.pdata && data.pdata.length > 0){
         var pred_x_domain = d3.extent(data.pdata, function(d){
-          return d.date;
+          return d.timestamp;
         });
         var pred_y_min = d3.min(data.pdata, function(d){
           return Math.min(d.value, d.lo80, d.lo95);
@@ -207,7 +207,7 @@ function timeChart() {
 
   // The x-accessor for the path generator; xScale xValue.
   function X(d) {
-    return xScale(d.date);
+    return xScale(d.timestamp);
   }
 
   // The x-accessor for the path generator; yScale yValue.
