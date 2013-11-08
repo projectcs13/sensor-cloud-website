@@ -1,17 +1,3 @@
-<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
-
-<script type="text/javascript">
-window.onload = function(){
-  var longitude = parseFloat(<%= @stream.longitude %>);
-  var latitude = parseFloat(<%= @stream.latitude %>);
-  var height = $('#map-canvas').width();
-  $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
-  window.graph_object = new show_graph("<%= @stream.id %>");
-  graph_object.init();
-  initialize_map(latitude, longitude);
-}
-</script>
-
 <div class="row title-row">
   <div class="col-lg-8">
     <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
@@ -45,19 +31,19 @@ window.onload = function(){
 
 <div class="row">
   <div class="col-lg-8"> <!-- Left side -->
-    <div class="stream-graph" id="stream-graph"></div>
+    <div class="stream-graph graph-canvas" id="graph-canvas"></div>
     <span class="btn btn-primary" id="prediction-btn">Fetch Prediction</span>
-      <div id="prediction-description pull-right">
+      <div id="prediction-description" class="pull-right">
         <span class="label prediction-80">80% Confidence interval</span>
-      <span class="label prediction-95">95% Confidence interval</span></div>
+        <span class="label prediction-95">95% Confidence interval</span>
+      </div>
         <div class="pull-right">Live update:
           <div class="make-switch switch-mini" id="live-update-btn">
             <input id="live-update-checkbox" type="checkbox">
-          </div></div>
-
-    <!-- Placeholder Id for placeholder Graph-->
+          </div>
+        </div>
       <div><small>
-        Last udate: <%#= @stream.updated_at %>
+        Last update: <%#= @stream.updated_at %>
         History: <%= @stream.history_size %>
         Accuracy: <%= @stream.accuracy %>
         Min Value: <%= @stream.min_val %>
@@ -81,7 +67,6 @@ window.onload = function(){
       <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
-    <!--<%= image_tag("mapplaceholder.png", width: '100%')%>-->
     <div id="map-canvas">
     </div>
     <div class="row">
@@ -91,4 +76,32 @@ window.onload = function(){
   </div>
 </div>
 
+<% # TODO: change API-key %>
+<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
+
+<% # OPTIMIZE: Is there a better way to initialize the javascript? %>
+<script type="text/javascript">
+  // Set up map element
+  var mapWidth = $('#map-canvas').width();
+  $('#map-canvas').height(mapWidth);
+  var longitude = parseFloat(<%= @stream.longitude %>);
+  var latitude = parseFloat(<%= @stream.latitude %>);
+  initialize_map(latitude, longitude);
+
+  // Set up graph element
+  var graphWidth = $("#graph-canvas").width();
+  window.graph_object = new stream_graph("<%= @stream.id %>", graphWidth);
+  graph_object.init();
+
+  // Set up buttons
+  $("#prediction-description").hide();
+  $("#prediction-btn").on('click', function (e, data){
+        $("#prediction-description").show();
+        graph_object.fetch_prediction_data();
+    });
+   $("#live-update-btn").on('switch-change', function (e, data) {
+        var value = data.value;
+        toggle(value);
+        });
+</script>
 
