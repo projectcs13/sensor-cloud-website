@@ -27,7 +27,7 @@ function stream_graph(stream_id, width) {
     function fetch_data(){
         res = $.get(DATA_URL);
         res.done(function( result ) {
-            result = result.hits // parse the response
+            result = result.data // parse the response
             data = result;
             data.map(function(d){d.timestamp = parseDate(d.timestamp)});
             draw_graph();

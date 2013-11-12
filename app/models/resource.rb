@@ -9,5 +9,5 @@ class Resource
 
   collection_path "/users/:user_id/resources"
   include_root_in_json false
-  parse_root_in_json :hits, format: :active_model_serializers
+  parse_root_in_json :resources, format: :active_model_serializers
 end
