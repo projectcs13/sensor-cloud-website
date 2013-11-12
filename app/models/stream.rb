@@ -8,7 +8,7 @@ class Stream
 
   collection_path "/users/:user_id/resources/:resource_id/streams"
   include_root_in_json false
-  parse_root_in_json :hits, format: :active_model_serializers
+  parse_root_in_json :streams, format: :active_model_serializers
 
   def post uid, rid
     url = "#{CONF['API_URL']}/users/#{uid.to_s}/resources/#{rid.to_s}/streams/"
