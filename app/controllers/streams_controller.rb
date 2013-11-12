@@ -148,7 +148,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id)
+      params.require(:stream).permit(:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at)
     end
 
     ### TODO doc
@@ -162,7 +162,7 @@ class StreamsController < ApplicationController
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @stream.attributes.to_json
+        req.body = @stream.attributes.to_json(:only => [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id])
       end
     end
 
