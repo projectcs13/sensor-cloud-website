@@ -9,7 +9,18 @@
                 </ul>
               </div>
             </div>
-            <div class="col-md-9">
+						<div class="col-md-9">
+
+							<%= form_for(:search, url: searches_path) do |f| %>
+								
+								<%= f.select "sort_by", "<option>name</option><option>user_id</option>".html_safe %>
+
+<%= f.hidden_field :query, :value => @query  %>
+								
+								<%= submit_tag "Submit" %>
+
+							<% end %>
+
               <div class="main-content">
                 <div id="myPillContent" class="pill-content">
                   <div class="tab-content">
