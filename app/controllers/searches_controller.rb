@@ -7,7 +7,6 @@ class SearchesController < ApplicationController
 		if params['search']['query'] == ''
 			redirect_to root_path
 		else
-
       conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
       	faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
@@ -17,14 +16,36 @@ class SearchesController < ApplicationController
       res = conn.post do |req|
         req.url '/_search'
         req.headers['Content-Type'] = 'application/json'
+
+        if params['search']['sort_by'].nil? 
+          sort_by = '{}' 
+        else 
+          sort_by = '{"' + params['search']['sort_by'] + '":"asc" }'
+        end
+       
         #req.body = '{"query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-	if params['search']['sort_by'].nil?
-        	req.body = '{"sort": [{}], "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
+		  if params['search']['filter'].nil?
+      req.body = '{ "sort": ['+ sort_by + '],
+                    "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}
+                    }'
+      else
+      req.body = '{ "sort": ['+ sort_by + '],
+                  "query": {
+                    "filtered": {
+                      "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}},
+                      "filter":{
+                        "or":[{        
+                        "regexp":{ "name" : { "value" : ".*' + params['search']['filter'] + '.*"}}                   
+                          },{
+                        "regexp":{ "tags" : { "value" : ".*' + params['search']['filter'] + '.*"}}                   
+                        }]
+                      }
+                    }
+                  }
+                }'
+      end
         	logger.debug "#{req.body}"
-	else
-		req.body = '{"sort": [{"' + params['search']['sort_by'] + '":"asc"}], "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-        	logger.debug "#{req.body}"
-	end
+
       end
 logger.debug "#{res.body}"
       json = JSON.parse(res.body)

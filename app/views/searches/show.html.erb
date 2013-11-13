@@ -15,7 +15,9 @@
 								
 								<%= f.select "sort_by", "<option>name</option><option>user_id</option>".html_safe %>
 
-<%= f.hidden_field :query, :value => @query  %>
+                <%= f.hidden_field :query, :value => @query  %>
+
+                <%= f.text_field :filter %>
 								
 								<%= submit_tag "Submit" %>
 
