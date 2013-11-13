@@ -10,7 +10,7 @@
 function stream_graph(stream_id, width) {
     var DATA_URL = "/datapoints/"+stream_id;
     var P_DATA_URL = "/prediction/"+stream_id;
-    var parseDate = d3.time.format("%Y%m%dT%H%M%S.%L0").parse;
+    var parseDate = d3.time.format("%Y%m%dT%H%M%S.%L").parse;
     var streamChart = timeChart();
         streamChart.width(width).height(200);
     var graph = d3.select("#graph-canvas");
@@ -28,7 +28,7 @@ function stream_graph(stream_id, width) {
         res = $.get(DATA_URL);
         res.done(function( result ) {
             result = result.data // parse the response
-            data = result;
+            data = result.reverse(); // data is coming in reverse order
             data.map(function(d){d.timestamp = parseDate(d.timestamp)});
             draw_graph();
         });
