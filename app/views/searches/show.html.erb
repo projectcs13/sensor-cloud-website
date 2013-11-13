@@ -13,9 +13,13 @@
 
 							<%= form_for(:search, url: searches_path) do |f| %>
 								
-								<%= f.select "sort_by", "<option>name</option><option>user_id</option>".html_safe %>
+								<%= f.select "sort_by", 
+									options_for_select([['Name',    "name"],
+																			['User ID', "user_id"]
+																		 ], "name")
+								%>
 
-<%= f.hidden_field :query, :value => @query  %>
+								<%= f.hidden_field :query, value: @query  %>
 								
 								<%= submit_tag "Submit" %>
 
