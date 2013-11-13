@@ -4,7 +4,7 @@ class SearchesController < ApplicationController
   end
 
 	def create
-		if params['search']['query'] == ''
+		if params['search']['query'].blank?
 			redirect_to root_path
 		else
 
@@ -17,25 +17,28 @@ class SearchesController < ApplicationController
       res = conn.post do |req|
         req.url '/_search'
         req.headers['Content-Type'] = 'application/json'
-        #req.body = '{"query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-	if params['search']['sort_by'].nil?
-        	req.body = '{"sort": [{}], "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-        	logger.debug "#{req.body}"
-	else
-		req.body = '{"sort": [{"' + params['search']['sort_by'] + '":"asc"}], "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-        	logger.debug "#{req.body}"
-	end
+
+				if params['search']['sort_by'].blank?
+					sort = "\"sort\":[{}]"
+				else
+					sort = "\"sort\":[{\"#{params['search']['sort_by']}\":\"asc\"}]"
+				end
+				req.body = "{#{sort}, \"query\":
+											{\"query_string\" : 
+												{\"query\":\"#{params['search']['query']}\"}
+											}
+										}"
       end
-logger.debug "#{res.body}"
+			logger.debug "#{res.body}"
       json = JSON.parse(res.body)
       @streams = json['streams']['hits']['hits']
       @users = json['users']['hits']['hits']
       @count_streams = json['streams']['hits']['total']
       @count_users = json['users']['hits']['total']
       @count_all = json['streams']['hits']['total'] + json['users']['hits']['total']
-	@query = params['search']['query']
+			@query = params['search']['query']
 
-		render :action => 'show'
-	end
+			render :action => 'show'
+		end
 	end
 end
