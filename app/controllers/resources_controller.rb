@@ -151,7 +151,7 @@ class ResourcesController < ApplicationController
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @resource.attributes.to_json(:only => [:name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active])
+        req.body = @resource.attributes.to_json(:only => [:user_id, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active])
       end
     end
 

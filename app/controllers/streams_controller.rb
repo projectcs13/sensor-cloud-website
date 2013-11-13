@@ -158,11 +158,11 @@ class StreamsController < ApplicationController
 
     def send_data(method, url)
       new_connection
-      logger.debug "JSON: #{@stream.attributes.to_json}"
+      logger.debug "JSON: #{@stream.attributes.to_json(:only => [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id])}"
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @stream.attributes.to_json(:only => [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id])
+        req.body = @stream.attributes.to_json(:only => [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id])
       end
     end
 
