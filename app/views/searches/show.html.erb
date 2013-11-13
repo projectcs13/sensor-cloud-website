@@ -12,19 +12,25 @@
 						<div class="col-md-9">
 
 							<%= form_for(:search, url: searches_path) do |f| %>
-								
-								<%= f.select "sort_by", 
-									options_for_select([['Name',    "name"],
-																			['User ID', "user_id"]
-																		 ], "name")
-								%>
+								<div class="row">
+									<div class="col-md-2 col-md-offset-6">
+										<%= label_tag "Sort by: " %>
+									</div>
+									<div class="col-md-4">
+										<%= f.select "sort_by", 
+											options_for_select([['Name',    "name"],
+																				  ['User ID', "user_id"]
+																		 	   ], "name"), 
+											{}, onclick: "this.form.submit();", 
+											class: "form-control"
+										%>
+									</div>
+								</div>
 
 								<%= f.hidden_field :query, value: @query  %>
 								
-								<%= submit_tag "Submit" %>
-
 							<% end %>
-
+							<br/ >
               <div class="main-content">
                 <div id="myPillContent" class="pill-content">
                   <div class="tab-content">
