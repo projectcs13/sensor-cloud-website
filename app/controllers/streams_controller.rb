@@ -12,7 +12,8 @@ class StreamsController < ApplicationController
 
   def new
     @stream = @resource.streams.build
-    attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at]
+    # attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at]
+    attributes = ["resource_id","name","tags","description","private","type","accuracy","min_val","max_val","quality","active","user_ranking","subscribers","last_updated","creation_date","history_size","location"]
     attributes.each do |attr|
       @stream.send("#{attr}=", nil)
     end
