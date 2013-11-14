@@ -70,8 +70,8 @@
     <div id="map-canvas">
     </div>
     <div class="row">
-      <div class="col-lg-6">longitude: <%= @stream.longitude %></div>
-      <div class="col-lg-6">latitude: <%= @stream.latitude %></div>
+      <div class="col-lg-6">longitude: <%#= @stream.longitude %></div>
+      <div class="col-lg-6">latitude: <%#= @stream.latitude %></div>
     </div>
   </div>
 </div>
@@ -84,9 +84,9 @@
   // Set up map element
   var mapWidth = $('#map-canvas').width();
   $('#map-canvas').height(mapWidth);
-  var longitude = parseFloat(<%= @stream.longitude %>);
-  var latitude = parseFloat(<%= @stream.latitude %>);
-  initialize_map(latitude, longitude);
+  //var longitude = parseFloat(<%#= @stream.longitude %>);
+  //var latitude = parseFloat(<%#= @stream.latitude %>);
+  //initialize_map(latitude, longitude);
 
   // Set up graph element
   var graphWidth = $("#graph-canvas").width();
