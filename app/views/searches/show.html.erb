@@ -19,7 +19,7 @@
 									<div class="col-md-4">
 										<%= f.select "sort_by", 
 											options_for_select([['Name',    "name"],
-																				  ['User ID', "user_id"]
+																				  ['User ranking', "user_ranking"]
 																		 	   ], "name"), 
 											{}, onclick: "this.form.submit();", 
 											class: "form-control"
@@ -42,18 +42,16 @@
                         <thead>
                             <tr>
                               <th>Name</th>
-                              <th>ID</th>
+                              <th>User ranking</th>
                               <th>Description</th>
-                              <th>User ID</th>
                             </tr>
                         </thead> 
                         <tbody>
                           <% @streams.each do |stream| %>
                           <tr>
                             <td><%= stream['_source']['name'] %></td>
-                            <td><%= stream['_id'] %></td>
+                            <td><%= stream['_source']['user_ranking'] %></td>
                             <td><%= stream['_source']['description'] %></td>
-                            <td><%= stream['_source']['user_id'] %></td>
                           
                           </tr>
                           <% end %> 
