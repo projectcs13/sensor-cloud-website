@@ -22,23 +22,29 @@ class SearchesController < ApplicationController
         else 
           sort_by = '{"' + params['search']['sort_by'] + '":"asc" }'
         end
-       
+   
         #req.body = '{"query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-		  if params['search']['filter'].nil?
-      req.body = '{ "sort": ['+ sort_by + '],
-                    "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}
-                    }'
-      else
-      req.body = '{ "sort": ['+ sort_by + '],
+        #A quick way to check if filter is nil or empty or just whitespace
+    	filters = Array.new
+    	if params['search']['filter_name'] == "1"
+     		nameFilter = {"regexp"=>{ "name" => { "value" => ".*" + params['search']['filter'] + ".*"}}} 
+     		filters.push(nameFilter.to_json)
+       	end
+     	if params['search']['filter_tag'] == "1"
+     	    tagFilter = {"regexp"=>{ "tags" => { "value" => ".*" + params['search']['filter'] + ".*"}}} 
+     	    filters.push(tagFilter.to_json)
+      	end
+      	if params['search']['filter'].to_s.strip.length == 0 || filters.empty?
+      		req.body = '{ "sort": ['+ sort_by + '],
+            "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}
+            }'
+      	else
+      	req.body = '{ "sort": ['+ sort_by + '],
                   "query": {
                     "filtered": {
                       "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}},
                       "filter":{
-                        "or":[{        
-                        "regexp":{ "name" : { "value" : ".*' + params['search']['filter'] + '.*"}}                   
-                          },{
-                        "regexp":{ "tags" : { "value" : ".*' + params['search']['filter'] + '.*"}}                   
-                        }]
+                        "or": ['+ filters.join(",") + ']
                       }
                     }
                   }
