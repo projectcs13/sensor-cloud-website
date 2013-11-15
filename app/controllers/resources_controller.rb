@@ -41,6 +41,23 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def autocomplete
+    name = params[:term]
+    attribute = params[:attr]
+    res = Faraday.get "#{CONF['API_URL']}/suggest/#{attribute}/#{name}"
+
+    data = []
+    unless res.status == 404
+      sugs = JSON.parse(res.body)['suggestions']
+      sugs.each do |s|
+        data.push s['text']
+      end
+    end
+
+    logger.debug "DATA: #{data}"
+    render :json => data, :status => res.status
+  end
+
   def suggest
     sug = make_suggestion_by params[:model]
     status = if sug then 200 else 404 end
@@ -49,7 +66,7 @@ class ResourcesController < ApplicationController
 
   def new
     @resource = Resource.new
-    # attributes = [:owner, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    # attributes = [:name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
     attributes = ["user_id","name","tags","model","description","type","manufacturer","uri","polling_freq","creation_date","uuid"]
     attributes.each do |attr|
       @resource.send("#{attr}=", nil)

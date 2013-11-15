@@ -1,13 +1,16 @@
 <aside class="resources-sidebar">
   <% @resource.attributes.each do | key, value | %>
 
-    <% if key != "id" and
-          key != "mirror_proxy" and
-          key != "manufacturer_suggest" and
-          key != "model_suggest" and
-          key != "tags_suggest" and
-          key != "streams" and
-          key != "user_id" %>
+    <% if  key != "id" and
+     key != "user_id" and
+     key != "owner" and
+     key != "mirror_proxy" and
+     key != "manufacturer_suggest" and
+     key != "model_suggest" and
+     key != "tags_suggest" and
+     key != "creation_date" and
+     key != "streams"
+    %>
       <div class="input-group">
         <span class="input-group-addon"><%= @f.label key %></span>
         <!-- Don't do anything -->
