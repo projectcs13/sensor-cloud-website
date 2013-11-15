@@ -11,5 +11,6 @@
  *= require_self
  *= require main
  *= require bootstrap-switch
+ *= require jquery.ui.all
  */
 
