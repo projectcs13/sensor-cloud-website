@@ -1,5 +1,20 @@
 <% provide(:title, 'Search') %>
-<h1>Search</h1>
+<div class="row">
+	<div class="col-md-3">
+		<h2>Search</h2>
+	</div>
+	<div class="search-results-bar">
+	<div class="col-md-7">
+		<%= form_for(:search, url: searches_path) do |f| %>
+   		<%= f.text_field :query, class: "form-control" %>
+	</div>
+	<div class="col-md-2">
+			<%= submit_tag "Search", class: "btn btn-primary pull-right" %>
+		<% end %>
+		</div>
+		</div>
+</div>
+
 <div class="row">
             <div class="col-md-3">
               <div class="sidebar-nav">
@@ -13,7 +28,10 @@
 
 							<%= form_for(:search, url: searches_path) do |f| %>
 								<div class="row">
-									<div class="col-md-2 col-md-offset-6">
+									<div class="col-md-6 number-results-found">
+										We have found <%= @count_all %> results
+									</div>
+									<div class="col-md-2">
 										<%= label_tag "Sort by: " %>
 									</div>
 									<div class="col-md-4">
@@ -28,40 +46,58 @@
 								</div>
 
 								<%= f.hidden_field :query, value: @query  %>
-								
 
-                <%= f.text_field :filter %>
-								
-								<%= submit_tag "Submit" %>
+								<%= f.text_field :filter %>
+								                                                                
+								<%= submit_tag "Filter on" %>
+								<%= f.check_box :filter_name %>
+								<%= f.label :filter_name, "Name".html_safe%>
+								<%= f.check_box :filter_tag %>
+								<%= f.label :filter_tag, "Tag".html_safe%>
 
 							<% end %>
 							<br/ >
               <div class="main-content">
                 <div id="myPillContent" class="pill-content">
                   <div class="tab-content">
-                    <div class="tab-pane fade in active" id="streams">
+                    <div class="tab-pane fade in active search-results" id="streams">
                       <% if @streams == [] and @users == [] %>
                         <pre> No Results Found </pre> 
                       <% end %>
-                      <table class="table">
-                        <thead>
-                            <tr>
-                              <th>Name</th>
-                              <th>User ranking</th>
-                              <th>Description</th>
-                            </tr>
-                        </thead> 
-                        <tbody>
-                          <% @streams.each do |stream| %>
-                          <tr>
-                            <td><%= stream['_source']['name'] %></td>
-                            <td><%= stream['_source']['user_ranking'] %></td>
-                            <td><%= stream['_source']['description'] %></td>
-                          
-                          </tr>
-                          <% end %> 
-                        </tbody>
-                      </table>
+
+											<ul>
+												<% @streams.each do |stream| %>
+													<li class="search-result">
+													<div class="row">
+														<div class="col-md-9">
+															<h4>
+																
+																<span class="glyphicon glyphicon-stats"></span>
+																<% resource_id = stream['_source']['resource_id'] %>
+																<% stream_id = stream['_id'] %>
+																<% url = "/resources/#{resource_id}/streams/#{stream_id}" %>
+															<%= link_to(stream['_source']['name'], url) %></h4>
+														</div>
+														<div class="col-md-3 search-results-stats">
+															<ul>
+																<li>
+																	<span class="glyphicon glyphicon-user"></span>
+																	<%= stream['_source']['subscribers'] %>
+																</li>
+																<li>
+																	<span class="glyphicon glyphicon-star"></span>
+																	<%= stream['_source']['user_ranking'] %>
+																</li>
+															</ul>
+														</div>	
+													</div>
+													<p><%= stream['_source']['description'] %></p>
+													Last update: <%= stream['_source']['last_update'] %>
+													<br /><br />
+													</li>
+												<% end %>
+											</ul>
+
                     </div>
                     <div class="tab-pane fade in" id="users">
                       <% if @users == [] %>
