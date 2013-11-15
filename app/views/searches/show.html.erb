@@ -47,15 +47,6 @@
 
 								<%= f.hidden_field :query, value: @query  %>
 
-								<%= f.text_field :filter %>
-								                                                                
-								<%= submit_tag "Filter on" %>
-								<%= f.check_box :filter_name %>
-								<%= f.label :filter_name, "Name".html_safe%>
-								<%= f.check_box :filter_tag %>
-								<%= f.label :filter_tag, "Tag".html_safe%>
-
-
 							<% end %>
 							<br/ >
               <div class="main-content">
@@ -123,5 +114,21 @@
                     </div>
                   </div>
                 </div>
-              </div>
+							</div>
+							<br />
+							<br />
+							<br />
+							<%= form_for(:search, url: searches_path) do |f| %>
+
+
+								<%= f.hidden_field :query, value: @query  %>
+
+								<%= f.text_field :filter %>
+								                                                                
+								<%= submit_tag "Filter on" %>
+								<%= f.check_box :filter_name %>
+								<%= f.label :filter_name, "Name".html_safe%>
+								<%= f.check_box :filter_tag %>
+								<%= f.label :filter_tag, "Tag".html_safe%>
+						<% end %>
             </div>
