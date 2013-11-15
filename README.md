@@ -5,7 +5,7 @@ Sensor Cloud is a computation engine for sensor stream data.
 ## Requirements
 
 * Linux
-* Ruby 1.9.3 (Ruby 2.0 preferred) 
+* Ruby 1.9.3 (Ruby 2.0 preferred) [To install Ruby 2.0.0-p247 on Ubuntu 12.04 LTS you may want to consider these steps: http://stackoverflow.com/questions/9056008/installed-ruby-1-9-3-with-rvm-but-command-line-doesnt-show-ruby-v/9056395#9056395]
 
 ## Installation
 
