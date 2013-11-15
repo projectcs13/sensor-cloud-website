@@ -1,16 +1,19 @@
 <div class="center jumbotron">
-	<%#= link_to image_tag("logos/sensorcloud.png", alt: "Brand Logo"), 'https://github.com/projectcs13' %>
-	<!--<h1>Sensor Cloud App</h1>-->
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
-			<form role="searches" action="searches" method="get">
-				<div class="col-md-11">	
-		        	<input name="searches" type="text" class="form-control input-lg" placeholder="Example: Temperature in Uppsala" />
-				</div>
-				<div class="col-md-1">
-		        	<button type="submit" class="btn btn-lg btn-primary">Search</button>
-				</div>
-		    </form>
+			<div class="col-md-11">
+
+				<%= form_for(:search, url: searches_path) do |f| %>
+					<%= f.text_field :query, class: "form-control input-lg", 
+								placeholder: "Example: Temperature in Uppsala" %>
+
+			</div>
+			<div class="col-md-1">
+
+					<%= f.submit "Search", class: "btn btn-lg btn-primary" %>
+				<% end %>	
+
+			</div>
 		</div>
 	</div>
 </div>

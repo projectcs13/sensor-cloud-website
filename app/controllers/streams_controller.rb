@@ -12,7 +12,8 @@ class StreamsController < ApplicationController
 
   def new
     @stream = @resource.streams.build
-    attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at]
+    # attributes = [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at]
+    attributes = ["resource_id","name","tags","description","private","type","accuracy","min_val","max_val","quality","active","user_ranking","subscribers","last_updated","creation_date","history_size","location"]
     attributes.each do |attr|
       @stream.send("#{attr}=", nil)
     end
@@ -148,7 +149,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :created_at)
+      params.require(:stream).permit(:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id, :user_id, :user_ranking, :history_size, :subscribers, :updated_at, :created_at)
     end
 
     ### TODO doc
@@ -158,11 +159,11 @@ class StreamsController < ApplicationController
 
     def send_data(method, url)
       new_connection
-      logger.debug "JSON: #{@stream.attributes.to_json}"
+      logger.debug "JSON: #{@stream.attributes.to_json(:only => [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id])}"
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @stream.attributes.to_json
+        req.body = @stream.attributes.to_json(:only => [:name, :description, :private, :accuracy, :longitude, :latitude, :stream_type, :unit, :max_val, :min_val, :active, :tags, :resource_id])
       end
     end
 
