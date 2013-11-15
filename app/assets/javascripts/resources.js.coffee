@@ -32,7 +32,12 @@ $ ->
     res.done (json) ->
       console.log json
       for k, v of json
-        $("#resource_#{k}").val v
+        if v
+          input = $("#resource_#{k}")
+          input.val v
+          input.addClass 'highlight'
+          input.on 'focus', ->
+            $(this).removeClass 'highlight'
       @
 
   $('body').on 'click', '#suggest-btn', suggest
