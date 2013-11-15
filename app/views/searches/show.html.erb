@@ -32,7 +32,12 @@
 
                 <%= f.text_field :filter %>
 								
-								<%= submit_tag "Submit" %>
+								<%= submit_tag "Filter on" %>
+              
+                <%= f.check_box :filter_name %>
+                <%= f.label :filter_name, "Name".html_safe%>
+                 <%= f.check_box :filter_tag %>
+                <%= f.label :filter_tag, "Tag".html_safe%>
 
 							<% end %>
 							<br/ >
