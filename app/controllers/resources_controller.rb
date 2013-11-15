@@ -50,7 +50,6 @@ class ResourcesController < ApplicationController
     unless res.status == 404
       sugs = JSON.parse(res.body)['suggestions']
       sugs.each do |s|
-        # data.push ({ :value => s['text'] })
         data.push s['text']
       end
     end
