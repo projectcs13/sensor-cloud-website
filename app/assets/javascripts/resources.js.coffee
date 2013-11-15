@@ -25,17 +25,18 @@ $ ->
 ###
 $ ->
 
-  suggest = (event) ->
-    do event.preventDefault
-    model = $('#resource_model').val()
-    res = $.getJSON "http://localhost:3000/suggest/#{model}"
+  # suggest = (event) ->
+  suggest = (model) ->
+    # do event.preventDefault
+    # model = $('#resource_model').val()
+    res = $.getJSON "/suggest/#{model}"
     res.done (json) ->
       console.log json
       for k, v of json
         $("#resource_#{k}").val v
       @
 
-  $('body').on 'click', '#suggest-btn', suggest
+  # $('body').on 'click', '#suggest-btn', suggest
 
 
   split = (val) ->
@@ -43,6 +44,13 @@ $ ->
 
   extractLast = (term) ->
     do split(term).pop
+
+  selectItem = (ui, value) ->
+    terms = split value
+    do terms.pop                # remove the current input
+    terms.push ui.item.value    # add the selected item
+    terms.push ""               # add placeholder to get the comma-and-space at the end
+    terms
 
   autocomplete = (attr) ->
       $("#resource_#{attr}")
@@ -61,15 +69,18 @@ $ ->
             false
 
           select: (event, ui) ->
-            terms = split(@value)
-            # remove the current input
-            do terms.pop
-            # add the selected item
-            terms.push(ui.item.value)
-            # add placeholder to get the comma-and-space at the end
-            terms.push("")
+            terms = selectItem ui, @value
 
-            @value = terms.join( ", " )
+            appendWithComma = => @value = terms.join ", "
+            appendValue     = => @value = terms.join ""
+
+            switch attr
+              when "tags"         then do appendWithComma
+              when "manufacturer" then do appendValue
+              when "model"
+                do appendValue
+                suggest @value
+
             false
 
   autocomplete attr for attr in [ "model", "manufacturer", "tags" ]
