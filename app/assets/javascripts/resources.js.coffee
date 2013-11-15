@@ -36,3 +36,48 @@ $ ->
       @
 
   $('body').on 'click', '#suggest-btn', suggest
+
+
+  split = (val) ->
+    val.split /,\s*/
+
+  extractLast = (term) ->
+    do split(term).pop
+
+  autocomplete = (attr) ->
+      $("#resource_#{attr}")
+
+        # don't navigate away from the field on tab when selecting an item
+        .bind "keydown", (event) ->
+          event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
+
+        .autocomplete
+          source: (request, response) ->
+            URL = "/autocomplete/#{attr}"
+            $.getJSON URL, term: extractLast request.term, (data) ->
+              console.log data
+              response data
+
+          search: ->
+            # custom minLength
+            term = extractLast @value
+            false if term.length < 2
+
+          focus: ->
+            # prevent value inserted on focus
+            false
+
+          select: (event, ui) ->
+            terms = split(@value)
+            # remove the current input
+            do terms.pop
+            # add the selected item
+            console.log ui.item.value
+            terms.push(ui.item.value)
+            # add placeholder to get the comma-and-space at the end
+            terms.push("")
+
+            @value = terms.join( ", " )
+            false
+
+  autocomplete attr for attr in [ "model", "manufacturer", "tags" ]

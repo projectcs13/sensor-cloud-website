@@ -30,12 +30,12 @@ def send_data(method, url, json)
 end
 
 def post_resource json
-  url = "#{CONF['API_URL']}/users/#{@cid}/resources/"
+  url = "#{CONF['API_URL']}/resources/"
   send_data(:post, url, json)
 end
 
 def put_resource rid, json
-  url = "#{CONF['API_URL']}/users/#{@cid}/resources/" + rid
+  url = "#{CONF['API_URL']}/resources/" + rid
   send_data(:put, url, json)
 end
 
@@ -71,6 +71,7 @@ def generate_resources
       # :location => "Uppsala, Sweden",
       # :uri => "http =>//sensors.ericsson.se",
       :tags => "temperature, weather, humidity, ericsson",
+      :resource_type => "sensor",
       :active => "true",
       :user_id => @cid
     },
@@ -88,6 +89,7 @@ def generate_resources
       # :location => "Uppsala, Sweden",
       # :uri => "http =>//sensors.ericsson.se",
       :tags => "temperature, weather, humidity, ericsson",
+      :resource_type => "sensor",
       :active => "true",
       :user_id => @cid
     },
@@ -105,6 +107,7 @@ def generate_resources
       # :location => "Stockholm, Sweden",
       # :uri => "http =>//sensors.siemens.se",
       :tags => "pollution, air, siemens",
+      :resource_type => "sensor",
       :active => "true",
       :user_id => @cid
     }
@@ -219,7 +222,7 @@ def createResource number, streamsList
   end
 end
 
-deleteResources
+# deleteResources
 createResource 0, [0,1,2]
 createResource 1, [0,3]
 createResource 2, [4]
