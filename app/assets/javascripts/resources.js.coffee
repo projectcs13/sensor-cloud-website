@@ -65,7 +65,7 @@ $ ->
           event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
 
         .autocomplete
-          minLength: 2
+          minLength: 1
 
           source: "/autocomplete/#{attr}"
 

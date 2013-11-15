@@ -40,22 +40,20 @@
             </ul>
           </div> -->
 
-        <% elsif key == "active" %>
+        <%# elsif key == "active" %>
           <!-- TODO Check if this is necessary for the future -->
-          <%= f.check_box key %>
+          <%#= f.check_box key %>
 
-				<% elsif key == "model" %>
-					<div class="row">
+				<%# elsif key == "model" %>
+					<!-- <div class="row">
 						<div class="col-md-9">
-          		<%= f.text_field key, class: "form-control", size: 50 %>
+          		<%#= f.text_field key, class: "form-control", size: 50 %>
 						</div>
 						<div class="col-md-3">
     						<a href="#" id="suggest-btn" class="btn btn-default btn-primary">Suggest</a>
 						</div>
-					<!--
-					<a href="#" id="suggest-btn" class="btn btn-primary">Suggest</a>
-					-->
-					</div>
+
+					</div> -->
         <% else %>
           <%= f.text_field key, class: "form-control" %>
 
