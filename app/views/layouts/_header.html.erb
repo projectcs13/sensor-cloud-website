@@ -16,12 +16,15 @@
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
     	<ul class="nav navbar-nav">
       	<li>
-        	<form class="navbar-form navbar-left" role="search" action="/search" method="get">
-          	<div class="form-group">
-            	<input name="search" type="text" class="form-control" placeholder="Search...">
-            </div>
-            <button type="submit" class="btn btn-info">Submit</button>
-          </form>
+
+				<%= form_for(:search, url: searches_path, class: "navbar-from navbar-left") do |f| %>
+						<%= f.text_field :query, class: "form-control",
+							  placeholder: "Search..." %>
+				</li>
+				<li>
+								<%= f.submit "Submit", class: "btn btn-info" %>
+								<% end %>
+				
 				</li>
 				<% if signed_in? %>
         	<li><%= link_to "My Resources", resources_path %></li>

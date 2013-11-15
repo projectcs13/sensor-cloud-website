@@ -16,9 +16,8 @@ class ResourcesController < ApplicationController
     if res.status == 404
       data = {}
     else
-      suggestion = JSON.parse(res.body)['testsuggest'][0]
-      opt = suggestion['options'].last
-      data = opt['payload']
+      suggestion = JSON.parse(res.body)['suggestions'][0]
+      data = suggestion['payload']
     end
 
     data
@@ -29,9 +28,15 @@ class ResourcesController < ApplicationController
     streams = sug['streams']
     if streams
       streams.each do |st|
+        # st['min_val'] = st['min_value']
+        # st['max_val'] = st['max_value']
+        st.delete('resource_id')
+
         s = Stream.new st
-        s.resource_id = @resource.id
-        s.post current_user.id, @resource.id
+
+        res = s.post current_user.id, @resource.id
+        logger.debug "JSON: #{res.body}"
+        logger.debug "New Stream: #{s.attributes}"
       end
     end
   end
@@ -44,7 +49,8 @@ class ResourcesController < ApplicationController
 
   def new
     @resource = Resource.new
-    attributes = [:owner, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    # attributes = [:owner, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    attributes = ["user_id","name","tags","model","description","type","manufacturer","uri","polling_freq","creation_date","uuid"]
     attributes.each do |attr|
       @resource.send("#{attr}=", nil)
     end
@@ -142,7 +148,8 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:user_id, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active, :suggestion)
+      # params.require(:resource).permit(:user_id, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active, :suggestion)
+      params.require(:resource).permit("user_id","name","tags","model","description","type","manufacturer","uri","polling_freq","creation_date","uuid")
     end
 
     def send_data(method, url)
@@ -151,7 +158,7 @@ class ResourcesController < ApplicationController
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @resource.attributes.to_json
+        req.body = @resource.attributes.to_json(:only => [:user_id, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active])
       end
     end
 
