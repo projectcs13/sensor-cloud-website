@@ -1,5 +1,5 @@
 <% provide(:title, 'Search') %>
-<div class="row">
+<div class="row search-header">
 	<div class="col-md-3">
 		<h2>Search</h2>
 	</div>
@@ -71,7 +71,7 @@
 															<%= link_to(stream['_source']['name'], url) %></h4>
 														</div>
 														<div class="col-md-3 search-results-stats">
-															<ul>
+															<ul class="pull-right">
 																<li>
 																	<span class="glyphicon glyphicon-user"></span>
 																	<%= stream['_source']['subscribers'] %>
@@ -84,7 +84,7 @@
 														</div>	
 													</div>
 													<p><%= stream['_source']['description'] %></p>
-													Last update: <%= stream['_source']['last_update'] %>
+													<span class="last-update">Last update: <%= stream['_source']['last_update'] %></span>
 													<br /><br />
 													</li>
 												<% end %>

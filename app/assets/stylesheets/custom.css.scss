@@ -382,6 +382,10 @@ input.search-query {
 	}
 	.search-result {
 			border-bottom: 1px solid #cccccc;
+		 .last-update {
+			 color: #999999;
+			 font-size: 12px;
+		 }
 	}
 	.search-results-stats {
 		margin-top: 20px;
@@ -402,3 +406,9 @@ input.search-query {
 	font-weight: bold;
 }
 
+.search-header {
+	h2 {
+		text-align: left;
+		margin-left: 10px;
+	}
+}
