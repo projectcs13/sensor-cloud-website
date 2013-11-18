@@ -14,7 +14,7 @@ class SearchesController < ApplicationController
       end
 
       res = conn.post do |req|
-        req.url '/_search'
+        req.url '/_search?'
         req.headers['Content-Type'] = 'application/json'
 
         if params['search']['sort_by'].nil? 
@@ -36,13 +36,13 @@ class SearchesController < ApplicationController
       	end
       	if params['search']['filter'].to_s.strip.length == 0 || filters.empty?
       		req.body = '{ "sort": ['+ sort_by + '],
-            "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}
+            "query" : {"query_string" : {"query" : "' + params['search']['query'] + '"}}
             }'
       	else
       	req.body = '{ "sort": ['+ sort_by + '],
                   "query": {
                     "filtered": {
-                      "query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}},
+                      "query" : {"query_string" : {"query" : "' + params['search']['query'] + '"}},
                       "filter":{
                         "or": ['+ filters.join(",") + ']
                       }
@@ -60,6 +60,8 @@ class SearchesController < ApplicationController
       @count_streams = json['streams']['hits']['total']
       @count_users = json['users']['hits']['total']
       @count_all = json['streams']['hits']['total'] + json['users']['hits']['total']
+			@nb_results_per_page = 5.0
+			@nb_pages = (@count_all / @nb_results_per_page).ceil 
 			@query = params['search']['query']
 
 			render :action => 'show'

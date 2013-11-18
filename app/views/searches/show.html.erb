@@ -90,6 +90,16 @@
 												<% end %>
 											</ul>
 
+											<% if @nb_pages > 1 %>	
+												<ul class="pagination">
+													<li><a href="#">&laquo;</a></li>
+													<% @nb_pages.times do |i| %>
+														<li><a href="#"><%= i + 1 %></a></li>
+													<% end %>
+													<li><a href="#">&raquo;</a></li>
+												</ul>
+											<% end %>
+
                     </div>
                     <div class="tab-pane fade in" id="users">
                       <% if @users == [] %>
