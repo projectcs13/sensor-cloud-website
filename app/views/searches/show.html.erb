@@ -92,11 +92,15 @@
 
 											<% if @nb_pages > 1 %>	
 												<ul class="pagination">
-													<li><a href="#">&laquo;</a></li>
+													<% unless @current_page < 1 %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page => @current_page - 1}), :method => :post do %>&laquo;<% end %></li>
+													<% end %>
 													<% @nb_pages.times do |i| %>
 														<li><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page => i}), :method => :post %></li>
 													<% end %>
-													<li><a href="#">&raquo;</a></li>
+													<% unless (@current_page + 1) >= @nb_pages %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page => @current_page + 1}), :method => :post do %> &raquo;<% end %></li>
+													<% end %>
 												</ul>
 											<% end %>
 

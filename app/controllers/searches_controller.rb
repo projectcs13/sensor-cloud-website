@@ -68,7 +68,12 @@ class SearchesController < ApplicationController
       @count_all = json['streams']['hits']['total'] + json['users']['hits']['total']
 			@nb_pages = (@count_all / @nb_results_per_page).ceil 
 			@query = params['search']['query']
-
+			unless params['search']['page'].blank?
+				@current_page = params['search']['page'].to_i
+			else
+				@current_page = 1
+			end
+			logger.debug "CURRENT_PAGE: #{@current_page}"
 			render :action => 'show'
 		end
 	end
