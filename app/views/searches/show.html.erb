@@ -6,7 +6,11 @@
 	<div class="search-results-bar">
 	<div class="col-md-7">
 		<%= form_for(:search, url: searches_path) do |f| %>
-   		<%= f.text_field :query, class: "form-control" %>
+			<% unless @query.nil? %>
+   			<%= f.text_field :query, value: @query, class: "form-control" %>
+			<% else %>
+   			<%= f.text_field :query, class: "form-control" %>
+			<% end %>
 	</div>
 	<div class="col-md-2">
 			<%= submit_tag "Search", class: "btn btn-primary pull-right" %>

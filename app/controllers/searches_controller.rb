@@ -70,7 +70,7 @@ class SearchesController < ApplicationController
       @count_streams = json['streams']['hits']['total']
       @count_users = json['users']['hits']['total']
       @count_all = json['streams']['hits']['total'] + json['users']['hits']['total']
-			@nb_pages = (@count_all / @nb_results_per_page).ceil 
+			@nb_pages = (@count_streams / @nb_results_per_page).ceil 
 			@query = params['search']['query']
 			unless params['search']['page'].blank?
 				@current_page = params['search']['page'].to_i
