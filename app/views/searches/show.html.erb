@@ -94,7 +94,7 @@
 												<ul class="pagination">
 													<li><a href="#">&laquo;</a></li>
 													<% @nb_pages.times do |i| %>
-														<li><a href="#"><%= i + 1 %></a></li>
+														<li><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page => i}), :method => :post %></li>
 													<% end %>
 													<li><a href="#">&raquo;</a></li>
 												</ul>
