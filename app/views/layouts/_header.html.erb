@@ -16,15 +16,18 @@
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
     	<ul class="nav navbar-nav">
       	<li>
-
-				<%= form_for(:search, url: searches_path, class: "navbar-from navbar-left") do |f| %>
-						<%= f.text_field :query, class: "form-control",
-							  placeholder: "Search..." %>
+				
+				<% unless (params[:controller] == 'searches'|| 
+									 ((params[:controller] == 'static_pages') && (params[:action] == 'home'))) %>
+						<%= form_for(:search, url: searches_path, class: "navbar-from navbar-left") do |f| %>
+							<%= f.text_field :query, class: "form-control",
+							  	placeholder: "Search..." %>
 				</li>
 				<li>
-								<%= f.submit "Submit", class: "btn btn-info" %>
-								<% end %>
-				
+							<%= f.submit "Submit", class: "btn btn-info" %>
+						<% end %>
+					<% end %>
+
 				</li>
 				<% if signed_in? %>
         	<li><%= link_to "My Resources", resources_path %></li>

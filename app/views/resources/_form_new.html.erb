@@ -18,12 +18,16 @@
            key != "user_id" and
            key != "owner" and
            key != "mirror_proxy" and
+           key != "manufacturer_suggest" and
+           key != "model_suggest" and
+           key != "tags_suggest" and
            key != "creation_date" %>
       <div class="form-group">
         <%= f.label key %>
 
         <% if key == "polling_freq" %>
           <%= f.text_field key, class: "form-control" %>
+
           <!-- <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Frequency? <span class="caret"></span></button>
             <ul class="dropdown-menu pull-right">
@@ -36,22 +40,20 @@
             </ul>
           </div> -->
 
-        <% elsif key == "active" %>
+        <%# elsif key == "active" %>
           <!-- TODO Check if this is necessary for the future -->
-          <%= f.check_box key %>
+          <%#= f.check_box key %>
 
-				<% elsif key == "model" %>
-					<div class="row">
+				<%# elsif key == "model" %>
+					<!-- <div class="row">
 						<div class="col-md-9">
-          		<%= f.text_field key, class: "form-control" %>
+          		<%#= f.text_field key, class: "form-control", size: 50 %>
 						</div>
 						<div class="col-md-3">
     						<a href="#" id="suggest-btn" class="btn btn-default btn-primary">Suggest</a>
 						</div>
-					<!--
-					<a href="#" id="suggest-btn" class="btn btn-primary">Suggest</a>
-					-->
-					</div>
+
+					</div> -->
         <% else %>
           <%= f.text_field key, class: "form-control" %>
 

@@ -375,3 +375,40 @@ input.search-query {
 		margin-right: 0;
 	}
 }
+
+.search-results {
+	ul {
+		list-style-type: none;
+	}
+	.search-result {
+			border-bottom: 1px solid #cccccc;
+		 .last-update {
+			 color: #999999;
+			 font-size: 12px;
+		 }
+	}
+	.search-results-stats {
+		margin-top: 20px;
+		margin-bottom: 10px;
+		li { 
+			display: inline; 
+			margin-left: 15px;
+		}
+	}
+}
+
+.search-results-bar {
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.number-results-found {
+	font-weight: bold;
+}
+
+.search-header {
+	h2 {
+		text-align: left;
+		margin-left: 10px;
+	}
+}

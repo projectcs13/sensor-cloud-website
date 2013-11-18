@@ -1,5 +1,24 @@
 <% provide(:title, 'Search') %>
-<h1>Search</h1>
+<div class="row search-header">
+	<div class="col-md-3">
+		<h2>Search</h2>
+	</div>
+	<div class="search-results-bar">
+	<div class="col-md-7">
+		<%= form_for(:search, url: searches_path) do |f| %>
+			<% unless @query.nil? %>
+   			<%= f.text_field :query, value: @query, class: "form-control" %>
+			<% else %>
+   			<%= f.text_field :query, class: "form-control" %>
+			<% end %>
+	</div>
+	<div class="col-md-2">
+			<%= submit_tag "Search", class: "btn btn-primary pull-right" %>
+		<% end %>
+		</div>
+		</div>
+</div>
+
 <div class="row">
             <div class="col-md-3">
               <div class="sidebar-nav">
@@ -7,13 +26,34 @@
                   <li class="active"><a href="#streams" data-toggle="tab"> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
                   <li><a href="#users" data-toggle="tab"> Users <span class="badge badge-info"><%= @count_users %></span></a></li>
                 </ul>
+                <h2>Filter</h2>
+                <%= form_for(:search, url: searches_path) do |f| %>
+                <%= f.hidden_field :query, value: @query  %>
+                <%= f.text_field :filter_name, :placeholder => "Name" %>
+                <br/ >
+                <%= f.text_field :filter_tag, :placeholder => "Tag" %>
+                <br/ >
+                <%= f.check_box :filter_rank %>
+                <%= f.label :filter_rank, "User ranking".html_safe%>
+                <br/ >
+                <div id="slider-range"></div>
+                <br/ >
+                <%= f.text_field :min_val, id:'min_val', :placeholder => "min", :size => 5%>
+                -
+                <%= f.text_field :max_val, id:'max_val',:placeholder => "max", :size => 5%>
+                <br/ >
+                <%= submit_tag "Filter" %>
+            <% end %>
               </div>
             </div>
 						<div class="col-md-9">
 
 							<%= form_for(:search, url: searches_path) do |f| %>
 								<div class="row">
-									<div class="col-md-2 col-md-offset-6">
+									<div class="col-md-6 number-results-found">
+										We have found <%= @count_all %> results
+									</div>
+									<div class="col-md-2">
 										<%= label_tag "Sort by: " %>
 									</div>
 									<div class="col-md-4">
@@ -28,40 +68,74 @@
 								</div>
 
 								<%= f.hidden_field :query, value: @query  %>
-								
-
-                <%= f.text_field :filter %>
-								
-								<%= submit_tag "Submit" %>
 
 							<% end %>
 							<br/ >
               <div class="main-content">
                 <div id="myPillContent" class="pill-content">
                   <div class="tab-content">
-                    <div class="tab-pane fade in active" id="streams">
+                    <div class="tab-pane fade in active search-results" id="streams">
                       <% if @streams == [] and @users == [] %>
                         <pre> No Results Found </pre> 
                       <% end %>
-                      <table class="table">
-                        <thead>
-                            <tr>
-                              <th>Name</th>
-                              <th>User ranking</th>
-                              <th>Description</th>
-                            </tr>
-                        </thead> 
-                        <tbody>
-                          <% @streams.each do |stream| %>
-                          <tr>
-                            <td><%= stream['_source']['name'] %></td>
-                            <td><%= stream['_source']['user_ranking'] %></td>
-                            <td><%= stream['_source']['description'] %></td>
-                          
-                          </tr>
-                          <% end %> 
-                        </tbody>
-                      </table>
+
+											<ul>
+												<% @streams.each do |stream| %>
+													<li class="search-result">
+													<div class="row">
+														<div class="col-md-9">
+															<h4>
+																
+																<span class="glyphicon glyphicon-stats"></span>
+																<% resource_id = stream['_source']['resource_id'] %>
+																<% stream_id = stream['_id'] %>
+																<% url = "/resources/#{resource_id}/streams/#{stream_id}" %>
+															<%= link_to(stream['_source']['name'], url) %></h4>
+														</div>
+														<div class="col-md-3 search-results-stats">
+															<ul class="pull-right">
+																<li>
+																	<span class="glyphicon glyphicon-user"></span>
+																	<%= stream['_source']['subscribers'] %>
+																</li>
+																<li>
+																	<span class="glyphicon glyphicon-star"></span>
+																	<%= stream['_source']['user_ranking'] %>
+																</li>
+															</ul>
+														</div>	
+													</div>
+													<p><%= stream['_source']['description'] %></p>
+													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_update']), Time.now, include_seconds: true) %> ago</span>
+													<br /><br />
+													</li>
+												<% end %>
+											</ul>
+
+											<% if @nb_pages > 1 %>
+												<div class="center">	
+												<ul class="pagination">
+													<% unless @current_page < 1 %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page => @current_page - 1}), :method => :post do %>&laquo;<% end %></li>
+													<% else %>
+														<li class="disabled"><a href='#'>&laquo;</a></li>
+													<% end %>
+													<% @nb_pages.times do |i| %>
+														<% if i == @current_page %>
+															<li class="active"><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page => i}), :method => :post %></li>
+															<% else %>
+															<li><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page => i}), :method => :post %></li>
+														<% end %>
+													<% end %>
+													<% unless (@current_page + 1) >= @nb_pages %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page => @current_page + 1}), :method => :post do %> &raquo;<% end %></li>
+													<% else %>
+														<li class="disabled"><a href='#'>&raquo;</a></li>
+													<% end %>
+												</ul>
+												</div>
+											<% end %>
+
                     </div>
                     <div class="tab-pane fade in" id="users">
                       <% if @users == [] %>
@@ -86,5 +160,9 @@
                     </div>
                   </div>
                 </div>
-              </div>
+							</div>
+							<br />
+							<br />
+							<br />
+
             </div>
