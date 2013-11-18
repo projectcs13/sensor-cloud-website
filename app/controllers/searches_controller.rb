@@ -71,7 +71,7 @@ class SearchesController < ApplicationController
 			unless params['search']['page'].blank?
 				@current_page = params['search']['page'].to_i
 			else
-				@current_page = 1
+				@current_page = 0
 			end
 			logger.debug "CURRENT_PAGE: #{@current_page}"
 			render :action => 'show'
