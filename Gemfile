@@ -14,6 +14,8 @@ gem 'faker', '1.1.2'
 gem "d3-rails"
 gem "bootstrap-switch-rails"
 gem 'socket.io-rails'
+gem 'mail_form', '~> 1.5.0.rc'
+gem 'simple_form', '~> 3.0.0.rc'
 
 group :development, :test do
   gem 'sqlite3', '1.3.8'
@@ -43,3 +45,4 @@ group :production do
   gem 'pg', '0.15.1'
   gem 'rails_12factor', '0.0.2'
 end
+
