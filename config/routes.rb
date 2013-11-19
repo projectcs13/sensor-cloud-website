@@ -26,6 +26,8 @@ SensorCloud::Application.routes.draw do
   match '/about',     to: 'static_pages#about',   via: 'get'
   match '/contact',   to: 'static_pages#contact', via: 'get'
   match '/faq',       to: 'static_pages#faq',     via: 'get'
+  match '/manual',    to: 'static_pages#manual',  via: 'get'
+  match '/privacy',   to: 'static_pages#privacy', via: 'get'
   match '/search',    to: 'search#index',         via: 'get'
 
   # The priority is based upon order of creation: first created -> highest priority.
