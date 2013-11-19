@@ -15,11 +15,12 @@ class SearchesController < ApplicationController
       end
 
       res = conn.post do |req|
-				unless params['search']['page'].blank?
+				if (not params['search']['page'].blank?)
 					req.url "/_search?from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+				elsif (not params['search']['page_users'].blank?)
+					req.url "/_search?from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				else
-
-        req.url "/_search?from=0&size=#{@nb_results_per_page.to_i}"
+        	req.url "/_search?from=0&size=#{@nb_results_per_page.to_i}"
 				end
         req.headers['Content-Type'] = 'application/json'
 
@@ -71,13 +72,20 @@ class SearchesController < ApplicationController
       @count_users = json['users']['hits']['total']
       @count_all = json['streams']['hits']['total'] + json['users']['hits']['total']
 			@nb_pages = (@count_streams / @nb_results_per_page).ceil 
+			@nb_pages_users = (@count_users / @nb_results_per_page).ceil 
 			@query = params['search']['query']
 			unless params['search']['page'].blank?
 				@current_page = params['search']['page'].to_i
 			else
-				@current_page = 0
+				@current_page = -1
+			end
+			unless params['search']['page_users'].blank?
+				@current_page_users = params['search']['page_users'].to_i
+			else
+				@current_page_users = -1
 			end
 			logger.debug "CURRENT_PAGE: #{@current_page}"
+			logger.debug "CURRENT_PAGE_USERS: #{@current_page_users}"
 			render :action => 'show'
 		end
 	end
