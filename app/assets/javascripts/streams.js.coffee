@@ -4,7 +4,7 @@
 
 #<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
 //= require 'include/streams_graph.js'
-//= require 'streams_map.js'
+//= require 'include/streams_map.js'
 //= require 'include/timeChart.js'
 //= require 'include/client.js'
 $ ->
