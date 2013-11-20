@@ -17,7 +17,8 @@
     	<ul class="nav navbar-nav">
       	<li>
 				
-					<% unless params[:controller] == 'searches' %>
+				<% unless (params[:controller] == 'searches'|| 
+									 ((params[:controller] == 'static_pages') && (params[:action] == 'home'))) %>
 						<%= form_for(:search, url: searches_path, class: "navbar-from navbar-left") do |f| %>
 							<%= f.text_field :query, class: "form-control",
 							  	placeholder: "Search..." %>

@@ -6,7 +6,11 @@
 	<div class="search-results-bar">
 	<div class="col-md-7">
 		<%= form_for(:search, url: searches_path) do |f| %>
-   		<%= f.text_field :query, class: "form-control" %>
+			<% unless @query.nil? %>
+   			<%= f.text_field :query, value: @query, class: "form-control" %>
+			<% else %>
+   			<%= f.text_field :query, class: "form-control" %>
+			<% end %>
 	</div>
 	<div class="col-md-2">
 			<%= submit_tag "Search", class: "btn btn-primary pull-right" %>
@@ -19,9 +23,33 @@
             <div class="col-md-3">
               <div class="sidebar-nav">
                 <ul class="nav nav-stacked">
-                  <li class="active"><a href="#streams" data-toggle="tab"> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
+									<% if ((@current_page != -1) || ((@current_page == -1) && (@current_page_users == -1))) %>
+										<li class="active">
+									<% else %>
+										<li>
+									<% end %>
+									
+									<a href="#streams" data-toggle="tab"> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
                   <li><a href="#users" data-toggle="tab"> Users <span class="badge badge-info"><%= @count_users %></span></a></li>
                 </ul>
+                <h2>Filter</h2>
+                <%= form_for(:search, url: searches_path) do |f| %>
+                <%= f.hidden_field :query, value: @query  %>
+                <%= f.text_field :filter_name, :placeholder => "Name" %>
+                <br/ >
+                <%= f.text_field :filter_tag, :placeholder => "Tag" %>
+                <br/ >
+                <%= f.check_box :filter_rank %>
+                <%= f.label :filter_rank, "User ranking".html_safe%>
+                <br/ >
+                <div id="slider-range"></div>
+                <br/ >
+                <%= f.text_field :min_val, id:'min_val', :placeholder => "min", :size => 5%>
+                -
+                <%= f.text_field :max_val, id:'max_val',:placeholder => "max", :size => 5%>
+                <br/ >
+                <%= submit_tag "Filter" %>
+            <% end %>
               </div>
             </div>
 						<div class="col-md-9">
@@ -52,10 +80,14 @@
               <div class="main-content">
                 <div id="myPillContent" class="pill-content">
                   <div class="tab-content">
-                    <div class="tab-pane fade in active search-results" id="streams">
-                      <% if @streams == [] and @users == [] %>
-                        <pre> No Results Found </pre> 
-                      <% end %>
+
+										<% if (@current_page_users == -1) && (@current_page == -1) %>	
+                    		<div class="tab-pane fade in active search-results" id="streams">
+										<% elsif (@current_page_users != -1) %>
+                    	<div class="tab-pane fade in search-results" id="streams">
+										<% elsif (@current_page != -1) %>
+                    	<div class="tab-pane fade in active search-results" id="streams">
+										<% end %>
 
 											<ul>
 												<% @streams.each do |stream| %>
@@ -84,33 +116,93 @@
 														</div>	
 													</div>
 													<p><%= stream['_source']['description'] %></p>
-													<span class="last-update">Last update: <%= stream['_source']['last_update'] %></span>
+													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_update']), Time.now, include_seconds: true) %> ago</span>
 													<br /><br />
 													</li>
 												<% end %>
 											</ul>
 
-                    </div>
-                    <div class="tab-pane fade in" id="users">
-                      <% if @users == [] %>
-                        <pre> No Results Found </pre> 
-                      <% end %>
-                      <table class="table">
-                        <thead>
-                            <tr>
-                              <th>Name</th>
-                              <th>ID</th>
-                            </tr>
-                        </thead> 
-                        <tbody>
-                          <% @users.each do |user| %>
-                          <tr>
-                            <td><%= user['_source']['name'] %></td>
-                            <td><%= user['_id'] %></td>                          
-                          </tr>
-                          <% end %> 
-                        </tbody>
-                      </table>
+											<% if @nb_pages > 1 %>
+												<div class="center">	
+												<ul class="pagination">
+													<% unless @current_page < 1 %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page => @current_page - 1}), :method => :post do %>&laquo;<% end %></li>
+													<% else %>
+														<li class="disabled"><a href='#'>&laquo;</a></li>
+													<% end %>
+													<% @nb_pages.times do |i| %>
+														<% if i == @current_page %>
+															<li class="active"><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page => i}), :method => :post %></li>
+															<% else %>
+															<li><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page => i}), :method => :post %></li>
+														<% end %>
+													<% end %>
+													<% unless (@current_page + 1) >= @nb_pages %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page => @current_page + 1}), :method => :post do %> &raquo;<% end %></li>
+													<% else %>
+														<li class="disabled"><a href='#'>&raquo;</a></li>
+													<% end %>
+												</ul>
+												</div>
+											<% end %>
+
+										</div>
+										<% if @current_page_users == -1 %> 
+                    	<div class="tab-pane fade in" id="users">
+										<% else %>
+                    	<div class="tab-pane fade in active" id="users">
+										<% end %>
+
+											<ul>
+												<% @users.each do |user| %>
+													<li class="search-result">
+													<div class="row">
+														<div class="col-md-9">
+															<h4>
+																
+																<span class="glyphicon glyphicon-stats"></span>
+																<% user_id = user['_source']['_id'] %>
+																<% url = "/users/#{user_id}" %>
+															<%= link_to(user['_source']['username'], url) %></h4>
+														</div>
+														<div class="col-md-3 search-results-stats">
+															<ul class="pull-right">
+															</ul>
+														</div>	
+													</div>
+													<p><%= user['_id'] %></p>
+													<span class="last-update">Last updated <%= distance_of_time_in_words(Time.now, Time.now, include_seconds: true) %> ago</span>
+													<br /><br />
+													</li>
+												<% end %>
+											</ul>
+
+
+											<% if @nb_pages_users > 1 %>
+												<div class="center">	
+												<ul class="pagination">
+													<% unless @current_page_users < 1 %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page_users => @current_page_users - 1}), :method => :post do %>&laquo;<% end %></li>
+													<% else %>
+														<li class="disabled"><a href='#'>&laquo;</a></li>
+													<% end %>
+													<% @nb_pages_users.times do |i| %>
+														<% if i == @current_page_users %>
+															<li class="active"><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page_users => i}), :method => :post %></li>
+															<% else %>
+															<li><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page_users => i}), :method => :post %></li>
+														<% end %>
+													<% end %>
+													<% unless (@current_page_users + 1) >= @nb_pages_users %>
+														<li><%= link_to searches_path(:search => {:query => @query, :page_users => @current_page_users + 1}), :method => :post do %> &raquo;<% end %></li>
+													<% else %>
+														<li class="disabled"><a href='#'>&raquo;</a></li>
+													<% end %>
+												</ul>
+												</div>
+											<% end %>
+
+
                     </div>
                   </div>
                 </div>
@@ -118,17 +210,5 @@
 							<br />
 							<br />
 							<br />
-							<%= form_for(:search, url: searches_path) do |f| %>
 
-
-								<%= f.hidden_field :query, value: @query  %>
-
-								<%= f.text_field :filter %>
-								                                                                
-								<%= submit_tag "Filter on" %>
-								<%= f.check_box :filter_name %>
-								<%= f.label :filter_name, "Name".html_safe%>
-								<%= f.check_box :filter_tag %>
-								<%= f.label :filter_tag, "Tag".html_safe%>
-						<% end %>
             </div>
