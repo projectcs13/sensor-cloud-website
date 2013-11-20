@@ -10,7 +10,7 @@
 function stream_graph(stream_id, width) {
     var DATA_URL = "/datapoints/"+stream_id;
     var P_DATA_URL = "/prediction/"+stream_id;
-    var parseDate = d3.time.format("%Y%m%dT%H%M%S.%L").parse;
+    var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse;
     var streamChart = timeChart();
         streamChart.width(width).height(200);
     var graph = d3.select("#graph-canvas");
