@@ -1,3 +1,4 @@
+/*
 $(function() {
 $( "#slider-range" ).slider({
       range: true,
@@ -11,3 +12,4 @@ $( "#slider-range" ).slider({
     });
 $( "#slider-range" ).css("width","11em");
 });
+*/

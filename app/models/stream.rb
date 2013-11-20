@@ -4,19 +4,19 @@ class Stream
   attributes :name
 	validates :name,  presence: true, length: { maximum:50 }
 
-  belongs_to :resource
+  belongs_to :user
 
-  collection_path "/users/:user_id/resources/:resource_id/streams"
+  collection_path "/users/:user_id/streams"
   include_root_in_json false
   parse_root_in_json :streams, format: :active_model_serializers
 
-  def post uid, rid
-    url = "#{CONF['API_URL']}/users/#{uid.to_s}/resources/#{rid.to_s}/streams/"
+  def post uid
+    url = "#{CONF['API_URL']}/users/#{uid.to_s}/streams/"
     send_data(:post, url)
   end
 
-  def put uid, rid, sid
-    url = "#{CONF['API_URL']}/users/#{uid.to_s}/resources/#{rid.to_s}/streams/#{sid.to_s}"
+  def put uid, sid
+    url = "#{CONF['API_URL']}/users/#{uid.to_s}/streams/#{sid.to_s}"
     send_data(:put, url)
   end
 

@@ -1,13 +1,13 @@
 SensorCloud::Application.routes.draw do
 
+  resources :streams do
+    collection do
+      delete '/', :to => :destroyAll
+    end
+  end
 
   resources :users
   resources :searches
-
-  resources :resources do
-    resources :streams
-  end
-
 	resources :sessions, only: [:new, :create, :destroy]
 
   root  'static_pages#home'

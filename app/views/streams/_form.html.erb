@@ -15,64 +15,203 @@
         </div>
       <% end %>
 
-      <div class="form-group">
-        <%= f.label :name %><br>
-        <%= f.text_field :name, class: "form-control" %>
+      <div>
+        <h4>Step 1</h4>
+        <strong><p>Tell us the basic information about your stream using the form below</p></strong>
+
+        <div class="progress progress-striped active">
+          <div id="progress-bar" class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 33.333333%"></div>
+        </div>
+
+        <hr>
       </div>
 
-      <div class="form-group">
-        <%= f.label :accuracy %><br>
-        <%= f.text_field :accuracy, class: "form-control" %>
-			</div>
+      <div class="steps">
+        <div class="step" id="step-1">
+          <div class="form-group">
+            <%= f.label :name %><br>
+            <%= f.text_field :name, class: "form-control" %>
+          </div>
 
-      <div class="form-group">
-        <%= f.label :min_val %><br>
-        <%= f.text_field :min_val, class: "form-control" %>
-			</div>
+          <div class="form-group">
+            <%= f.label :description %><br>
+            <%= f.text_field :description, class: "form-control" %>
+    			</div>
 
-      <div class="form-group">
-        <%= f.label :max_val %><br>
-        <%= f.text_field :max_val, class: "form-control" %>
-			</div>
+          <div class="form-group">
+            <%= f.label :private %><br>
+            <%= f.check_box :private, class: "form-control" %>
+          </div>
 
-      <div class="form-group">
-        <%= f.label :description %><br>
-        <%= f.text_field :description, class: "form-control" %>
-			</div>
+          <div class="form-group">
+            <%= f.label :active %><br>
+            <%= f.check_box :active, class: "form-control" %>
+          </div>
+        </div>
 
-<!--       <div class="form-group">
-        <%#= f.label :longitude %><br>
-        <%#= f.text_field :longitude, class: "form-control" %>
-			</div>
+        <div class="step" id="step-2">
+          <div class="form-group">
+            <%= f.label :model %><br>
+            <%= f.text_field :model, class: "form-control" %>
+          </div>
 
-      <div class="form-group">
-        <%#= f.label :latitude %><br>
-        <%#= f.text_field :latitude, class: "form-control" %>
-			</div> -->
+          <div class="form-group">
+            <%= f.label :manufacturer %><br>
+            <%= f.text_field :manufacturer, class: "form-control" %>
+          </div>
 
-      <div class="form-group">
-        <%= f.label :tags %><br>
-        <%= f.text_field :tags, class: "form-control" %>
+          <div class="form-group">
+            <%= f.label :uuid %><br>
+            <%= f.text_field :uuid, class: "form-control" %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :tags %><br>
+            <%= f.text_field :tags, class: "form-control" %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :accuracy %><br>
+            <%= f.text_field :accuracy, class: "form-control" %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :unit %><br>
+            <%= f.text_field :unit, class: "form-control" %>
+          </div>
+
+          <!--
+          <div class="form-group">
+            <%#= f.label :min_val %><br>
+            <%#= f.text_field :min_val, class: "form-control" %>
+          </div>
+
+          <div class="form-group">
+            <%#= f.label :max_val %><br>
+            <%#= f.text_field :max_val, class: "form-control" %>
+          </div>
+
+          <div class="form-group">
+            <%#= f.label :longitude %><br>
+            <%#= f.text_field :longitude, class: "form-control" %>
+          </div>
+
+          <div class="form-group">
+            <%#= f.label :latitude %><br>
+            <%#= f.text_field :latitude, class: "form-control" %>
+          </div>
+          -->
+        </div>
+
+        <div class="step" id="step-3">
+          <!-- <p>Triggers ???</p> -->
+
+          <div class="form-group">
+            <label class="left">Mechanism for updating data values</label>
+
+            <div class="make-switch right" id="update-switch" data-on-label="Push" data-off-label="Pull">
+              <input type="checkbox" checked>
+            </div>
+
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="polling" style="display: none;">
+            <div class="form-group">
+              <%= f.label :uri %><br>
+              <%= f.text_field :uri, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :polling_freq %><br>
+              <%= f.text_field :polling_freq, class: "form-control" %>
+            </div>
+          </div>
+        </div>
       </div>
 
 			<br/>
 
-      <div class="form-group">
-        <%= f.label :private %><br>
-        <%= f.check_box :private, class: "form-control" %>
-      </div>
+      <div class="form-button center">
+        <div id="btn-back" class="btn btn-primary">
+          Back
+          <i class="glyphicon glyphicon-chevron-left"></i>
+        </div>
 
-      <div class="form-group">
-        <%= f.label :active %><br>
-        <%= f.check_box :active, class: "form-control" %>
-			</div>
+        <div id="btn-next" class="btn btn-primary">
+          Next
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        </div>
 
-			<br/>
+        <%= f.submit "Create Stream for Testing Purposes", class: "btn btn-primary" %>
 
-      <div class="form-button">
-        <%= f.submit "Create a stream", class: "btn btn-lg btn-primary" %>
-        <%= link_to 'Cancel', edit_resource_path(@resource), class: "btn btn-lg btn-default pull-right" %>
+        <%= f.submit "Create a stream", class: "btn btn-primary hidden", id: "btn-create" %>
+        <%#= link_to 'Cancel', stream_path(@stream), class: "btn btn-default pull-right" %>
       </div>
     <% end %>
   </div>
 </div>
+
+<script type="text/javascript">
+  var currentStep = 0;
+  var steps = $('.step');
+  steps.addClass('hidden');
+  steps.first().removeClass('hidden');
+
+  var btnBack = $("#btn-back");
+  var btnNext = $("#btn-next");
+  var btnCreate = $("#btn-create");
+
+  var polling = $('.polling');
+
+  var progress = $('#progress-bar');
+  var ratio = progress.parent().width() / steps.length;
+
+
+  var back = function(event) {
+    event.preventDefault();
+
+    if (currentStep > 0) {
+      if (currentStep == steps.length) {
+        btnCreate.css('display', 'none');
+        btnNext.css('display', 'block');
+      }
+
+      steps.eq(currentStep).addClass('hidden');
+      currentStep--;
+      steps.eq(currentStep).removeClass('hidden');
+
+      w = progress.width();
+      progress.width(w - ratio);
+    }
+  };
+
+  var next = function(event) {
+    event.preventDefault();
+
+    if (currentStep < steps.length) {
+      steps.eq(currentStep).addClass('hidden');
+      currentStep++;
+      steps.eq(currentStep).removeClass('hidden');
+
+      w = progress.width();
+      progress.width(w + ratio);
+
+      if (currentStep == steps.length) {
+        btnCreate.css('display', 'block');
+        btnNext.css('display', 'none');
+      }
+    }
+  };
+
+  var switchChanged = function(event) {
+    event.preventDefault();
+    polling.toggle(500);
+  };
+
+
+
+  btnBack.on('click', back);
+  btnNext.on('click', next);
+  $("#update-switch").on('switch-change', switchChanged);
+</script>
