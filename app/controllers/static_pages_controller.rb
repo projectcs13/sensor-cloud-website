@@ -11,4 +11,13 @@ class StaticPagesController < ApplicationController
 
   def faq
   end
+
+  def manual
+  end
+
+  def privacy
+  end
+
+  def api
+  end
 end

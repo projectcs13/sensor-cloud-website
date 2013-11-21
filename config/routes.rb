@@ -1,6 +1,5 @@
 SensorCloud::Application.routes.draw do
 
-
   resources :users
   resources :searches
 
@@ -22,11 +21,14 @@ SensorCloud::Application.routes.draw do
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
+  match '/api',       to: 'static_pages#api',     via: 'get'
   match '/help',      to: 'static_pages#help',    via: 'get'
   match '/about',     to: 'static_pages#about',   via: 'get'
   resources "contacts", only: [:new, :create] 
+  match '/history',    to: 'searches#fetch_graph_data',         via: 'get'
   match '/faq',       to: 'static_pages#faq',     via: 'get'
-  match '/search',    to: 'search#index',         via: 'get'
+  match '/manual',    to: 'static_pages#manual',  via: 'get'
+  match '/privacy',   to: 'static_pages#privacy', via: 'get'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

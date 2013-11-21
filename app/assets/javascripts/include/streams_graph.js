@@ -7,7 +7,9 @@
 
  */
 
-function stream_graph(stream_id, width) {
+function stream_graph(width) {
+    var url = window.location.href.split("/");
+    var stream_id = url[url.length - 1];
     var DATA_URL = "/datapoints/"+stream_id;
     var P_DATA_URL = "/prediction/"+stream_id;
     var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse;

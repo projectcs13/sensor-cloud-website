@@ -1,0 +1,17 @@
+<% provide(:title, 'Privacy') %>
+
+<div class="page-header">
+	<h1 class="title">Privacy</h1>
+	<div class="clearfix"></div>
+</div>
+
+<p>
+	While the original developers of this service will not actively seek to read or otherwise access your private data, or pass it on to any third party, we cannot currently guarantee it's safety. There may also arise situations when some private data has to be accessed for debug purposes. <br>
+	Be careful with what data you upload, and do not upload or enter any information that you could not risk having exposed.
+</p>
+	
+
+<p>
+	Since the service is not yet considered "live", this page has a low priority. Most questions are hopefully answered on the <a href="https://github.com/projectcs13/sensor-cloud/wiki">GitHub wiki</a>. That information is of a more technical kind. If these brief points are not enough help, our best suggestion is to simply play around with the service.
+</p>
+
