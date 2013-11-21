@@ -54,10 +54,10 @@
       <div class="stream-description well"><%= @stream.description %></div>
       <h4>Tags: </h4>
       <div class="stream-tags well">
-        <span class="label label-info">Temperature</span>
-        <span class="label label-warning">Uppsala</span>
-        <span class="label label-default">Ericsson</span>
-        <span class="label label-default">SICS</span>
+        <% tagslist = @stream.tags.split(/,/) %>
+        <% for tag in tagslist %>
+        <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
+        <% end %>
       </div>
 
       <%#= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
