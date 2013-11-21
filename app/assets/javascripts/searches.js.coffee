@@ -3,7 +3,7 @@
 $ ->
 	graphWidth = $(".search-graph").width()
 	#console.log graphWidth
-	search_graph = searchGraph().width(500)
+	search_graph = searchGraph().width(1000).margin({top:0, right:0, left:0, bottom:0})
 	search_params = "?stream_id="
 	for graph in $(".search-graph")
 		search_params += graph.dataset.stream + ','

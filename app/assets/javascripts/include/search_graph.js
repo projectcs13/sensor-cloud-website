@@ -66,8 +66,8 @@ function searchGraph() {
       var gEnter = svg.enter().append("svg").append("g");
         gEnter.append("path").attr("class", "area");
         gEnter.append("path").attr("class", "line");
-        gEnter.append("g").attr("class", "x axis");
-        gEnter.append("g").attr("class", "y axis");
+        //gEnter.append("g").attr("class", "x axis");
+        //gEnter.append("g").attr("class", "y axis");
         gEnter.append("g").attr("class", "datapoints"); 
 
       // Update the outer dimensions.
