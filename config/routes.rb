@@ -24,7 +24,7 @@ SensorCloud::Application.routes.draw do
   match '/api',       to: 'static_pages#api',     via: 'get'
   match '/help',      to: 'static_pages#help',    via: 'get'
   match '/about',     to: 'static_pages#about',   via: 'get'
-  match '/contact',   to: 'static_pages#contact', via: 'get'
+  resources "contacts", only: [:new, :create] 
   match '/history',    to: 'searches#fetch_graph_data',         via: 'get'
   match '/faq',       to: 'static_pages#faq',     via: 'get'
   match '/manual',    to: 'static_pages#manual',  via: 'get'
