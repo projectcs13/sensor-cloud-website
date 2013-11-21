@@ -12,7 +12,7 @@ function stream_graph(width) {
     var stream_id = url[url.length - 1];
     var DATA_URL = "/datapoints/"+stream_id;
     var P_DATA_URL = "/prediction/"+stream_id;
-    parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse;
+    var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse;
     var streamChart = timeChart();
         streamChart.width(width).height(200);
     var graph = d3.select("#graph-canvas");

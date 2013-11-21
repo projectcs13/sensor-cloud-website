@@ -17,5 +17,14 @@ $ ->
 	res.fail (e, data) ->
 		console.log e
 
-	#search_graph = searchGraph()
-	#d3.selectAll(".search-graph").data(dummy_datasets).call(search_graph)
+	# Setting up the slider
+	$ ->
+		$( "#slider-range" ).slider, 
+    		range: true,
+    		min: 0,
+    		max: 10,
+    		values: [ 0, 5 ],
+    		slide: ( event, ui ) -> 
+    			$( "#min_val" ).val ui.values[ 0 ];
+    			$( "#max_val" ).val ui.values[ 1 ];
+
