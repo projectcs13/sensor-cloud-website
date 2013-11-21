@@ -61,6 +61,8 @@
 												<% @streams.each do |stream| %>
 													<li class="search-result">
 													<div class="row">
+														<div class="search-graph" id=<%= 'id' + stream['_id'] %> data-stream=<%= stream['_id'] %>></div>
+															
 														<div class="col-md-9">
 															<h4>
 																
@@ -81,8 +83,9 @@
 																	<%= stream['_source']['user_ranking'] %>
 																</li>
 															</ul>
-														</div>	
-													</div>
+														</div>
+													
+													
 													<p><%= stream['_source']['description'] %></p>
 													<span class="last-update">Last update: <%= stream['_source']['last_update'] %></span>
 													<br /><br />

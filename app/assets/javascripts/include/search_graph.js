@@ -38,13 +38,16 @@ function searchGraph() {
       yScale = d3.scale.linear(),
       xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickSize(0, 0),
       yAxis = d3.svg.axis().scale(yScale).orient("left").tickSize(0).ticks(5),
-      line = d3.svg.line().x(X).y(Y).interpolate("monotone");
+      line = d3.svg.line().x(X).y(Y).interpolate("monotone"),
+      area = d3.svg.area().x(X).y1(Y).interpolate("monotone");
 
   function chart(selection) {
     selection.each(function(data) {
       // Convert data to standard representation greedily;
       // this is needed for nondeterministic accessors.
+      //data = data.data;
       data.map(function(d, i) {
+        console.log(d.value);
         d.timestamp = parseDate(d.timestamp);
       });
       // Update the X-Scale
@@ -53,7 +56,7 @@ function searchGraph() {
           .range([0, width - margin.left - margin.right]);
       // Update the Y-Scale
       yScale
-          .domain([0, d3.max(data, function(d) { return d.value; })])
+          .domain(d3.extent(data, function(d) { return d.value; }))
           .range([height - margin.top - margin.bottom, 0]);
 
       // Select the svg element, if it exists.
@@ -62,6 +65,7 @@ function searchGraph() {
 
       // Otherwise, create the skeletal chart.
       var gEnter = svg.enter().append("svg").append("g");
+        gEnter.append("path").attr("class", "area");
         gEnter.append("path").attr("class", "line");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
@@ -79,6 +83,11 @@ function searchGraph() {
        g.select(".line")
           .datum(data)
           .attr("d", line);
+
+      // Update the area path.
+      g.select(".area")
+          .datum(data)
+          .attr("d", area.y0(yScale.range()[0]));
 
       // Update the x-axis.
       g.select(".x.axis")
