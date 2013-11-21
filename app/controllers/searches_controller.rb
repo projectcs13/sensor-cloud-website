@@ -3,6 +3,13 @@ class SearchesController < ApplicationController
   def show
   end
 
+  def fetch_graph_data
+    res = Faraday.get "#{CONF['API_URL']}/_history?stream_id=" + params[:stream_id]
+    respond_to do |format|
+      format.json { render json: res.body, status: 200 }
+    end
+  end
+
 	def create
 		@nb_results_per_page = 5.0
 		if params['search']['query'].blank?
