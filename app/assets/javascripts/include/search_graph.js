@@ -47,7 +47,6 @@ function searchGraph() {
       // this is needed for nondeterministic accessors.
       //data = data.data;
       data.map(function(d, i) {
-        console.log(d.value);
         d.timestamp = parseDate(d.timestamp);
       });
       // Update the X-Scale
