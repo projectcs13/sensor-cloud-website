@@ -74,9 +74,9 @@
 									</div>
 									<div class="col-md-4">
 										<%= f.select "sort_by", 
-											options_for_select([['Name',    "name"],
+											options_for_select([["None", "none"], ['Name',    "name"],
 																				  ['User ranking', "user_ranking"]
-																		 	   ], "name"), 
+																		 	   ], params['search']['sort_by']), 
 											{}, onclick: "this.form.submit();", 
 											class: "form-control"
 										%>

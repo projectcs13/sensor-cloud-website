@@ -6,6 +6,7 @@
 				<%= form_for(:search, url: searches_path) do |f| %>
 					<%= f.text_field :query, class: "form-control input-lg", 
 								placeholder: "Example: Temperature in Uppsala" %>
+					<%= f.hidden_field :sort_by, :value => "none" %>
 
 			</div>
 			<div class="col-md-1">
