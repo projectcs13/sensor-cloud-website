@@ -20,7 +20,7 @@
         <strong><p>Tell us the basic information about your stream using the form below</p></strong>
 
         <div class="progress progress-striped active">
-          <div id="progress-bar" class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 33.333333%"></div>
+          <div id="progress-bar" class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 0%"></div>
         </div>
 
         <hr>
@@ -39,32 +39,35 @@
     			</div>
 
           <div class="form-group">
-            <%= f.label :private %><br>
-            <%= f.check_box :private, class: "form-control" %>
+            <%= f.label :type %><br>
+            <%= f.text_field :type, class: "form-control" %>
           </div>
 
           <div class="form-group">
-            <%= f.label :active %><br>
-            <%= f.check_box :active, class: "form-control" %>
+            <%= f.label :private %><br>
+            <div class="make-switch right">
+              <!-- <input type="checkbox" checked> -->
+              <%= f.check_box :private, class: "form-control" %>
+            </div>
           </div>
         </div>
 
         <div class="step" id="step-2">
-          <div class="form-group">
-            <%= f.label :model %><br>
-            <%= f.text_field :model, class: "form-control" %>
+          <!-- <div class="form-group">
+            <%#= f.label :model %><br>
+            <%#= f.text_field :model, class: "form-control" %>
           </div>
 
           <div class="form-group">
-            <%= f.label :manufacturer %><br>
-            <%= f.text_field :manufacturer, class: "form-control" %>
+            <%#= f.label :manufacturer %><br>
+            <%#= f.text_field :manufacturer, class: "form-control" %>
           </div>
 
           <div class="form-group">
-            <%= f.label :uuid %><br>
-            <%= f.text_field :uuid, class: "form-control" %>
+            <%#= f.label :uuid %><br>
+            <%#= f.text_field :uuid, class: "form-control" %>
           </div>
-
+ -->
           <div class="form-group">
             <%= f.label :tags %><br>
             <%= f.text_field :tags, class: "form-control" %>
@@ -80,27 +83,25 @@
             <%= f.text_field :unit, class: "form-control" %>
           </div>
 
-          <!--
           <div class="form-group">
-            <%#= f.label :min_val %><br>
-            <%#= f.text_field :min_val, class: "form-control" %>
+            <%= f.label :min_val %><br>
+            <%= f.text_field :min_val, class: "form-control" %>
           </div>
 
           <div class="form-group">
-            <%#= f.label :max_val %><br>
-            <%#= f.text_field :max_val, class: "form-control" %>
+            <%= f.label :max_val %><br>
+            <%= f.text_field :max_val, class: "form-control" %>
           </div>
 
           <div class="form-group">
-            <%#= f.label :longitude %><br>
-            <%#= f.text_field :longitude, class: "form-control" %>
+            <%= f.label :latitude %><br>
+            <%= f.text_field :latitude, class: "form-control" %>
           </div>
 
           <div class="form-group">
-            <%#= f.label :latitude %><br>
-            <%#= f.text_field :latitude, class: "form-control" %>
+            <%= f.label :longitude %><br>
+            <%= f.text_field :longitude, class: "form-control" %>
           </div>
-          -->
         </div>
 
         <div class="step" id="step-3">
@@ -110,7 +111,8 @@
             <label class="left">Mechanism for updating data values</label>
 
             <div class="make-switch right" id="update-switch" data-on-label="Push" data-off-label="Pull">
-              <input type="checkbox" checked>
+              <!-- <input type="checkbox" checked> -->
+              <%= f.check_box :poll, class: "form-control" %>
             </div>
 
             <div class="clearfix"></div>
@@ -143,9 +145,9 @@
           <i class="glyphicon glyphicon-chevron-right"></i>
         </div>
 
-        <%= f.submit "Create Stream for Testing Purposes", class: "btn btn-primary" %>
+        <%#= f.submit "Create Stream for Testing Purposes", class: "btn btn-primary" %>
 
-        <%= f.submit "Create a stream", class: "btn btn-primary hidden", id: "btn-create" %>
+        <%= f.submit "Create a stream", class: "btn btn-primary", id: "btn-create" %>
         <%#= link_to 'Cancel', stream_path(@stream), class: "btn btn-default pull-right" %>
       </div>
     <% end %>
@@ -155,7 +157,9 @@
 <script type="text/javascript">
   var currentStep = 0;
   var steps = $('.step');
-  steps.addClass('hidden');
+  steps.each(function(i, step) {
+    if (i != 0) $(step).css('display', 'none');
+  });
   steps.first().removeClass('hidden');
 
   var btnBack = $("#btn-back");
@@ -166,39 +170,47 @@
 
   var progress = $('#progress-bar');
   var ratio = progress.parent().width() / steps.length;
+  //ratio = ratio + ratio / 10;
 
 
   var back = function(event) {
     event.preventDefault();
 
     if (currentStep > 0) {
-      if (currentStep == steps.length) {
+      if (currentStep == steps.length-1) {
         btnCreate.css('display', 'none');
-        btnNext.css('display', 'block');
+        btnNext.css('display', 'inline-block');
+        // btnNext.removeClass('btn-disabled').addClass('btn-primary');
       }
 
-      steps.eq(currentStep).addClass('hidden');
+      steps.eq(currentStep).hide(250);
       currentStep--;
-      steps.eq(currentStep).removeClass('hidden');
+      steps.eq(currentStep).show(250);
 
       w = progress.width();
       progress.width(w - ratio);
+
+      if (currentStep == 0) {
+        btnBack.css('display', 'none');
+      }
     }
   };
 
   var next = function(event) {
     event.preventDefault();
 
-    if (currentStep < steps.length) {
-      steps.eq(currentStep).addClass('hidden');
+    if (currentStep < steps.length-1) {
+      btnBack.css('display', 'inline-block');
+
+      steps.eq(currentStep).hide(250);
       currentStep++;
-      steps.eq(currentStep).removeClass('hidden');
+      steps.eq(currentStep).show(250);
 
       w = progress.width();
       progress.width(w + ratio);
 
-      if (currentStep == steps.length) {
-        btnCreate.css('display', 'block');
+      if (currentStep == steps.length-1) {
+        btnCreate.css('display', 'inline-block');
         btnNext.css('display', 'none');
       }
     }
@@ -211,7 +223,8 @@
 
 
 
-  btnBack.on('click', back);
+  btnBack.on('click', back).hide();
   btnNext.on('click', next);
+  btnCreate.hide();
   $("#update-switch").on('switch-change', switchChanged);
 </script>

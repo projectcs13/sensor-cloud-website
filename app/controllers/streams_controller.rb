@@ -12,10 +12,10 @@ class StreamsController < ApplicationController
 
   def new
     @stream = Stream.new
-    attributes = ["name", "description", "tags", "type", "private", "active",
-                  "accuracy", "min_val", "max_val", "location", "uri", "polling_freq", "uuid", "unit",
-                  "user_id",
-                  "manufacturer", "model"]
+    attributes = ["name", "description", "type", "private",
+                  "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
+                  "poll", "uri", "polling_freq",
+                  "user_id"]
     attributes.each do |attr|
       @stream.send("#{attr}=", nil)
     end
@@ -25,13 +25,21 @@ class StreamsController < ApplicationController
   end
 
   def correctBooleanFields
+    @stream.location = "#{@stream.latitude},#{@stream.longitude}"
+    @stream.attributes.delete 'longitude'
+    @stream.attributes.delete 'latitude'
+
+    @stream.poll    = if @stream.poll    == "0" then "false" else "true" end
     @stream.private = if @stream.private == "0" then "false" else "true" end
-    @stream.active  = if @stream.active  == "0" then "false" else "true" end
+    @stream.active  = "true"
   end
 
   def create
     @stream = Stream.new(stream_params)
     correctBooleanFields
+
+    logger.debug "attributes"
+    logger.debug @stream.attributes
 
     respond_to do |format|
     	res = post
@@ -140,7 +148,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :tags, :type, :private, :active, :accuracy, :min_val, :max_val, :location, :uri, :polling_freq, :uuid, :unit)
+      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :poll, :uri, :polling_freq)
     end
 
     # def load_parent
