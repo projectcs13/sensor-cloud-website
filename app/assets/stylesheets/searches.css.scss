@@ -1,0 +1,29 @@
+@import 'variables';
+
+.axis path,
+.axis line pline{
+  fill: none;
+  stroke: $custom-grey-dark;
+}
+.line {
+  fill: none;
+  stroke: $custom-greyish-blue;
+  stroke-width: 1.5px;
+}
+.area {
+  fill: $custom-greyish-blue;
+  stroke: $custom-greyish-blue;
+  stroke-width: 1.5px;
+}
+
+
+li.search-result>div.row {
+	position: relative;
+	
+}
+
+.search-graph {
+	position: absolute;
+	top: 0;
+	z-index:-1;
+}
