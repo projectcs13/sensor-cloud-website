@@ -19,7 +19,7 @@ $ ->
 
 	# Setting up the slider
 	$ ->
-		$( "#slider-range" ).slider, 
+		$("#slider-range").slider 
     		range: true,
     		min: 0,
     		max: 10,
@@ -28,3 +28,4 @@ $ ->
     			$( "#min_val" ).val ui.values[ 0 ];
     			$( "#max_val" ).val ui.values[ 1 ];
 
+		#$( "#slider-range" ).css("width","11em");
