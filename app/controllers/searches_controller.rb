@@ -3,6 +3,13 @@ class SearchesController < ApplicationController
   def show
   end
 
+  def fetch_graph_data
+    res = Faraday.get "#{CONF['API_URL']}/_history?stream_id=" + params[:stream_id]
+    respond_to do |format|
+      format.json { render json: res.body, status: 200 }
+    end
+  end
+
 	def create
 		@nb_results_per_page = 5.0
 		if params['search']['query'].blank?
@@ -24,7 +31,7 @@ class SearchesController < ApplicationController
 				end
         req.headers['Content-Type'] = 'application/json'
 
-        if params['search']['sort_by'].nil? 
+        if params['search']['sort_by'] == "none" or params['search']['sort_by'].nil?
           sort_by = '{}' 
         else 
           sort_by = '{"' + params['search']['sort_by'] + '":"asc" }'
@@ -33,17 +40,26 @@ class SearchesController < ApplicationController
         #req.body = '{"query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
   
   	filters = Array.new
-    	if params['search']['filter_name'].to_s.strip.length != 0
-     		nameFilter = {"regexp"=>{ "name" => { "value" => ".*" + params['search']['filter_name'] + ".*"}}} 
-     		filters.push(nameFilter.to_json)
+    	if params['search']['filter_unit'].to_s.strip.length != 0
+#         keywords_name = params['search']['filter_name'].downcase.gsub(/\s+/m, ' ').gsub(/^\s+|\s+$/m, '').split(" ")
+#         keywords_name.each do |i|
+#          nameFilter = {"regexp"=>{"name" =>{ "value" => i}}} 
+#          filters.push(nameFilter.to_json)
+#         end
+        nameFilter = {"regexp"=>{ "unit" => { "value" => params['search']['filter_unit'] }}}
+        filters.push(nameFilter.to_json) 
        	end
      	if params['search']['filter_tag'].to_s.strip.length != 0
-     	    tagFilter = {"regexp"=>{ "tags" => { "value" => ".*" + params['search']['filter_tag'] + ".*"}}} 
+     	    tagFilter = {"regexp"=>{ "tags" => { "value" => params['search']['filter_tag'] }}} 
      	    filters.push(tagFilter.to_json)
       end
       if params['search']['filter_rank'] == "1"
           rankFilter = {"range"=>{ "user_ranking" => {"gte" => params['search']['min_val'] , "lte" => params['search']['max_val']}}}
           filters.push(rankFilter.to_json)
+      end
+      if params['search']['filter_active'] == "1"
+            activeFilter = {"regexp"=>{ "active" => { "value" => params['search']['active'] }}}
+            filters.push(activeFilter.to_json) 
       end
         #A quick way to check if filter is nil or empty or just whitespace
       	if filters.empty?
