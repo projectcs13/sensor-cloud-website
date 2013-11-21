@@ -14,7 +14,7 @@ class StreamsController < ApplicationController
     @stream = Stream.new
     attributes = ["name", "description", "type", "private",
                   "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
-                  "poll", "uri", "polling_freq",
+                  "polling", "uri", "polling_freq",
                   "user_id"]
     attributes.each do |attr|
       @stream.send("#{attr}=", nil)
@@ -29,9 +29,8 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'longitude'
     @stream.attributes.delete 'latitude'
 
-    @stream.poll    = if @stream.poll    == "0" then "false" else "true" end
+    @stream.polling = if @stream.polling == "0" then "false" else "true" end
     @stream.private = if @stream.private == "0" then "false" else "true" end
-    @stream.active  = "true"
   end
 
   def create
@@ -43,7 +42,9 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
     	res = post
+        logger.debug "BODY: #{res.body}"
       	if res.status == 200
+
           @stream.id = JSON.parse(res.body)['_id']
   				# TODO
           # The API is currently sending back the response before the database has
@@ -148,7 +149,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :poll, :uri, :polling_freq)
+      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq)
     end
 
     # def load_parent

@@ -112,7 +112,7 @@
 
             <div class="make-switch right" id="update-switch" data-on-label="Push" data-off-label="Pull">
               <!-- <input type="checkbox" checked> -->
-              <%= f.check_box :poll, class: "form-control" %>
+              <%= f.check_box :polling, class: "form-control" %>
             </div>
 
             <div class="clearfix"></div>
@@ -136,8 +136,8 @@
 
       <div class="form-button center">
         <div id="btn-back" class="btn btn-primary">
-          Back
           <i class="glyphicon glyphicon-chevron-left"></i>
+          Back
         </div>
 
         <div id="btn-next" class="btn btn-primary">
@@ -145,26 +145,27 @@
           <i class="glyphicon glyphicon-chevron-right"></i>
         </div>
 
-        <%#= f.submit "Create Stream for Testing Purposes", class: "btn btn-primary" %>
-
-        <%= f.submit "Create a stream", class: "btn btn-primary", id: "btn-create" %>
-        <%#= link_to 'Cancel', stream_path(@stream), class: "btn btn-default pull-right" %>
+        <div id="btn-create" class="btn btn-primary">Create a stream</div>
+        <%= f.submit "Create", class: "btn btn-primary hidden", id: "submit" %>
       </div>
     <% end %>
   </div>
 </div>
 
 <script type="text/javascript">
+  var TIME = 250;
+
   var currentStep = 0;
   var steps = $('.step');
   steps.each(function(i, step) {
     if (i != 0) $(step).css('display', 'none');
   });
-  steps.first().removeClass('hidden');
+  //steps.first().removeClass('hidden');
 
-  var btnBack = $("#btn-back");
-  var btnNext = $("#btn-next");
+  var btnBack   = $("#btn-back");
+  var btnNext   = $("#btn-next");
   var btnCreate = $("#btn-create");
+  var btnSubmit = $("#submit");
 
   var polling = $('.polling');
 
@@ -172,6 +173,15 @@
   var ratio = progress.parent().width() / steps.length;
   //ratio = ratio + ratio / 10;
 
+  var decreaseBar = function() {
+    w = progress.width();
+    progress.width(w - ratio);
+  };
+
+  var increaseBar = function() {
+    w = progress.width();
+    progress.width(w + ratio);
+  };
 
   var back = function(event) {
     event.preventDefault();
@@ -183,12 +193,11 @@
         // btnNext.removeClass('btn-disabled').addClass('btn-primary');
       }
 
-      steps.eq(currentStep).hide(250);
+      steps.eq(currentStep).hide(TIME);
       currentStep--;
-      steps.eq(currentStep).show(250);
+      steps.eq(currentStep).show(TIME);
 
-      w = progress.width();
-      progress.width(w - ratio);
+      decreaseBar();
 
       if (currentStep == 0) {
         btnBack.css('display', 'none');
@@ -202,12 +211,11 @@
     if (currentStep < steps.length-1) {
       btnBack.css('display', 'inline-block');
 
-      steps.eq(currentStep).hide(250);
+      steps.eq(currentStep).hide(TIME);
       currentStep++;
-      steps.eq(currentStep).show(250);
+      steps.eq(currentStep).show(TIME);
 
-      w = progress.width();
-      progress.width(w + ratio);
+      increaseBar();
 
       if (currentStep == steps.length-1) {
         btnCreate.css('display', 'inline-block');
@@ -215,6 +223,20 @@
       }
     }
   };
+
+  var create = function(event) {
+    event.preventDefault();
+
+    increaseBar();
+    setTimeout(function() {
+      btnSubmit.trigger('click');
+    }, 500);
+
+    // $(window).animate(function() {
+    //   increaseBar();
+    //   btnSubmit.trigger('submit');
+    // }, 400);
+  }
 
   var switchChanged = function(event) {
     event.preventDefault();
@@ -225,6 +247,7 @@
 
   btnBack.on('click', back).hide();
   btnNext.on('click', next);
-  btnCreate.hide();
+  btnCreate.on('click', create).hide();
+
   $("#update-switch").on('switch-change', switchChanged);
 </script>
