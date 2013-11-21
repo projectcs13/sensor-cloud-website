@@ -31,7 +31,7 @@ class SearchesController < ApplicationController
 				end
         req.headers['Content-Type'] = 'application/json'
 
-        if params['search']['sort_by'].nil? 
+        if params['search']['sort_by'] == "none"
           sort_by = '{}' 
         else 
           sort_by = '{"' + params['search']['sort_by'] + '":"asc" }'
