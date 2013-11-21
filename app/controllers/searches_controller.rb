@@ -57,15 +57,22 @@ class SearchesController < ApplicationController
         #A quick way to check if filter is nil or empty or just whitespace
       	if filters.empty?
       		req.body = '{ "sort": ['+ sort_by + '],
-            "query" : {"query_string" : {"query" : "' + params['search']['query'] + '"}}
-            }'
+                  "query": {
+                    "filtered": {
+                      "query" : {"query_string" : {"query" : "' + params['search']['query'] + '"}},
+                      "filter":{
+                        "regexp":{"private":{"value":"false"}}
+                      }
+                    }
+                  }
+                }'
       	else
       	req.body = '{ "sort": ['+ sort_by + '],
                   "query": {
                     "filtered": {
                       "query" : {"query_string" : {"query" : "' + params['search']['query'] + '"}},
                       "filter":{
-                        "and": ['+ filters.join(",") + ']
+                        "and": [{"regexp":{"private":{"value":"false"}}},'+ filters.join(",") + ']
                       }
                     }
                   }
