@@ -32,6 +32,16 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'longitude'
     @stream.attributes.delete 'latitude'
 
+    # Remove attributes when editing a stream
+    @stream.attributes.delete 'id'
+    @stream.attributes.delete 'active'
+    @stream.attributes.delete 'user_ranking'
+    @stream.attributes.delete 'last_updated'
+    @stream.attributes.delete 'history_size'
+    @stream.attributes.delete 'creation_date'
+    @stream.attributes.delete 'quality'
+    @stream.attributes.delete 'subscribers'
+
     @stream.polling = if @stream.polling == "0" then "false" else "true" end
     @stream.private = if @stream.private == "0" then "false" else "true" end
   end
@@ -69,6 +79,7 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
     	res = put
+      logger.debug "attributes: #{@stream.attributes}"
     	res.on_complete do
       	if res.status == 200
           # TODO
