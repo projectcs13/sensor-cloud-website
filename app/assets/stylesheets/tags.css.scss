@@ -1,0 +1,24 @@
+$locations: green;
+$companies: blue;
+$temperature: red;
+$weather: purple;
+
+.uppsala, .stockholm {
+	@extends label;
+	background-color: $locations;
+}
+
+.ericsson, .sics, .apple, .google, .microsoft, .amazon {
+	@extends label;
+	background-color: $companies;
+}
+
+.temperature, .temp, .celsius, .farenheit {
+	@extends label;
+	background-color: $temperature;
+}
+
+.weather, .rain, .humidity {
+	@extends label;
+	background-color: $weather;
+}

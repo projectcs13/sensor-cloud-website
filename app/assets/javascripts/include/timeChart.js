@@ -28,7 +28,7 @@
 */
 function timeChart() {
   var margin = {top: 40, right: 20, bottom: 20, left: 50},
-      parseDate = d3.time.format("%Y-%m-%d").parse;
+       parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse;
       width = 760,
       height = 120,
       unit = "",
@@ -38,8 +38,8 @@ function timeChart() {
       yScale = d3.scale.linear(),
       predicted_data = function(d) { return d.pdata },
       real_data = function(d) { return d.data },
-      xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickSize(6, 0),
-      yAxis = d3.svg.axis().scale(yScale).orient("left").tickSize(10).ticks(5),
+      xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickSize(0, 0),
+      yAxis = d3.svg.axis().scale(yScale).orient("left").tickSize(0).ticks(5),
       line = d3.svg.line().x(X).y(Y).interpolate("monotone"),
       p_area_95 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo95)}).y1(function(d){return yScale(d.hi95)}).interpolate("monotone"),
       p_area_80 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo80)}).y1(function(d){return yScale(d.hi80)}).interpolate("monotone");

@@ -9,9 +9,15 @@ class StaticPagesController < ApplicationController
   def about
   end
 
-  def contact
+  def faq
   end
 
-  def faq
+  def manual
+  end
+
+  def privacy
+  end
+
+  def api
   end
 end
