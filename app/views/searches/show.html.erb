@@ -21,7 +21,7 @@
 
 <div class="row">
             <div class="col-md-3">
-              <div class="sidebar-nav">
+              <div class="sidebar-nav sidebar-filter">
                 <ul class="nav nav-stacked">
 									<% if ((@current_page != -1) || ((@current_page == -1) && (@current_page_users == -1))) %>
 										<li class="active">
@@ -31,7 +31,7 @@
 
 									<a href="#streams" data-toggle="tab"> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
                   <li><a href="#users" data-toggle="tab"> Users <span class="badge badge-info"><%= @count_users %></span></a></li>
-                </ul>
+								</ul>
                 <h2>Filter</h2>
                 <%= form_for(:search, url: searches_path) do |f| %>
                 <%= f.hidden_field :query, value: @query  %>
@@ -58,7 +58,7 @@
                 -
                 <%= f.text_field :max_val, id:'max_val',:placeholder => "max", :size => 5, class: "form-control"%>
                 <br/ >
-                <%= submit_tag "Filter" %>
+                <%= submit_tag "Filter", class: "btn btn-primary" %>
             <% end %>
               </div>
             </div>

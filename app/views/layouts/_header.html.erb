@@ -14,7 +14,7 @@
     </div>
 
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-    	<ul class="nav navbar-nav">
+    	<ul class="nav navbar-nav search-bar-header">
       	<li>
 
 				<% unless (params[:controller] == 'searches'||
@@ -29,10 +29,13 @@
 					<% end %>
 
 				</li>
+     	</ul>
+
+    	<ul class="nav navbar-nav">
 				<% if signed_in? %>
         	<li><%= link_to "My Streams", streams_path %></li>
 				<% end %>
-     	</ul>
+			</ul>
 
 			<ul class="nav navbar-nav right">
 				<% if signed_in? %>
