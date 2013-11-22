@@ -17,6 +17,8 @@ $ ->
       .toggleClass('glyphicon-chevron-up')
       .toggleClass('glyphicon-chevron-down')
 
+  $('body').on 'click', '.list-group-item', showDetails
+
   # Set up graph element
   graphWidth = $("#graph-canvas").width();
   window.graph_object = new stream_graph(graphWidth);
