@@ -108,15 +108,24 @@
 																	<span class="glyphicon glyphicon-user"></span>
 																	<%= stream['_source']['subscribers'] %>
 																</li>
-																<li>
-																	<span class="glyphicon glyphicon-star"></span>
-																	<%= stream['_source']['user_ranking'] %>
-																</li>
-															</ul>
 														</div>	
 													</div>
 													<p><%= stream['_source']['description'] %></p>
 													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_update']), Time.now, include_seconds: true) %> ago</span>
+																												<ul class="pull-right">
+															<li>
+																<%scale = 5%>
+																<%ranking = (stream['_source']['user_ranking']/(100/scale))%>
+																	<% for stars in ranking.to_i.times %>
+																	<span class="glyphicon glyphicon-star"></span>
+																<% end %>
+
+																	<%if ranking % scale > 3%>
+																<span class="glyphicon glyphicon-star"></span>
+																<% end %>
+
+															</li>
+														</ul>
 													<br /><br />
 													</li>
 												<% end %>
