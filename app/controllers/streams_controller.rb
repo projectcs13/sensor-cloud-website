@@ -22,6 +22,9 @@ class StreamsController < ApplicationController
   end
 
   def edit
+    location = @stream.location.split(",", 2)
+    @stream.send("latitude=", location[0])
+    @stream.send("longitude=", location[1])
   end
 
   def correctBooleanFields

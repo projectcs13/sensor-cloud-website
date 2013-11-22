@@ -7,11 +7,6 @@
 //= require 'include/streams_map.js'
 //= require 'include/timeChart.js'
 //= require 'include/client.js'
-$ ->
-	# Set up map element
-	#mapWidth = $('#map-canvas').width();
-	#$('#map-canvas').height(mapWidth);
-	#initialize_map(latitude, longitude);
 
 $ ->
 
@@ -22,20 +17,19 @@ $ ->
       .toggleClass('glyphicon-chevron-up')
       .toggleClass('glyphicon-chevron-down')
 
-
   # Set up graph element
-	graphWidth = $("#graph-canvas").width();
-	window.graph_object = new stream_graph(graphWidth);
-	graph_object.init();
+  graphWidth = $("#graph-canvas").width();
+  window.graph_object = new stream_graph(graphWidth);
+  graph_object.init();
 
   # Set up buttons
-	$("#prediction-description").hide();
-	
-	$("#prediction-btn").on 'click', ->
-		$("#prediction-description").show()
-		graph_object.fetch_prediction_data()
-	
-	$("#live-update-btn").on 'switch-change', (e, data) ->
-		value = data.value
-		alert value
-		toggle(value)
+  $("#prediction-description").hide();
+
+  $("#prediction-btn").on 'click', ->
+    $("#prediction-description").show()
+    graph_object.fetch_prediction_data()
+
+  $("#live-update-btn").on 'switch-change', (e, data) ->
+    value = data.value
+    alert value
+    toggle(value)
