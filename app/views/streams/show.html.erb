@@ -1,6 +1,6 @@
 <div class="row title-row">
   <div class="col-lg-8">
-    <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
+    <h2 class="text-left"><%= @stream.name %></h2></div>
   <div class="col-lg-4 text-right">
           <p>
             <% if @stream.private == "true" %>
@@ -16,7 +16,7 @@
             <% end %>
           </p>
 
-          <p><small>Created: <%#= @stream.created_at.to_formatted_s(:short) %></small></p>
+          <p><small>Created: <%= @stream.creation_date %></small></p>
   </div>
 </div>
 
@@ -43,11 +43,11 @@
           </div>
         </div>
       <div><small>
-        Last update: <%#= @stream.updated_at %>
-        History: <%= @stream.history_size %>
-        Accuracy: <%= @stream.accuracy %>
-        Min Value: <%= @stream.min_val %>
-        Max Value: <%= @stream.max_val %>
+        Last update: <%= @stream.last_updated %>
+        History: <%#= @stream.history_size %>
+        Accuracy: <%#= @stream.accuracy %>
+        Min Value: <%#= @stream.min_val %>
+        Max Value: <%#= @stream.max_val %>
         </small>
       </div>
       <h4>Description: </h4>
@@ -60,11 +60,8 @@
         <% end %>
       </div>
 
-      <%#= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
-      <%#= link_to 'Back', edit_resource_path(@resource) %>
-      <%= link_to 'Back', edit_resource_path(@resource), class: "glyphicon glyphicon-chevron-left btn btn-primary" %>
-      <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
-      <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+      <%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+      <%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
     <div id="map-canvas">

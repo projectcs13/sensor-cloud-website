@@ -390,8 +390,8 @@ input.search-query {
 	.search-results-stats {
 		margin-top: 20px;
 		margin-bottom: 10px;
-		li { 
-			display: inline; 
+		li {
+			display: inline;
 			margin-left: 15px;
 		}
 	}
@@ -407,6 +407,25 @@ input.search-query {
 }
 
 .search-header {
+	h2 {
+		text-align: left;
+		margin-left: 10px;
+	}
+}
+
+.btn .glyphicon {
+  color: white;
+}
+
+.search-bar-header {
+	position: relative;
+	top: 10px;
+	.btn {
+		margin-left: 10px;
+	}
+}
+
+.sidebar-filter {
 	h2 {
 		text-align: left;
 		margin-left: 10px;
