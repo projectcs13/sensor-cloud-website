@@ -1,14 +1,17 @@
 SensorCloud::Application.routes.draw do
 
+<<<<<<< HEAD
   resources :streams do
     collection do
       delete '/', :to => :destroyAll
     end
   end
+
+=======
+>>>>>>> 806fd9017aebc91fc7b44ea92e83fca787b667fa
   resources :users
   resources :searches
 	resources :sessions, only: [:new, :create, :destroy]
-  resources :contacts, only: [:new, :create]
 
   root  'static_pages#home'
 
@@ -25,8 +28,8 @@ SensorCloud::Application.routes.draw do
   match '/api',       to: 'static_pages#api',     via: 'get'
   match '/help',      to: 'static_pages#help',    via: 'get'
   match '/about',     to: 'static_pages#about',   via: 'get'
-
-  match '/history',   to: 'searches#fetch_graph_data',         via: 'get'
+  resources "contacts", only: [:new, :create] 
+  match '/history',    to: 'searches#fetch_graph_data',         via: 'get'
   match '/faq',       to: 'static_pages#faq',     via: 'get'
   match '/manual',    to: 'static_pages#manual',  via: 'get'
   match '/privacy',   to: 'static_pages#privacy', via: 'get'
