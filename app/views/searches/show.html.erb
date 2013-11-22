@@ -28,7 +28,7 @@
 									<% else %>
 										<li>
 									<% end %>
-									
+
 									<a href="#streams" data-toggle="tab"> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
                   <li><a href="#users" data-toggle="tab"> Users <span class="badge badge-info"><%= @count_users %></span></a></li>
                 </ul>
@@ -41,11 +41,11 @@
                 <br/ >
                 <%= f.check_box :filter_active %>
                 <%= f.label :filter_active, "Active".html_safe%>
-                <%= f.select "active", 
+                <%= f.select "active",
 					options_for_select([['On',"on"],
 										['Off', "off"]
-										], "on"), 
-											{}, 
+										], "on"),
+											{},
 											class: "form-control"
 										%>
                 <br/ >
@@ -73,11 +73,11 @@
 										<%= label_tag "Sort by: " %>
 									</div>
 									<div class="col-md-4">
-										<%= f.select "sort_by", 
+										<%= f.select "sort_by",
 											options_for_select([["None", "none"], ['Name',    "name"],
 																				  ['User ranking', "user_ranking"]
-																		 	   ], params['search']['sort_by']), 
-											{}, onclick: "this.form.submit();", 
+																		 	   ], params['search']['sort_by']),
+											{}, onclick: "this.form.submit();",
 											class: "form-control"
 										%>
 									</div>
@@ -91,7 +91,7 @@
                 <div id="myPillContent" class="pill-content">
                   <div class="tab-content">
 
-										<% if (@current_page_users == -1) && (@current_page == -1) %>	
+										<% if (@current_page_users == -1) && (@current_page == -1) %>
                     		<div class="tab-pane fade in active search-results" id="streams">
 										<% elsif (@current_page_users != -1) %>
                     	<div class="tab-pane fade in search-results" id="streams">
@@ -104,7 +104,7 @@
 													<li class="search-result">
 													<div class="row">
 														<div class="search-graph" id=<%= 'id' + stream['_id'] %> data-stream=<%= stream['_id'] %>></div>
-															
+
 														<div class="col-md-9">
 															<h4>
 																<% resource_id = stream['_source']['resource_id'] %>
@@ -118,23 +118,32 @@
 																	<span class="glyphicon glyphicon-user"></span>
 																	<%= stream['_source']['subscribers'] %>
 																</li>
-																<li>
-																	<span class="glyphicon glyphicon-star"></span>
-																	<%= stream['_source']['user_ranking'] %>
-																</li>
-															</ul>
 														</div>
-													
-													
+
+
 													<p><%= stream['_source']['description'] %></p>
-													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_update']), Time.now, include_seconds: true) %> ago</span>
+													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_updated']), Time.now, include_seconds: true) %> ago</span>
+																												<ul class="pull-right">
+															<li>
+																<%scale = 5%>
+																<%ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
+																	<% for stars in ranking.to_i.times %>
+																	<span class="glyphicon glyphicon-star"></span>
+																<% end %>
+
+																	<%if ranking % scale > 3%>
+																<span class="glyphicon glyphicon-star"></span>
+																<% end %>
+
+															</li>
+														</ul>
 													<br /><br />
 													</li>
 												<% end %>
 											</ul>
 
 											<% if @nb_pages > 1 %>
-												<div class="center">	
+												<div class="center">
 												<ul class="pagination">
 													<% unless @current_page < 1 %>
 														<li><%= link_to searches_path(:search => {:query => @query, :page => @current_page - 1}), :method => :post do %>&laquo;<% end %></li>
@@ -158,7 +167,7 @@
 											<% end %>
 
 										</div>
-										<% if @current_page_users == -1 %> 
+										<% if @current_page_users == -1 %>
                     	<div class="tab-pane fade in" id="users">
 										<% else %>
                     	<div class="tab-pane fade in active" id="users">
@@ -170,7 +179,7 @@
 													<div class="row">
 														<div class="col-md-9">
 															<h4>
-																
+
 																<span class="glyphicon glyphicon-stats"></span>
 																<% user_id = user['_source']['_id'] %>
 																<% url = "/users/#{user_id}" %>
@@ -179,7 +188,7 @@
 														<div class="col-md-3 search-results-stats">
 															<ul class="pull-right">
 															</ul>
-														</div>	
+														</div>
 													</div>
 													<p><%= user['_id'] %></p>
 													<span class="last-update">Last updated <%= distance_of_time_in_words(Time.now, Time.now, include_seconds: true) %> ago</span>
@@ -190,7 +199,7 @@
 
 
 											<% if @nb_pages_users > 1 %>
-												<div class="center">	
+												<div class="center">
 												<ul class="pagination">
 													<% unless @current_page_users < 1 %>
 														<li><%= link_to searches_path(:search => {:query => @query, :page_users => @current_page_users - 1}), :method => :post do %>&laquo;<% end %></li>
