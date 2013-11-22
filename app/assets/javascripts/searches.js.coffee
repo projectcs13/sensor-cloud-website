@@ -31,4 +31,4 @@ $ ->
 
 		#$( "#slider-range" ).css("width","11em");
 
-		map_init()
+	map_init()
