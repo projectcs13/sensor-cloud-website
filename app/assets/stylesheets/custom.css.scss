@@ -416,3 +416,18 @@ input.search-query {
 .btn .glyphicon {
   color: white;
 }
+
+.search-bar-header {
+	position: relative;
+	top: 10px;
+	.btn {
+		margin-left: 10px;
+	}
+}
+
+.sidebar-filter {
+	h2 {
+		text-align: left;
+		margin-left: 10px;
+	}
+}
