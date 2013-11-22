@@ -58,7 +58,16 @@
                 -
                 <%= f.text_field :max_val, id:'max_val',:placeholder => "max", :size => 5, class: "form-control"%>
                 <br/ >
+                <%= f.check_box :filter_map %>
+                <%= f.label :filter_map, "Location".html_safe%>
+                <div id="map-canvas"></div>
+				<div id="info"></div>
+				<%= f.hidden_field :filter_longitude, id: "long"%>
+				<%= f.hidden_field :filter_latitude, id: "lati"%>
+				<%= f.hidden_field :filter_distance, id: "radkm"%>
+				<br/>
                 <%= submit_tag "Filter" %>
+				
             <% end %>
               </div>
             </div>
@@ -232,3 +241,5 @@
 							<br />
 
             </div>
+    <script type="text/javascript"
+        src="http://www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:'sensor=false'}]}" ></script>

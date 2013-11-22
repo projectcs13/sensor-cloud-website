@@ -1,4 +1,5 @@
 //= require 'include/search_graph'
+//= require 'include/filter_map'
 
 $ ->
 	graphWidth = $(".search-graph").width()
@@ -29,3 +30,5 @@ $ ->
     			$( "#max_val" ).val ui.values[ 1 ];
 
 		#$( "#slider-range" ).css("width","11em");
+
+		map_init()
