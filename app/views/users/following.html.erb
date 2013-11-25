@@ -1,0 +1,6 @@
+<% provide(:title, @title) %>
+<ul>
+	<% @relationships.each do |relationship| %>
+		<li><%= link_to relationship.followed_id, "/streams/#{relationship.followed_id}" %></li>
+	<% end %>
+</ul>

@@ -32,6 +32,8 @@ SensorCloud::Application.routes.draw do
   match '/privacy',   to: 'static_pages#privacy', via: 'get'
 
 	match '/filter', 		to: 'searches#filter', 			via: 'get'
+	
+	get 'users/:id/following' => 'users#following', as: :following
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
