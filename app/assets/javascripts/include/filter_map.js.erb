@@ -14,7 +14,7 @@
     			strokeWeight: 2
     		});
     		// Set the distance property value, default to 50km.
-    		this.set('distance', 5);
+    		this.set('distance', 15);
     		this.bindTo('bounds', circle);
     		circle.bindTo('center',this);
     		circle.bindTo('map', this);
@@ -124,7 +124,8 @@
         var map = new google.maps.Map(mapDiv, {
           center: new google.maps.LatLng(59.8581, 17.6447),
           zoom: 8,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          disableDefaultUI: true
         });
       	var distanceWidget = new DistanceWidget(map);
 
