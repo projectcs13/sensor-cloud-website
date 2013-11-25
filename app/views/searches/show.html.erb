@@ -101,15 +101,20 @@
 													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_updated']), Time.now, include_seconds: true) %> ago</span>
 																												<ul class="pull-right">
 															<li>
+																<!-- This displays stars -->
 																<%scale = 5%>
 																<%ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
 																	<% for stars in ranking.to_i.times %>
 																	<span class="glyphicon glyphicon-star"></span>
 																<% end %>
 
-																	<%if ranking % scale > 3%>
+																	<%if ranking % scale > (scale/2)%>
 																<span class="glyphicon glyphicon-star"></span>
 																<% end %>
+																<!-- Star display ends here -->
+
+																<!-- This line displays percentage -->
+																<%= stream['_source']['user_ranking']['average'] %>%
 
 															</li>
 														</ul>
