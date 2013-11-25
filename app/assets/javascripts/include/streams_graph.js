@@ -20,6 +20,7 @@ function stream_graph(width) {
     var p_data = [];
 
     function draw_graph(){
+        console.log("draw_graph");
         var graphData = {data:data,  pdata: p_data};
         graph
             .datum(graphData)
