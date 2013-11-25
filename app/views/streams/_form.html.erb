@@ -45,7 +45,7 @@
 
           <div class="form-group">
             <%= f.label :private %><br>
-            <div class="make-switch right">
+            <div class="make-switch left" data-on-label="Yes" data-off-label="No">
               <!-- <input type="checkbox" checked> -->
               <%= f.check_box :private, class: "form-control" %>
             </div>
@@ -109,8 +109,8 @@
 
           <div class="form-group">
             <label class="left">Mechanism for updating data values</label>
-
-            <div class="make-switch right" id="update-switch" data-on-label="Push" data-off-label="Pull">
+            <div class="clearfix"></div>
+            <div class="make-switch left" id="update-switch" data-on-label="Push" data-off-label="Pull">
               <!-- <input type="checkbox" checked> -->
               <%= f.check_box :polling, class: "form-control", checked: true %>
             </div>
