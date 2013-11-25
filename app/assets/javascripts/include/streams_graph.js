@@ -52,6 +52,7 @@ function stream_graph(width) {
         res = $.get(P_DATA_URL);
         res.done(function( result ) {
             result = result.predictions; // parse the response
+            console.log(result);
             var i = 1;
             result.map(function(d){
                 d['timestamp'] = new Date(timeOrigin.getTime()+timeDiff*i);

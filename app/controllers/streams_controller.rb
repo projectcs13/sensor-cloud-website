@@ -148,6 +148,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     res = Faraday.get "#{CONF['API_URL']}/streams/" + params[:id] + "/_analyse"
+    logger.debug "RES: #{res.body}"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
