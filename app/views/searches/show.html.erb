@@ -136,14 +136,21 @@
 															<li>
 																<!-- This displays stars -->
 																<%scale = 5%>
+																<%starcount = 0%>
 																<%ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
-																	<% for stars in ranking.to_i.times %>
+																<% for stars in ranking.to_i.times %>
 																	<span class="glyphicon glyphicon-star"></span>
+																	<%starcount = starcount+1%>
 																<% end %>
 
-																	<%if ranking % scale > (scale/2)%>
-																<span class="glyphicon glyphicon-star"></span>
+																<%if ranking % scale > (scale/2)%>
+																	<span class="glyphicon glyphicon-star"></span>
+																	<%starcount = starcount+1%>
 																<% end %>
+
+																<% for stars in (scale - starcount.to_i).times %>
+																	<span class="glyphicon glyphicon-star-empty"></span>
+																<%end%>
 																<!-- Star display ends here -->
 
 																<!-- This line displays percentage -->
