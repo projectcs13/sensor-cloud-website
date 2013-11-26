@@ -1,6 +1,8 @@
 class StreamsController < ApplicationController
 
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
+	before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
+	before_action :correct_user,   only: [:edit, :update, :destroy]
 
   def index
     # @streams = Stream.search(params[:search])
@@ -8,6 +10,7 @@ class StreamsController < ApplicationController
   end
 
   def show
+		@user = current_user
   end
 
   def new
@@ -176,7 +179,8 @@ class StreamsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      @stream = Stream.find(params[:id], _user_id: current_user.id)
+      #@stream = Stream.find(params[:id], _user_id: current_user.id)
+      @stream = Stream.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -204,5 +208,19 @@ class StreamsController < ApplicationController
         faraday.response :logger                    # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
       end
-    end
+		end
+
+		# Before filters
+		def signed_in_user
+			unless signed_in?
+				store_location
+				flash[:warning] = "Please sign in"
+				redirect_to signin_url
+			end
+		end
+		
+		def correct_user
+			@user = User.find(Stream.find(params[:id]).user_id)
+			redirect_to(root_url) unless current_user?(@user)
+		end
 end
