@@ -7,8 +7,9 @@ SensorCloud::Application.routes.draw do
   end
   resources :users
   resources :searches
-	resources :sessions, only: [:new, :create, :destroy]
-  resources :contacts, only: [:new, :create]
+	resources :sessions, 			only: [:new, :create, :destroy]
+  resources :contacts, 			only: [:new, :create]
+	resources :relationships, only: [:create, :destroy]
 
   root  'static_pages#home'
 
