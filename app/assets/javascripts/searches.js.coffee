@@ -1,5 +1,4 @@
 //= require 'include/search_graph'
-//= require 'include/filter_map'
 
 $ ->
 	graphWidth = $(".search-graph").width()
@@ -28,6 +27,34 @@ $ ->
 			$( "#min_val" ).val ui.values[ 0 ]
 			$( "#max_val" ).val ui.values[ 1 ]
 
-		#$( "#slider-range" ).css("width","11em")
+	#$( "#slider-range" ).css("width","11em")
 
-	map_init()
+	#map
+	mapDiv = document.getElementById('map-canvas')
+	#console.log mapDiv
+	map = new google.maps.Map(mapDiv, {
+    center: new google.maps.LatLng(59, 18),
+    zoom: 8,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    disableDefaultUI: true
+    })
+
+	bounds = new google.maps.LatLngBounds()
+	
+	$('#streams .search-result').each (i, elem) ->
+  		location = $(elem).data('location')
+  		if location != " "
+  			console.log location
+  			loc = location.split ","
+  			lon = loc[0]
+  			lat = loc[1]
+  			pos = new google.maps.LatLng(lon, lat)
+  			marker = new google.maps.Marker({position: pos,map: map,title:"Hello World!"})
+  			bounds.extend(pos)
+  	map.fitBounds(bounds);
+
+	#console.log searchresults
+	#for result in $("#stream-result > li")
+	#	console.log result
+
+
