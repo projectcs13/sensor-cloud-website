@@ -49,7 +49,7 @@ $ ->
   			lon = loc[0]
   			lat = loc[1]
   			pos = new google.maps.LatLng(lon, lat)
-  			marker = new google.maps.Marker({position: pos,map: map,title:"Hello World!"})
+  			marker = new google.maps.Marker({position: pos,map: map,title:$(elem).data('streamid')})
   			bounds.extend(pos)
   	map.fitBounds(bounds);
 
