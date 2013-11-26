@@ -35,3 +35,33 @@ $ ->
     value = data.value
     alert value
     toggle(value)
+
+  mapDiv = document.getElementById('map-canvas')
+  console.log mapDiv
+  #console.log mapDiv
+  map = new google.maps.Map(mapDiv, {
+    center: new google.maps.LatLng(60, 18),
+    zoom: 8,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    disableDefaultUI: true
+    })
+
+  mapOptions =
+    center: new google.maps.LatLng 60, 18
+    zoom: 8,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+
+  map = new google.maps.Map $('#map-canvas')[0], mapOptions
+    
+  marker = new google.maps.Marker
+    map: map
+    draggable:true
+    animation: google.maps.Animation.DROP
+    position: mapOptions.center
+
+  google.maps.event.addListener marker, "dragend", (evt) ->
+    $('#lat').val(evt.latLng.lat())
+    $('#lon').val(evt.latLng.lng())
+
+  console.log "working"
+
