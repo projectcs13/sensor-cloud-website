@@ -18,7 +18,7 @@
 			</head>
 		</div>
 		<div id="body">
-	  	<body class="<%= @home_page ? 'homepage' : ''%>">
+	  	<body class="<%= @home_page ? 'homepage' : ''%>" data-controller="<%=params[:controller]%>" data-action="<%=params[:action]%>">
 	    	<%= render 'layouts/modal' %>
 
 				<%= render 'layouts/header' %>
