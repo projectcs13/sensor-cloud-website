@@ -31,6 +31,8 @@ SensorCloud::Application.routes.draw do
   match '/manual',    to: 'static_pages#manual',  via: 'get'
   match '/privacy',   to: 'static_pages#privacy', via: 'get'
 
+	match '/filter', 		to: 'searches#filter', 			via: 'get'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
