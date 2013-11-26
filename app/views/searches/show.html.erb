@@ -32,44 +32,11 @@
 									<a href="#streams" data-toggle="tab"> Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
                   <li><a href="#users" data-toggle="tab"> Users <span class="badge badge-info"><%= @count_users %></span></a></li>
 								</ul>
-                <h2>Filter</h2>
-                <%= form_for(:search, url: searches_path) do |f| %>
-                <%= f.hidden_field :query, value: @query  %>
-                <%= f.text_field :filter_unit, :placeholder => "Unit" , class: "form-control" %>
-                <br/ >
-                <%= f.text_field :filter_tag, :placeholder => "Tag" , class: "form-control"%>
-                <br/ >
-                <%= f.check_box :filter_active %>
-                <%= f.label :filter_active, "Active".html_safe%>
-                <%= f.select "active",
-					options_for_select([['On',"on"],
-										['Off', "off"]
-										], "on"),
-											{},
-											class: "form-control"
-										%>
-                <br/ >
-                <%= f.check_box :filter_rank %>
-                <%= f.label :filter_rank, "User ranking".html_safe%>
-                <br/ >
-                <div id="slider-range"></div>
-                <br/ >
-                <%= f.text_field :min_val, id:'min_val', :placeholder => "min", :size => 5, class: "form-control"%>
-                -
-                <%= f.text_field :max_val, id:'max_val',:placeholder => "max", :size => 5, class: "form-control"%>
-                <br/ >
-                <%= f.check_box :filter_map %>
-                <%= f.label :filter_map, "Location".html_safe%>
-                <div id="map-canvas"></div>
-				<div id="info"></div>
-				<%= f.hidden_field :filter_longitude, id: "long"%>
-				<%= f.hidden_field :filter_latitude, id: "lati"%>
-				<%= f.hidden_field :filter_distance, id: "radkm"%>
-				<br/>
-                <%= submit_tag "Filter", class: "btn btn-primary" %>
-				
-            <% end %>
-              </div>
+                
+							</div>
+
+							<%= link_to "Advanced Search", controller: "searches", action: "filter", query: @query %>
+
             </div>
 						<div class="col-md-9">
 
@@ -253,5 +220,3 @@
 							<br />
 
             </div>
-    <script type="text/javascript"
-        src="http://www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:'sensor=false'}]}" ></script>

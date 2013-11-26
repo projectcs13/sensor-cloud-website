@@ -24,11 +24,11 @@ class StreamsController < ApplicationController
   def edit
     logger.debug "#{@stream.attributes}"
 
-    if @stream.accuracy      == nil then @stream.accuracy = "" end
-    if @stream.min_val       == nil then @stream.min_val = "" end
-    if @stream.max_val       == nil then @stream.max_val = "" end
+    if @stream.accuracy      == nil then @stream.accuracy     = "" end
+    if @stream.min_val       == nil then @stream.min_val      = "" end
+    if @stream.max_val       == nil then @stream.max_val      = "" end
     if @stream.polling_freq  == nil then @stream.polling_freq = "" end
-    if @stream.location      == nil then @stream.location = "," end
+    if @stream.location      == nil then @stream.location     = "," end
 
     logger.debug "#{@stream.attributes}"
 
@@ -55,11 +55,11 @@ class StreamsController < ApplicationController
     @stream.polling = if @stream.polling == "0" then "false" else "true" end
     @stream.private = if @stream.private == "0" then "false" else "true" end
 
-    @stream.accuracy     = if @stream.accuracy      == ""  then nil end
-    @stream.min_val      = if @stream.min_val       == ""  then nil end
-    @stream.max_val      = if @stream.max_val       == ""  then nil end
-    @stream.polling_freq = if @stream.polling_freq  == ""  then nil end
-    @stream.location     = if @stream.location      == "," then nil end
+    if @stream.accuracy     == ""  then @stream.accuracy     = nil end
+    if @stream.min_val      == ""  then @stream.min_val      = nil end
+    if @stream.max_val      == ""  then @stream.max_val      = nil end
+    if @stream.polling_freq == ""  then @stream.polling_freq = nil end
+    if @stream.location     == "," then @stream.location     = nil end
   end
 
   def create
