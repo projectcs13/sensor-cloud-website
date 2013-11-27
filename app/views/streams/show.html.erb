@@ -59,9 +59,10 @@
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
         <% end %>
       </div>
-
-      <%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
-      <%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+			<% if !(@user.nil?) && (@user.id == @stream.user_id.to_i) %>
+      	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+      	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+			<% end %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
     <div id="map-canvas">
