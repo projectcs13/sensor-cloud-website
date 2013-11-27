@@ -38,6 +38,7 @@ $ ->
         "<div><input type='checkbox'>"+res.type+"</div>"
     console.log json
     $('#streams_list').html list
+
   $("#resource_model").bind "keydown", (event) ->
     event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
 
