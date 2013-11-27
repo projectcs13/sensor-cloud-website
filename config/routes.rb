@@ -2,6 +2,7 @@ SensorCloud::Application.routes.draw do
 
   resources :streams do
     collection do
+      get '/new_from_resource', :to => :new_from_resource
       delete '/', :to => :destroyAll
     end
   end
@@ -12,7 +13,8 @@ SensorCloud::Application.routes.draw do
 
   root  'static_pages#home'
 
-  match '/suggest/:model',     to: 'resources#suggest', via: 'get'
+  match '/resources/:id',      to: 'streams#fetchResource', via: 'get'
+  match '/suggest/:model',     to: 'streams#suggest', via: 'get'
   match '/autocomplete/:attr', to: 'resources#autocomplete', via: 'get'
   #match '/suggest',        to: 'resources#suggest',    via: 'post'
 

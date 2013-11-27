@@ -21,6 +21,32 @@ class StreamsController < ApplicationController
     end
   end
 
+  def new_from_resource
+  end
+
+  def make_suggestion_by model
+    res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}?size=10"
+    logger.debug JSON.parse(res.body)
+    if res.status == 404
+      data = {}
+    else
+      data = JSON.parse(res.body)['suggestions']
+    end
+
+    data
+  end
+
+  def suggest
+    sug = make_suggestion_by params[:model]
+    status = if sug then 200 else 404 end
+    render :json => sug, :status => status
+  end
+
+  def fetchResource
+    res = Faraday.get "#{CONF['API_URL']}/resources/#{params[:id]}"
+    render :json => res.body, :status => res.status
+  end
+
   def edit
     logger.debug "#{@stream.attributes}"
 
