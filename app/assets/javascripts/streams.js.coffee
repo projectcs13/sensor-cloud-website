@@ -22,9 +22,9 @@ $ ->
     terms.push ""               # add placeholder to get the comma-and-space at the end
     terms
 
-######################
-### Autocompletion ###
-######################
+# ######################
+# ### Autocompletion ###
+# ######################
 
   fetchStreamsFromResource = (id) ->
     streams = $.getJSON "/resources/#{id}"
@@ -64,9 +64,9 @@ $ ->
         .append('<a>' + item.payload.model + '</a>')
         .appendTo(ul);
 
-###########
-### end ###
-###########
+# ###########
+# ### end ###
+# ###########
 
   showDetails = (event) ->
     el = $(this)
