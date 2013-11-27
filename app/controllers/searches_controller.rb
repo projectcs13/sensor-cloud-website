@@ -13,6 +13,14 @@ class SearchesController < ApplicationController
     end
   end
 
+  def fetch_autocomplete
+    res = Faraday.get "#{CONF['API_URL']}/suggest/_search?query=" + params[:term]
+    respond_to do |format|
+      json = JSON.parse(res.body)
+      format.json { render json: json['suggestions'], status: 200 }
+    end
+  end
+
 	def create
 		@nb_results_per_page = 5.0
 		if params['search']['query'].blank?
