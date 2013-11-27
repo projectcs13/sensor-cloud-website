@@ -30,4 +30,19 @@ $ ->
 
 		#$( "#slider-range" ).css("width","11em")
 
-	map_init()
+	#map_init()
+
+	$('.star-rating').on 'click', ->
+		obj =
+			json:
+				stream_id: $(this).attr('id')
+				value: parseFloat($(this).children('a').text())
+		console.log obj
+		res = $.ajax
+			url: '/userranking'
+			type: 'PUT'
+			data: JSON.stringify obj
+			contentType: "application/json",
+			dataType: "json",
+		res.done (result) ->
+			console.log result

@@ -6,6 +6,26 @@ class SearchesController < ApplicationController
 	def filter
 	end
 
+  def update_user_ranking
+    conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
+        faraday.request  :url_encoded             # form-encode POST params
+        faraday.response :logger                  # log requests to STDOUT
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
+
+    res = conn.put do | req |
+      json = { :user_id => "#{current_user.id}", :ranking => params[:json][:value] }
+      logger.debug json.to_json
+      req.url "#{CONF['API_URL']}/streams/#{params[:json][:stream_id]}/_rank"
+      req.headers['Content-Type'] = 'application/json'
+      req.body = json.to_json
+    end
+    
+    respond_to do |format|
+      format.json { render json: res.body, status: res.status }
+    end
+  end
+
   def fetch_graph_data
     res = Faraday.get "#{CONF['API_URL']}/_history?stream_id=" + params[:stream_id]
     respond_to do |format|

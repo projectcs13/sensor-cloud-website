@@ -101,17 +101,59 @@
 													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_updated']), Time.now, include_seconds: true) %> ago</span>
 																												<ul class="pull-right">
 															<li>
+															
 																<!-- This displays stars -->
-																<%scale = 5%>
-																<%ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
-																	<% for stars in ranking.to_i.times %>
-																	<span class="glyphicon glyphicon-star"></span>
-																<% end %>
+																<%scale = 5%> <!-- Number of stars -->
+																<%starcount = 0%>
+																<%part = (100/scale)%>
+																<%empty_stars = scale%>
+                                                                <%ranking = (stream['_source']['user_ranking']['average']/part)%>
+																
+																<% for stars in (ranking.to_i).times %>
+																	
 
-																	<%if ranking % scale > (scale/2)%>
-																<span class="glyphicon glyphicon-star"></span>
-																<% end %>
+																	<%if stars < ranking %>
+
+																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																			checked="unchecked" value = "<%=starcount * part%>"/>
+																	<%else%>
+
+																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																			checked="checked" value = "<%=starcount * part%>"/>	
+																	<%end%>
+
+																	<%=starcount += 1%>
+																	<%empty_stars -= 1%>
+																	
+                                                                <% end %>
+
+                                                                <%if ranking > 0.0%>
+                                                                	<%scale % ranking%>
+                                                              		<%if scale % ranking > (scale/2)%>
+
+                                                                		<%empty_stars -= 1%>
+	                                                                	<%starcount += 1%>
+	                                                                	<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																			checked="checked" value = "<%=starcount * part%>"/>	
+	                                                                
+                                                                	<% end %>
+                                                                <%end%>
+
+                                                                
+                                                                <% for stars in (empty_stars).times %>
+                                                                	
+                                                                	<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" value = "<%=starcount * part%>"/>
+                                                                	
+                                                                	<%=starcount += 1%>
+                                                                <%end%>
+
+                                                                
+                                                            
+
+                                                            
 																<!-- Star display ends here -->
+
+																<%= stream['_source']['user_ranking']['nr_rankings'] %>
 
 																<!-- This line displays percentage -->
 																<%= stream['_source']['user_ranking']['average'] %>%
@@ -122,6 +164,8 @@
 													</li>
 												<% end %>
 											</ul>
+
+
 
 											<% if @nb_pages > 1 %>
 												<div class="center">
