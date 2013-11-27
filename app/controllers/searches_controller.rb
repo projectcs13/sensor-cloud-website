@@ -43,39 +43,40 @@ class SearchesController < ApplicationController
         req.headers['Content-Type'] = 'application/json'
 
         if params['search']['sort_by'] == "none" or params['search']['sort_by'].nil?
-          sort_by = '{}' 
-        else 
+          sort_by = '{}'
+        else
           sort_by = '{"' + params['search']['sort_by'] + '":"asc" }'
         end
-   
+
         #req.body = '{"query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-  
+
   	filters = Array.new
     	if params['search']['filter_unit'].to_s.strip.length != 0
 #         keywords_name = params['search']['filter_name'].downcase.gsub(/\s+/m, ' ').gsub(/^\s+|\s+$/m, '').split(" ")
 #         keywords_name.each do |i|
-#          nameFilter = {"regexp"=>{"name" =>{ "value" => i}}} 
+#          nameFilter = {"regexp"=>{"name" =>{ "value" => i}}}
 #          filters.push(nameFilter.to_json)
 #         end
         nameFilter = {"regexp"=>{ "unit" => { "value" => params['search']['filter_unit'] }}}
-        filters.push(nameFilter.to_json) 
+        filters.push(nameFilter.to_json)
        	end
      	if params['search']['filter_tag'].to_s.strip.length != 0
-     	    tagFilter = {"regexp"=>{ "tags" => { "value" => params['search']['filter_tag'] }}} 
+     	    tagFilter = {"regexp"=>{ "tags" => { "value" => params['search']['filter_tag'] }}}
      	    filters.push(tagFilter.to_json)
       end
       if params['search']['filter_rank'] == "1"
-          rankFilter = {"range"=>{ "user_ranking" => {"gte" => params['search']['min_val'] , "lte" => params['search']['max_val']}}}
+          rankFilter = {"range"=>{ "user_ranking.average" => {"gte" => params['search']['min_val'] , "lte" => params['search']['max_val']}}}
           filters.push(rankFilter.to_json)
       end
       if params['search']['filter_active'] == "1"
             activeFilter = {"regexp"=>{ "active" => { "value" => params['search']['active'] }}}
-            filters.push(activeFilter.to_json) 
+            filters.push(activeFilter.to_json)
       end
-      if params['search']['filter_map'] == "1"
-            mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
-            filters.push(mapFilter.to_json) 
-      end
+
+      #if params['search']['filter_map'] == "1"
+            #mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "pin.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
+            #filters.push(mapFilter.to_json)
+      #end
         #A quick way to check if filter is nil or empty or just whitespace
       	if filters.empty?
       		req.body = '{ "sort": ['+ sort_by + '],
@@ -102,8 +103,8 @@ class SearchesController < ApplicationController
       @count_streams = json['streams']['hits']['total']
       @count_users = json['users']['hits']['total']
       @count_all = json['streams']['hits']['total'] + json['users']['hits']['total']
-			@nb_pages = (@count_streams / @nb_results_per_page).ceil 
-			@nb_pages_users = (@count_users / @nb_results_per_page).ceil 
+			@nb_pages = (@count_streams / @nb_results_per_page).ceil
+			@nb_pages_users = (@count_users / @nb_results_per_page).ceil
 			@query = params['search']['query']
 			unless params['search']['page'].blank?
 				@current_page = params['search']['page'].to_i
