@@ -9,31 +9,6 @@
 //= require 'include/client.js'
 
 $ ->
-
-  listResources = (json) ->
-    list = ""
-    for res in json
-      console.log res.payload.resource
-      list = list + "<div onclick='fetchStreamsFromResource "+res.payload.resource+"' class='btn btn-primary'>"+
-                      res.payload.model+
-                    "</div>"+
-                    "<div class='clearfix'></div>"
-    $('#resources_list').html list
-    fetchStreamsFromResource json[0].payload.resource
-
-  fetchStreamsFromResource = (id) ->
-    streams = $.getJSON "/resources/#{id}"
-    streams.done listStreams
-
-  listStreams = (json) ->
-    list = ""
-    for res in json.streams_suggest
-      console.log res.name
-      list = list + 
-        "<div><input type='checkbox'>"+res.type+"</div>"
-    console.log json
-    $('#streams_list').html list
-
   split = (val) ->
     val.split /,\s*/
 
@@ -47,31 +22,51 @@ $ ->
     terms.push ""               # add placeholder to get the comma-and-space at the end
     terms
 
-  autocomplete = () ->
-      $("#resource_model").bind "keydown", (event) ->
-          console.log "keydown"
-          event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
+######################
+### Autocompletion ###
+######################
 
-        .autocomplete
-          minLength: 1
+  fetchStreamsFromResource = (id) ->
+    streams = $.getJSON "/resources/#{id}"
+    streams.done listStreams
 
-          source: (request, response) ->
-            console.log request.term
-            $.getJSON "/suggest/#{request.term}", response
+  listStreams = (json) ->
+    list = ""
+    for res in json.streams_suggest
+      console.log res.name
+      list = list + 
+        "<div><input type='checkbox'>"+res.type+"</div>"
+    console.log json
+    $('#streams_list').html list
+  $("#resource_model").bind "keydown", (event) ->
+    event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
 
-          focus: ->
-            # prevent value inserted on focus
-            false
+  $("#resource_model").autocomplete(
+    minLength: 1
 
-          select: (event, ui) ->
-            console.log ui
-            console.log @value
-            terms = selectItem ui, @value
-            console.log terms
-            false
+    source: (request, response) ->
+      $.getJSON "/suggest/#{request.term}", response
 
-  autocomplete()
+    focus: ->
+      # prevent value inserted on focus
+      false
 
+    select: (event, ui) ->
+      pl = ui.item.payload
+      $("#resource_model").val(pl.model)
+      fetchStreamsFromResource pl.resource
+
+      false
+  ).data('ui-autocomplete')._renderItem = (ul, item) ->
+    console.log item
+    $('<li>')
+        .data('item.autocomplete', item)
+        .append('<a>' + item.payload.model + '</a>')
+        .appendTo(ul);
+
+###########
+### end ###
+###########
 
   showDetails = (event) ->
     el = $(this)
