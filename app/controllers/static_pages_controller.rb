@@ -20,4 +20,7 @@ class StaticPagesController < ApplicationController
 
   def api
   end
+
+  def security
+  end
 end
