@@ -19,3 +19,4 @@
 //= require d3
 //= require bootstrap-switch
 //= require socket.io
+//= require 'include/autocomplete'
