@@ -49,7 +49,29 @@ class StreamsController < ApplicationController
 
   def fetchResource
     res = Faraday.get "#{CONF['API_URL']}/resources/#{params[:id]}"
-    render :json => res.body, :status => res.status
+    # render :json => res.body, :status => res.status
+    json = JSON.parse(res.body)
+    @streams = []
+    json['streams_suggest'].each do |jstream|
+      stream = Stream.new
+
+      jstream.each do |k, v|
+        stream.send("#{k}=", v)
+        stream.send("private=", "")
+        stream.send("longitude=", "")
+        stream.send("latitude=", "")
+        stream.send("uri=", "")
+      end
+      logger.debug stream.attributes
+      @streams.push stream
+    end
+
+    #render :layout => false
+    respond_to do |format|
+      # format.html { render 'forms' }
+      format.js { render :layout => false }
+      format.json { render :layout => false }
+    end
   end
 
   def edit
@@ -247,7 +269,7 @@ class StreamsController < ApplicationController
 				redirect_to signin_url
 			end
 		end
-		
+
 		def correct_user
 			@user = User.find(Stream.find(params[:id]).user_id)
 			redirect_to(root_url) unless current_user?(@user)

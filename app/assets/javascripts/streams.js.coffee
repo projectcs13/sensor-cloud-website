@@ -11,17 +11,19 @@
 $ ->
   $(document).bind "streams_new_from_resource", (e, obj) => #js only loaded on "show" action
     fetchStreamsFromResource = (id) ->
-      streams = $.getJSON "/resources/#{id}"
-      streams.done listStreams
+      res = $.get "/resources/#{id}"
+      res.done listStreams
 
     listStreams = (json) ->
-      list = ""
-      for res in json.streams_suggest
-        console.log res.name
-        list = list +
-          "<div><input type='checkbox'>"+res.type+"</div>"
       console.log json
-      $('#streams_list').html list
+      # list = ""
+      # for res in json.streams_suggest
+      #   console.log res.name
+      #   list = list +
+      #     "<div><input type='checkbox'>"+res.type+"</div>"
+      # console.log json
+      # $('#forms').html json
+      # $("#forms").html( "<%= escape_javascript( render( :partial => #{json} ) %>" );
 
     $("#resource_model").bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
