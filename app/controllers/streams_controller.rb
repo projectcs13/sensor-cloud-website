@@ -6,7 +6,9 @@ class StreamsController < ApplicationController
 
   def index
     # @streams = Stream.search(params[:search])
-    @streams = Stream.all(_user_id: current_user.id)
+    response = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/streams"
+		@streams = JSON.parse(response.body)['streams']
+		logger.debug "TESSSSSTTTT: #{@streams}"
   end
 
   def show
@@ -118,6 +120,7 @@ class StreamsController < ApplicationController
 
   def destroy
     @stream.destroy
+
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
