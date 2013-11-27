@@ -41,6 +41,8 @@ $ ->
 
 	bounds = new google.maps.LatLngBounds()
 	
+	markers = 0
+
 	$('#streams .search-result').each (i, elem) ->
   		location = $(elem).data('location')
   		if location != " "
@@ -50,8 +52,15 @@ $ ->
   			lat = loc[1]
   			pos = new google.maps.LatLng(lon, lat)
   			marker = new google.maps.Marker({position: pos,map: map,title:$(elem).data('streamid')})
+  			markers++
   			bounds.extend(pos)
   	map.fitBounds(bounds);
+
+	listener = google.maps.event.addListener(map, "idle", ->
+  		if markers < 2
+  			map.setZoom 1
+  		google.maps.event.removeListener listener
+	)
 
 	#console.log searchresults
 	#for result in $("#stream-result > li")

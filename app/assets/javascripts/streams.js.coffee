@@ -36,7 +36,7 @@ $ ->
     
     mapOptions =
       center: new google.maps.LatLng loc[0], loc[1]
-      zoom: 8,
+      zoom: 3,
       mapTypeId: google.maps.MapTypeId.ROADMAP
       disableDefaultUI: true
 
