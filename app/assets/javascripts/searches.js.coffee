@@ -33,28 +33,42 @@ $ ->
 	mapDiv = document.getElementById('map-canvas')
 	#console.log mapDiv
 	map = new google.maps.Map(mapDiv, {
-    center: new google.maps.LatLng(59, 18),
-    zoom: 8,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    disableDefaultUI: true
-    })
+		center: new google.maps.LatLng(59, 18),
+		zoom: 8,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		disableDefaultUI: true
+	})
 
 	bounds = new google.maps.LatLngBounds()
 	
 	$('#streams .search-result').each (i, elem) ->
-  		location = $(elem).data('location')
-  		if location != " "
-  			console.log location
-  			loc = location.split ","
-  			lon = loc[0]
-  			lat = loc[1]
-  			pos = new google.maps.LatLng(lon, lat)
-  			marker = new google.maps.Marker({position: pos,map: map,title:$(elem).data('streamid')})
-  			bounds.extend(pos)
-  	map.fitBounds(bounds);
+		location = $(elem).data('location')
+		if location != " "
+			console.log location
+			loc = location.split ","
+			lon = loc[0]
+			lat = loc[1]
+			pos = new google.maps.LatLng(lon, lat)
+			marker = new google.maps.Marker({position: pos,map: map,title:$(elem).data('streamid')})
+			bounds.extend(pos)
+			map.fitBounds(bounds);
+
+	$('.star-rating').on 'click', ->
+		obj =
+			json:
+				stream_id: $(this).attr('id')
+				value: parseFloat($(this).children('a').text())
+		res = $.ajax
+			url: '/userranking'
+			type: 'PUT'
+			data: JSON.stringify obj
+			contentType: "application/json",
+			dataType: "json",
+			success: (result, thing) ->
+				console.log result, thing
+			
 
 	#console.log searchresults
 	#for result in $("#stream-result > li")
 	#	console.log result
-
 

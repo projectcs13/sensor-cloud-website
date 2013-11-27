@@ -101,24 +101,60 @@
 													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_updated']), Time.now, include_seconds: true) %> ago</span>
 																												<ul class="pull-right">
 															<li>
+															
 																<!-- This displays stars -->
-																<%scale = 5%>
+																<%scale = 5%> <!-- Number of stars -->
 																<%starcount = 0%>
-																<%ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
-																<% for stars in ranking.to_i.times %>
-																	<span class="glyphicon glyphicon-star"></span>
-																	<%starcount = starcount+1%>
-																<% end %>
+																<%part = (100/scale)%>
+																<%empty_stars = scale%>
+                                                                <%ranking = (stream['_source']['user_ranking']['average']/part)%>
+																
+																<% for stars in (ranking.to_i).times %>
+																<%starcount += 1%>
+																	<%empty_stars -= 1%>
+																	
 
-																<%if ranking % scale > (scale/2)%>
-																	<span class="glyphicon glyphicon-star"></span>
-																	<%starcount = starcount+1%>
-																<% end %>
+																	<%if stars < ranking %>
 
-																<% for stars in (scale - starcount.to_i).times %>
-																	<span class="glyphicon glyphicon-star-empty"></span>
-																<%end%>
+																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																			checked="unchecked" value = "<%=starcount * part%>"/>
+																	<%else%>
+
+																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																			checked="checked" value = "<%=starcount * part%>"/>	
+																	<%end%>
+
+																	
+																	
+                                                                <% end %>
+
+                                                                <%if ranking > 0.0%>
+                                                              		<%if scale % ranking > (scale/2)%>
+
+                                                                		<%empty_stars -= 1%>
+	                                                                	<%starcount += 1%>
+	                                                                	<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																			checked="checked" value = "<%=starcount * part%>"/>	
+	                                                                
+                                                                	<% end %>
+                                                                <%end%>
+
+                                                                
+                                                                <% for stars in (empty_stars).times %>
+                                                                	<%starcount += 1%>
+                                                                	
+                                                                	<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" value = "<%=starcount * part%>"/>
+                                                                	
+                                                                	
+                                                                <%end%>
+
+                                                                
+                                                            
+
+                                                            
 																<!-- Star display ends here -->
+
+																<%= stream['_source']['user_ranking']['nr_rankings'] %>
 
 																<!-- This line displays percentage -->
 																<%= stream['_source']['user_ranking']['average'] %>%
@@ -129,6 +165,8 @@
 													</li>
 												<% end %>
 											</ul>
+
+
 
 											<% if @nb_pages > 1 %>
 												<div class="center">
