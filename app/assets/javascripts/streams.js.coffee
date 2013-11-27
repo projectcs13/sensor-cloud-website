@@ -9,65 +9,46 @@
 //= require 'include/client.js'
 
 $ ->
-  split = (val) ->
-    val.split /,\s*/
+  $(document).bind "streams_new_from_resource", (e, obj) => #js only loaded on "show" action
+    fetchStreamsFromResource = (id) ->
+      streams = $.getJSON "/resources/#{id}"
+      streams.done listStreams
 
-  extractLast = (term) ->
-    do split(term).pop
+    listStreams = (json) ->
+      list = ""
+      for res in json.streams_suggest
+        console.log res.name
+        list = list +
+          "<div><input type='checkbox'>"+res.type+"</div>"
+      console.log json
+      $('#streams_list').html list
 
-  selectItem = (ui, value) ->
-    terms = split value
-    do terms.pop                # remove the current input
-    terms.push ui.item.text    # add the selected item
-    terms.push ""               # add placeholder to get the comma-and-space at the end
-    terms
+    $("#resource_model").bind "keydown", (event) ->
+      event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
 
-# ######################
-# ### Autocompletion ###
-# ######################
+    $("#resource_model").autocomplete(
+      minLength: 1
 
-  fetchStreamsFromResource = (id) ->
-    streams = $.getJSON "/resources/#{id}"
-    streams.done listStreams
+      source: (request, response) ->
+        $.getJSON "/suggest/#{request.term}", response
 
-  listStreams = (json) ->
-    list = ""
-    for res in json.streams_suggest
-      console.log res.name
-      list = list + 
-        "<div><input type='checkbox'>"+res.type+"</div>"
-    console.log json
-    $('#streams_list').html list
+      focus: ->
+        # prevent value inserted on focus
+        false
 
-  $("#resource_model").bind "keydown", (event) ->
-    event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
+      select: (event, ui) ->
+        pl = ui.item.payload
+        $("#resource_model").val(pl.model)
+        fetchStreamsFromResource pl.resource
 
-  $("#resource_model").autocomplete(
-    minLength: 1
+        false
+    ).data('ui-autocomplete')._renderItem = (ul, item) ->
+      console.log item
+      $('<li>')
+          .data('item.autocomplete', item)
+          .append('<a>' + item.payload.model + '</a>')
+          .appendTo(ul);
 
-    source: (request, response) ->
-      $.getJSON "/suggest/#{request.term}", response
-
-    focus: ->
-      # prevent value inserted on focus
-      false
-
-    select: (event, ui) ->
-      pl = ui.item.payload
-      $("#resource_model").val(pl.model)
-      fetchStreamsFromResource pl.resource
-
-      false
-  ).data('ui-autocomplete')._renderItem = (ul, item) ->
-    console.log item
-    $('<li>')
-        .data('item.autocomplete', item)
-        .append('<a>' + item.payload.model + '</a>')
-        .appendTo(ul);
-
-# ###########
-# ### end ###
-# ###########
 
   showDetails = (event) ->
     el = $(this)
@@ -75,22 +56,60 @@ $ ->
     el.find('.show-details')
       .toggleClass('glyphicon-chevron-up')
       .toggleClass('glyphicon-chevron-down')
-
   $('body').on 'click', '.list-group-item', showDetails
 
-  # Set up graph element
-  #graphWidth = $("#graph-canvas").width();
-  #window.graph_object = new stream_graph(graphWidth);
-  #graph_object.init();
 
-  # Set up buttons
-  $("#prediction-description").hide();
+  $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
+    # Set up graph element
+    graphWidth = $("#graph-canvas").width();
+    window.graph_object = new stream_graph(graphWidth);
+    graph_object.init();
 
-  $("#prediction-btn").on 'click', ->
-    $("#prediction-description").show()
-    graph_object.fetch_prediction_data()
+    # Set up buttons
+    $("#prediction-description").hide();
+
+    $("#prediction-btn").on 'click', ->
+      $("#prediction-description").show()
+      graph_object.fetch_prediction_data()
+
+    $("#live-update-btn").on 'switch-change', (e, data) ->
+      value = data.value
+      alert value
+      toggle(value)
+
+  action = "streams_" + $("body").data("action")
+  $.event.trigger action
 
   $("#live-update-btn").on 'switch-change', (e, data) ->
     value = data.value
     alert value
     toggle(value)
+
+  mapDiv = document.getElementById('map-canvas')
+  console.log mapDiv
+  #console.log mapDiv
+  map = new google.maps.Map(mapDiv, {
+    center: new google.maps.LatLng(60, 18),
+    zoom: 8,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    disableDefaultUI: true
+    })
+
+  mapOptions =
+    center: new google.maps.LatLng 60, 18
+    zoom: 8,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+
+  map = new google.maps.Map $('#map-canvas')[0], mapOptions
+
+  marker = new google.maps.Marker
+    map: map
+    draggable:true
+    animation: google.maps.Animation.DROP
+    position: mapOptions.center
+
+  google.maps.event.addListener marker, "dragend", (evt) ->
+    $('#lat').val(evt.latLng.lat())
+    $('#lon').val(evt.latLng.lng())
+
+  console.log "working"

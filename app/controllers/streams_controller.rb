@@ -1,13 +1,18 @@
 class StreamsController < ApplicationController
 
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
+	before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
+	before_action :correct_user,   only: [:edit, :update, :destroy]
 
   def index
     # @streams = Stream.search(params[:search])
-    @streams = Stream.all(_user_id: current_user.id)
+    response = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/streams"
+		@streams = JSON.parse(response.body)['streams']
+		logger.debug "TESSSSSTTTT: #{@streams}"
   end
 
   def show
+		@user = current_user
   end
 
   def new
@@ -50,11 +55,11 @@ class StreamsController < ApplicationController
   def edit
     logger.debug "#{@stream.attributes}"
 
-    if @stream.accuracy      == nil then @stream.accuracy = "" end
-    if @stream.min_val       == nil then @stream.min_val = "" end
-    if @stream.max_val       == nil then @stream.max_val = "" end
+    if @stream.accuracy      == nil then @stream.accuracy     = "" end
+    if @stream.min_val       == nil then @stream.min_val      = "" end
+    if @stream.max_val       == nil then @stream.max_val      = "" end
     if @stream.polling_freq  == nil then @stream.polling_freq = "" end
-    if @stream.location      == nil then @stream.location = "," end
+    if @stream.location      == nil then @stream.location     = "," end
 
     logger.debug "#{@stream.attributes}"
 
@@ -81,11 +86,11 @@ class StreamsController < ApplicationController
     @stream.polling = if @stream.polling == "0" then "false" else "true" end
     @stream.private = if @stream.private == "0" then "false" else "true" end
 
-    @stream.accuracy     = if @stream.accuracy      == ""  then nil end
-    @stream.min_val      = if @stream.min_val       == ""  then nil end
-    @stream.max_val      = if @stream.max_val       == ""  then nil end
-    @stream.polling_freq = if @stream.polling_freq  == ""  then nil end
-    @stream.location     = if @stream.location      == "," then nil end
+    if @stream.accuracy     == ""  then @stream.accuracy     = nil end
+    if @stream.min_val      == ""  then @stream.min_val      = nil end
+    if @stream.max_val      == ""  then @stream.max_val      = nil end
+    if @stream.polling_freq == ""  then @stream.polling_freq = nil end
+    if @stream.location     == "," then @stream.location     = nil end
   end
 
   def create
@@ -141,6 +146,7 @@ class StreamsController < ApplicationController
 
   def destroy
     @stream.destroy
+
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
@@ -174,6 +180,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     res = Faraday.get "#{CONF['API_URL']}/streams/" + params[:id] + "/_analyse"
+    logger.debug "RES: #{res.body}"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
@@ -201,7 +208,8 @@ class StreamsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      @stream = Stream.find(params[:id], _user_id: current_user.id)
+      #@stream = Stream.find(params[:id], _user_id: current_user.id)
+      @stream = Stream.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -229,5 +237,19 @@ class StreamsController < ApplicationController
         faraday.response :logger                    # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
       end
-    end
+		end
+
+		# Before filters
+		def signed_in_user
+			unless signed_in?
+				store_location
+				flash[:warning] = "Please sign in"
+				redirect_to signin_url
+			end
+		end
+		
+		def correct_user
+			@user = User.find(Stream.find(params[:id]).user_id)
+			redirect_to(root_url) unless current_user?(@user)
+		end
 end

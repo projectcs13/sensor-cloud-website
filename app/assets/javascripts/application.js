@@ -11,7 +11,7 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.ui.autocomplete
+//= require jquery.ui.all
 //= require jquery_ujs
 //= require bootstrap
 // require turbolinks
@@ -19,3 +19,4 @@
 //= require d3
 //= require bootstrap-switch
 //= require socket.io
+//= require 'include/autocomplete'
