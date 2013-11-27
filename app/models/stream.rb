@@ -6,7 +6,7 @@ class Stream
 
   belongs_to :user
 
-  collection_path "streams"
+  collection_path "/users/:user_id/streams"
   include_root_in_json false
   parse_root_in_json :streams, format: :active_model_serializers
 
