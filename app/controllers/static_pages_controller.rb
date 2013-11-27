@@ -23,4 +23,7 @@ class StaticPagesController < ApplicationController
 
   def security
   end
+
+  def terms
+  end
 end
