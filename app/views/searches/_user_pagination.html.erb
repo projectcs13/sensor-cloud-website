@@ -1,0 +1,23 @@
+<% if @nb_pages_users > 1 %>
+	<div class="center">
+	<ul class="pagination">
+		<% unless @current_page_users < 1 %>
+			<li><%= link_to searches_path(:search => {:query => @query, :page_users => @current_page_users - 1}), :method => :post do %>&laquo;<% end %></li>
+		<% else %>
+			<li class="disabled"><a href='#'>&laquo;</a></li>
+		<% end %>
+		<% @nb_pages_users.times do |i| %>
+			<% if i == @current_page_users %>
+				<li class="active"><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page_users => i}), :method => :post %></li>
+				<% else %>
+				<li><%= link_to "#{i+1}", searches_path(:search => {:query => @query, :page_users => i}), :method => :post %></li>
+			<% end %>
+		<% end %>
+		<% unless (@current_page_users + 1) >= @nb_pages_users %>
+			<li><%= link_to searches_path(:search => {:query => @query, :page_users => @current_page_users + 1}), :method => :post do %> &raquo;<% end %></li>
+		<% else %>
+			<li class="disabled"><a href='#'>&raquo;</a></li>
+		<% end %>
+	</ul>
+	</div>
+<% end %>

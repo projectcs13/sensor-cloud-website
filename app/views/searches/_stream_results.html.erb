@@ -1,0 +1,36 @@
+<% @streams.each do |stream| %>
+  <% stream_id = stream['_id'] %>
+  <% stream_url = "/streams/#{stream_id}" %>
+  <% stream_name = stream['_source']['name'] %>
+  <% stream_desciption = stream['_source']['description'] %>
+  <% stream_last_updated = stream['_source']['last_updated'] %>
+  <% stream_subscribers = stream['_source']['subscribers'] %>
+  <% stream_location = if stream['_source']['location'].nil? then " " else  stream['_source']['location'] end %>
+  <% stream_last_updated = distance_of_time_in_words(Date.iso8601(stream_last_updated), Time.now, include_seconds: true) %>
+  <% scale = 5%>
+  <% starcount = 0%>
+  <% ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
+
+  <div class="panel panel-default search-result" data-location="<%= stream_location %>" data-streamid="<%= stream_id %>">
+    <div class="panel-heading">
+      <%= link_to(stream_name, stream_url) %>
+    </div>
+    <div class="panel-body">
+      <span class="stream-description"><%= stream_desciption %></span>
+      <span class="last-update">Last updated <%= stream_last_updated %> ago</span>
+      <div class="star-rating">
+        <% for stars in ranking.to_i.times %>
+          <span class="glyphicon glyphicon-star"></span>
+          <%starcount = starcount+1%>
+        <% end %>
+        <%if ranking % scale > (scale/2)%>
+          <span class="glyphicon glyphicon-star"></span>
+            <%starcount = starcount+1%>
+        <% end %>
+        <% for stars in (scale - starcount.to_i).times %>
+          <span class="glyphicon glyphicon-star-empty"></span>
+        <%end%>
+      </div>
+    </div>
+  </div>
+<% end %>

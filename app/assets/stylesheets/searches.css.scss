@@ -1,7 +1,14 @@
 @import 'variables';
 
+.panel {
+  margin-bottom: 0px;
+  margin-top: 5px;
+}
 .search-graph {
 	opacity: 0.3;
+}
+.selected {
+  background-color: #cccccc; 
 }
 
 .axis path,
@@ -37,7 +44,3 @@ li.search-result>div.row {
 	z-index:-1;
 }
 
-#map-canvas {
-        height: 200px;
-        width: 170px;
-      }
