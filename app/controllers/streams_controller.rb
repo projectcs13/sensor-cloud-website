@@ -66,12 +66,7 @@ class StreamsController < ApplicationController
       @streams.push stream
     end
 
-    #render :layout => false
-    respond_to do |format|
-      # format.html { render 'forms' }
-      format.js { render :layout => false }
-      format.json { render :layout => false }
-    end
+    render :layout => false
   end
 
   def edit
