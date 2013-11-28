@@ -41,32 +41,58 @@ $ ->
 
 	bounds = new google.maps.LatLngBounds()
 	
+	markers = []
+	searchres_length = 0
+	hl_marker = new google.maps.Marker({ icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png', map:map})
+	base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
+	not_highlighted = '|FF776B|000000'
+	highlighted = '|FFFF00|000000'
 	$('#streams .search-result').each (i, elem) ->
-		location = $(elem).data('location')
-		if location != " "
-			console.log location
-			loc = location.split ","
-			lon = loc[0]
-			lat = loc[1]
-			pos = new google.maps.LatLng(lon, lat)
-			marker = new google.maps.Marker({position: pos,map: map,title:$(elem).data('streamid')})
-			bounds.extend(pos)
-			map.fitBounds(bounds);
+  		location = $(elem).data('location')
+  		searchres_length++
+  		if location != " "
+  			console.log location
+  			loc = location.split ","
+  			lon = loc[0]
+  			lat = loc[1]
+  			pos = new google.maps.LatLng(lon, lat)
+  			console.log base_url+''+searchres_length+not_highlighted
 
-	$('.star-rating').on 'click', ->
-		obj =
-			json:
-				stream_id: $(this).attr('id')
-				value: parseFloat($(this).children('a').text())
-		res = $.ajax
-			url: '/userranking'
-			type: 'PUT'
-			data: JSON.stringify obj
-			contentType: "application/json",
-			dataType: "json",
-			success: (result, thing) ->
-				console.log result, thing
-			
+  			marker = new google.maps.Marker({id: $(elem).data('streamid'), icon: base_url+''+searchres_length+not_highlighted, position: pos, map:map, title:''+searchres_length})
+  			markers.push marker
+  			bounds.extend(pos)
+  	map.fitBounds(bounds);
+
+	listener = google.maps.event.addListener(map, "idle", ->
+  		if markers.length < 2
+  			map.setZoom 1
+  		google.maps.event.removeListener listener
+	)
+
+	$("#streams .search-result").click (e) ->
+		e.stopPropagation
+		id = $(this).data('streamid')
+		highlight id
+
+	highlight = (streamid) ->
+		for elem in markers
+			if(elem.id == streamid)
+				map.panTo elem.position
+				console.log elem.position
+				hl_marker.setIcon base_url+elem.title+highlighted
+				if(hl_marker.position == elem.position)
+					if(hl_marker.visible == true)
+						hl_marker.setVisible(false)
+						elem.setVisible(true)
+					else
+						hl_marker.setVisible(true)
+						elem.setVisible(false)
+				else
+					elem.setVisible(false)
+					hl_marker.setVisible(true)
+					hl_marker.setPosition elem.position
+			else
+				elem.setVisible(true)
 
 	#console.log searchresults
 	#for result in $("#stream-result > li")
