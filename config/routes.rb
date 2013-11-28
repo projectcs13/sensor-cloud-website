@@ -6,6 +6,8 @@ SensorCloud::Application.routes.draw do
       delete '/', :to => :destroyAll
     end
   end
+
+  resources :multistreams
   resources :users
   resources :searches
 	resources :sessions, only: [:new, :create, :destroy]
@@ -15,8 +17,6 @@ SensorCloud::Application.routes.draw do
 
   match '/resources/:id',      to: 'streams#fetchResource', via: 'get'
   match '/suggest/:model',     to: 'streams#suggest', via: 'get'
-  match '/autocomplete/:attr', to: 'resources#autocomplete', via: 'get'
-  #match '/suggest',        to: 'resources#suggest',    via: 'post'
 
   match '/datapoints/:id',    to: 'streams#fetch_datapoints',         via: 'get'
   match '/prediction/:id',    to: 'streams#fetch_prediction',         via: 'get'

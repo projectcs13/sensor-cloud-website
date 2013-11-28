@@ -5,6 +5,7 @@ class Stream
 	validates :name,  presence: true, length: { maximum:50 }
 
   belongs_to :user
+  belongs_to :multistream
 
   collection_path "streams"
   include_root_in_json false
