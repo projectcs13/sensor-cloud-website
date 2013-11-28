@@ -19,7 +19,7 @@ class StreamsController < ApplicationController
     @stream = Stream.new
     attributes = ["name", "description", "type", "private",
                   "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
-                  "polling", "uri", "polling_freq",
+                  "polling", "uri", "polling_freq", "parser", "data_type",
                   "user_id"]
     attributes.each do |attr|
       @stream.send("#{attr}=", "")
@@ -57,7 +57,7 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'quality'
     @stream.attributes.delete 'subscribers'
 
-    @stream.polling = if @stream.polling == "0" then "false" else "true" end
+    @stream.polling = if @stream.polling == "1" then false else true end
     @stream.private = if @stream.private == "0" then "false" else "true" end
 
     if @stream.accuracy     == ""  then @stream.accuracy     = nil end
@@ -65,6 +65,8 @@ class StreamsController < ApplicationController
     if @stream.max_val      == ""  then @stream.max_val      = nil end
     if @stream.polling_freq == ""  then @stream.polling_freq = nil end
     if @stream.location     == "," then @stream.location     = nil end
+
+    @stream.polling_freq = @stream.polling_freq.to_i
   end
 
   def create
@@ -188,7 +190,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq)
+      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser)
     end
 
     # def load_parent
