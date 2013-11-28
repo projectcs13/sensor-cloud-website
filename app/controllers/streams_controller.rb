@@ -17,13 +17,13 @@ class StreamsController < ApplicationController
 
   def new
     @stream = Stream.new
-    attributes = ["name", "description", "type", "private",
-                  "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
-                  "polling", "uri", "polling_freq",
-                  "user_id"]
-    attributes.each do |attr|
-      @stream.send("#{attr}=", "")
-    end
+    # attributes = ["name", "description", "type", "private",
+    #               "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
+    #               "polling", "uri", "polling_freq",
+    #               "user_id"]
+    # attributes.each do |attr|
+    #   @stream.send("#{attr}=", "")
+    # end
   end
 
   def new_from_resource
@@ -50,23 +50,24 @@ class StreamsController < ApplicationController
   def fetchResource
     res = Faraday.get "#{CONF['API_URL']}/resources/#{params[:id]}"
     # render :json => res.body, :status => res.status
-    json = JSON.parse(res.body)
-    @streams = []
-    json['streams_suggest'].each do |jstream|
-      stream = Stream.new
+    # json = JSON.parse(res.body)
+    # @streams = []
+    # json['streams_suggest'].each do |jstream|
+    #   stream = Stream.new
 
-      jstream.each do |k, v|
-        stream.send("#{k}=", v)
-        stream.send("private=", "")
-        stream.send("longitude=", "")
-        stream.send("latitude=", "")
-        stream.send("uri=", "")
-      end
-      logger.debug stream.attributes
-      @streams.push stream
-    end
+    #   jstream.each do |k, v|
+    #     stream.send("#{k}=", v)
+    #     stream.send("private=", "")
+    #     stream.send("longitude=", "")
+    #     stream.send("latitude=", "")
+    #     stream.send("uri=", "")
+    #   end
+    #   logger.debug stream.attributes
+    #   @streams.push stream
+    # end
 
-    render :layout => false
+    # render :layout => false
+    render :json => res.body, :status => res.status
   end
 
   def edit

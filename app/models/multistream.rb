@@ -1,15 +1,9 @@
-class Stream
+class Multistream # < ActiveRecord::Base
   include Her::Model
 
-  attributes :name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :latitude, :longitude, :polling, :uri, :polling_freq, :user_id
-	validates :name,  presence: true, length: { maximum:50 }
-
-  belongs_to :user
-  belongs_to :multistream
-
-  collection_path "streams"
-  include_root_in_json false
-  parse_root_in_json :streams, format: :active_model_serializers
+  has_many :streams
+  # accepts_nested_attributes_for :streams
+  # attr_accessible :streams_attributes
 
   def post uid
     url = "#{CONF['API_URL']}/users/#{uid.to_s}/streams/"

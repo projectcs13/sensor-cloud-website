@@ -14,9 +14,54 @@ $ ->
       res = $.get "/resources/#{id}"
       res.done listStreams
 
-    listStreams = (html) ->
-      console.log html
-      $('#forms').html html
+    render = (stream) ->
+      """
+        <li class="list-group-item input-group stream">
+          <span class="input-group-addon">
+            <input type="checkbox">
+          </span>
+          <div class="form-control">
+            <h4 class="left">#{stream.type}</h4>
+            <div class="clearfix"></div>
+            <h6 class="left">Description:</h6>
+            <div class="clearfix"></div>
+            <p class="left">#{stream.description}</p>
+            <div class="clearfix"></div>
+          </div>
+        </li>
+      """
+
+    listStreams = (json) ->
+      console.log json
+      place = $('#streams')
+      elem = ""
+      for stream in json.streams_suggest
+        elem = elem + render stream
+      elem = elem + """
+        <li class="list-group-item">
+          <p class="left glyphicon glyphicon-plus">Add stream</p>
+          <div class="clearfix"></div>
+        </li>
+
+        <div id="btn-next" class="btn btn-primary">
+          Next
+          <i class="glyphicon glyphicon-chevron-right"></i>
+        </div>
+      """
+      html = $(elem)
+      place.html html
+      place.find('#btn-next').on 'click', ->
+        data = []
+        streams = $('.stream')
+        streams.each (i, el) ->
+          if $(el).find('input').attr('checked')
+            data.push json.streams_suggest[i]
+
+        console.log data
+        res = $.post "/multistreams", JSON.stringify data
+        res.done console.log
+
+
 
     $("#resource_model").bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
