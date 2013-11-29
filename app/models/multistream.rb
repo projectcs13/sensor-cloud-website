@@ -1,8 +1,8 @@
-class Multistream # < ActiveRecord::Base
-  include Her::Model
-
+class Multistream < ActiveRecord::Base
+  # include Her::Model
+  # attributes :name
   has_many :streams
-  # accepts_nested_attributes_for :streams
+  accepts_nested_attributes_for :streams
   # attr_accessible :streams_attributes
 
   def post uid

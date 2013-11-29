@@ -8,10 +8,9 @@
 
   <div id="forms">
     <%= form_for @multistream do |f| %>
-      <%= f.fields_for :streams, [Stream.new] * 3 do |stream_fields| %>
-        <%= @stream = stream_fields.convert_to_model Stream.new %>
-        <%#= stream_fields.text_field :description %>
-
+      <%= f.fields_for :streams do |stream_fields| %>
+        <%#= @stream = stream_fields.convert_to_model Stream.new %>
+        <%= streams_fields.text_field :name %>
       <div class="col-md-7 right">
         <div class="form hidden">
           <div>

@@ -11,37 +11,49 @@ class MultistreamsController < ApplicationController
   # end
 
   def new
+  end
+
+  def edit
     @multistream = Multistream.new
     @multistream.streams.build
     # = [{name: "1", description: "desc"},{name: "2", description: "desc"},{name: "3", description: "desc"}]
   end
 
-  # def edit
-  # end
-
   def create
     logger.debug "CREATE: #{params}"
-    @multistream = Multistream.new(multistream_params)
-    logger.debug "Multistream: #{@multistream.attributes}"
+    # @multistream = Multistream.new(multistream_params)
+    @multistream = Multistream.new
+    params[:multistream].each do |k, v|
+      logger.debug "Value: #{v}"
+      st = @multistream.streams.build v
+      logger.debug "Stream created: #{st.attributes}"
+    end
 
     respond_to do |format|
-      res = post
-        logger.debug "BODY: #{res.body}"
-        if res.status == 200
-
-          @stream.id = JSON.parse(res.body)['_id']
-          # TODO
-          # The API is currently sending back the response before the database has
-          # been updated. The line below will be removed once this bug is fixed.
-          sleep(1.0)
-
-          format.html { redirect_to stream_path(@stream.id) }
-          format.json { render action: 'show', status: :created, location: @stream }
-        else
-          format.html { render action: 'new' }
-          format.json { render json: @stream.errors, status: :unprocessable_entity }
-        end
+      logger.debug "#{format}"
+      format.html { redirect_to new_multistream_path }
+      format.json { redirect_to new_multistream_path }
     end
+    # logger.debug "Multistream: #{@multistream.attributes}"
+
+    # respond_to do |format|
+    #   res = post
+    #     logger.debug "BODY: #{res.body}"
+    #     if res.status == 200
+
+    #       @stream.id = JSON.parse(res.body)['_id']
+    #       # TODO
+    #       # The API is currently sending back the response before the database has
+    #       # been updated. The line below will be removed once this bug is fixed.
+    #       sleep(1.0)
+
+    #       format.html { redirect_to stream_path(@stream.id) }
+    #       format.json { render action: 'show', status: :created, location: @stream }
+    #     else
+    #       format.html { render action: 'new' }
+    #       format.json { render json: @stream.errors, status: :unprocessable_entity }
+    #     end
+    # end
   end
 
   def update
@@ -138,7 +150,8 @@ class MultistreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def multistream_params
-      params.require(:multistream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq)
+      #params.require(:multistream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq)
+      params
     end
 
     # def load_parent

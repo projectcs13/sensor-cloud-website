@@ -38,11 +38,6 @@ $ ->
       for stream in json.streams_suggest
         elem = elem + render stream
       elem = elem + """
-        <li class="list-group-item">
-          <p class="left glyphicon glyphicon-plus">Add stream</p>
-          <div class="clearfix"></div>
-        </li>
-
         <div id="btn-next" class="btn btn-primary">
           Next
           <i class="glyphicon glyphicon-chevron-right"></i>
@@ -54,11 +49,16 @@ $ ->
         data = []
         streams = $('.stream')
         streams.each (i, el) ->
-          if $(el).find('input').attr('checked')
-            data.push json.streams_suggest[i]
+          input = $(el).find('input')[0]
+          data.push json.streams_suggest[i] if input.checked
 
+        data = { multistream: data }
         console.log data
-        res = $.post "/multistreams", JSON.stringify data
+        res = $.ajax
+          type: "POST"
+          url: "/multistreams"
+          data: data
+          dataType: 'json'
         res.done console.log
 
 
