@@ -100,7 +100,7 @@
 													<p><%= stream['_source']['description'] %></p>
 													<span class="last-update">Last updated <%= distance_of_time_in_words(Date.iso8601(stream['_source']['last_updated']), Time.now, include_seconds: true) %> ago</span>
 																												<ul class="pull-right">
-															<li>
+															<div class="Clear">
 															
 																<!-- This displays stars -->
 																<%scale = 5%> <!-- Number of stars -->
@@ -108,45 +108,51 @@
 																<%part = (100/scale)%>
 																<%empty_stars = scale%>
                                                                 <%ranking = (stream['_source']['user_ranking']['average']/part)%>
-																
+
+                                                                															
 																<% for stars in (ranking.to_i).times %>
-																<%starcount += 1%>
+																	<%starcount += 1%>
 																	<%empty_stars -= 1%>
-																	
 
-																	<%if stars < ranking %>
-
+																	<%if stars == 0%>
+																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star required"  value = "<%=starcount * part%>"/>
+																	<%elsif starcount < (ranking-1) %>
 																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
-																			checked="unchecked" value = "<%=starcount * part%>"/>
+																			 value = "<%=starcount * part%>"/>
 																	<%else%>
+																		<%if ranking % 1 <= 0.5 %>
+																			<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																				checked="checked" value = "<%=starcount * part%>"/>	
+																		<%else%>
+																			<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
+																			 value = "<%=starcount * part%>"/>
+																		<%end%>
 
-																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
-																			checked="checked" value = "<%=starcount * part%>"/>	
 																	<%end%>
-
-																	
-																	
                                                                 <% end %>
 
-                                                                <%if ranking > 0.0%>
-                                                              		<%if scale % ranking > (scale/2)%>
+                                                                <%if ranking > 0.1%>
+                                                              		<%if ranking % 1 > 0.5 %>
 
                                                                 		<%empty_stars -= 1%>
 	                                                                	<%starcount += 1%>
 	                                                                	<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" 
-																			checked="checked" value = "<%=starcount * part%>"/>	
-	                                                                
+																			checked="checked" value = "<%=starcount * part%>"/>
                                                                 	<% end %>
                                                                 <%end%>
 
                                                                 
                                                                 <% for stars in (empty_stars).times %>
                                                                 	<%starcount += 1%>
-                                                                	
-                                                                	<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" value = "<%=starcount * part%>"/>
-                                                                	
-                                                                	
+                                                                	<%if starcount <= 1%>
+																		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star required" value = "<%=starcount * part%>"/>
+                                                                	<%else%>
+                                                                		<input id = "<%= stream['_id'] %>" name="star<%= stream['_id'] %>" type="radio" class="star" value = "<%=starcount * part%>"/>
+                                                                	<%end%>
                                                                 <%end%>
+
+
+
 
                                                                 
                                                             
@@ -157,9 +163,9 @@
 																<%= stream['_source']['user_ranking']['nr_rankings'] %>
 
 																<!-- This line displays percentage -->
-																<%= stream['_source']['user_ranking']['average'] %>%
+																<%= stream['_source']['user_ranking']['average'].to_i %>%
 
-															</li>
+															</div>
 														</ul>
 													<br /><br />
 													</li>
