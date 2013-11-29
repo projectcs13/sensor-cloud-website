@@ -25,6 +25,8 @@ and read the 'Important' section and follow the instructions.
 
 ## Usage
 
+### In development mode
+
 1. Install the gems needed:
 
         bundle install
@@ -40,6 +42,30 @@ and read the 'Important' section and follow the instructions.
 4. Start the Rails server:
 
         rails s
+
+### In production mode
+
+1. Install the gems needed:
+
+        bundle install
+
+2. Migrate the database:
+
+        RAILS_ENV=production bundle exec rake db:migrate
+
+3. Precompile Rails assets:
+
+        RAILS_ENV=production bundle exec rake assets:precompile
+
+4. Modify the `config/config.yml` file according to your needs.
+
+5. Open the script called `sensor_cloud` located in the sensor-cloud-website root folder, and modify the `USER` and `RAILS_ROOT` variables in accordance to your system settings.
+
+6. Run:
+
+        sudo cp sensor_cloud /etc/init.d/
+
+Next time you reboot your computer, the Rails server should be running and the website accessible at `http://localhost:3000` (it may take a couple of seconds for the server to start after rebooting).
 
 ## Running tests
 
