@@ -1,14 +1,15 @@
 SensorCloud::Application.routes.draw do
 
+  resources :users
+  resources :multistreams
   resources :streams do
     collection do
       get '/new_from_resource', :to => :new_from_resource
+      post '/smartnew', :to => :smartnew
       delete '/', :to => :destroyAll
     end
   end
 
-  resources :multistreams
-  resources :users
   resources :searches
 	resources :sessions, only: [:new, :create, :destroy]
   resources :contacts, only: [:new, :create]

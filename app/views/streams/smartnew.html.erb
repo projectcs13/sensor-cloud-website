@@ -7,7 +7,7 @@
   </div>
 
   <div id="forms">
-    <%= form_for @multistream do |f| %>
+    <%= form_for @user do |f| %>
       <%= f.fields_for :streams do |stream_fields| %>
         <%#= @stream = stream_fields.convert_to_model Stream.new %>
         <%= streams_fields.text_field :name %>

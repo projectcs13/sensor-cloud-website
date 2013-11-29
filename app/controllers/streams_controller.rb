@@ -70,6 +70,24 @@ class StreamsController < ApplicationController
     render :json => res.body, :status => res.status
   end
 
+  def smartnew
+    logger.debug "CREATE: #{params}"
+    # @multistream = Multistream.new(multistream_params)
+    # @multistream = Multistream.new
+    @user = current_user
+    params[:multistream].each do |k, v|
+      # st = Stream.new v
+      # logger.debug "Stream created: #{st.attributes}"
+      @user.streams.build v
+    end
+
+    respond_to do |format|
+      # format.html { redirect_to smartnew_stream_path }
+      format.html { render action: 'new' }
+      format.json { render action: 'new' }
+    end
+  end
+
   def edit
     logger.debug "#{@stream.attributes}"
 

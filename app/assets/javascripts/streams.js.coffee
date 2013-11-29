@@ -56,6 +56,7 @@ $ ->
         console.log data
         res = $.ajax
           type: "POST"
+          #url: "/streams/smartnew"
           url: "/multistreams"
           data: data
           dataType: 'json'

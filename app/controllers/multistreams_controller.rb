@@ -20,20 +20,27 @@ class MultistreamsController < ApplicationController
   end
 
   def create
-    logger.debug "CREATE: #{params}"
-    # @multistream = Multistream.new(multistream_params)
     @multistream = Multistream.new
-    params[:multistream].each do |k, v|
-      logger.debug "Value: #{v}"
-      st = @multistream.streams.build v
-      logger.debug "Stream created: #{st.attributes}"
+    3.times do
+      @multistream.streams.build
     end
 
-    respond_to do |format|
-      logger.debug "#{format}"
-      format.html { redirect_to new_multistream_path }
-      format.json { redirect_to new_multistream_path }
-    end
+    # logger.debug "CREATE: #{params}"
+    # # @multistream = Multistream.new(multistream_params)
+    # @multistream = Multistream.new
+    # params[:multistream].each do |k, v|
+    #   st = @multistream.streams.build v
+    #   logger.debug "Stream created: #{st.attributes}"
+    # end
+
+    # respond_to do |format|
+    #   format.html { redirect_to new_multistream_path }
+    #   format.json { redirect_to new_multistream_path }
+    # end
+
+
+
+
     # logger.debug "Multistream: #{@multistream.attributes}"
 
     # respond_to do |format|
