@@ -57,7 +57,7 @@ and read the 'Important' section and follow the instructions.
 
         RAILS_ENV=production bundle exec rake assets:precompile
 
-4. Modify the `config/congif.yml` file according to your needs.
+4. Modify the `config/config.yml` file according to your needs.
 
 5. Open the script called `sensor_cloud` located in the sensor-cloud-website root folder, and modify the `USER` and `RAILS_ROOT` variables in accordance to your system settings.
 
