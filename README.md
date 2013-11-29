@@ -64,6 +64,8 @@ and read the 'Important' section and follow the instructions.
 6. Run:
 
         sudo cp sensor_cloud /etc/init.d/
+        sudo chmod +x /etc/init.d/sensor_cloud
+        sudo update-rc.d sensor_cloud defaults
 
 Next time you reboot your computer, the Rails server should be running and the website accessible at `http://localhost:3000` (it may take a couple of seconds for the server to start after rebooting).
 
