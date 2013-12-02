@@ -1,6 +1,9 @@
 <% provide(:title, @title) %>
 <ul>
-	<% @relationships.each do |relationship| %>
-		<li><%= link_to relationship.followed_id, "/streams/#{relationship.followed_id}" %></li>
+	<% @streams.each do |s| %>
+		<li>
+			<h4><%= link_to s['name'], "/streams/#{s['id']}" %></h4>
+			<%= s['description'] %>
+		</li>
 	<% end %>
 </ul>

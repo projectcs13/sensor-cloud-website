@@ -15,6 +15,13 @@ class UsersController < ApplicationController
 		@title = "Following"
 		@user = User.find(params[:id])
 		@relationships = Relationship.all.where(follower_id: @user.id)
+		 @streams = @relationships.map do |r|
+			url = "#{CONF['API_URL']}/streams/" + r.followed_id
+			#logger.debug "*** url: #{url} ***"
+			resp = Faraday.get url
+			JSON.parse resp.body
+			#logger.debug "*** parsed_resp: #{parsed_resp} ***"
+		end
 	end
 
 	def new
