@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 	validates :password, length: { minimum: 6 }
 	has_secure_password
 
-	has_many :resources
+	has_many :streams
 
 	has_many :relationships, foreign_key: "follower_id", dependent: :destroy
 	has_many :followed_streams, through: :relationships, source: :followed
