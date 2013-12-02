@@ -1,0 +1,27 @@
+.list_carousel {
+	
+	width: 100%;
+}
+.list_carousel ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: block;
+}
+.list_carousel li {
+    font-size: 17px;
+    color: #666;
+    text-align: center;
+    background-image:url('blue_cloud.svg');
+    background-repeat:no-repeat;
+    width: 220px;
+    height: 125px;
+    padding: 5;
+    margin: 6px;
+    display: block;
+    float: left;
+}
+.clearfix {
+    float: none;
+    clear: both;
+}
