@@ -1,23 +1,23 @@
 function streamGraphMultiLine () {
   /* Variables for the view */
-  var margin = {top: 40, right: 20, bottom: 20, left: 50},
+  var margin = {top: 10, right: 20, bottom: 20, left: 50},
     margin2 = {top: 40, right: 20, bottom: 20, left: 50},
-    width = 760,
+    width = 800,
     height = 500,
-    height2 = 100,
+    height2 = 250,
     xScale = d3.time.scale(),
     yScale = d3.scale.linear(),
     xScale2 = d3.time.scale(),
     yScale2 = d3.scale.linear(),
     xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickSize(0, 0),
     yAxis = d3.svg.axis().scale(yScale).orient("left").tickSize(0).ticks(5),
-    xAxis2 = d3.svg.axis().scale(xScale2).orient("bottom").tickSize(0, 0).ticks(4);
+    xAxis2 = d3.svg.axis().scale(xScale2).orient("bottom").tickSize(0, 0).ticks(4),
+    yAxis2 = d3.svg.axis().scale(yScale2).orient("left").tickSize(0).ticks(2);
 
   /* Variables for the graph and data */
   var  parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse,
     xValue = function(d) { return parseDate(d.timestamp); },
     yValue = function(d) { return d.value; },
-    colors = ["#00ff00", "#000000", "#ff0000", "#0000ff", "#342432", "#237282"],
     line = d3.svg.line().x(X).y(Y).interpolate("monotone"),
     line2 = d3.svg.line().x(function(d) {return xScale2(parseDate(d.timestamp)); }).y(function(d) { return yScale2(d.value); }),
     real_data = function(d) { return d.data; },
@@ -49,38 +49,52 @@ function streamGraphMultiLine () {
       xScale.domain(x_domain).range([0, width - margin.left - margin.right]);
       yScale.domain(y_domain).range([height - margin.top - margin.bottom, 0]);
       xScale2.domain(xScale.domain()).range(xScale.range());
-      yScale2.domain(yScale.domain()).range([height2 - margin.top - margin.bottom, 0]);
+      yScale2.domain(yScale.domain()).range([height2 - margin2.top - margin2.bottom, 0]);
       console.log("x_domain:" + x_domain);
       console.log("y_domain:" + y_domain);
       // Create brush
       var brush = d3.svg.brush()
                     .x(xScale2)
+                    .y(yScale2)
                     .on("brush", brushed);
       // Select the svg element, if it exists.
       var svg = d3.select(this).selectAll("svg").data([data]);
+      
+      
       // Otherwise, create the skeletal chart.
-      var svgEnter = svg.enter().append("svg")
+      var svgEnter = svg.enter().append("svg");
+          
       var focus = svgEnter.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          focus
+            .append("rect")
+            .attr("class", "svg-back")
+            .attr("width", width-margin.left-margin.right)
+            .attr("height", height-margin.top-margin.bottom);
+
       var context = svgEnter.append("g").attr("transform", "translate(" + margin.left + "," + height + ")");
+          context
+            .append("rect")
+            .attr("class", "svg-back")
+            .attr("width", width-margin.left-margin.right)
+            .attr("height", height2-margin2.top-margin2.bottom);
           focus.append("g").attr("class", "x axis");
           focus.append("g").attr("class", "y axis");
           focus.append("g").attr("class", "lines");
-          context.append("g").attr("class", "lines");
-          context.append("g").attr("transform", "translate(0, 100)").attr("class", "x axis");
+          context.append("g").attr("class", "lines").attr("clip-path", "url(#clip)");
+          context.append("g").attr("class", "x axis");
+          //context.attr("class", "x axis");
           context.append("g")
                   .attr("class", "x brush")
                   .call(brush)
                   .selectAll("rect")
-                  .attr("opacity", 0.1)
-                  .attr("y", -6)
-                  .attr("height", height2);
+                  .attr("opacity", 0.1);
 
       // Update the outer dimensions.
       svg .attr("width", width)
-          .attr("height", height + height2);
-
+          .attr("height", height + height2 + margin2.top);
 
       // Update the inner dimensions.
+
       var streams = focus.select(".lines").selectAll(".stream-line").data(data, function(d){return d.stream_id;});
       var lines = streams.datum(function(d){return d.data;}).attr("d", line);
       
@@ -120,11 +134,13 @@ function streamGraphMultiLine () {
           .attr("transform", "translate(0," + xScale.range()[0] + ")")
           .call(yAxis);
       context.select(".x.axis")
-          .attr("transform", "translate(0," + (yScale2.range()[0] - margin2.top) + ")")
+          .attr("transform", "translate(0," + (yScale2.range()[0]) + ")")
           .call(xAxis2);
 
       function brushed() {
-        xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
+        var extent = brush.extent();
+        xScale.domain(brush.empty() ? xScale2.domain() : [ extent[0][0], extent[1][0] ]);
+        yScale.domain(brush.empty() ? yScale2.domain() : [ extent[0][1], extent[1][1] ]);
         focus.select(".x.axis").call(xAxis);
         focus.select(".y.axis").call(yAxis);
         lines.attr("d", line);

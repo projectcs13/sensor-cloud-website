@@ -11,23 +11,27 @@ $ ->
       iteration = this.dataset.iteration
       console.log iteration
       isSelected = $(this).children().first().hasClass("selected")
-      selectedDiv = "<span class='pull-right glyphicon glyphicon-ok-sign selected" + iteration + "'></span>"
-      console.log selectedDiv
+      selectedSpan = "<span class='pull-right glyphicon glyphicon-ok-sign selected" + iteration + "'></span>"
+      noDataSpan = "<span class='pull-right no-data'>[NO DATA]</span>"
+      panelHeader = $(this).children().first()
       if isSelected
-        $(this).children().first().removeClass("selected")
-        $(this).children().first().children().remove("span")
+        panelHeader.removeClass("selected")
+        panelHeader.children().remove("span")
         graphData = graphData.filter (el) -> 
           return el.stream_id.toString() != stream_id
         $("#test-multiline svg").remove()
         d3.select("#test-multiline").datum(graphData).call(test_graph)
       else
-        $(this).children().first().addClass("selected")
-        $(this).children().first().append(selectedDiv)
+        panelHeader.addClass("selected")
         # ajax call
         res = $.get '/datapoints/' + stream_id
         res.done (result) ->
           result['stream_id'] = stream_id
           graphData.push result
+          if result['data'].length == 0
+            panelHeader.append(noDataSpan)
+          else
+            panelHeader.append(selectedSpan)
           $("#test-multiline svg").remove()
           d3.select("#test-multiline").datum(graphData).call(test_graph)
         res.fail (e, data) ->

@@ -24,6 +24,9 @@ $colors: $custom-green, $custom-red, $custom-grey-dark, $custom-grey, $custom-gr
         }
     }
 }
+.no-data {
+  color: $custom-blue;
+}
 
 .axis path,
 .axis line pline{
@@ -50,6 +53,10 @@ $colors: $custom-green, $custom-red, $custom-grey-dark, $custom-grey, $custom-gr
 li.search-result>div.row {
 	position: relative;
 	
+}
+.svg-back {
+  background-color: #bae5ac;
+  fill: #bae5ac;
 }
 
 .search-graph {
