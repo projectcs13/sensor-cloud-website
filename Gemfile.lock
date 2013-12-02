@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/johnbintz/caroufredsel-rails.git
+  revision: 81bb0c362e26ac76c714d49a2e02e076a433a039
+  specs:
+    caroufredsel-rails (6.1.0)
+      coffee-script
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -195,6 +202,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.0.2.0)
   bootstrap-switch-rails
   capybara (= 2.1.0)
+  caroufredsel-rails!
   coffee-rails (= 4.0.0)
   d3-rails
   factory_girl_rails (= 4.2.1)
