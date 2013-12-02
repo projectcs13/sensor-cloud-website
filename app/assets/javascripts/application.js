@@ -21,3 +21,4 @@
 //= require bootstrap-switch
 //= require socket.io
 //= require 'include/autocomplete'
+//= require frontpage
