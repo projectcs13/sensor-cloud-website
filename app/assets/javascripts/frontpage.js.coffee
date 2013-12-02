@@ -11,7 +11,7 @@ $ ->
 
 		items: 
 
-			#visible: 3,
+			visible: 6,
 			minimum: 1,
 			start: "random",
 			width: "100%",
