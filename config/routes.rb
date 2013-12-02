@@ -5,8 +5,9 @@ SensorCloud::Application.routes.draw do
   resources :streams do
     collection do
       get '/new_from_resource', :to => :new_from_resource
-      post '/smartnew', :to => :smartnew
-      delete '/', :to => :destroyAll
+      post '/smartnew',         :to => :smartnew
+      post '/multi',            :to => :multi
+      delete '/',               :to => :destroyAll
     end
   end
 
@@ -16,11 +17,11 @@ SensorCloud::Application.routes.draw do
 
   root  'static_pages#home'
 
-  match '/resources/:id',      to: 'streams#fetchResource', via: 'get'
-  match '/suggest/:model',     to: 'streams#suggest', via: 'get'
+  match '/resources/:id',  to: 'streams#fetchResource', via: 'get'
+  match '/suggest/:model', to: 'streams#suggest',       via: 'get'
 
-  match '/datapoints/:id',    to: 'streams#fetch_datapoints',         via: 'get'
-  match '/prediction/:id',    to: 'streams#fetch_prediction',         via: 'get'
+  match '/datapoints/:id', to: 'streams#fetch_datapoints', via: 'get'
+  match '/prediction/:id', to: 'streams#fetch_prediction', via: 'get'
 
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
@@ -29,13 +30,13 @@ SensorCloud::Application.routes.draw do
   match '/help',      to: 'static_pages#help',    via: 'get'
   match '/about',     to: 'static_pages#about',   via: 'get'
 
-  match '/history',   to: 'searches#fetch_graph_data',         via: 'get'
-  match '/faq',       to: 'static_pages#faq',     via: 'get'
-  match '/manual',    to: 'static_pages#manual',  via: 'get'
-  match '/privacy',   to: 'static_pages#privacy', via: 'get'
-  match '/security',   to: 'static_pages#security', via: 'get'
+  match '/history',  to: 'searches#fetch_graph_data', via: 'get'
+  match '/faq',      to: 'static_pages#faq',          via: 'get'
+  match '/manual',   to: 'static_pages#manual',       via: 'get'
+  match '/privacy',  to: 'static_pages#privacy',      via: 'get'
+  match '/security', to: 'static_pages#security',     via: 'get'
 
-	match '/filter', 		to: 'searches#filter', 			via: 'get'
+	match '/filter', 		   to: 'searches#filter', 			      via: 'get'
   match '/autocomplete', to: 'searches#fetch_autocomplete', via: 'get'
 
   # The priority is based upon order of creation: first created -> highest priority.

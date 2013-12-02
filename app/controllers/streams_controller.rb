@@ -1,8 +1,9 @@
 class StreamsController < ApplicationController
 
-  before_action :set_stream, only: [:show, :edit, :update, :destroy]
-	before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 	before_action :correct_user,   only: [:edit, :update, :destroy]
+  before_action :get_user_id,    only: [:post, :put, :multipost, :deleteAll, :new_connection]
+  before_action :set_stream,     only: [:show, :edit, :update, :destroy]
+  before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
     # @streams = Stream.search(params[:search])
@@ -29,6 +30,22 @@ class StreamsController < ApplicationController
   def new_from_resource
   end
 
+  def multi
+    @streams = []
+    params[:multistream].each do |k, v|
+      @stream = Stream.build v
+      # @stream.user_id = current_user.id
+      correctBooleanFields
+      @streams.push @stream
+    end
+
+    res = multipost
+    location = { :url => "#{streams_path}" }
+    respond_to do |format|
+      format.json { render json: location, status: res.status }
+    end
+  end
+
   def make_suggestion_by model
     res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}?size=10"
     logger.debug JSON.parse(res.body)
@@ -49,43 +66,10 @@ class StreamsController < ApplicationController
 
   def fetchResource
     res = Faraday.get "#{CONF['API_URL']}/resources/#{params[:id]}"
-    # render :json => res.body, :status => res.status
-    # json = JSON.parse(res.body)
-    # @streams = []
-    # json['streams_suggest'].each do |jstream|
-    #   stream = Stream.new
-
-    #   jstream.each do |k, v|
-    #     stream.send("#{k}=", v)
-    #     stream.send("private=", "")
-    #     stream.send("longitude=", "")
-    #     stream.send("latitude=", "")
-    #     stream.send("uri=", "")
-    #   end
-    #   logger.debug stream.attributes
-    #   @streams.push stream
-    # end
-
-    # render :layout => false
     render :json => res.body, :status => res.status
   end
 
   def smartnew
-    logger.debug "CREATE: #{params}"
-    # @multistream = Multistream.new(multistream_params)
-    # @multistream = Multistream.new
-    @user = current_user
-    params[:multistream].each do |k, v|
-      # st = Stream.new v
-      # logger.debug "Stream created: #{st.attributes}"
-      @user.streams.build v
-    end
-
-    respond_to do |format|
-      # format.html { redirect_to smartnew_stream_path }
-      format.html { render action: 'new' }
-      format.json { render action: 'new' }
-    end
   end
 
   def edit
@@ -225,20 +209,34 @@ class StreamsController < ApplicationController
   def deleteAll
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
-    send_data(:delete, url)
+    send_data(:delete, url, nil)
   end
 
   def post
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
-    send_data(:post, url)
+    send_data(:post, url, @stream.attributes.json)
+  end
+
+  def multipost
+    cid = current_user.id
+    url = "#{CONF['API_URL']}/users/#{cid}/streams/"
+
+    arr = []
+    @streams.each do |stream|
+      arr.push stream.attributes
+    end
+    req = { :multi_json => arr }.to_json
+    logger.debug "REQ: #{req}"
+
+    send_data(:post, url, req)
   end
 
   def put
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/#{@stream.id}"
     @stream.attributes.delete 'id'
-    send_data(:put, url)
+    send_data(:put, url, @stream.attributes.json)
   end
 
   private
@@ -257,12 +255,12 @@ class StreamsController < ApplicationController
     #   @user = User.find(current_user.id)
     # end
 
-    def send_data(method, url)
+    def send_data(method, url, json)
       new_connection unless @conn
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @stream.attributes.to_json if @stream
+        req.body = json
       end
     end
 

@@ -53,14 +53,22 @@ $ ->
           data.push json.streams_suggest[i] if input.checked
 
         data = { multistream: data }
-        console.log data
+
         res = $.ajax
           type: "POST"
           #url: "/streams/smartnew"
-          url: "/multistreams"
+          url: "/streams/multi"
           data: data
-          dataType: 'json'
-        res.done console.log
+          #dataType: 'json'
+
+        res.done (data, xhr)->
+          console.log data
+          window.location.pathname = data.url if data.hasOwnProperty 'url'
+
+        res.fail (xhr, result)->
+          console.log xhr
+          console.log result
+
 
 
 
