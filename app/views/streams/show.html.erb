@@ -1,6 +1,9 @@
 <div class="row title-row">
   <div class="col-lg-8">
-    <h2 class="text-left"><%= @stream.name %></h2></div>
+		<h2 class="text-left"><%= @stream.name %></h2>
+		<%= render 'follow_form' if signed_in? %>
+	</div>
+		
   <div class="col-lg-4 text-right">
           <p>
             <% if @stream.private == "true" %>

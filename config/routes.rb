@@ -7,8 +7,9 @@ SensorCloud::Application.routes.draw do
   end
   resources :users
   resources :searches
-	resources :sessions, only: [:new, :create, :destroy]
-  resources :contacts, only: [:new, :create]
+	resources :sessions, 			only: [:new, :create, :destroy]
+  resources :contacts, 			only: [:new, :create]
+	resources :relationships, only: [:create, :destroy]
 
   root  'static_pages#home'
 
@@ -35,6 +36,8 @@ SensorCloud::Application.routes.draw do
   match '/terms',   to: 'static_pages#terms', via: 'get'
 
 	match '/filter', 		to: 'searches#filter', 			via: 'get'
+	
+	get 'users/:id/following' => 'users#following', as: :following
   match '/autocomplete', to: 'searches#fetch_autocomplete', via: 'get'
 
   # The priority is based upon order of creation: first created -> highest priority.

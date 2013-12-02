@@ -11,6 +11,19 @@ class UsersController < ApplicationController
 		@user = User.find(params[:id])
 	end
 
+	def following
+		@title = "Following"
+		@user = User.find(params[:id])
+		@relationships = Relationship.all.where(follower_id: @user.id)
+		 @streams = @relationships.map do |r|
+			url = "#{CONF['API_URL']}/streams/" + r.followed_id
+			#logger.debug "*** url: #{url} ***"
+			resp = Faraday.get url
+			JSON.parse resp.body
+			#logger.debug "*** parsed_resp: #{parsed_resp} ***"
+		end
+	end
+
 	def new
 		@user = User.new
   end
@@ -39,7 +52,12 @@ class UsersController < ApplicationController
 	end
 
 	def destroy
-		User.find(params[:id]).destroy
+		@user = User.find(params[:id])
+		@user.destroy
+		Relationship.all.where(followed_id: @user.id).each do |r|
+			r.destroy
+		end
+
 		flash[:success] = "User destroyed."
 		redirect_to users_url
 	end

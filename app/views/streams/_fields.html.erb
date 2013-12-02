@@ -131,6 +131,16 @@
               <%= f.label :polling_freq %><br>
               <%= f.text_field :polling_freq, class: "form-control" %>
             </div>
+
+            <div class="form-group">
+              <%= f.label :parser %><br>
+              <%= f.text_field :parser, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :data_type %><br>
+              <%= f.select :data_type, [["Json", "application/json"]], {}, { :class => 'form-control' } %>
+            </div>
           </div>
         </div>
       </div>
