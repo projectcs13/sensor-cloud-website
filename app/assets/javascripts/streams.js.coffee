@@ -117,44 +117,49 @@ $ ->
       $("#prediction-description").show()
       graph_object.fetch_prediction_data()
 
+    loc = document.getElementById('location').getAttribute('value').split ","
+    
+    mapDiv = document.getElementById('map-canvas')
+    
+    mapOptions =
+      center: new google.maps.LatLng loc[0], loc[1]
+      zoom: 8,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+      disableDefaultUI: true
+
+    map = new google.maps.Map $('#map-canvas')[0], mapOptions
+
+    marker = new google.maps.Marker
+      map: map
+      draggable:false
+      animation: google.maps.Animation.DROP
+      position: mapOptions.center
+
     $("#live-update-btn").on 'switch-change', (e, data) ->
       value = data.value
       alert value
       toggle(value)
+  $(document).bind 'streams_new', (e,obj) => 
+    mapDiv = document.getElementById('map-canvas')
+    
+    mapOptions =
+      center: new google.maps.LatLng 60, 18
+      zoom: 8,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+      disableDefaultUI: true
+
+    map = new google.maps.Map $('#map-canvas')[0], mapOptions
+
+    marker = new google.maps.Marker
+      map: map
+      draggable:true
+      animation: google.maps.Animation.DROP
+      position: mapOptions.center
+
+    google.maps.event.addListener marker, "dragend", (evt) ->
+      $('#lat').val(evt.latLng.lat())
+      $('#lon').val(evt.latLng.lng())
 
   action = "streams_" + $("body").data("action")
   $.event.trigger action
 
-  $("#live-update-btn").on 'switch-change', (e, data) ->
-    value = data.value
-    alert value
-    toggle(value)
-
-  mapDiv = document.getElementById('map-canvas')
-  console.log mapDiv
-  #console.log mapDiv
-  map = new google.maps.Map(mapDiv, {
-    center: new google.maps.LatLng(60, 18),
-    zoom: 8,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    disableDefaultUI: true
-    })
-
-  mapOptions =
-    center: new google.maps.LatLng 60, 18
-    zoom: 8,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-
-  map = new google.maps.Map $('#map-canvas')[0], mapOptions
-
-  marker = new google.maps.Marker
-    map: map
-    draggable:true
-    animation: google.maps.Animation.DROP
-    position: mapOptions.center
-
-  google.maps.event.addListener marker, "dragend", (evt) ->
-    $('#lat').val(evt.latLng.lat())
-    $('#lon').val(evt.latLng.lng())
-
-  console.log "working"

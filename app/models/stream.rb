@@ -7,6 +7,12 @@ class Stream
   belongs_to :user
   belongs_to :multistream
 
+	has_many :reverse_relationships, foreign_key: "followed_id", 
+																								class_name: "Relationship", 
+																								dependent: :destroy
+	has_many :followers, through: :reverse_relationships, source: :follower
+
+  #collection_path "/users/:user_id/streams"
   collection_path "streams"
   include_root_in_json false
   parse_root_in_json :streams, format: :active_model_serializers
