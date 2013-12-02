@@ -4,14 +4,18 @@ class RelationshipsController < ApplicationController
 	def create
 		@stream_id = params[:relationship][:followed_id]
 		current_user.follow!(@stream_id)
-		#redirect_to @stream
-		redirect_to root_path
+		respond_to do |format|
+			format.html { redirect_to root_path }
+			format.js
+		end
 	end
 
 	def destroy
 		@stream_id = Relationship.find(params[:id]).followed_id
 		current_user.unfollow!(@stream_id)
-		#redirect to @stream
-		redirect_to root_path
+		respond_to do |format|
+			format.html { redirect_to root_path }
+			format.js
+		end
 	end
 end

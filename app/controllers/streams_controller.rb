@@ -8,6 +8,7 @@ class StreamsController < ApplicationController
   end
 
   def show
+		@stream_id = params[:id]
   end
 
   def new
@@ -99,6 +100,9 @@ class StreamsController < ApplicationController
 
   def destroy
     @stream.destroy
+		Relationship.all.where(followed_id: @stream.id).each do |r|
+			r.destroy
+		end
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.

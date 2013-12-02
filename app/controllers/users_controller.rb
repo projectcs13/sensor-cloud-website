@@ -52,7 +52,12 @@ class UsersController < ApplicationController
 	end
 
 	def destroy
-		User.find(params[:id]).destroy
+		@user = User.find(params[:id])
+		@user.destroy
+		Relationship.all.where(followed_id: @user.id).each do |r|
+			r.destroy
+		end
+
 		flash[:success] = "User destroyed."
 		redirect_to users_url
 	end
