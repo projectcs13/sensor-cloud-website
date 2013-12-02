@@ -8,7 +8,21 @@
 	opacity: 0.3;
 }
 .selected {
-  background-color: #cccccc; 
+  background-color: #cccccc !important; 
+}
+
+$colors: $custom-green, $custom-red, $custom-grey-dark, $custom-grey, $custom-grey-light, $custom-greyish-blue, $custom-blue-darker,
+         $custom-blue-dark, $custom-blue, $custom-blue-light, $custom-blue-lighter;
+
+@for $i from 1 through length($colors) {
+    .selected#{$i} {
+        color: nth($colors, $i);
+        stroke: nth($colors, $i);
+        fill: nth($colors, $i);
+        &:hover {
+            color: nth($colors, $i);
+        }
+    }
 }
 
 .axis path,

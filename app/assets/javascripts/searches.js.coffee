@@ -2,28 +2,36 @@
 //= require 'include/stream_graph_multiline'
 
 $ ->
-  graphColors = ["#aabbcc", "#a21bc4", "#8bbbbc", "#5ab1cc", "#a3b1cc", "#aabbff", "#a124cc"]
   graphWidth = $(".search-graph").width()
-  #console.log graphWidth
   graphData = []
-  nr = 0
   test_graph = streamGraphMultiLine().width(700).height(500)
-  search_graph = searchGraph().width(1000).margin({top:0, right:0, left:0, bottom:0})
-  search_params = "?stream_id="
   for graph in $('#streams .search-result')
     $(graph).on "click", (event) ->
       stream_id = this.dataset.streamid
-      console.log $(this)
-      res = $.get '/datapoints/' + stream_id
-      res.done (result) ->
-        result['stream_id'] = stream_id
-        graphData.push result
+      iteration = this.dataset.iteration
+      console.log iteration
+      isSelected = $(this).children().first().hasClass("selected")
+      selectedDiv = "<span class='pull-right glyphicon glyphicon-ok-sign selected" + iteration + "'></span>"
+      console.log selectedDiv
+      if isSelected
+        $(this).children().first().removeClass("selected")
+        $(this).children().first().children().remove("span")
+        graphData = graphData.filter (el) -> 
+          return el.stream_id.toString() != stream_id
         $("#test-multiline svg").remove()
         d3.select("#test-multiline").datum(graphData).call(test_graph)
-        console.log result
-      res.fail (e, data) ->
-        console.log e
-
+      else
+        $(this).children().first().addClass("selected")
+        $(this).children().first().append(selectedDiv)
+        # ajax call
+        res = $.get '/datapoints/' + stream_id
+        res.done (result) ->
+          result['stream_id'] = stream_id
+          graphData.push result
+          $("#test-multiline svg").remove()
+          d3.select("#test-multiline").datum(graphData).call(test_graph)
+        res.fail (e, data) ->
+          console.log e
   
 
 

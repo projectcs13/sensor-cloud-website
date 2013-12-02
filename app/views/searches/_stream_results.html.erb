@@ -1,4 +1,6 @@
+<% i = 0 %>
 <% @streams.each do |stream| %>
+  <% i = i+1 %>
   <% stream_id = stream['_id'] %>
   <% stream_url = "/streams/#{stream_id}" %>
   <% stream_name = stream['_source']['name'] %>
@@ -11,9 +13,10 @@
   <% starcount = 0%>
   <% ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
 
-  <div class="panel panel-default search-result" data-location="<%= stream_location %>" data-streamid="<%= stream_id %>">
+  <div class="panel panel-default search-result" data-location="<%= stream_location %>" data-streamid="<%= stream_id %>" data-iteration="<%=i%>">
     <div class="panel-heading">
       <%= link_to(stream_name, stream_url) %>
+      
     </div>
     <div class="panel-body">
       <span class="stream-description"><%= stream_desciption %></span>

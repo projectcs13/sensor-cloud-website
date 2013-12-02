@@ -27,13 +27,16 @@ function streamGraphMultiLine () {
     selection.each(function(data) {
 
       /* Setting up the domain and range for the axis */
-      var x_domain = d3.extent(data[0].data, function(d) { return parseDate(d.timestamp); });
-      var y_domain = d3.extent(data[0].data, function(d) { return d.value; })
+      var x_domain = [];
+      var y_domain = [];
       for(var i = 0; i < data.length; i++){
         var d = data[i];
         if(d.data.length > 1){
           var tempx_extent = d3.extent(d.data, function(d) { return parseDate(d.timestamp); });
           var tempy_extent = d3.extent(d.data, function(d) { return d.value; });
+          if(x_domain)
+          x_domain = tempx_extent;
+          y_domain = tempy_extent;
           y_domain[0] = Math.min(tempy_extent[0], y_domain[0]);
           y_domain[1] = Math.max(tempy_extent[1], y_domain[1]);
           x_domain[0] = Math.min(tempx_extent[0], x_domain[0]);
@@ -81,9 +84,12 @@ function streamGraphMultiLine () {
       streams
                   .enter()
                   .append("path")
-                  .attr("class", "stream-line")
+                  .attr("class", 
+                    function(d){
+                      var streamclass = $("[data-streamid="+ d.stream_id +"]").data("iteration")
+                      return "stream-line selected" + streamclass;
+                      })
                   .attr("id", function(d){return d.stream_id})
-                  .attr("stroke", function(d, i){ return colors[i]; })
                   .datum(function(d){return d.data;})
                   .attr("d", line);
 
@@ -93,9 +99,12 @@ function streamGraphMultiLine () {
       streams2
                   .enter()
                   .append("path")
-                  .attr("class", "stream-line")
+                  .attr("class", 
+                    function(d){
+                      var streamclass = $("[data-streamid="+ d.stream_id +"]").data("iteration")
+                      return "stream-line selected" + streamclass;
+                      })
                   .attr("id", function(d){return d.stream_id})
-                  .attr("stroke", function(d, i){ return colors[i]; })
                   .datum(function(d){return d.data;})
                   .attr("d", line2);
           
