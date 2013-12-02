@@ -16,7 +16,7 @@ $ ->
 
     render = (stream) ->
       """
-        <li class="list-group-item input-group stream">
+        <li class="input-group stream">
           <span class="input-group-addon">
             <input type="checkbox">
           </span>

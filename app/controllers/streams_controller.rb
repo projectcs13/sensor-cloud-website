@@ -43,7 +43,7 @@ class StreamsController < ApplicationController
     end
 
     res = multipost
-    logger.debug res.body
+    sleep 1.0
     location = { :url => "#{streams_path}" }
     respond_to do |format|
       format.json { render json: location, status: res.status }
