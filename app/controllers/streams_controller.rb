@@ -6,7 +6,7 @@ class StreamsController < ApplicationController
 
   def index
     # @streams = Stream.search(params[:search])
-    response = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/streams"
+    response = Faraday.get "#{CONF['API_URL']}/users/#{current_user.id}/streams"
 		@streams = JSON.parse(response.body)['streams']
 		logger.debug "TESSSSSTTTT: #{@streams}"
   end
@@ -14,6 +14,10 @@ class StreamsController < ApplicationController
   def show
 		@stream_id = params[:id]
 		#@user = current_user
+		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
+		stream_owner_id = JSON.parse(resp.body)['user_id']
+		@stream_owner = User.find_by(id: stream_owner_id)
+	 	
   end
 
   def new
