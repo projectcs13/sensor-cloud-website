@@ -4,7 +4,7 @@ ruby '2.0.0'
 
 gem 'rails', '4.0.0'
 gem 'her'
-gem 'bootstrap-sass', '~> 3.0.0.0.rc'
+gem 'bootstrap-sass', '~> 3.0.2.0'
 gem 'bcrypt-ruby', '3.0.1'
 gem 'httparty'
 gem 'faraday'
@@ -16,6 +16,7 @@ gem "bootstrap-switch-rails"
 gem 'socket.io-rails'
 gem 'mail_form', '~> 1.5.0.rc'
 gem 'simple_form', '~> 3.0.0.rc'
+gem 'jquery-star-rating-rails'
 
 group :development, :test do
   gem 'sqlite3', '1.3.8'

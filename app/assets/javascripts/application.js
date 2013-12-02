@@ -13,9 +13,11 @@
 //= require jquery
 //= require jquery.ui.all
 //= require jquery_ujs
+//= require jquery-star-rating
 //= require bootstrap
 // require turbolinks
 //= require bootstrap
 //= require d3
 //= require bootstrap-switch
 //= require socket.io
+//= require 'include/autocomplete'

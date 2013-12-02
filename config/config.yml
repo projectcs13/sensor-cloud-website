@@ -1,7 +1,12 @@
 development:
-  API_URL: "http://localhost:8000"
-  WEB_SOCKET_URL: "http://localhost:8080"
+  API_URL: "http://srv1.csproj13.student.it.uu.se:8000"
+  WEB_SOCKET_URL: "http://srv1.csproj13.student.it.uu.se:8080"
+  #WEB_SOCKET_URL: "http://srv1.csproj13.student.it.uu.se:8080"
 
 test:
+  API_URL: "http://srv1.csproj13.student.it.uu.se:8000"
+  WEB_SOCKET_URL: "http://srv1.csproj13.student.it.uu.se:8080"
+
+production:
   API_URL: "http://srv1.csproj13.student.it.uu.se:8000"
   WEB_SOCKET_URL: "http://srv1.csproj13.student.it.uu.se:8080"

@@ -11,7 +11,8 @@ class Stream
 																								dependent: :destroy
 	has_many :followers, through: :reverse_relationships, source: :follower
 
-  collection_path "/users/:user_id/streams"
+  #collection_path "/users/:user_id/streams"
+  collection_path "streams"
   include_root_in_json false
   parse_root_in_json :streams, format: :active_model_serializers
 

@@ -1,29 +1,45 @@
 class StreamsController < ApplicationController
 
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
+	before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
+	before_action :correct_user,   only: [:edit, :update, :destroy]
 
   def index
     # @streams = Stream.search(params[:search])
-    @streams = Stream.all(_user_id: current_user.id)
+    response = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/streams"
+		@streams = JSON.parse(response.body)['streams']
+		logger.debug "TESSSSSTTTT: #{@streams}"
   end
 
   def show
 		@stream_id = params[:id]
+		@user = current_user
   end
 
   def new
     @stream = Stream.new
     attributes = ["name", "description", "type", "private",
                   "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
-                  "polling", "uri", "polling_freq",
+                  "polling", "uri", "polling_freq", "parser", "data_type",
                   "user_id"]
     attributes.each do |attr|
-      @stream.send("#{attr}=", nil)
+      @stream.send("#{attr}=", "")
     end
   end
 
   def edit
+    logger.debug "#{@stream.attributes}"
+
+    if @stream.accuracy      == nil then @stream.accuracy     = "" end
+    if @stream.min_val       == nil then @stream.min_val      = "" end
+    if @stream.max_val       == nil then @stream.max_val      = "" end
+    if @stream.polling_freq  == nil then @stream.polling_freq = "" end
+    if @stream.location      == nil then @stream.location     = "," end
+
+    logger.debug "#{@stream.attributes}"
+
     location = @stream.location.split(",", 2)
+
     @stream.send("latitude=", location[0])
     @stream.send("longitude=", location[1])
   end
@@ -34,7 +50,6 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'latitude'
 
     # Remove attributes when editing a stream
-    @stream.attributes.delete 'id'
     @stream.attributes.delete 'active'
     @stream.attributes.delete 'user_ranking'
     @stream.attributes.delete 'last_updated'
@@ -43,8 +58,16 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'quality'
     @stream.attributes.delete 'subscribers'
 
-    @stream.polling = if @stream.polling == "0" then "false" else "true" end
+    @stream.polling = if @stream.polling == "1" then false else true end
     @stream.private = if @stream.private == "0" then "false" else "true" end
+
+    if @stream.accuracy     == ""  then @stream.accuracy     = nil end
+    if @stream.min_val      == ""  then @stream.min_val      = nil end
+    if @stream.max_val      == ""  then @stream.max_val      = nil end
+    if @stream.polling_freq == ""  then @stream.polling_freq = nil end
+    if @stream.location     == "," then @stream.location     = nil end
+
+    @stream.polling_freq = @stream.polling_freq.to_i
   end
 
   def create
@@ -100,9 +123,13 @@ class StreamsController < ApplicationController
 
   def destroy
     @stream.destroy
+<<<<<<< HEAD
 		Relationship.all.where(followed_id: @stream.id).each do |r|
 			r.destroy
 		end
+=======
+
+>>>>>>> develop
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
@@ -136,6 +163,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     res = Faraday.get "#{CONF['API_URL']}/streams/" + params[:id] + "/_analyse"
+    logger.debug "RES: #{res.body}"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
@@ -156,18 +184,20 @@ class StreamsController < ApplicationController
   def put
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/#{@stream.id}"
+    @stream.attributes.delete 'id'
     send_data(:put, url)
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      @stream = Stream.find(params[:id], _user_id: current_user.id)
+      #@stream = Stream.find(params[:id], _user_id: current_user.id)
+      @stream = Stream.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq)
+      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser)
     end
 
     # def load_parent
@@ -190,5 +220,19 @@ class StreamsController < ApplicationController
         faraday.response :logger                    # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
       end
-    end
+		end
+
+		# Before filters
+		def signed_in_user
+			unless signed_in?
+				store_location
+				flash[:warning] = "Please sign in"
+				redirect_to signin_url
+			end
+		end
+		
+		def correct_user
+			@user = User.find(Stream.find(params[:id]).user_id)
+			redirect_to(root_url) unless current_user?(@user)
+		end
 end

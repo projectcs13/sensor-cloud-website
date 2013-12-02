@@ -27,14 +27,18 @@ SensorCloud::Application.routes.draw do
   match '/help',      to: 'static_pages#help',    via: 'get'
   match '/about',     to: 'static_pages#about',   via: 'get'
 
+  match '/userranking', to: 'searches#update_user_ranking', via: 'put'
   match '/history',   to: 'searches#fetch_graph_data',         via: 'get'
   match '/faq',       to: 'static_pages#faq',     via: 'get'
   match '/manual',    to: 'static_pages#manual',  via: 'get'
   match '/privacy',   to: 'static_pages#privacy', via: 'get'
+  match '/security',   to: 'static_pages#security', via: 'get'
+  match '/terms',   to: 'static_pages#terms', via: 'get'
 
 	match '/filter', 		to: 'searches#filter', 			via: 'get'
 	
 	get 'users/:id/following' => 'users#following', as: :following
+  match '/autocomplete', to: 'searches#fetch_autocomplete', via: 'get'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
