@@ -6,10 +6,11 @@ class StreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-    # @streams = Stream.search(params[:search])
-    response = Faraday.get "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/streams"
-		@streams = JSON.parse(response.body)['streams']
-		logger.debug "TESSSSSTTTT: #{@streams}"
+    cid = current_user.id
+    res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
+    logger.debug "http://130.238.15.237:8000/users/1/streams/"
+    logger.debug "#{CONF['API_URL']}/users/#{cid}/streams/"
+    @streams = JSON.parse(res.body)['streams']
   end
 
   def show
@@ -35,12 +36,13 @@ class StreamsController < ApplicationController
     @streams = []
     params[:multistream].each do |k, v|
       @stream = Stream.build v
-      # @stream.user_id = current_user.id
+      #@stream.user_id = current_user.id.to_s
       correctBooleanFields
       @streams.push @stream
     end
 
     res = multipost
+    logger.debug res.body
     location = { :url => "#{streams_path}" }
     respond_to do |format|
       format.json { render json: location, status: res.status }
