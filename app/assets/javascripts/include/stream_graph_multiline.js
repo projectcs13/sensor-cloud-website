@@ -34,9 +34,12 @@ function streamGraphMultiLine () {
         if(d.data.length > 1){
           var tempx_extent = d3.extent(d.data, function(d) { return parseDate(d.timestamp); });
           var tempy_extent = d3.extent(d.data, function(d) { return d.value; });
-          if(x_domain)
-          x_domain = tempx_extent;
-          y_domain = tempy_extent;
+          if(x_domain.length < 1){
+            x_domain[0] = tempx_extent[0];
+            x_domain[1] = tempx_extent[1];
+            y_domain[0] = tempy_extent[0];
+            y_domain[1] = tempy_extent[1];
+            }
           y_domain[0] = Math.min(tempy_extent[0], y_domain[0]);
           y_domain[1] = Math.max(tempy_extent[1], y_domain[1]);
           x_domain[0] = Math.min(tempx_extent[0], x_domain[0]);
