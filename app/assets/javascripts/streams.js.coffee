@@ -61,15 +61,11 @@ $ ->
           data: data
           #dataType: 'json'
 
-        res.done (data, xhr)->
-          console.log data
+        res.done (data) ->
           window.location.pathname = data.url if data.hasOwnProperty 'url'
 
-        res.fail (xhr, result)->
-          console.log xhr
-          console.log result
-
-
+        res.fail (xhr, result) ->
+          alert "Error: Redirection not working properly\n Response from server: #{result}"
 
 
     $("#resource_model").bind "keydown", (event) ->
