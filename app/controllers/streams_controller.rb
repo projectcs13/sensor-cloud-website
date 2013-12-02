@@ -13,7 +13,7 @@ class StreamsController < ApplicationController
 
   def show
 		@stream_id = params[:id]
-		@user = current_user
+		#@user = current_user
   end
 
   def new
@@ -123,13 +123,10 @@ class StreamsController < ApplicationController
 
   def destroy
     @stream.destroy
-<<<<<<< HEAD
 		Relationship.all.where(followed_id: @stream.id).each do |r|
 			r.destroy
 		end
-=======
 
->>>>>>> develop
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
