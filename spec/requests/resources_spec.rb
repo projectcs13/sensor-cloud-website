@@ -1,3 +1,4 @@
+=begin
 require 'spec_helper'
 
 describe "Resources" do
@@ -9,3 +10,4 @@ describe "Resources" do
     end
   end
 end
+=end

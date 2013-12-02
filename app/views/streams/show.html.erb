@@ -1,20 +1,6 @@
-<%= javascript_include_tag "streams_graph" %>
-<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
-<%= javascript_include_tag "streams_map"%>
-<script type="text/javascript">
-window.onload = function(){
-  var longitude = parseFloat(<%= @stream.longitude %>);
-  var latitude = parseFloat(<%= @stream.latitude %>);
-  var height = $('#map-canvas').width();
-  $('#map-canvas').css({'height':height, 'position':'relative', 'width':'100%'});
-  show_graph();
-  initialize_map(latitude, longitude);
-}
-</script>
-
 <div class="row title-row">
   <div class="col-lg-8">
-    <h2 class="text-left">Resource / <%= @stream.name %></h2></div>
+    <h2 class="text-left"><%= @stream.name %></h2></div>
   <div class="col-lg-4 text-right">
           <p>
             <% if @stream.private == "true" %>
@@ -30,7 +16,7 @@ window.onload = function(){
             <% end %>
           </p>
 
-          <p><small>Created: <%#= @stream.created_at.to_formatted_s(:short) %></small></p>
+          <p><small>Created: <%= @stream.creation_date %></small></p>
   </div>
 </div>
 
@@ -45,9 +31,19 @@ window.onload = function(){
 
 <div class="row">
   <div class="col-lg-8"> <!-- Left side -->
-    <div class="stream-graph" id="stream-graph"></div> <!-- Placeholder Id for placeholder Graph-->
+    <div class="stream-graph graph-canvas" id="graph-canvas"></div>
+    <span class="btn btn-primary" id="prediction-btn">Fetch Prediction</span>
+      <div id="prediction-description" class="pull-right">
+        <span class="label prediction-80">80% Confidence interval</span>
+        <span class="label prediction-95">95% Confidence interval</span>
+      </div>
+        <div class="pull-right">Live update:
+          <div class="make-switch switch-mini" id="live-update-btn">
+            <input id="live-update-checkbox" type="checkbox">
+          </div>
+        </div>
       <div><small>
-        Last udate: <%#= @stream.updated_at %>
+        Last update: <%= @stream.last_updated %>
         History: <%= @stream.history_size %>
         Accuracy: <%= @stream.accuracy %>
         Min Value: <%= @stream.min_val %>
@@ -58,27 +54,23 @@ window.onload = function(){
       <div class="stream-description well"><%= @stream.description %></div>
       <h4>Tags: </h4>
       <div class="stream-tags well">
-        <span class="label label-info">Temperature</span>
-        <span class="label label-warning">Uppsala</span>
-        <span class="label label-default">Ericsson</span>
-        <span class="label label-default">SICS</span>
+        <% tagslist = @stream.tags.split(/,/) %>
+        <% for tag in tagslist %>
+        <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
+        <% end %>
       </div>
-
-      <%#= link_to 'Edit', edit_resource_stream_path(@resource, @stream) %>
-      <%#= link_to 'Back', edit_resource_path(@resource) %>
-      <%= link_to 'Back', edit_resource_path(@resource), class: "glyphicon glyphicon-chevron-left btn btn-primary" %>
-      <%= link_to 'Edit', edit_resource_stream_path(@resource, @stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
-      <%= link_to 'Delete', [@resource, @stream], confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+			<% if !(@user.nil?) && (@user.id == @stream.user_id.to_i) %>
+      	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+      	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+			<% end %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
-    <!--<%= image_tag("mapplaceholder.png", width: '100%')%>-->
     <div id="map-canvas">
     </div>
-    <div class="row">
-      <div class="col-lg-6">longitude: <%= @stream.longitude %></div>
-      <div class="col-lg-6">latitude: <%= @stream.latitude %></div>
-    </div>
+      <div id="location" style="display: none;" value="<%= @stream.location %>"></div>
   </div>
 </div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>
+
 
 

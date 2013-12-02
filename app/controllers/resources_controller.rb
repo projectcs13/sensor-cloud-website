@@ -2,97 +2,140 @@ class ResourcesController < ApplicationController
 
   before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
-  ### TODO Testing Purposes
-  # current_user = { id: 0 }
-
-  # GET /resources
-  # GET /resources.json
   def index
     @resources = Resource.all(_user_id: current_user.id)
-		# logger.debug ">> @resources: #{@resources.inspect}"
-		#@resources.each do | r |
-    #  logger.debug ">> RES: #{r.attributes}"
-		#end
   end
 
-  # GET /resources/1
-  # GET /resources/1.json
   def show
     redirect_to :action => "edit"
   end
 
-  # GET /resources/new
+  def make_suggestion_by model
+    res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}?size=1000"
+
+    if res.status == 404
+      data = {}
+    else
+      suggestion = JSON.parse(res.body)['suggestions'][0]
+      data = suggestion['payload']
+    end
+
+    data
+  end
+
+  def create_streams_to_resource
+    sug = make_suggestion_by @resource.model
+    streams = sug['streams']
+    if streams
+      streams.each do |st|
+        # st['min_val'] = st['min_value']
+        # st['max_val'] = st['max_value']
+        st.delete('resource_id')
+
+        s = Stream.new st
+
+        res = s.post current_user.id, @resource.id
+      end
+    end
+  end
+
+  def autocomplete
+    name = params[:term]
+    attribute = params[:attr]
+    res = Faraday.get "#{CONF['API_URL']}/suggest/#{attribute}/#{name}?size=1000"
+
+    data = []
+    unless res.status == 404
+      sugs = JSON.parse(res.body)['suggestions']
+      sugs.each do |s|
+        data.push s['text']
+      end
+    end
+
+    render :json => data, :status => res.status
+  end
+
+  def suggest
+    sug = make_suggestion_by params[:model]
+    status = if sug then 200 else 404 end
+    render :json => sug, :status => status
+  end
+
   def new
     @resource = Resource.new
-    attributes = [:owner, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    # attributes = [:name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active]
+    attributes = ["user_id","name","tags","model","description","type","manufacturer","uri","polling_freq","creation_date","uuid"]
     attributes.each do |attr|
       @resource.send("#{attr}=", nil)
     end
-    # @resource.send("#{user_id}=", current_user.id)
   end
 
-  # GET /resources/1/edit
   def edit
   end
 
-  # POST /resources
-  # POST /resources.json
   def create
-    ### TODO Remove the owner
     @resource = Resource.new(resource_params)
     @resource.user_id = current_user.id
 
-		if @resource.valid?
-    	res = post
-			sleep(1.0)
-    	respond_to do |format|
-      	if res.status == 200
-        	id = JSON.parse(res.body)['_id']
-        	format.html { redirect_to edit_resource_path(id) }
-        	format.json { render action: 'show', status: :created, location: @resource }
-      	else
-        	format.html { render action: 'new' }
-        	format.json { render json: @resource.errors, status: :unprocessable_entity }
-      	end
-    	end
-		else
-			respond_to do |format|
-    		format.html { render action: 'new' }
-      	format.json { render json: @resource.errors, status: :unprocessable_entity }
-			end
-		end
-  end
+    if @resource.valid?
+      res = post
 
-  # PATCH/PUT /resources/1
-  # PATCH/PUT /resources/1.json
-  def update
-    respond_to do |format|
-      @resource.assign_attributes(resource_params)
-			if @resource.valid?
-      	res = put
-				sleep(1.0)
-      	res.on_complete do
-        	if res.status == 200
-          	format.html { redirect_to action: 'index', status: :moved_permanently }
-          	format.json { head :no_content }
-        	else
-          	format.html { render action: 'edit' }
-          	format.json { render json: @resource.errors, status: :unprocessable_entity }
-					end
-      	end
-			else
-      	format.html { render action: 'edit' }
+      respond_to do |format|
+        if res.status == 200
+          @resource.id = JSON.parse(res.body)['_id']
+
+          if params[:suggestion] == "1"
+            create_streams_to_resource
+          end
+
+          # TODO API should skip this attribute
+          # @resource.attributes.delete 'suggestion'
+
+          # The API is currently sending back the response before the database has
+          # been updated. The line below will be removed once this bug is fixed.
+          sleep(1.0)
+
+
+          format.html { redirect_to edit_resource_path(@resource.id) }
+          format.json { render action: 'show', status: :created, location: @resource }
+        else
+          format.html { render action: 'new' }
+          format.json { render json: @resource.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { render action: 'new' }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
-			end
+      end
     end
   end
 
-  # DELETE /resources/1
-  # DELETE /resources/1.json
+  def update
+    respond_to do |format|
+      @resource.assign_attributes(resource_params)
+      if @resource.valid?
+        res = put
+        sleep(1.0)
+        res.on_complete do
+          if res.status == 200
+            format.html { redirect_to action: 'index', status: :moved_permanently }
+            format.json { head :no_content }
+          else
+            format.html { render action: 'edit' }
+            format.json { render json: @resource.errors, status: :unprocessable_entity }
+          end
+        end
+      else
+        format.html { render action: 'edit' }
+        format.json { render json: @resource.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def destroy
-    # @resource.user_id = 0
     @resource.destroy
-		sleep(1.0)
+    sleep(1.0)
     respond_to do |format|
       format.html { redirect_to resources_url }
       format.json { head :no_content }
@@ -100,12 +143,12 @@ class ResourcesController < ApplicationController
   end
 
   def post
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/"
+    url = "#{CONF['API_URL']}/users/#{current_user.id}/resources/"
     send_data(:post, url)
   end
 
   def put
-    url = "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/resources/" + @resource.id.to_s
+    url = "#{CONF['API_URL']}/users/#{current_user.id}/resources/" + @resource.id.to_s
     send_data(:put, url)
   end
 
@@ -119,7 +162,8 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:user_id, :name, :description, :manufacturer, :model, :update_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active)
+      # params.require(:resource).permit(:user_id, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active, :suggestion)
+      params.require(:resource).permit("user_id","name","tags","model","description","type","manufacturer","uri","polling_freq","creation_date","uuid")
     end
 
     def send_data(method, url)
@@ -128,13 +172,12 @@ class ResourcesController < ApplicationController
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @resource.attributes.to_json
+        req.body = @resource.attributes.to_json(:only => [:user_id, :name, :description, :manufacturer, :model, :polling_freq, :resource_type, :data_overview, :serial_num, :make, :location, :uri, :tags, :active])
       end
     end
 
     def new_connection
-      logger.debug "New Connection!!!!!!!!!!!!!!!!!!!!!!!!!!1"
-      @conn = Faraday.new(:url => "http://srv1.csproj13.student.it.uu.se:8000/users/#{current_user.id}/") do |faraday|
+      @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{current_user.id}/") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP

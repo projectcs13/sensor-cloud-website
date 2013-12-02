@@ -11,13 +11,14 @@
 		                                   "data-turbolinks-track" => true %>
 				<%= javascript_include_tag "application", 
 																	 "data-turbolinks-track" => true %>
+				<%= javascript_include_tag params[:controller] %>
+				<%= stylesheet_link_tag params[:controller] %>
 	    	<%= csrf_meta_tags %>
 	    	<%= render 'layouts/shim' %>
 			</head>
 		</div>
-
 		<div id="body">
-	  	<body>
+	  	<body class="<%= @home_page ? 'homepage' : ''%>" data-controller="<%=params[:controller]%>" data-action="<%=params[:action]%>">
 	    	<%= render 'layouts/modal' %>
 
 				<%= render 'layouts/header' %>

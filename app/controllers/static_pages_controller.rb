@@ -1,5 +1,6 @@
 class StaticPagesController < ApplicationController
   def home
+  	@home_page = true
   end
 
   def help
@@ -8,6 +9,21 @@ class StaticPagesController < ApplicationController
   def about
   end
 
-  def contact
+  def faq
+  end
+
+  def manual
+  end
+
+  def privacy
+  end
+
+  def api
+  end
+
+  def security
+  end
+
+  def terms
   end
 end

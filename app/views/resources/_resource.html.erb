@@ -1,15 +1,21 @@
 <aside class="resources-sidebar">
   <% @resource.attributes.each do | key, value | %>
 
-    <% if key != "id" and
-          key != "mirror_proxy" and
-          key != "streams" and
-          key != "user_id" %>
+    <% if  key != "id" and
+     key != "user_id" and
+     key != "owner" and
+     key != "mirror_proxy" and
+     key != "manufacturer_suggest" and
+     key != "model_suggest" and
+     key != "tags_suggest" and
+     key != "creation_date" and
+     key != "streams"
+    %>
       <div class="input-group">
         <span class="input-group-addon"><%= @f.label key %></span>
         <!-- Don't do anything -->
 
-        <% if key == "update_freq" %>
+        <% if key == "polling_freq" %>
           <%= @f.text_field key, class: "form-control hotfix-update-freq" %>
           <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Frequency? <span class="caret"></span></button>
@@ -28,6 +34,12 @@
 
         <% elsif key == "active" %>
           <%= @f.check_box key %>
+
+        <% elsif key == "model" %>
+          <%= @f.text_field key, class: "form-control" %>
+          <%#= button_to "Suggest", @resource, remote: true, id: "suggest-btn", class: "btn btn-primary" %>
+          <%#= link_to "Suggest", nil, id: "suggest-btn", class: "btn btn-primary" %>
+          <!-- <a href="#" id="suggest-btn" class="btn btn-primary">Suggest</a> -->
 
         <% else %>
           <%= @f.text_field key, class: "form-control" %>

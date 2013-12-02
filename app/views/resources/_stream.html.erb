@@ -8,17 +8,17 @@
     <p>Description: <%= @stream.description %></p>
    <p>Updated at: <%#= @stream.updated_at %></p>
     <p>
-      <% if @stream.private == "true" %>
-        <span class="label label-danger">Private</span>
-      <% else %>
+      <%# if @stream.private == "true" %>
+        <!-- <span class="label label-danger">Private</span> -->
+      <%# else %>
         <span class="label label-success">Public</span>
-      <% end %>
+      <%# end %>
 
-      <% if @stream.active == "true" %>
+      <%# if @stream.active == "true" %>
         <span class="label label-success">Active</span>
-      <% else %>
-        <span class="label label-danger">Inactive</span>
-      <% end %>
+      <%# else %>
+        <!-- <span class="label label-danger">Inactive</span> -->
+      <%# end %>
     </p>
   </div>
 

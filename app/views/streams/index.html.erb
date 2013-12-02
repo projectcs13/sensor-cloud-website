@@ -1,61 +1,68 @@
 <div>
-  <h1 class="title">Listing Streams</h1>
+  <h1 class="title">My Streams</h1>
 
   <div class="corner">
-    <%= link_to 'New Stream', new_stream_path, class: "btn btn-primary right" %>
-    <p class="query-result"><em>Found <%= @json['hits']['total'] %> streams in <%= @json['took'] %> miliseconds</em></p>
+    <div class="btn btn-danger right">
+      <%= link_to 'Delete All Streams', streams_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+    </div>
+    <div class="btn btn-primary right">
+      <%= link_to 'New Stream', new_stream_path, class: "glyphicon glyphicon-plus" %>
+    </div>
   </div>
 
   <div class="clearfix"></div>
 </div>
 
-<div class="center">
-  <%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3 %>
+<!-- <div class="panel panel-default"> -->
+<div>
+  <ul class="list-group col-md-6 left">
+    <% @streams.each do | stream | %>
+      <li class="list-group-item">
+        <h4 class="left"><%= stream['name'] %></h4>
+
+        <div class="right">
+          <i class="show-details glyphicon glyphicon-chevron-down right"></i>
+
+          <div class="btn btn-sm btn-danger right">
+						<%= link_to 'Delete', "streams/#{stream['id']}", method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+          </div>
+
+          <div class="btn btn-sm btn-primary right">
+            <%= link_to 'View', stream_path(stream['id']), class: "glyphicon glyphicon-pencil" %>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="details" style="display: none;">
+          <p><%= stream['description'] %></p>
+          <p><%= stream['tags'] %></p>
+          <p><%= stream['type'] %></p>
+          <p>
+            <% if stream['private'] == "true" %>
+              <span class="label label-danger">Private</span>
+            <% else %>
+              <span class="label label-success">Public</span>
+            <% end %>
+
+            <% if stream['active'] == "true" %>
+              <span class="label label-success">Active</span>
+            <% else %>
+              <span class="label label-danger">Inactive</span>
+            <% end %>
+          </p>
+          <%#= stream.user_ranking %>
+          <%#= stream.subscribers %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="map col-md-4 right">
+    MAP
+  </div>
 </div>
 
-<div class="panel panel-default">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Private</th>
-        <th>Accuracy</th>
-        <th>Type</th>
-        <th>Unit</th>
-        <th>Max val</th>
-        <th>Min val</th>
-        <th>Active</th>
-        <th>User ranking</th>
-        <th>Subscribers</th>
-        <!--
-        <th></th>
-        <th></th>
-        <th></th>
-        -->
-      </tr>
-    </thead>
-
-    <tbody>
-      <% @streams.each do | stream | %>
-        <tr>
-          <td><%= stream['_source']['name'] %></td>
-          <td><%= stream['_source']['description'] %></td>
-          <td><%= stream['_source']['private'] %></td>
-          <td><%= stream['_source']['accuracy'] %></td>
-          <td><%= stream['_source']['type'] %></td>
-          <td><%= stream['_source']['unit'] %></td>
-          <td><%= stream['_source']['max_val'] %></td>
-          <td><%= stream['_source']['min_val'] %></td>
-          <td><%= stream['_source']['active'] %></td>
-          <td><%= stream['_source']['user_ranking'] %></td>
-          <td><%= stream['_source']['subscribers'] %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-
 <div class="center">
-  <%= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3, class: "center" %>
+  <%#= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3, class: "center" %>
 </div>

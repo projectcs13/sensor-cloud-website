@@ -11,11 +11,6 @@
 ### The commands in this sections should not be used in general, but can be used
 ### if there is need for it
 ################################################################################
-### Command: make
-### Runs the project, excluding the dependencies.
-all: 
-	rails s
-
 get_libs:
 	sudo apt-get install -y curl
 	@chmod +x scripts/install.sh
@@ -31,6 +26,12 @@ clean_emacs_vsn_files:
 ### This section contains commands that can be used.
 ### This section can be edited if needed
 ################################################################################
+### Command: make
+### Runs the project, excluding the dependencies.
+all: run
+
+deploy:
+	passenger start
 
 ### Command: make install
 ### Downloads all dependencies and builds the entire project

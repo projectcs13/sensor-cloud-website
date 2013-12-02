@@ -2,7 +2,6 @@ class Resource
   include Her::Model
 
   attributes :name
-  # validates :name, presence: true
 	validates :name,  presence: true, length: { maximum:50 }
 
   belongs_to :user
@@ -10,5 +9,5 @@ class Resource
 
   collection_path "/users/:user_id/resources"
   include_root_in_json false
-  parse_root_in_json :hits, format: :active_model_serializers
+  parse_root_in_json :resources, format: :active_model_serializers
 end

@@ -1,3 +1,5 @@
+=begin
+
 require "spec_helper"
 
 describe ResourcesController do
@@ -33,3 +35,5 @@ describe ResourcesController do
 
   end
 end
+
+=end

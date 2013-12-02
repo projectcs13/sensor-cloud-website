@@ -2,49 +2,90 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+###
 $ ->
-  modal  = $ '#modal'
-  list   = $ '#resources-streams-list'
-  num    = 0
-  stream = null
 
+  form = $('#new_resource')
 
-  template = ->
-    children = list.children()
-    stream   = children.first().clone()
-    stream.find('input').val "" if stream
-
-    num      = children.length + 1
-    stream
-
-
-  updateNumbers = (streams) ->
-    # streams.map () ->
-      # Update their label
-
-
-  #
-  # Function: addStream
-  #
-  # Clone the HTML structure of a stream, create a new one dynamically
-  # and add it to the list of streams
-  #
-  addStream = (event) ->
+  suggest = (event) ->
     do event.preventDefault
-    # stream.find('#num').text num
-    list.append(stream)
-    stream = do template
-    @
+    form.attr('action', '/suggest')
+    form.data('remote', 'true')
+    do form.submit
 
-
-  removeStream = (event) ->
+  create = (event) ->
     do event.preventDefault
-    do $(this).parents('.resources-stream').remove
+    form.attr('action', '/resources')
+    # form.data('remote', null)
+    do form.submit
+
+  $('body').on 'click', '#create-btn', create
+  $('body').on 'click', '#suggest-btn', suggest
+
+###
+$ ->
+
+  # suggest = (event) ->
+  suggest = (model) ->
+    # do event.preventDefault
+    # model = $('#resource_model').val()
+    res = $.getJSON "/suggest/#{model}"
+    res.done (json) ->
+      console.log json
+      for k, v of json
+        if v
+          input = $("#resource_#{k}")
+          input.val v
+          input.addClass 'highlight'
+          input.on 'focus', ->
+            $(this).removeClass 'highlight'
+      @
+
+  # $('body').on 'click', '#suggest-btn', suggest
 
 
-  # Initialization
+  split = (val) ->
+    val.split /,\s*/
 
-  stream = do template
+  extractLast = (term) ->
+    do split(term).pop
 
-  # $('body').on 'click', '#addStreamButton', addStream
-  # $('body').on 'click', '.glyphicon-remove', removeStream
+  selectItem = (ui, value) ->
+    terms = split value
+    do terms.pop                # remove the current input
+    terms.push ui.item.value    # add the selected item
+    terms.push ""               # add placeholder to get the comma-and-space at the end
+    terms
+
+  autocomplete = (attr) ->
+      $("#resource_#{attr}")
+
+        # don't navigate away from the field on tab when selecting an item
+        .bind "keydown", (event) ->
+          event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
+
+        .autocomplete
+          minLength: 1
+
+          source: "/autocomplete/#{attr}"
+
+          focus: ->
+            # prevent value inserted on focus
+            false
+
+          select: (event, ui) ->
+            terms = selectItem ui, @value
+
+            appendWithComma = => @value = terms.join ", "
+            appendValue     = => @value = terms.join ""
+
+            switch attr
+              when "tags"         then do appendWithComma
+              when "manufacturer" then do appendValue
+              when "model"
+                do appendValue
+                suggest @value
+
+            false
+
+  autocomplete attr for attr in [ "model", "manufacturer", "tags" ]

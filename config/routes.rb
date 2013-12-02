@@ -1,24 +1,41 @@
 SensorCloud::Application.routes.draw do
 
-  resources :groups
-
-  resources :users
-
-  # resources :streams
-
-  resources :resources do
-    resources :streams
+  resources :streams do
+    collection do
+      delete '/', :to => :destroyAll
+    end
   end
-
+  resources :users
+  resources :searches
 	resources :sessions, only: [:new, :create, :destroy]
+  resources :contacts, only: [:new, :create]
 
   root  'static_pages#home'
+
+  match '/suggest/:model',     to: 'resources#suggest', via: 'get'
+  match '/autocomplete/:attr', to: 'resources#autocomplete', via: 'get'
+  #match '/suggest',        to: 'resources#suggest',    via: 'post'
+
+  match '/datapoints/:id',    to: 'streams#fetch_datapoints',         via: 'get'
+  match '/prediction/:id',    to: 'streams#fetch_prediction',         via: 'get'
+
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
+  match '/api',       to: 'static_pages#api',     via: 'get'
   match '/help',      to: 'static_pages#help',    via: 'get'
   match '/about',     to: 'static_pages#about',   via: 'get'
-  match '/contact',   to: 'static_pages#contact', via: 'get'
+
+  match '/userranking', to: 'searches#update_user_ranking', via: 'put'
+  match '/history',   to: 'searches#fetch_graph_data',         via: 'get'
+  match '/faq',       to: 'static_pages#faq',     via: 'get'
+  match '/manual',    to: 'static_pages#manual',  via: 'get'
+  match '/privacy',   to: 'static_pages#privacy', via: 'get'
+  match '/security',   to: 'static_pages#security', via: 'get'
+  match '/terms',   to: 'static_pages#terms', via: 'get'
+
+	match '/filter', 		to: 'searches#filter', 			via: 'get'
+  match '/autocomplete', to: 'searches#fetch_autocomplete', via: 'get'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
