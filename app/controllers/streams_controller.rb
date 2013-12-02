@@ -8,14 +8,15 @@ class StreamsController < ApplicationController
   def index
     cid = current_user.id
     res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
-    logger.debug "http://130.238.15.237:8000/users/1/streams/"
-    logger.debug "#{CONF['API_URL']}/users/#{cid}/streams/"
     @streams = JSON.parse(res.body)['streams']
   end
 
   def show
 		@stream_id = params[:id]
 		#@user = current_user
+		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
+		stream_owner_id = JSON.parse(resp.body)['user_id']
+		@stream_owner = User.find_by(id: stream_owner_id)
   end
 
   def new
