@@ -2,9 +2,11 @@
 //= require 'include/stream_graph_multiline'
 
 $ ->
-  graphWidth = $(".search-graph").width()
+  graphWidth = $(".right-side-content").width()
+  console.log graphWidth
   graphData = []
-  test_graph = streamGraphMultiLine().width(700).height(500)
+  multiGraph = streamGraphMultiLine().width(graphWidth).height(500)
+  d3.select("#multiline-graph").datum(graphData).call(multiGraph)
   for graph in $('#streams .search-result')
     $(graph).on "click", (event) ->
       stream_id = this.dataset.streamid
@@ -19,8 +21,8 @@ $ ->
         panelHeader.children().remove("span")
         graphData = graphData.filter (el) -> 
           return el.stream_id.toString() != stream_id
-        $("#test-multiline svg").remove()
-        d3.select("#test-multiline").datum(graphData).call(test_graph)
+        $("#multiline-graph svg").remove()
+        d3.select("#multiline-graph").datum(graphData).call(multiGraph)
       else
         panelHeader.addClass("selected")
         # ajax call
@@ -32,8 +34,8 @@ $ ->
             panelHeader.append(noDataSpan)
           else
             panelHeader.append(selectedSpan)
-          $("#test-multiline svg").remove()
-          d3.select("#test-multiline").datum(graphData).call(test_graph)
+          $("#multiline-graph svg").remove()
+          d3.select("#multiline-graph").datum(graphData).call(multiGraph)
         res.fail (e, data) ->
           console.log e
   

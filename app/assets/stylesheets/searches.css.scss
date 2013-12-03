@@ -11,8 +11,7 @@
   background-color: #cccccc !important; 
 }
 
-$colors: $custom-green, $custom-red, $custom-grey-dark, $custom-grey, $custom-grey-light, $custom-greyish-blue, $custom-blue-darker,
-         $custom-blue-dark, $custom-blue, $custom-blue-light, $custom-blue-lighter;
+$colors: #4a786e, #d15868, #8b83ab, #e8b169, #eb4e23, #618c57, #612439;
 
 @for $i from 1 through length($colors) {
     .selected#{$i} {
@@ -55,8 +54,9 @@ li.search-result>div.row {
 	
 }
 .svg-back {
-  background-color: #bae5ac;
-  fill: #bae5ac;
+  background-color: #cccccc;
+  fill: #cccccc;
+  opacity:0.3;
 }
 
 .search-graph {
