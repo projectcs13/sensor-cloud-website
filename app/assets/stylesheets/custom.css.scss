@@ -111,11 +111,11 @@ p {
 	position:relative;
 }
 
-#body {
+body {
 	padding-bottom: 96px; /* Height of the footer + 20px */
 }
 
-#footer {
+footer {
 	position:absolute;
 	bottom: 0;
 	width: 100%;
@@ -581,3 +581,4 @@ input.search-query {
 .alert-message p {
   margin-bottom: 0;
 }
+
