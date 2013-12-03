@@ -1,7 +1,7 @@
 class StreamsController < ApplicationController
 
 	before_action :correct_user,   only: [:edit, :update, :destroy]
-  before_action :get_user_id,    only: [:post, :put, :multipost, :deleteAll, :new_connection]
+  # before_action :get_user_id,    only: [:post, :put, :multipost, :deleteAll, :new_connection]
   before_action :set_stream,     only: [:show, :edit, :update, :destroy]
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
@@ -13,7 +13,6 @@ class StreamsController < ApplicationController
 
   def show
 		@stream_id = params[:id]
-		#@user = current_user
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
 		@stream_owner = User.find_by(id: stream_owner_id)
@@ -21,13 +20,6 @@ class StreamsController < ApplicationController
 
   def new
     @stream = Stream.new
-    # attributes = ["name", "description", "type", "private",
-    #               "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
-    #               "polling", "uri", "polling_freq",
-    #               "user_id"]
-    # attributes.each do |attr|
-    #   @stream.send("#{attr}=", "")
-    # end
   end
 
   def new_from_resource
@@ -107,7 +99,7 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'quality'
     @stream.attributes.delete 'subscribers'
 
-    @stream.polling = if @stream.polling == "1" then false else true end
+    @stream.polling = if @stream.polling == "1" then false   else true   end
     @stream.private = if @stream.private == "0" then "false" else "true" end
 
     if @stream.accuracy     == ""  then @stream.accuracy     = nil end
@@ -224,7 +216,7 @@ class StreamsController < ApplicationController
   def post
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
-    send_data(:post, url, @stream.attributes.json)
+    send_data(:post, url, @stream.attributes.to_json)
   end
 
   def multipost
@@ -245,7 +237,7 @@ class StreamsController < ApplicationController
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/#{@stream.id}"
     @stream.attributes.delete 'id'
-    send_data(:put, url, @stream.attributes.json)
+    send_data(:put, url, @stream.attributes.to_json)
   end
 
   private
