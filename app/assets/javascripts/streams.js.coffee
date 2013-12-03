@@ -32,10 +32,23 @@ $ ->
         </li>
       """
 
+    createForm = (id) ->
+      form = $('#edit_stream_REPLACE_THIS_ID')
+      clone = form.clone()
+      form.parent().append clone
+      clone.attr('id', "edit_stream_#{id}")
+      clone.attr('action', "/streams/#{id}")
+      clone.removeClass('hidden')
+
+    removeForm = (id) ->
+      form = $("#edit_stream_#{id}")
+      console.log form
+      form.remove()
+
     listStreams = (json) ->
       console.log json
       place = $('#streams')
-      
+
       place.html ""
 
       for stream in json.streams_suggest
@@ -56,6 +69,7 @@ $ ->
         if checkbox[0].checked == false
           #ID created in ES, needs cleanup
           id = stream.data 'id'
+          removeForm id
           res = $.ajax
             type: "DELETE"
             url: "/streams/#{id}"
@@ -63,24 +77,26 @@ $ ->
 
           res.done (data) ->
             console.log data
+
         else
           # Create ID (and store)
           checkbox.addClass('hidden')
           spinner = checkbox.siblings('.spinner')
           spinner.removeClass('hidden')
-          
+
           json = {"stream" : stream.data 'json' }
           res = $.ajax
             type: "POST"
             url: "/streams"
             data: json
             dataType: "json"
-        
+
           res.done (data) ->
             console.log data
             stream.data 'id', data.id
             checkbox.removeClass('hidden')
             spinner.addClass('hidden')
+            createForm data.id
 
           res.fail (xhr, result) ->
             # Block checkbox? BIG RED TEXT?
@@ -136,9 +152,9 @@ $ ->
       graph_object.fetch_prediction_data()
 
     loc = document.getElementById('location').getAttribute('value').split ","
-    
+
     mapDiv = document.getElementById('map-canvas')
-    
+
     mapOptions =
       center: new google.maps.LatLng loc[0], loc[1]
       zoom: 8,
@@ -157,9 +173,9 @@ $ ->
       value = data.value
       alert value
       toggle(value)
-  $(document).bind 'streams_new', (e,obj) => 
+  $(document).bind 'streams_new', (e,obj) =>
     mapDiv = document.getElementById('map-canvas')
-    
+
     mapOptions =
       center: new google.maps.LatLng 60, 18
       zoom: 8,
