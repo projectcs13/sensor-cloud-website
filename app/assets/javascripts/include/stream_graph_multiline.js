@@ -50,8 +50,6 @@ function streamGraphMultiLine () {
       yScale.domain(y_domain).range([height - margin.top - margin.bottom, 0]);
       xScale2.domain(xScale.domain()).range(xScale.range());
       yScale2.domain(yScale.domain()).range([height2 - margin2.top - margin2.bottom, 0]);
-      console.log("x_domain:" + x_domain);
-      console.log("y_domain:" + y_domain);
       // Create brush
       var brush = d3.svg.brush()
                     .x(xScale2)
