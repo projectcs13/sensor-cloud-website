@@ -171,7 +171,6 @@ $ ->
 
     $("#live-update-btn").on 'switch-change', (e, data) ->
       value = data.value
-      alert value
       toggle(value)
   $(document).bind 'streams_new', (e,obj) =>
     mapDiv = document.getElementById('map-canvas')
