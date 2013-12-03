@@ -4,7 +4,8 @@ class StreamsController < ApplicationController
 
   def index
     # @streams = Stream.search(params[:search])
-    @streams = Stream.all(_user_id: current_user.id)
+    @streams = Stream.all(_user_id: current_user.username)
+    @count= @streams.count
   end
 
   def show
@@ -138,19 +139,19 @@ class StreamsController < ApplicationController
   end
 
   def deleteAll
-    cid = current_user.id
+    cid = current_user.username
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
     send_data(:delete, url)
   end
 
   def post
-    cid = current_user.id
+    cid = current_user.username
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
     send_data(:post, url)
   end
 
   def put
-    cid = current_user.id
+    cid = current_user.username
     url = "#{CONF['API_URL']}/users/#{cid}/streams/#{@stream.id}"
     send_data(:put, url)
   end
@@ -158,7 +159,7 @@ class StreamsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      @stream = Stream.find(params[:id], _user_id: current_user.id)
+      @stream = Stream.find(params[:id], _user_id: current_user.username)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -167,7 +168,7 @@ class StreamsController < ApplicationController
     end
 
     # def load_parent
-    #   @user = User.find(current_user.id)
+    #   @user = User.find(current_user.username)
     # end
 
     def send_data(method, url)
@@ -180,7 +181,7 @@ class StreamsController < ApplicationController
     end
 
     def new_connection
-      cid = current_user.id
+      cid = current_user.username
       @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{cid}/") do |faraday|
         faraday.request  :url_encoded               # form-encode POST params
         faraday.response :logger                    # log requests to STDOUT

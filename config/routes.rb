@@ -15,10 +15,9 @@ SensorCloud::Application.routes.draw do
   match '/suggest/:model',     to: 'resources#suggest', via: 'get'
   match '/autocomplete/:attr', to: 'resources#autocomplete', via: 'get'
   #match '/suggest',        to: 'resources#suggest',    via: 'post'
-
   match '/datapoints/:id',    to: 'streams#fetch_datapoints',         via: 'get'
   match '/prediction/:id',    to: 'streams#fetch_prediction',         via: 'get'
-
+  match '/users/:username/edit/edit_profile', :to => 'users#profile', via: 'get'
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
