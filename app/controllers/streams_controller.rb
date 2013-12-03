@@ -23,6 +23,8 @@ class StreamsController < ApplicationController
   end
 
   def new_from_resource
+    @stream = Stream.new
+    @stream.id = "REPLACE_THIS_ID"
   end
 
   def multi
@@ -99,7 +101,7 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'quality'
     @stream.attributes.delete 'subscribers'
 
-    @stream.polling = if @stream.polling == "1" then false   else true   end
+    @stream.polling = if @stream.polling == "1" then "false" else "true" end
     @stream.private = if @stream.private == "0" then "false" else "true" end
 
     if @stream.accuracy     == ""  then @stream.accuracy     = nil end
