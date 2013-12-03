@@ -6,13 +6,15 @@ class StreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-<<<<<<< HEAD
     # @streams = Stream.search(params[:search])
-    @streams = Stream.all(_user_id: current_user.username)
-    @count= @streams.count
-    # cid = current_user.id
-    # res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
-    # @streams = JSON.parse(res.body)['streams']
+    # @streams = Stream.all(_user_id: current_user.username)
+    # @count= @streams.count
+    #Befor MERGING User Profile branch
+    cid = current_user.username
+    res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
+    @streams = JSON.parse(res.body)['streams']
+    @count= @streams.length
+    logger.debug "CURRENT_PAGE: #{@streams}"
   end
 
   def show

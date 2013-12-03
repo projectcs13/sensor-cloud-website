@@ -1,52 +1,66 @@
-<div class="row title-row">
-  <div class="col-lg-4">
-  </div>
-  <div class="col-lg-8"> 
-    <h2 class="text-left"><%= @user.firstname %> <%= @user.lastname %></h2>
-  </div> 
-</div>
-
-
 <div class="row">
-  	<div class="col-lg-4"> <!-- Left side -->
-      <center>  <%= gravatar_for_profile @user %></center>
-    </div>
+  	<div class="col-lg-3"> <!-- Left side -->
+        <center><%= gravatar_for_profile @user %></center>
+        <h2 class="text"> <small><%= @user.email %></small></h2> 
 
-  
-    <div class="col-lg-6">
-      <div class="panel panel-default">
-  		  <div class="panel-heading">Description</div>
-  		    <div class="panel-body">
-            <%= emptydescription @user %>
-  		    </div>
-		  </div>
     </div>
-    <div class="col-lg-2"> <!-- Left side -->
-     <div class="panel panel-default"> 
-      <div class="panel-heading">Alerts</div>
-        <div class="panel-body">
-          <div class="list-group">
-             <a href="/streams" class="list-group-item"><span class="badge"><%= @count %></span>Streams Owned</a>
-            <a href="#" class="list-group-item"><span class="badge">20</span>Streams Subscribed</a>
-            <a href="#" class="list-group-item"><span class="badge">9</span>Lorem Ipsum</a>
-            </div>
-          </div>
-        </div>
-      </div>  
-    </div>
-<br>
-<div class="row">
-  <div class="col-lg-1"> 
-  </div>  
-  <div class="col-lg-2"> <!-- Left side -->
+    <div class="col-lg-9">
+          <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="text-left"><%= @user.firstname %> <%= @user.lastname %> <small><%= @user.username %></small></h2> 
+
+                </div>
+          </div>  
+      
+
+          <div class="row">
+                <div class="col-lg-6">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Description</div>
+                      <div class="panel-body">
+                        <%= emptydescription @user %>
+                      </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Statistics</div>
+                      <div class="list">
+                        <a href="/streams" class="list-group-item"><span class="badge"><%= @count %></span>Streams Owned</a>
+                        <a href="/users/#{@user.username}/followings" class="list-group-item"><span class="badge">20</span>Streams Following</a>
+                      </div>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-3"> <!-- Left side -->
+                  <div class="panel panel-default"> 
+                    <div class="panel-heading">Alerts</div>
+                      <div class="panel-body alerts">
+                        <div class="alert-message error">
+                          <a class="close" href="#">×</a>
+                            <p>Alert!!!<a href="#"></a>.</p>
+                        </div>
+                        <div class="alert-message error">
+                          <a class="close" href="#">×</a>
+                            <p>Danger!!!<a href="#"></a>.</p>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+          </div>  
+</div>      
+<hr>
+<hr>
+<hr>
+<hr>
+<hr>
+
+
+<!-- <div class="row">
+  <div class="col-lg-3"> 
     <div class="list-group">
       <a href="/streams" class="list-group-item"><span class="badge"><%= @count %></span>Streams Owned</a>
-      <a href="#" class="list-group-item"><span class="badge">20</span>Streams Subscribed</a>
+      <a href="/following" class="list-group-item"><span class="badge">20</span>Streams Following</a>
     </div>
   </div>
-  <div class="col-lg-1"> 
-  </div> 
-  <div class="col-lg-8">
-
-  </div>
 </div>
+ -->

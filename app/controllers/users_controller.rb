@@ -2,19 +2,21 @@ class UsersController < ApplicationController
 	before_action :signed_in_user, only: [:index, :edit, :update, :destroy, :profile]
 	before_action :correct_user, 	 only: [:edit, :update]
 	before_action :admin_user, 		 only: :destroy
-  before_action :show,            only: :signed_in_user
+
 
 	def show
 		@user = User.find_by_username(params[:id])
-    @streams = Stream.all(_user_id: current_user.username)
-    @count= @streams.count
-
+    cid = current_user.username
+    res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
+    @streams = JSON.parse(res.body)['streams']
+    @count= @streams.length
 	end
 
 	def following
 		@title = "Following"
-		@user = User.find(params[:id])
-		@relationships = Relationship.all.where(follower_id: @user.id)
+		@user = User.find_by_username(params[:id])
+    cid = current_user.username
+		@relationships = Relationship.all.where(follower_id: cid)
 		 @streams = @relationships.map do |r|
 			url = "#{CONF['API_URL']}/streams/" + r.followed_id
 			#logger.debug "*** url: #{url} ***"
@@ -62,9 +64,9 @@ class UsersController < ApplicationController
 	end
 
 	def destroy
-		@user = User.find(params[:id])
+		@user = User.find_by_username(params[:id])
 		@user.destroy
-		Relationship.all.where(followed_id: @user.id).each do |r|
+		Relationship.all.where(followed_id: @user.username).each do |r|
 			r.destroy
 		end
 

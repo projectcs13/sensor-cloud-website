@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131128155646) do
+ActiveRecord::Schema.define(version: 20131128100456) do
 
   create_table "groups", force: true do |t|
     t.string   "owner"
@@ -26,9 +26,6 @@ ActiveRecord::Schema.define(version: 20131128155646) do
     t.integer  "user_ranking"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "multistreams", force: true do |t|
   end
 
   create_table "relationships", force: true do |t|

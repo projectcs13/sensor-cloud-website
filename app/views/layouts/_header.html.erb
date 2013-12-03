@@ -34,7 +34,7 @@
     	<ul class="nav navbar-nav">
 				<% if signed_in? %>
 					<li><%= link_to "My Streams", streams_path %></li>
-					<li><%= link_to "Following", "/users/#{current_user.id}/following" %></li>
+					<li><%= link_to "Following", "/users/#{current_user.username}/following" %></li>
 				<% end %>
 			</ul>
 

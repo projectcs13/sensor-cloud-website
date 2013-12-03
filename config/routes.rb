@@ -45,7 +45,7 @@ SensorCloud::Application.routes.draw do
   match '/history',      to: 'searches#fetch_graph_data',    via: 'get'
 
 
-	get 'users/:id/following' => 'users#following', as: :following
+	get 'users/:username/following' => 'users#following', as: :following
 
 
 
