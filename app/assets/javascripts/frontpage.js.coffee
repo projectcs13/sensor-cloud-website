@@ -19,7 +19,7 @@ $ ->
 		scroll: 
 			items: 1,
 			easing : "linear",
-			duration: 4000,
+			duration: 6000,
 			pauseOnHover: 'immediate'
 			fx: "directscroll"
 			
