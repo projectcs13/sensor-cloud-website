@@ -63,6 +63,11 @@ function streamGraphMultiLine () {
       
       // Otherwise, create the skeletal chart.
       var svgEnter = svg.enter().append("svg");
+
+      svgEnter.append("clipPath").attr("id", "clip").append("svg:rect")
+        .attr("id", "clip-rect")
+        .attr("width", width -(margin.left+margin.right))
+        .attr("height", height - (margin.top+margin.bottom));
           
       var focus = svgEnter.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
           focus
@@ -70,6 +75,9 @@ function streamGraphMultiLine () {
             .attr("class", "svg-back")
             .attr("width", width-margin.left-margin.right)
             .attr("height", height-margin.top-margin.bottom);
+          focus.append("g").attr("class", "x axis");
+          focus.append("g").attr("class", "y axis");
+          focus.append("g").attr("class", "lines");
 
       var context = svgEnter.append("g").attr("transform", "translate(" + margin.left + "," + height + ")");
           context
@@ -77,12 +85,8 @@ function streamGraphMultiLine () {
             .attr("class", "svg-back")
             .attr("width", width-margin.left-margin.right)
             .attr("height", height2-margin2.top-margin2.bottom);
-          focus.append("g").attr("class", "x axis");
-          focus.append("g").attr("class", "y axis");
-          focus.append("g").attr("class", "lines");
-          context.append("g").attr("class", "lines").attr("clip-path", "url(#clip)");
+          context.append("g").attr("class", "lines");
           context.append("g").attr("class", "x axis");
-          //context.attr("class", "x axis");
           context.append("g")
                   .attr("class", "x brush")
                   .call(brush)
@@ -95,20 +99,21 @@ function streamGraphMultiLine () {
 
       // Update the inner dimensions.
 
+      focus.select(".lines").attr("clip-path", "url(#clip)");
       var streams = focus.select(".lines").selectAll(".stream-line").data(data, function(d){return d.stream_id;});
       var lines = streams.datum(function(d){return d.data;}).attr("d", line);
       
       streams
-                  .enter()
-                  .append("path")
-                  .attr("class", 
-                    function(d){
-                      var streamclass = $("[data-streamid="+ d.stream_id +"]").data("iteration")
-                      return "stream-line selected" + streamclass;
-                      })
-                  .attr("id", function(d){return d.stream_id})
-                  .datum(function(d){return d.data;})
-                  .attr("d", line);
+        .enter()
+        .append("path")
+        .attr("class", 
+          function(d){
+            var streamclass = $("[data-streamid="+ d.stream_id +"]").data("iteration")
+            return "stream-line selected" + streamclass;
+          })
+        .attr("id", function(d){return d.stream_id})
+        .datum(function(d){return d.data;})
+        .attr("d", line);
 
       var streams2 = context.select(".lines").selectAll(".stream-line").data(data, function(d){return d.stream_id;});
       var lines2 = streams2.datum(function(d){return d.data;}).attr("d", line2);
