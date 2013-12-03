@@ -18,7 +18,8 @@ $ ->
       """
         <li class="input-group stream">
           <span class="input-group-addon">
-            <input type="checkbox">
+            <img class="spinner hidden" src="/assets/ajax-loader.gif" />
+            <input class="select-suggestion" type="checkbox">
           </span>
           <div class="form-control">
             <h4 class="left">#{stream.type}</h4>
@@ -34,39 +35,56 @@ $ ->
     listStreams = (json) ->
       console.log json
       place = $('#streams')
-      elem = ""
+      
+      place.html ""
+
       for stream in json.streams_suggest
-        elem = elem + render stream
-      elem = elem + """
-        <div id="btn-next" class="btn btn-primary">
-          Next
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        </div>
-      """
-      html = $(elem)
-      place.html html
-      place.find('#btn-next').on 'click', ->
-        data = []
-        streams = $('.stream')
-        streams.each (i, el) ->
-          input = $(el).find('input')[0]
-          data.push json.streams_suggest[i] if input.checked
+        dom = $(render stream)
+        dom.data 'json', stream
+        place.append dom
 
-        data = { multistream: data }
+      $('body').on 'click', '.select-suggestion', (event) ->
+        event.stopPropagation()
+        if $(this).hasClass('input-group-addon')
+          checkbox = $(this).find('.select-suggestion')
+          checkbox.attr("checked", !checkbox.attr("checked"))
+        else
+          checkbox = $(this)
+        stream = checkbox.parents('.stream')
 
-        res = $.ajax
-          type: "POST"
-          #url: "/streams/smartnew"
-          url: "/streams/multi"
-          data: data
-          #dataType: 'json'
+        console.log checkbox[0].checked
+        if checkbox[0].checked == false
+          #ID created in ES, needs cleanup
+          id = stream.data 'id'
+          res = $.ajax
+            type: "DELETE"
+            url: "/streams/#{id}"
+            dataType: "json"
 
-        res.done (data) ->
-          window.location.pathname = data.url if data.hasOwnProperty 'url'
+          res.done (data) ->
+            console.log data
+        else
+          # Create ID (and store)
+          checkbox.addClass('hidden')
+          spinner = checkbox.siblings('.spinner')
+          spinner.removeClass('hidden')
+          
+          json = {"stream" : stream.data 'json' }
+          res = $.ajax
+            type: "POST"
+            url: "/streams"
+            data: json
+            dataType: "json"
+        
+          res.done (data) ->
+            console.log data
+            stream.data 'id', data.id
+            checkbox.removeClass('hidden')
+            spinner.addClass('hidden')
 
-        res.fail (xhr, result) ->
-          alert "Error: Redirection not working properly\n Response from server: #{result}"
-
+          res.fail (xhr, result) ->
+            # Block checkbox? BIG RED TEXT?
+            alert "Error: Redirection not working properly\n Response from server: #{result}"
 
     $("#resource_model").bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active

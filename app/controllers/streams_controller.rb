@@ -130,10 +130,10 @@ class StreamsController < ApplicationController
         	sleep(1.0)
 
   				format.html { redirect_to stream_path(@stream.id) }
-        	format.json { render action: 'show', status: :created, location: @stream }
+        	format.json { render json: {"id" => @stream.id}, status: res.status}
       	else
         	format.html { render action: 'new' }
-        	format.json { render json: @stream.errors, status: :unprocessable_entity }
+        	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
       	end
     end
   end
