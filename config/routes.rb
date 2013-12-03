@@ -18,10 +18,13 @@ SensorCloud::Application.routes.draw do
 
   root  'static_pages#home'
 
-  match '/resources/:id',  to: 'streams#fetchResource',    via: 'get'
-  match '/suggest/:model', to: 'streams#suggest',          via: 'get'
-  match '/datapoints/:id', to: 'streams#fetch_datapoints', via: 'get'
-  match '/prediction/:id', to: 'streams#fetch_prediction', via: 'get'
+  match '/resources/:id',  to: 'streams#fetchResource', via: 'get'
+  match '/suggest/:model',     to: 'resources#suggest', via: 'get'
+  match '/autocomplete/:attr', to: 'resources#autocomplete', via: 'get'
+  #match '/suggest',        to: 'resources#suggest',    via: 'post'
+  match '/datapoints/:id',    to: 'streams#fetch_datapoints', via: 'get'
+  match '/prediction/:id',    to: 'streams#fetch_prediction', via: 'get'
+  match '/users/:username/edit/edit_profile', :to => 'users#profile', via: 'get'
 
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
@@ -42,7 +45,7 @@ SensorCloud::Application.routes.draw do
   match '/history',      to: 'searches#fetch_graph_data',    via: 'get'
 
 
-	get 'users/:id/following' => 'users#following', as: :following
+	get 'users/:username/following' => 'users#following', as: :following
 
 
 
