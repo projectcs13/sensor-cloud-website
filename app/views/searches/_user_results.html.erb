@@ -1,0 +1,23 @@
+<ul>
+	<% @users.each do |user| %>
+		<li class="search-result">
+		<div class="row">
+			<div class="col-md-9">
+				<h4>
+
+					<span class="glyphicon glyphicon-stats"></span>
+					<% user_id = user['_source']['_id'] %>
+					<% url = "/users/#{user_id}" %>
+				<%= link_to(user['_source']['username'], url) %></h4>
+			</div>
+			<div class="col-md-3 search-results-stats">
+				<ul class="pull-right">
+				</ul>
+			</div>
+		</div>
+		<p><%= user['_id'] %></p>
+		<span class="last-update">Last updated <%= distance_of_time_in_words(Time.now, Time.now, include_seconds: true) %> ago</span>
+		<br /><br />
+		</li>
+	<% end %>
+</ul>

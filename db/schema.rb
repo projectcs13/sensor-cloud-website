@@ -13,6 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20131128100456) do
 
+
   create_table "groups", force: true do |t|
     t.string   "owner"
     t.string   "name"
