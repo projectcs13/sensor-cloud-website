@@ -1,14 +1,14 @@
 class StreamsController < ApplicationController
 
-  before_action :set_stream, only: [:show, :edit, :update, :destroy]
-	before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 	before_action :correct_user,   only: [:edit, :update, :destroy]
+  before_action :get_user_id,    only: [:post, :put, :multipost, :deleteAll, :new_connection]
+  before_action :set_stream,     only: [:show, :edit, :update, :destroy]
+  before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-    # @streams = Stream.search(params[:search])
-    response = Faraday.get "#{CONF['API_URL']}/users/#{current_user.id}/streams"
-		@streams = JSON.parse(response.body)['streams']
-		logger.debug "TESSSSSTTTT: #{@streams}"
+    cid = current_user.id
+    res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
+    @streams = JSON.parse(res.body)['streams']
   end
 
   def show
@@ -17,18 +17,63 @@ class StreamsController < ApplicationController
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
 		@stream_owner = User.find_by(id: stream_owner_id)
-	 	
   end
 
   def new
     @stream = Stream.new
-    attributes = ["name", "description", "type", "private",
-                  "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
-                  "polling", "uri", "polling_freq", "parser", "data_type",
-                  "user_id"]
-    attributes.each do |attr|
-      @stream.send("#{attr}=", "")
+    # attributes = ["name", "description", "type", "private",
+    #               "tags", "accuracy", "unit", "min_val", "max_val", "latitude", "longitude",
+    #               "polling", "uri", "polling_freq",
+    #               "user_id"]
+    # attributes.each do |attr|
+    #   @stream.send("#{attr}=", "")
+    # end
+  end
+
+  def new_from_resource
+  end
+
+  def multi
+    @streams = []
+    params[:multistream].each do |k, v|
+      @stream = Stream.build v
+      #@stream.user_id = current_user.id.to_s
+      correctBooleanFields
+      @streams.push @stream
     end
+
+    res = multipost
+    sleep 1.0
+    location = { :url => "#{streams_path}" }
+    respond_to do |format|
+      format.json { render json: location, status: res.status }
+    end
+  end
+
+  def make_suggestion_by model
+    res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}?size=10"
+    logger.debug JSON.parse(res.body)
+    if res.status == 404
+      data = {}
+    else
+      data = JSON.parse(res.body)['suggestions']
+    end
+
+    data
+  end
+
+  def suggest
+    sug = make_suggestion_by params[:model]
+    status = if sug then 200 else 404 end
+    render :json => sug, :status => status
+  end
+
+  def fetchResource
+    res = Faraday.get "#{CONF['API_URL']}/resources/#{params[:id]}"
+    render :json => res.body, :status => res.status
+  end
+
+  def smartnew
   end
 
   def edit
@@ -173,20 +218,34 @@ class StreamsController < ApplicationController
   def deleteAll
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
-    send_data(:delete, url)
+    send_data(:delete, url, nil)
   end
 
   def post
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
-    send_data(:post, url)
+    send_data(:post, url, @stream.attributes.json)
+  end
+
+  def multipost
+    cid = current_user.id
+    url = "#{CONF['API_URL']}/users/#{cid}/streams/"
+
+    arr = []
+    @streams.each do |stream|
+      arr.push stream.attributes
+    end
+    req = { :multi_json => arr }.to_json
+    logger.debug "REQ: #{req}"
+
+    send_data(:post, url, req)
   end
 
   def put
     cid = current_user.id
     url = "#{CONF['API_URL']}/users/#{cid}/streams/#{@stream.id}"
     @stream.attributes.delete 'id'
-    send_data(:put, url)
+    send_data(:put, url, @stream.attributes.json)
   end
 
   private
@@ -205,12 +264,12 @@ class StreamsController < ApplicationController
     #   @user = User.find(current_user.id)
     # end
 
-    def send_data(method, url)
+    def send_data(method, url, json)
       new_connection unless @conn
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = @stream.attributes.to_json if @stream
+        req.body = json
       end
     end
 
@@ -231,7 +290,7 @@ class StreamsController < ApplicationController
 				redirect_to signin_url
 			end
 		end
-		
+
 		def correct_user
 			@user = User.find(Stream.find(params[:id]).user_id)
 			redirect_to(root_url) unless current_user?(@user)

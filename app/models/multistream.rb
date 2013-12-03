@@ -1,21 +1,10 @@
-class Stream
+class Multistream #< ActiveRecord::Base
   include Her::Model
+  # attributes :name
+  has_many :streams
+  accepts_nested_attributes_for :streams#, :allow_destroy => true
 
-  attributes :name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :latitude, :longitude, :polling, :uri, :polling_freq, :user_id
-	validates :name,  presence: true, length: { maximum:50 }
-
-  belongs_to :user
-  belongs_to :multistream
-
-	has_many :reverse_relationships, foreign_key: "followed_id", 
-																								class_name: "Relationship", 
-																								dependent: :destroy
-	has_many :followers, through: :reverse_relationships, source: :follower
-
-  #collection_path "/users/:user_id/streams"
-  collection_path "streams"
-  include_root_in_json false
-  parse_root_in_json :streams, format: :active_model_serializers
+  # attr_accessible :streams_attributes
 
   def post uid
     url = "#{CONF['API_URL']}/users/#{uid.to_s}/streams/"

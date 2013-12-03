@@ -141,7 +141,7 @@
 				loc = location.split(",");
 				lon = loc[0];
 				lat = loc[1];
-				pos = new google.maps.LatLng(lat,lon);
+				pos = new google.maps.LatLng(lon,lat);
 				var marker = new google.maps.Marker({id: $(elem).data('streamid'), icon: base_url+''+searchres_length+not_highlighted, position: pos, map:map, title:''+searchres_length});
    				console.log(lat);
    				console.log(lon);
@@ -194,8 +194,39 @@
 			console.log("HERE!");
 		}
 
+		// Set CSS for the control border
+		var controlUI = document.createElement('div');
+		controlUI.style.backgroundColor = 'white';
+		controlUI.style.borderStyle = 'solid';
+		controlUI.style.borderWidth = '2px';
+		controlUI.style.cursor = 'pointer';
+		controlUI.style.textAlign = 'center';
+		controlUI.title = 'Click to filter on map';
 
-      	var distanceWidget = new DistanceWidget(map);
+		// Set CSS for the control interior
+		var controlText = document.createElement('div');
+		controlText.style.fontFamily = 'Arial,sans-serif';
+		controlText.style.fontSize = '12px';
+		controlText.style.paddingLeft = '4px';
+		controlText.style.paddingRight = '4px';
+		controlText.innerHTML = 'Filter';
+		controlUI.appendChild(controlText);
+
+		var distanceWidget = new DistanceWidget(map);
+
+		var simplebool = false;
+		google.maps.event.addDomListener(controlUI, 'click', function() {
+		if(!simplebool){
+			simplebool = true;
+			distanceWidget.set("map", null);
+		}else{
+			simplebool = false;
+			distanceWidget.set("map",map);
+		}
+		});
+
+		controlUI.index = 1;
+  		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlUI);
 
       	google.maps.event.addListener(distanceWidget, 'distance_changed', function() {
 		  displayInfo(distanceWidget);
