@@ -92,11 +92,10 @@ class SearchesController < ApplicationController
 						activeFilter = {"regexp"=>{ "active" => { "value" => params['search']['active'] }}}
 						filters.push(activeFilter.to_json)
 			end
-
-			#if params['search']['filter_map'] == "1"
-						#mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "pin.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
-						#filters.push(mapFilter.to_json)
-			#end
+			if params['search']['filter_longitude'].to_s.strip.length != 0
+						mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
+						filters.push(mapFilter.to_json)
+			end
 				#A quick way to check if filter is nil or empty or just whitespace
 				if filters.empty?
 					req.body = '{ "sort": ['+ sort_by + '],
