@@ -6,7 +6,10 @@ class User < ActiveRecord::Base
 	validates :password, length: { minimum: 6 }
 	has_secure_password
 
-	has_many :resources
+	has_many :streams
+
+	has_many :relationships, foreign_key: "follower_id", dependent: :destroy
+	has_many :followed_streams, through: :relationships, source: :followed
 
 	before_save { self.email = email.downcase }
 	before_create :create_remember_token
@@ -17,6 +20,21 @@ class User < ActiveRecord::Base
 
 	def User.encrypt(token)
 		Digest::SHA1.hexdigest(token.to_s)
+	end
+
+	def feed
+	end
+
+	def following?(stream_id)
+		relationships.find_by(followed_id: stream_id)
+	end
+
+	def follow!(stream_id)
+		relationships.create!(followed_id: stream_id)
+	end
+
+	def unfollow!(stream_id)
+		relationships.find_by(followed_id: stream_id).destroy!
 	end
 
 	private
