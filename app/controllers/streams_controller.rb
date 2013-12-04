@@ -6,7 +6,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-<<<<<<< HEAD
+
     # @streams = Stream.search(params[:search])
     # @streams = Stream.all(_user_id: current_user.username)
     # @count= @streams.count
@@ -15,11 +15,6 @@ class StreamsController < ApplicationController
     @cid = User.find_by_username(:username)
     logger.debug "CURRENT_PAGE: ##{CONF['API_URL']}/users/#{params[:username]}/streams/"
     res = Faraday.get "#{CONF['API_URL']}/users/#{params[:username]}/streams/"
-=======
-    @user = current_user
-    cid = current_user.username
-    res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
->>>>>>> d392832b6b21c10441327c133c12f05e1a055a19
     @streams = JSON.parse(res.body)['streams']
     @count= @streams.length
     logger.debug "CURRENT_PAGE: #{@streams}"
