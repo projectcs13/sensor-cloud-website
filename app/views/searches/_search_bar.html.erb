@@ -1,0 +1,29 @@
+<table>
+  <tr>
+    <td>
+      <%= form_for(:search, url: searches_path) do |f| %>
+        <% unless @query.nil? %>
+          <div class="col-md-10 pull-left"><%= f.text_field :query, value: @query, class: "form-control" %></div>
+        <% else %>
+          <div class="col-md-10 pull-left"><%= f.text_field :query, class: "form-control" %></div>
+        <% end %>
+          <div class="col-md-2 pull-right"><%= submit_tag "Search", class: "btn btn-primary pull-right" %></div>
+        <% end %>
+        </div>
+    </td>
+    <td>
+      <%= label_tag "Sort by: " %>
+    </td><td>
+      <%= form_for(:search, url: searches_path) do |f| %>
+        <%= f.select "sort_by", options_for_select(
+                                  [["None", "none"], 
+                                   ['Name', "name"],
+                                   ['User ranking', "user_ranking"]], 
+                                params['search']['sort_by']),
+                                {}, onchange: "this.form.submit();",
+                                class: "form-control" %>
+        <%= f.hidden_field :query, value: @query  %>
+      <% end %>
+    </td></tr></table>
+    <br>
+    <br>
