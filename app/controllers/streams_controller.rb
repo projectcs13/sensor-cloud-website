@@ -65,6 +65,7 @@ class StreamsController < ApplicationController
   def suggest
     sug = make_suggestion_by params[:model]
     status = if sug then 200 else 404 end
+    logger.debug sug
     render :json => sug, :status => status
   end
 
@@ -293,7 +294,8 @@ class StreamsController < ApplicationController
 		end
 
 		def correct_user
-			@user = User.find(Stream.find(params[:id]).user_id)
+      stream = Stream.find(params[:id])
+			@user = User.find_by_username(stream.user_id)
 			redirect_to(root_url) unless current_user?(@user)
 		end
 end

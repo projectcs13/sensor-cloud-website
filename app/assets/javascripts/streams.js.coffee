@@ -146,13 +146,15 @@ $ ->
         false
 
       select: (event, ui) ->
+        console.log "CleanUp"
+        cleanUpDom()
+        console.log "/CleanUp"
+        
         pl = ui.item.payload
         text = pl.manufacturer
         text = text+" "+pl.model
         $("#resource_model").val(text)
-        console.log "CleanUp"
-        cleanUpDom()
-        console.log "/CleanUp"
+        
         fetchStreamsFromResource pl.resource
         false
 
