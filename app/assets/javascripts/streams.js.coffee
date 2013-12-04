@@ -23,6 +23,15 @@ $ ->
   $(document).bind "streams_new", (e, obj) =>
     TIME = 250
 
+    descriptions = [
+      "First, tell us the basic information which might describe your stream"
+      "Now, please fill in the fields below with the technical details of your new stream"
+      "Finally, we need you to set up the format and the communication mechanism"
+    ]
+
+    stepLabel       = $ ".step-label"
+    stepDescription = $ ".step-description"
+
     currentStep = 0
     steps = $ '.step'
     steps.each (i, step) ->
@@ -41,10 +50,13 @@ $ ->
     ratio = progress.parent().width() / steps.length
     # ratio = ratio + ratio / 10;
 
+    updateStepInformation = ->
+      stepLabel.text "Step #{currentStep+1}"
+      stepDescription.text descriptions[ currentStep ]
+
     decreaseBar = ->
       w = progress.width()
       progress.width(w - ratio)
-
 
     increaseBar = ->
       w = progress.width()
@@ -59,12 +71,12 @@ $ ->
           btnNext.css 'display', 'inline-block'
           # btnNext.removeClass('btn-disabled').addClass('btn-primary')
 
-
         steps.eq(currentStep).hide TIME
         currentStep--
         steps.eq(currentStep).show TIME
 
         do decreaseBar
+        do updateStepInformation
 
         if currentStep is 0
           btnBack.css 'display', 'none'
@@ -81,6 +93,7 @@ $ ->
         steps.eq(currentStep).show TIME
 
         do increaseBar
+        do updateStepInformation
 
         if currentStep is steps.length-1
           btnCreate.css 'display', 'inline-block'
@@ -109,6 +122,7 @@ $ ->
     btnNext.on 'click', next
     do btnBack.on('click', back).hide
     do btnCreate.on('click', create).hide
+    do updateStepInformation
 
     $("#update-switch").on 'switch-change', switchChanged
 
