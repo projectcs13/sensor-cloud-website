@@ -149,7 +149,7 @@ $ ->
         console.log "CleanUp"
         cleanUpDom()
         console.log "/CleanUp"
-        
+
         pl = ui.item.payload
         text = pl.manufacturer
         text = text+" "+pl.model
@@ -170,7 +170,16 @@ $ ->
     cleanUpDom = () ->
       streams = $('#streams')
       ids = streams.children().each ->
-        console.log $(this).data 'id'
+        id = $(this).data 'id'
+        if id != undefined
+          removeForm id
+          res = $.ajax
+            type: "DELETE"
+            url: "/streams/#{id}"
+            dataType: "json"
+
+          res.done (data) ->
+            console.log id+" DELETED: "+data
       streams.empty()
 
     fetchStreamsFromResource = (id) ->
