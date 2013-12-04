@@ -10,46 +10,52 @@
 
 $ ->
   $(document).bind "streams_new_from_resource", (e, obj) => # js only loaded on "streams_new_from_resource" action
+    $("#resource_model").bind "keydown", (event) ->
+      event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
+
+    $("#resource_model").autocomplete(
+      minLength: 1
+
+      source: (request, response) ->
+        $.getJSON "/suggest/#{request.term}", response
+
+      focus: ->
+        # prevent value inserted on focus
+        false
+
+      select: (event, ui) ->
+        pl = ui.item.payload
+        text = pl.manufacturer
+        text = text+" "+pl.model
+        $("#resource_model").val(text)
+        console.log "CleanUp"
+        cleanUpDom()
+        console.log "/CleanUp"
+        fetchStreamsFromResource pl.resource
+        false
+
+    ).data('ui-autocomplete')._renderItem = (ul, item) ->
+      console.log item
+      text = item.payload.manufacturer
+      text = text+" "+item.payload.model
+      $('<li>')
+          .data('item.autocomplete', item)
+          .append('<a>'+text+'</a>')
+          .appendTo(ul);
+
+    cleanUpDom = () ->
+      streams = $('#streams')
+      ids = streams.children().each ->
+        console.log $(this).data 'id'
+      streams.empty()
+
     fetchStreamsFromResource = (id) ->
       res = $.get "/resources/#{id}"
       res.done listStreams
 
-    render = (stream) ->
-      """
-        <li class="input-group stream">
-          <span class="input-group-addon">
-            <img class="spinner hidden" src="/assets/ajax-loader.gif" />
-            <input class="select-suggestion" type="checkbox">
-          </span>
-          <div class="form-control">
-            <h4 class="left">#{stream.type}</h4>
-            <div class="clearfix"></div>
-            <h6 class="left">Description:</h6>
-            <div class="clearfix"></div>
-            <p class="left">#{stream.description}</p>
-            <div class="clearfix"></div>
-          </div>
-        </li>
-      """
-
-    createForm = (id) ->
-      form = $('#edit_stream_REPLACE_THIS_ID')
-      clone = form.clone()
-      form.parent().append clone
-      clone.attr('id', "edit_stream_#{id}")
-      clone.attr('action', "/streams/#{id}")
-      clone.removeClass('hidden')
-
-    removeForm = (id) ->
-      form = $("#edit_stream_#{id}")
-      console.log form
-      form.remove()
-
     listStreams = (json) ->
       console.log json
       place = $('#streams')
-
-      place.html ""
 
       for stream in json.streams_suggest
         dom = $(render stream)
@@ -102,33 +108,38 @@ $ ->
             # Block checkbox? BIG RED TEXT?
             alert "Error: Redirection not working properly\n Response from server: #{result}"
 
-    $("#resource_model").bind "keydown", (event) ->
-      event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
+    render = (stream) ->
+      """
+        <li class="input-group stream">
+          <span class="input-group-addon">
+            <img class="spinner hidden" src="/assets/ajax-loader.gif" />
+            <input class="select-suggestion" type="checkbox">
+          </span>
+          <div class="form-control">
+            <h4 class="left">#{stream.type}</h4>
+            <div class="clearfix"></div>
+            <h6 class="left">Description:</h6>
+            <div class="clearfix"></div>
+            <p class="left">#{stream.description}</p>
+            <div class="clearfix"></div>
+          </div>
+        </li>
+      """
 
-    $("#resource_model").autocomplete(
-      minLength: 1
+    createForm = (id) ->
+      form = $('#edit_stream_REPLACE_THIS_ID')
+      clone = form.clone()
+      form.parent().append clone
+      clone.attr('id', "edit_stream_#{id}")
+      clone.attr('action', "/streams/#{id}")
+      clone.removeClass('hidden')
 
-      source: (request, response) ->
-        $.getJSON "/suggest/#{request.term}", response
+    removeForm = (id) ->
+      form = $("#edit_stream_#{id}")
+      console.log form
+      form.remove()
 
-      focus: ->
-        # prevent value inserted on focus
-        false
-
-      select: (event, ui) ->
-        pl = ui.item.payload
-        $("#resource_model").val(pl.model)
-        fetchStreamsFromResource pl.resource
-
-        false
-    ).data('ui-autocomplete')._renderItem = (ul, item) ->
-      console.log item
-      $('<li>')
-          .data('item.autocomplete', item)
-          .append('<a>' + item.payload.model + '</a>')
-          .appendTo(ul);
-
-
+    
   showDetails = (event) ->
     el = $(this)
     el.find('.details').toggle(500)
