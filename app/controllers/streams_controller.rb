@@ -6,9 +6,15 @@ class StreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-    cid = current_user.id
+    # @streams = Stream.search(params[:search])
+    # @streams = Stream.all(_user_id: current_user.username)
+    # @count= @streams.count
+    #Befor MERGING User Profile branch
+    cid = current_user.username
     res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
     @streams = JSON.parse(res.body)['streams']
+    @count= @streams.length
+    logger.debug "CURRENT_PAGE: #{@streams}"
   end
 
   def show
@@ -208,13 +214,13 @@ class StreamsController < ApplicationController
   end
 
   def deleteAll
-    cid = current_user.id
+    cid = current_user.username
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
     send_data(:delete, url, nil)
   end
 
   def post
-    cid = current_user.id
+    cid = current_user.username
     url = "#{CONF['API_URL']}/users/#{cid}/streams/"
     send_data(:post, url, @stream.attributes.to_json)
   end
@@ -234,7 +240,7 @@ class StreamsController < ApplicationController
   end
 
   def put
-    cid = current_user.id
+    cid = current_user.username
     url = "#{CONF['API_URL']}/users/#{cid}/streams/#{@stream.id}"
     @stream.attributes.delete 'id'
     send_data(:put, url, @stream.attributes.to_json)
@@ -253,7 +259,7 @@ class StreamsController < ApplicationController
     end
 
     # def load_parent
-    #   @user = User.find(current_user.id)
+    #   @user = User.find(current_user.username)
     # end
 
     def send_data(method, url, json)
@@ -266,7 +272,7 @@ class StreamsController < ApplicationController
     end
 
     def new_connection
-      cid = current_user.id
+      cid = current_user.username
       @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{cid}/") do |faraday|
         faraday.request  :url_encoded               # form-encode POST params
         faraday.response :logger                    # log requests to STDOUT
