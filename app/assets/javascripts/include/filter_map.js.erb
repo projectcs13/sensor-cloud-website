@@ -1,12 +1,18 @@
     function map_init() {
 
     	function displayInfo(widget) {
-		  // var longitude = document.getElementById('long');
-		  // var latitude = document.getElementById('lati');
-		  // var radkm = document.getElementById('radkm');
-		  // longitude.value = widget.get('position').lng();
-		  // latitude.value = widget.get('position').lat();
-		  // radkm.value = widget.get('distance');
+    		var longitude = document.getElementById('long');
+		  var latitude = document.getElementById('lati');
+		  var radkm = document.getElementById('radkm');
+    		if(widget != null) {
+		  longitude.value = widget.get('position').lng();
+		  latitude.value = widget.get('position').lat();
+		  radkm.value = widget.get('distance');
+		}else {
+			longitude.value = null;
+		  	latitude.value = null;
+		  	radkm.value = null;
+			}
 		}
 
     	function RadiusWidget() {
@@ -213,15 +219,17 @@
 		controlUI.appendChild(controlText);
 
 		var distanceWidget = new DistanceWidget(map);
-
-		var simplebool = false;
+		distanceWidget.set("map", null);
+		var simplebool = true;
 		google.maps.event.addDomListener(controlUI, 'click', function() {
-		if(!simplebool){
-			simplebool = true;
-			distanceWidget.set("map", null);
-		}else{
+		if(simplebool){
 			simplebool = false;
 			distanceWidget.set("map",map);
+			displayInfo(distanceWidget);
+		}else{
+			simplebool = true;
+			distanceWidget.set("map", null);
+			displayInfo(null);
 		}
 		});
 
