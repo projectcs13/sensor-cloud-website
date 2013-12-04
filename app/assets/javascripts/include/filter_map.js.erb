@@ -19,7 +19,7 @@
                     var circle = new google.maps.Circle({
                             strokeWeight: 2
                     });
-                    // Set the distance property value, default to 50km.
+
                     this.set('distance', 50);
                     this.bindTo('bounds', circle);
                     circle.bindTo('center',this);
@@ -45,6 +45,7 @@
                   sizer.bindTo('position', this, 'sizer_position');
 
                   var me = this;
+
                   google.maps.event.addListener(sizer, 'drag', function() {
                   // Set the circle distance (radius)
                   me.setDistance();
@@ -111,7 +112,7 @@
 
                                           // Create a new radius widget
                   var radiusWidget = new RadiusWidget();
-
+                  this.set('radiusWidget', radiusWidget);
                         // Bind the radiusWidget map to the DistanceWidget map
                   radiusWidget.bindTo('map', this);
 
@@ -193,8 +194,8 @@
 					bounds.extend(extendPoint1);
 					bounds.extend(extendPoint2);
 					}
+					map.panToBounds(bounds);
 					map.fitBounds(bounds);
-					map.setCenter(bounds.getCenter());
 				}
 				}
 
@@ -219,31 +220,6 @@
                 	}
                 }
 
-			
-
-                function highlight(streamid) {
-                        for (i in markers) {
-                                if(markers[i].id == streamid) {
-                                        map.panTo(markers[i].position);
-                                        hl_marker.setIcon(base_url+markers[i].title+highlighted);
-                                        if(hl_marker.position == markers[i].position) {
-                                                if(hl_marker.visible == true) {
-                                                        hl_marker.setVisible(false);
-                                                        markers[i].setVisible(true);
-                                                }else {
-                                                        hl_marker.setVisible(true);
-                                                        markers[i].setVisible(false);
-                                                }
-                                        }else {
-                                                markers[i].setVisible(false);
-                                                hl_marker.setVisible(true);
-                                                hl_marker.setPosition(markers[i].position);
-                                        }
-                                }else 
-                                        markers[i].setVisible(true);
-                        }
-                }
-
                 // Set CSS for the control border
                 var controlUI = document.createElement('div');
                 controlUI.style.backgroundColor = 'white';
@@ -263,11 +239,13 @@
                 controlUI.appendChild(controlText);
 
                 var distanceWidget = new DistanceWidget(map);
+
                 distanceWidget.set("map", null);
                 var simplebool = true;
                 google.maps.event.addDomListener(controlUI, 'click', function() {
                 if(simplebool){
                         simplebool = false;
+                        radiusChange(map);
                         distanceWidget.set("map",map);
                         displayInfo(distanceWidget);
                 }else{
@@ -287,6 +265,18 @@
                 google.maps.event.addListener(distanceWidget, 'position_changed', function() {
                   displayInfo(distanceWidget);
                 });
+
+				google.maps.event.addListener(map, 'zoom_changed', function() {
+					radiusChange(map);
+				});
+
+				function radiusChange(map) {
+					var bounds = map.getBounds();
+					var distance = distanceWidget.get('radiusWidget').distanceBetweenPoints_(bounds.getCenter(), bounds.getSouthWest());
+					distanceWidget.get('radiusWidget').set('distance', distance/3);
+					distanceWidget.get('radiusWidget').center_changed();
+				}
+
 
                 //var marker = new google.maps.Marker({
                 //    draggable: false,
