@@ -6,10 +6,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-    # @streams = Stream.search(params[:search])
-    # @streams = Stream.all(_user_id: current_user.username)
-    # @count= @streams.count
-    #Befor MERGING User Profile branch
+    @user = current_user
     cid = current_user.username
     res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
     @streams = JSON.parse(res.body)['streams']
@@ -139,7 +136,7 @@ class StreamsController < ApplicationController
         	sleep(1.0)
 
   				format.html { redirect_to stream_path(@stream.id) }
-        	format.json { render json: {"id" => @stream.id}, status: res.status}
+        	format.json { render json: {"id" => @stream.id}, status: res.status }
       	else
         	format.html { render action: 'new' }
         	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
