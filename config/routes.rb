@@ -25,7 +25,8 @@ SensorCloud::Application.routes.draw do
   match '/datapoints/:id',    to: 'streams#fetch_datapoints', via: 'get'
   match '/prediction/:id',    to: 'streams#fetch_prediction', via: 'get'
   match '/users/:username/edit/edit_profile', :to => 'users#profile', via: 'get'
-
+  match '/users/:username/following', :to => 'users#following', via: 'get'
+  match '/users/:username/streams', :to => 'streams#index', via: 'get'
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
