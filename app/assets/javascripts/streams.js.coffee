@@ -9,7 +9,129 @@
 //= require 'include/client.js'
 
 $ ->
-  $(document).bind "streams_new_from_resource", (e, obj) => # js only loaded on "streams_new_from_resource" action
+  $(document).bind "streams_index", (e, obj) =>
+    showDetails = (event) ->
+      el = $(this)
+      el.find('.details').toggle(500)
+      el.find('.show-details')
+        .toggleClass('glyphicon-chevron-up')
+        .toggleClass('glyphicon-chevron-down')
+
+    $('body').on 'click', '.list-group-item', showDetails
+
+
+  $(document).bind "streams_new", (e, obj) =>
+    TIME = 250
+
+    currentStep = 0
+    steps = $ '.step'
+    steps.each (i, step) ->
+      $(step).css 'display', 'none' if i != 0
+
+    # steps.first().removeClass('hidden');
+
+    btnBack   = $ "#btn-back"
+    btnNext   = $ "#btn-next"
+    btnCreate = $ "#btn-create"
+    btnSubmit = $ "#submit"
+
+    polling = $ ".polling"
+
+    progress = $ "#progress-bar"
+    ratio = progress.parent().width() / steps.length
+    # ratio = ratio + ratio / 10;
+
+    decreaseBar = ->
+      w = progress.width()
+      progress.width(w - ratio)
+
+
+    increaseBar = ->
+      w = progress.width()
+      progress.width(w + ratio)
+
+    back = (event) ->
+      do event.preventDefault
+
+      if currentStep > 0
+        if currentStep is steps.length-1
+          btnCreate.css 'display', 'none'
+          btnNext.css 'display', 'inline-block'
+          # btnNext.removeClass('btn-disabled').addClass('btn-primary')
+
+
+        steps.eq(currentStep).hide TIME
+        currentStep--
+        steps.eq(currentStep).show TIME
+
+        do decreaseBar
+
+        if currentStep is 0
+          btnBack.css 'display', 'none'
+
+
+    next = (event) ->
+      do event.preventDefault
+
+      if currentStep < steps.length-1
+        btnBack.css 'display', 'inline-block'
+
+        steps.eq(currentStep).hide TIME
+        currentStep++
+        steps.eq(currentStep).show TIME
+
+        do increaseBar
+
+        if currentStep is steps.length-1
+          btnCreate.css 'display', 'inline-block'
+          btnNext.css 'display', 'none'
+
+
+    create = (event) ->
+      do event.preventDefault
+
+      do increaseBar
+      setTimeout ->
+        btnSubmit.trigger 'click'
+      , TIME * 2
+
+      # $(window).animate ->
+      #   do increaseBar
+      #   btnSubmit.trigger 'submit'
+      # , 400
+
+
+    switchChanged = (event) ->
+      do event.preventDefault
+      polling.toggle TIME * 2
+
+
+    btnNext.on 'click', next
+    do btnBack.on('click', back).hide
+    do btnCreate.on('click', create).hide
+
+    $("#update-switch").on 'switch-change', switchChanged
+
+    mapOptions =
+      center: new google.maps.LatLng 60, 18
+      zoom: 8
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+      disableDefaultUI: true
+
+    map = new google.maps.Map $('#map-canvas')[0], mapOptions
+
+    marker = new google.maps.Marker
+      map: map
+      draggable: true
+      animation: google.maps.Animation.DROP
+      position: mapOptions.center
+
+    google.maps.event.addListener marker, "dragend", (evt) ->
+      $('#lat').val evt.latLng.lat()
+      $('#lon').val evt.latLng.lng()
+
+  $(document).bind "streams_new_from_resource", (e, obj) =>
+
     $("#resource_model").bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
 
@@ -140,23 +262,14 @@ $ ->
       form.remove()
 
     
-  showDetails = (event) ->
-    el = $(this)
-    el.find('.details').toggle(500)
-    el.find('.show-details')
-      .toggleClass('glyphicon-chevron-up')
-      .toggleClass('glyphicon-chevron-down')
-  $('body').on 'click', '.list-group-item', showDetails
-
-
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
-    graphWidth = $("#graph-canvas").width();
-    window.graph_object = new stream_graph(graphWidth);
-    graph_object.init();
+    graphWidth = $("#graph-canvas").width()
+    window.graph_object = new stream_graph(graphWidth)
+    graph_object.init()
 
     # Set up buttons
-    $("#prediction-description").hide();
+    $("#prediction-description").hide()
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
@@ -164,11 +277,11 @@ $ ->
 
     loc = document.getElementById('location').getAttribute('value').split ","
 
-    mapDiv = document.getElementById('map-canvas')
+
 
     mapOptions =
       center: new google.maps.LatLng loc[0], loc[1]
-      zoom: 8,
+      zoom: 8
       mapTypeId: google.maps.MapTypeId.ROADMAP
       disableDefaultUI: true
 
@@ -176,35 +289,15 @@ $ ->
 
     marker = new google.maps.Marker
       map: map
-      draggable:false
+      draggable: false
       animation: google.maps.Animation.DROP
       position: mapOptions.center
 
     $("#live-update-btn").on 'switch-change', (e, data) ->
       value = data.value
       alert value
-      toggle(value)
-  $(document).bind 'streams_new', (e,obj) =>
-    mapDiv = document.getElementById('map-canvas')
+      toggle value
 
-    mapOptions =
-      center: new google.maps.LatLng 60, 18
-      zoom: 8,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      disableDefaultUI: true
-
-    map = new google.maps.Map $('#map-canvas')[0], mapOptions
-
-    marker = new google.maps.Marker
-      map: map
-      draggable:true
-      animation: google.maps.Animation.DROP
-      position: mapOptions.center
-
-    google.maps.event.addListener marker, "dragend", (evt) ->
-      $('#lat').val(evt.latLng.lat())
-      $('#lon').val(evt.latLng.lng())
 
   action = "streams_" + $("body").data("action")
   $.event.trigger action
-
