@@ -1,26 +1,31 @@
-
-
-<div class="center jumbotron">
-	<div class="row">
+<div class="banner">
+	<div class="row search-bar">
 		<div class="col-md-6 col-md-offset-3">
-			<div class="col-md-11">
+			<div class="col-md-11" style="padding-right: 0px;">
 
 				<%= form_for(:search, url: searches_path) do |f| %>
-					<%= f.text_field :query, class: "form-control input-lg", 
-								placeholder: "Example: Temperature in Uppsala" %>
+					<%= f.text_field :query, class: "form-control input-lg pull-right", style: "border-radius: 0px;" %>
 					<%= f.hidden_field :sort_by, :value => "none" %>
 
 			</div>
-			<div class="col-md-1">
+			<div class="col-md-1" style="padding-left: 0px;">
 
-					<%= f.submit "Search", class: "btn btn-lg btn-primary" %>
+					<%= f.submit "Search", class: "btn btn-lg btn-primary pull-left", style: "border-radius: 0px;" %>
 				<% end %>	
 
 			</div>
+			
 		</div>
 	</div>
+	<div class="center" style="color: #ffffff; font-weight:bold; padding-top: 10px;">
+				E.g. temperature in Uppsala
+			</div>
 </div>
 
+<div class="carousel" style="height:500px;">
+</div>
+
+<!--
 <div class="list_carousel" id="carousel_items">
 
 	    <ul id="foo">
@@ -42,3 +47,4 @@
 		</ul>
 	    <div class="clearfix"></div>
 </div>
+-->
