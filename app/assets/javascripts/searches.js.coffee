@@ -1,5 +1,6 @@
 //= require 'include/search_graph'
 //= require 'include/stream_graph_multiline'
+//= require 'include/scrolling'
 
 $ ->
   graphColors = ["#aabbcc", "#a21bc4", "#8bbbbc", "#5ab1cc", "#a3b1cc", "#aabbff", "#a124cc"]
@@ -23,8 +24,7 @@ $ ->
         console.log result
       res.fail (e, data) ->
         console.log e
-
-  
+  init_scrolling()
 
 
   # Setting up the slider

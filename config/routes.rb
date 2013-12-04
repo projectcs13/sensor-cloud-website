@@ -27,6 +27,7 @@ SensorCloud::Application.routes.draw do
   match '/about',     to: 'static_pages#about',   via: 'get'
 
   match '/history',   to: 'searches#fetch_graph_data',         via: 'get'
+  match '/get_more_info',  to: 'searches#create',    via: 'post'
   match '/faq',       to: 'static_pages#faq',     via: 'get'
   match '/manual',    to: 'static_pages#manual',  via: 'get'
   match '/privacy',   to: 'static_pages#privacy', via: 'get'

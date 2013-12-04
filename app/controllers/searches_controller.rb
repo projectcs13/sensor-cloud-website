@@ -14,7 +14,7 @@ class SearchesController < ApplicationController
   end
 
 	def create
-		@nb_results_per_page = 5.0
+		@nb_results_per_page = 6.0
 		if params['search']['query'].blank?
 			redirect_to root_path
 		else
@@ -22,7 +22,7 @@ class SearchesController < ApplicationController
       	faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-      end
+    end
 
       res = conn.post do |req|
 				if (not params['search']['page'].blank?)
@@ -51,7 +51,7 @@ class SearchesController < ApplicationController
 #         end
         nameFilter = {"regexp"=>{ "unit" => { "value" => params['search']['filter_unit'] }}}
         filters.push(nameFilter.to_json)
-       	end
+      end
      	if params['search']['filter_tag'].to_s.strip.length != 0
      	    tagFilter = {"regexp"=>{ "tags" => { "value" => params['search']['filter_tag'] }}}
      	    filters.push(tagFilter.to_json)
@@ -85,8 +85,8 @@ class SearchesController < ApplicationController
                     }
                   }
                 }'
-      end
-        	logger.debug "#{req.body}"
+        end
+        logger.debug "#{req.body}"
    end
 			logger.debug "#{res.body}"
       json = JSON.parse(res.body)
@@ -110,7 +110,14 @@ class SearchesController < ApplicationController
 			end
 			logger.debug "CURRENT_PAGE: #{@current_page}"
 			logger.debug "CURRENT_PAGE_USERS: #{@current_page_users}"
-			render :action => 'show'
+
+      if params['search']['refresh'] == "false"
+        respond_to do |format|
+          format.json { render json: @streams, status: 200 }
+        end
+      else
+        render :action => 'show'        
+      end
 		end
 	end
 end
