@@ -48,7 +48,7 @@
     padding: 0;
 }
 #carousel li {
-    background: transparent url(carousel_polaroid.png) no-repeat 0 0;
+    /*background: transparent url(carousel_polaroid.png) no-repeat 0 0;*/
     font-size: 40px;
     color: #999;
     text-align: center;
@@ -66,7 +66,7 @@
     height: 127px;
     margin-top: 14px;
 }
- 
+/* 
 #carousel li span {
     background: transparent url(carousel_shine.png) no-repeat 0 0;
     text-indent: -999px;
@@ -79,7 +79,7 @@
     top: 14px;
     left: 16px;
 }           
- 
+*/ 
 .clearfix {
     float: none;
     clear: both;
