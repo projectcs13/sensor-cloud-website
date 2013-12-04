@@ -6,10 +6,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-    # @streams = Stream.search(params[:search])
-    # @streams = Stream.all(_user_id: current_user.username)
-    # @count= @streams.count
-    #Befor MERGING User Profile branch
+    @user = current_user
     cid = current_user.username
     res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
     @streams = JSON.parse(res.body)['streams']
@@ -29,6 +26,8 @@ class StreamsController < ApplicationController
   end
 
   def new_from_resource
+    @stream = Stream.new
+    @stream.id = "REPLACE_THIS_ID"
   end
 
   def multi
@@ -63,6 +62,7 @@ class StreamsController < ApplicationController
   def suggest
     sug = make_suggestion_by params[:model]
     status = if sug then 200 else 404 end
+    logger.debug sug
     render :json => sug, :status => status
   end
 
@@ -105,6 +105,7 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'quality'
     @stream.attributes.delete 'subscribers'
 
+
     @stream.polling = if @stream.polling == "1" then false else true end
     @stream.private = if @stream.private == "0" then false else true end
 
@@ -136,10 +137,10 @@ class StreamsController < ApplicationController
         	sleep(1.0)
 
   				format.html { redirect_to stream_path(@stream.id) }
-        	format.json { render action: 'show', status: :created, location: @stream }
+        	format.json { render json: {"id" => @stream.id}, status: res.status }
       	else
         	format.html { render action: 'new' }
-        	format.json { render json: @stream.errors, status: :unprocessable_entity }
+        	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
       	end
     end
   end
@@ -290,7 +291,8 @@ class StreamsController < ApplicationController
 		end
 
 		def correct_user
-			@user = User.find(Stream.find(params[:id]).user_id)
+      stream = Stream.find(params[:id])
+			@user = User.find_by_username(stream.user_id)
 			redirect_to(root_url) unless current_user?(@user)
 		end
 end

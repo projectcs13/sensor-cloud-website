@@ -31,7 +31,7 @@ function streamGraphMultiLine () {
       var y_domain = [];
       for(var i = 0; i < data.length; i++){
         var d = data[i];
-        if(d.data.length > 1){
+        if(d.data.length > 0){
           var tempx_extent = d3.extent(d.data, function(d) { return parseDate(d.timestamp); });
           var tempy_extent = d3.extent(d.data, function(d) { return d.value; });
           if(x_domain.length < 1){
