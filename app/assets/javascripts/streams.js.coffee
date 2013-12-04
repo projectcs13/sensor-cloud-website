@@ -172,7 +172,7 @@ $ ->
         text = pl.manufacturer
         text = text+" "+pl.model
         $("#resource_model").val(text)
-        
+
         fetchStreamsFromResource pl.resource
         false
 
@@ -253,7 +253,7 @@ $ ->
             stream.data 'id', data.id
             checkbox.removeClass('hidden')
             spinner.addClass('hidden')
-            createForm data.id
+            createForm data.id, json.stream
 
           res.fail (xhr, result) ->
             # Block checkbox? BIG RED TEXT?
@@ -277,12 +277,16 @@ $ ->
         </li>
       """
 
-    createForm = (id) ->
+    createForm = (id, json) ->
       form = $('#edit_stream_REPLACE_THIS_ID')
       clone = form.clone()
       form.parent().append clone
       clone.attr('id', "edit_stream_#{id}")
       clone.attr('action', "/streams/#{id}")
+      console.log json
+      for k, v of json
+         clone.find("#stream_#{k}").val v
+
       clone.removeClass('hidden')
 
     removeForm = (id) ->
@@ -290,7 +294,7 @@ $ ->
       console.log form
       form.remove()
 
-    
+
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
     graphWidth = $("#graph-canvas").width()
