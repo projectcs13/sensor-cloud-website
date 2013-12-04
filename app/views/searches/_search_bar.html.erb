@@ -18,7 +18,7 @@
         <%= f.select "sort_by", options_for_select(
                                   [["None", "none"], 
                                    ['Name', "name"],
-                                   ['User ranking', "user_ranking"]], 
+                                   ['User ranking', "average"]], 
                                 params['search']['sort_by']),
                                 {}, onchange: "this.form.submit();",
                                 class: "form-control" %>
