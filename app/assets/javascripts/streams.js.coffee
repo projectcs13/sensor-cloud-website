@@ -127,6 +127,9 @@ $ ->
       animation: google.maps.Animation.DROP
       position: mapOptions.center
 
+    $('#lat').val marker.getPosition().lat()
+    $('#lon').val marker.getPosition().lng()
+
     google.maps.event.addListener marker, "dragend", (evt) ->
       $('#lat').val evt.latLng.lat()
       $('#lon').val evt.latLng.lng()
