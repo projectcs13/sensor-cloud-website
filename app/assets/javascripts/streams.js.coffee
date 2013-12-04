@@ -146,6 +146,10 @@ $ ->
 
   $(document).bind "streams_new_from_resource", (e, obj) =>
 
+    $(window).on 'beforeunload', (event) ->
+      cleanUpDom()
+      undefined
+
     $("#resource_model").bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
 
