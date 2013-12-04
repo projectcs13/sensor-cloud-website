@@ -108,7 +108,6 @@ class StreamsController < ApplicationController
     @stream.attributes.delete 'quality'
     @stream.attributes.delete 'subscribers'
 
-
     @stream.polling = if @stream.polling == "1" then false else true end
     @stream.private = if @stream.private == "0" then false else true end
 
