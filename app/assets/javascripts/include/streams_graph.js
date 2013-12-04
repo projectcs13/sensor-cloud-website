@@ -33,6 +33,7 @@ function stream_graph(width) {
             result = result.data // parse the response
             data = result.reverse(); // data is coming in reverse order
             data.map(function(d){d.timestamp = parseDate(d.timestamp)});
+            data.map(function(d){d.value = Number(d.value)});
             draw_graph();
         });
         res.fail(function (e, result) {
@@ -72,7 +73,7 @@ function stream_graph(width) {
         datapoint = JSON.parse(datapoint);
         var newDatapoint = {};
         newDatapoint['timestamp'] = parseDate(datapoint.timestamp);
-        newDatapoint['value'] = datapoint.value;
+        newDatapoint['value'] = Number(datapoint.value);
         data.push(newDatapoint);
         draw_graph();
     }
