@@ -5,9 +5,10 @@
 
 $ ->
   #setup map and graph containers
+  #height still statically set since height() needs to render page to calculate correctly
   contentWidth = $(".right-side-content").width()
   $('#map-canvas').width(contentWidth).height(500)
-  multiGraph = streamGraphMultiLine().width(contentWidth).height(500)
+  multiGraph = streamGraphMultiLine().width(contentWidth).height(300)
   graphData = []
   d3.select("#multiline-graph").datum(graphData).call(multiGraph)
   #setup functions for populating graph
@@ -15,19 +16,19 @@ $ ->
     $(graph).on "click", (event) ->
       stream_id = this.dataset.streamid
       iteration = this.dataset.iteration
-      isSelected = $(this).children().first().hasClass("selected")
+      isSelected = $(this).children().hasClass("selected")
       selectedSpan = "<span class='pull-right glyphicon glyphicon-ok-sign selected" + iteration + "'></span>"
       noDataSpan = "<span class='pull-right no-data'>[NO DATA]</span>"
       panelHeader = $(this).children().first()
       if isSelected
-        panelHeader.removeClass("selected")
+        $(this).children().removeClass("selected")
         panelHeader.children().remove("span")
         graphData = graphData.filter (el) -> 
           return el.stream_id.toString() != stream_id
         $("#multiline-graph svg").remove()
         d3.select("#multiline-graph").datum(graphData).call(multiGraph)
       else
-        panelHeader.addClass("selected")
+        $(this).children().addClass("selected")
         # ajax call
         res = $.get '/datapoints/' + stream_id
         res.done (result) ->
