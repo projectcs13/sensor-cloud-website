@@ -54,16 +54,16 @@ $ ->
      $( "#min_val" ).val ui.values[ 0 ]
      $( "#max_val" ).val ui.values[ 1 ]
 
-$('.star-rating').on 'click', ->
-  obj =
-    json:
-      stream_id: $(this).attr('id')
-  value: parseFloat($(this).children('a').text())
-  res = $.ajax
-  url: '/userranking'
-  type: 'PUT'
-  data: JSON.stringify obj
-  contentType: "application/json",
-  dataType: "json",
-  success: (result, thing) ->
-    console.log result, thing
+  $('.star-rating').on 'click', ->
+    obj =
+      json:
+        stream_id: $(this).attr('id')
+    value: parseFloat($(this).children('a').text())
+    res = $.ajax
+    url: '/userranking'
+    type: 'PUT'
+    data: JSON.stringify obj
+    contentType: "application/json",
+    dataType: "json",
+    success: (result, thing) ->
+      console.log result, thing
