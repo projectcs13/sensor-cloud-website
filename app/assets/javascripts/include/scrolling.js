@@ -4,8 +4,8 @@
 * @author: Li Hao,
 * 
 */
-var stream_count =1;
-var user_count=1;
+var stream_count;
+var user_count;
 var waiting = false;
 
 function add_new_stream_item(item, father){
@@ -97,6 +97,9 @@ function add_new_content(page, content, type){
 }
 
 function init_scrolling() {
+  //get the current location
+  stream_count = $('#streams ul.pagination li.active').index();
+  user_count = $('#users ul.pagination li.active').index();
 
   var pane1 = $("#scroll-pane1");
   var pane2 = $("#scroll-pane2");
