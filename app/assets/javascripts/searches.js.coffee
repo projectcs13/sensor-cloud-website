@@ -58,12 +58,12 @@ $ ->
     obj =
       json:
         stream_id: $(this).attr('id')
-    value: parseFloat($(this).children('a').text())
+        value: parseFloat($(this).children('a').text())
     res = $.ajax
-    url: '/userranking'
-    type: 'PUT'
-    data: JSON.stringify obj
-    contentType: "application/json",
-    dataType: "json",
-    success: (result, thing) ->
-      console.log result, thing
+      url: '/userranking'
+      type: 'PUT'
+      data: JSON.stringify obj
+      contentType: "application/json",
+      dataType: "json",
+      success: (result, thing) ->
+        console.log result, thing
