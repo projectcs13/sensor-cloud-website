@@ -11,20 +11,22 @@
   <% stream_last_updated = distance_of_time_in_words(Date.iso8601(stream_last_updated), Time.now, include_seconds: true) %>
   <% scale = 5%>
   <% starcount = 0%>
-  <%part = (100/scale)%>
-  <%empty_stars = scale%>
+  <% part = (100/scale)%>
+  <% empty_stars = scale%>
+  <% percentage = stream['_source']['user_ranking']['average']%>
   <% ranking = (stream['_source']['user_ranking']['average']/(100/scale))%>
   <% nr_rankings = stream['_source']['user_ranking']['nr_rankings'] %>
 
   <div class="panel panel-default search-result" data-location="<%= stream_location %>" data-streamid="<%= stream_id %>" data-iteration="<%=i%>">
     <div class="panel-heading">
-      <%= link_to(stream_name, stream_url) %>
+      <%=i%>
+      <%=link_to(stream_name, stream_url) %>
       
     </div>
     <div class="panel-body">
       <span class="stream-description"><%= stream_desciption %></span>
-      <span class="last-update">Last updated <%= stream_last_updated %> ago</span>
-      <div class="Clear">
+      <div class="search-result-footer">
+        <span class="last-update pull-right">Last updated <%= stream_last_updated %> ago</span>
       <!-- display stars -->                                                                       
         <% for stars in (ranking.to_i).times %>
           <%starcount += 1%>
@@ -67,7 +69,7 @@
       <!-- Star display ends here -->
       <%= nr_rankings %>
       <!-- This line displays percentage -->
-      <%= ranking %>%
+      <%= percentage %>%
     </div>
     </div>
   </div>

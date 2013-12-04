@@ -14,7 +14,7 @@ class SearchesController < ApplicationController
 			end
 
 		res = conn.put do | req |
-			json = { :user_id => "#{current_user.id}", :ranking => params[:json][:value] }
+			json = { :user_id => "#{current_user.username}", :ranking => params[:json][:value] }
 			logger.debug json.to_json
 			req.url "#{CONF['API_URL']}/streams/#{params[:json][:stream_id]}/_rank"
 			req.headers['Content-Type'] = 'application/json'
@@ -92,11 +92,10 @@ class SearchesController < ApplicationController
 						activeFilter = {"regexp"=>{ "active" => { "value" => params['search']['active'] }}}
 						filters.push(activeFilter.to_json)
 			end
-
-			#if params['search']['filter_map'] == "1"
-						#mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "pin.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
-						#filters.push(mapFilter.to_json)
-			#end
+			if params['search']['filter_longitude'].to_s.strip.length != 0
+						mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
+						filters.push(mapFilter.to_json)
+			end
 				#A quick way to check if filter is nil or empty or just whitespace
 				if filters.empty?
 					req.body = '{ "sort": ['+ sort_by + '],
