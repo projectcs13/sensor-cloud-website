@@ -19,3 +19,5 @@ window.createMap = (form) ->
   google.maps.event.addListener marker, "dragend", (evt) ->
     form.find('#lat').val evt.latLng.lat()
     form.find('#lon').val evt.latLng.lng()
+
+

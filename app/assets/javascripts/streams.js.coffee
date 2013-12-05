@@ -137,6 +137,7 @@ $ ->
 
       window.newStreamForm clone
       window.createMap clone
+
       clone.on 'submit', ->
         cloneIndex = clone.index()-1
         console.log 'cloneIndex', cloneIndex
@@ -160,6 +161,12 @@ $ ->
       #if f.hasClass 'hidden'
       forms.children().addClass('hidden')
       f.removeClass 'hidden'
+
+      # Update MAP
+      mapWidth = f.find('#map-canvas').parent().width()
+      mapHeight = f.find('#map-canvas').parent().height()
+      console.log "Dimensions: #{mapWidth} - #{mapHeight}"
+      f.find('#map-canvas').width(mapWidth).height(mapHeight)
       # streams.find('.form-control').css "background-color", "white"
       # streams.children().eq index+1.css "background-color", "lightblue"
 
@@ -182,6 +189,8 @@ $ ->
     loc = document.getElementById('location').getAttribute('value').split ","
 
 
+    mapWidth = $('#map-canvas').parent().width()
+    $('#map-canvas').width(mapWidth).height(mapWidth)
 
     mapOptions =
       center: new google.maps.LatLng loc[0], loc[1]
