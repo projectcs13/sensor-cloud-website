@@ -79,3 +79,20 @@
   width: 300px;
 }
 
+.inactive {
+  background-color: #ddd;
+  color: #999;
+}
+
+.chosen {
+  background-color: lightblue !important;
+}
+
+.done {
+  background-color: lightgreen;
+  color: green;
+}
+
+#forms {
+  padding: 0;
+}

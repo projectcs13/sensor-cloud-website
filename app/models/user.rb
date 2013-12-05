@@ -57,6 +57,7 @@ class User < ActiveRecord::Base
 		  req.headers['Content-Type'] = 'application/json'
 		  req.body = "{\"stream_id\":\"#{stream_id}\"}"
 		end
+		logger.debug "RESP....... #{resp.body}"
 	end
 
 	def unfollow!(stream_id)

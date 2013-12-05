@@ -1,12 +1,9 @@
 SensorCloud::Application.routes.draw do
 
   resources :users
-  resources :multistreams
   resources :streams do
     collection do
       get '/new_from_resource', :to => :new_from_resource
-      post '/smartnew',         :to => :smartnew
-      post '/multi',            :to => :multi
       delete '/',               :to => :destroyAll
     end
   end
@@ -23,9 +20,6 @@ SensorCloud::Application.routes.draw do
   match '/datapoints/:id', to: 'streams#fetch_datapoints', via: 'get'
   match '/prediction/:id', to: 'streams#fetch_prediction', via: 'get'
 
-  match '/users/:username/edit/edit_profile', :to => 'users#profile', via: 'get'
-  match '/users/:username/following', :to => 'users#following', via: 'get'
-  match '/users/:username/streams', :to => 'streams#index', via: 'get'
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
@@ -44,10 +38,10 @@ SensorCloud::Application.routes.draw do
   match '/autocomplete', to: 'searches#fetch_autocomplete',  via: 'get'
   match '/history',      to: 'searches#fetch_graph_data',    via: 'get'
 
-
 	get 'users/:username/following' => 'users#following', as: :following
 
-
+  get '/users/:username/edit/edit_profile' => 'users#profile'
+  get '/users/:username/streams' => 'streams#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,14 +1,12 @@
 <h1>New stream</h1>
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3" id="login-form">
+  <div class="col-md-6 col-md-offset-3 login-form">
     <%= form_for(@stream) do |f| %>
+        <%= render 'fields', f: f %>
 
-    <%= render 'fields', f: f %>
-
-    <div id="btn-create" class="btn btn-primary">Create a stream</div>
-    <%= f.submit "Create", class: "btn btn-primary hidden", id: "submit" %>
-    </div>
+        <div class="btn btn-primary btn-create">Create a stream</div>
+      </div> <!-- This div was opened in the '_fields' file -->
     <% end %>
   </div>
 </div>
