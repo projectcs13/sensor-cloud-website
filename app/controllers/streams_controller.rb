@@ -27,7 +27,7 @@ class StreamsController < ApplicationController
   end
 
   def suggest
-    res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}?size=10"
+    res = Faraday.get "#{CONF['API_URL']}/suggest/#{params[:model]}?size=10"
     data = if res.status == 404 then {} else JSON.parse(res.body)['suggestions'] end
     render :json => data, :status => res.status
   end
