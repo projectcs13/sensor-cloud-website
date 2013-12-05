@@ -24,8 +24,10 @@ $ ->
     form = $ 'form'
     window.newStreamForm form
 
-    $("#update-switch").on 'switch-change', switchChanged
-
+    #$("#update-switch").on 'switch-change', switchChanged
+    mapWidth = $('#map-canvas').parent().width()
+    mapHeight = $('#map-canvas').parent().height()
+    $('#map-canvas').width(mapWidth).height(mapHeight)
     mapOptions =
       center: new google.maps.LatLng 60, 18
       zoom: 8
@@ -203,7 +205,8 @@ $ ->
     loc = document.getElementById('location').getAttribute('value').split ","
 
 
-
+    mapWidth = $('#map-canvas').parent().width()
+    $('#map-canvas').width(mapWidth).height(mapWidth)
     mapOptions =
       center: new google.maps.LatLng loc[0], loc[1]
       zoom: 8
