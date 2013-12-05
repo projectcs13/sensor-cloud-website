@@ -1,7 +1,7 @@
     function map_init() {
 
             function displayInfo(widget) {
-                    var longitude = document.getElementById('long');
+                  var longitude = document.getElementById('long');
                   var latitude = document.getElementById('lati');
                   var radkm = document.getElementById('radkm');
                     if(widget != null) {
@@ -9,6 +9,7 @@
                   latitude.value = widget.get('position').lat();
                   radkm.value = widget.get('distance');
                 }else {
+                  console.log("called!");
                         longitude.value = null;
                           latitude.value = null;
                           radkm.value = null;
@@ -233,17 +234,16 @@
                 controlUI.appendChild(controlText);
 
                 var distanceWidget = new DistanceWidget(map);
-
                 distanceWidget.set("map", null);
-                var simplebool = true;
+                var simplebool = false;
                 google.maps.event.addDomListener(controlUI, 'click', function() {
-                if(simplebool){
-                        simplebool = false;
+                if(simplebool != true){
+                        simplebool = true;
                         radiusChange(map);
                         distanceWidget.set("map",map);
                         displayInfo(distanceWidget);
                 }else{
-                        simplebool = true;
+                        simplebool = false;
                         distanceWidget.set("map", null);
                         displayInfo(null);
                 }
@@ -253,11 +253,15 @@
                   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlUI);
 
               google.maps.event.addListener(distanceWidget, 'distance_changed', function() {
-                  displayInfo(distanceWidget);
+                  console.log("distance_changed CALLED");
+                  if(simplebool == true)
+                    displayInfo(distanceWidget);
                 });
 
                 google.maps.event.addListener(distanceWidget, 'position_changed', function() {
-                  displayInfo(distanceWidget);
+                  console.log("position_changed CALLED");
+                  if(simplebool == true)
+                    displayInfo(distanceWidget);
                 });
 
 				google.maps.event.addListener(map, 'zoom_changed', function() {
