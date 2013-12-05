@@ -22,3 +22,4 @@
 //= require socket.io
 //= require 'include/autocomplete'
 //= require frontpage
+//= require streams.new

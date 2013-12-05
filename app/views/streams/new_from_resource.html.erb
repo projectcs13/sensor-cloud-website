@@ -13,8 +13,8 @@
   	<!-- Add suggested streams creation form here -->
   </ul>
 
-  <div class="col-md-6 right">
-    <%= form_for @stream, remote: true, html: { :class => "hidden" } do |f| %>
+  <div id="forms" class="col-md-6 right">
+    <%= form_for @stream, remote: true, html: { :id => "form-template", :class => "hidden" } do |f| %>
       <%= render 'fields', f: f %>
     <% end %>
   </div>

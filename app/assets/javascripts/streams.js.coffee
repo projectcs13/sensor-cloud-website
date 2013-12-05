@@ -9,6 +9,7 @@
 //= require 'include/client.js'
 
 $ ->
+
   $(document).bind "streams_index", (e, obj) =>
     showDetails = (event) ->
       el = $(this)
@@ -19,110 +20,9 @@ $ ->
 
     $('body').on 'click', '.list-group-item', showDetails
 
-
   $(document).bind "streams_new", (e, obj) =>
-    TIME = 250
-
-    descriptions = [
-      "First, tell us the basic information which might describe your stream"
-      "Now, please fill in the fields below with the technical details of your new stream"
-      "Finally, we need you to set up the format and the communication mechanism"
-    ]
-
-    stepLabel       = $ ".step-label"
-    stepDescription = $ ".step-description"
-
-    currentStep = 0
-    steps = $ '.step'
-    steps.each (i, step) ->
-      $(step).css 'display', 'none' if i != 0
-
-    # steps.first().removeClass('hidden');
-
-    btnBack   = $ "#btn-back"
-    btnNext   = $ "#btn-next"
-    btnCreate = $ "#btn-create"
-    btnSubmit = $ "#submit"
-
-    polling = $ ".polling"
-
-    progress = $ "#progress-bar"
-    ratio = progress.parent().width() / steps.length
-    # ratio = ratio + ratio / 10;
-
-    updateStepInformation = ->
-      stepLabel.text "Step #{currentStep+1}"
-      stepDescription.text descriptions[ currentStep ]
-
-    decreaseBar = ->
-      w = progress.width()
-      progress.width(w - ratio)
-
-    increaseBar = ->
-      w = progress.width()
-      progress.width(w + ratio)
-
-    back = (event) ->
-      do event.preventDefault
-
-      if currentStep > 0
-        if currentStep is steps.length-1
-          btnCreate.css 'display', 'none'
-          btnNext.css 'display', 'inline-block'
-          # btnNext.removeClass('btn-disabled').addClass('btn-primary')
-
-        steps.eq(currentStep).hide TIME
-        currentStep--
-        steps.eq(currentStep).show TIME
-
-        do decreaseBar
-        do updateStepInformation
-
-        if currentStep is 0
-          btnBack.css 'display', 'none'
-
-
-    next = (event) ->
-      do event.preventDefault
-
-      if currentStep < steps.length-1
-        btnBack.css 'display', 'inline-block'
-
-        steps.eq(currentStep).hide TIME
-        currentStep++
-        steps.eq(currentStep).show TIME
-
-        do increaseBar
-        do updateStepInformation
-
-        if currentStep is steps.length-1
-          btnCreate.css 'display', 'inline-block'
-          btnNext.css 'display', 'none'
-
-
-    create = (event) ->
-      do event.preventDefault
-
-      do increaseBar
-      setTimeout ->
-        btnSubmit.trigger 'click'
-      , TIME * 2
-
-      # $(window).animate ->
-      #   do increaseBar
-      #   btnSubmit.trigger 'submit'
-      # , 400
-
-
-    switchChanged = (event) ->
-      do event.preventDefault
-      polling.toggle TIME * 2
-
-
-    btnNext.on 'click', next
-    do btnBack.on('click', back).hide
-    do btnCreate.on('click', create).hide
-    do updateStepInformation
+    form = $ 'form'
+    window.newStreamForm form
 
     $("#update-switch").on 'switch-change', switchChanged
 
@@ -148,6 +48,12 @@ $ ->
       $('#lon').val evt.latLng.lng()
 
   $(document).bind "streams_new_from_resource", (e, obj) =>
+    forms = $('#forms')
+    streams = $('#streams')
+
+    $(window).on 'beforeunload', (event) ->
+      cleanUpDom()
+      undefined
 
     $("#resource_model").bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
@@ -166,12 +72,12 @@ $ ->
         console.log "CleanUp"
         cleanUpDom()
         console.log "/CleanUp"
-        
+
         pl = ui.item.payload
         text = pl.manufacturer
         text = text+" "+pl.model
         $("#resource_model").val(text)
-        
+
         fetchStreamsFromResource pl.resource
         false
 
@@ -184,103 +90,103 @@ $ ->
           .append('<a>'+text+'</a>')
           .appendTo(ul);
 
-    cleanUpDom = () ->
-      streams = $('#streams')
-      ids = streams.children().each ->
-        console.log $(this).data 'id'
-      streams.empty()
+    cleanUpDom = ->
+      $('#streams').empty()
+      template = $('#form-template').clone()
+      forms.empty()
+      forms.append template
 
     fetchStreamsFromResource = (id) ->
       res = $.get "/resources/#{id}"
       res.done listStreams
 
+
     listStreams = (json) ->
       console.log json
-      place = $('#streams')
-
       for stream in json.streams_suggest
         dom = $(render stream)
-        dom.data 'json', stream
-        place.append dom
+        streams.append dom
+        createForm stream
 
-      $('body').on 'click', '.select-suggestion', (event) ->
-        event.stopPropagation()
-        if $(this).hasClass('input-group-addon')
-          checkbox = $(this).find('.select-suggestion')
-          checkbox.attr("checked", !checkbox.attr("checked"))
+      $('body').on 'click', '.select-suggestion', ->
+        div = $(this).parent().siblings('.form-control')
+        console.log div
+        if $(this).prop('checked') or $(this).hasClass('done')
+          div.removeClass('inactive')
         else
-          checkbox = $(this)
-        stream = checkbox.parents('.stream')
+          div.addClass('inactive').removeClass 'chosen'
+          hideForm div.parent().index()
+          i = findNextStream()
+          showForm i
 
-        console.log checkbox[0].checked
-        if checkbox[0].checked == false
-          #ID created in ES, needs cleanup
-          id = stream.data 'id'
-          removeForm id
-          res = $.ajax
-            type: "DELETE"
-            url: "/streams/#{id}"
-            dataType: "json"
-
-          res.done (data) ->
-            console.log data
-
-        else
-          # Create ID (and store)
-          checkbox.addClass('hidden')
-          spinner = checkbox.siblings('.spinner')
-          spinner.removeClass('hidden')
-
-          json = {"stream" : stream.data 'json' }
-          res = $.ajax
-            type: "POST"
-            url: "/streams"
-            data: json
-            dataType: "json"
-
-          res.done (data) ->
-            console.log data
-            stream.data 'id', data.id
-            checkbox.removeClass('hidden')
-            spinner.addClass('hidden')
-            createForm data.id
-
-          res.fail (xhr, result) ->
-            # Block checkbox? BIG RED TEXT?
-            alert "Error: Redirection not working properly\n Response from server: #{result}"
+      $('body').on 'click', '.stream .form-control', (event) ->
+        stream = $(this).parent()
+        input = stream.find('.select-suggestion')
+        if input.prop("checked")
+          streams.find('.form-control').removeClass('chosen')
+          $(this).addClass('chosen')
+          index = stream.index()
+          showForm index
 
     render = (stream) ->
       """
         <li class="input-group stream">
           <span class="input-group-addon">
-            <img class="spinner hidden" src="/assets/ajax-loader.gif" />
             <input class="select-suggestion" type="checkbox">
           </span>
-          <div class="form-control">
+          <div class="form-control inactive">
             <h4 class="left">#{stream.type}</h4>
-            <div class="clearfix"></div>
-            <h6 class="left">Description:</h6>
-            <div class="clearfix"></div>
-            <p class="left">#{stream.description}</p>
             <div class="clearfix"></div>
           </div>
         </li>
       """
+      #<img class="spinner hidden" src="/assets/ajax-loader.gif" />
 
-    createForm = (id) ->
-      form = $('#edit_stream_REPLACE_THIS_ID')
+    findNextStream = ->
+      for s in streams.children()
+        div = $(s).find('.form-control')
+        if not div.hasClass('done') and not div.hasClass('inactive')
+          div.addClass 'chosen'
+          return div.parent().index()
+
+    createForm = (json) ->
+      form = $('#form-template')
       clone = form.clone()
+      clone.append $("""<div class="btn btn-primary btn-create">Create a stream</div>""")
       form.parent().append clone
-      clone.attr('id', "edit_stream_#{id}")
-      clone.attr('action', "/streams/#{id}")
-      clone.removeClass('hidden')
+      for k, v of json
+         clone.find("#stream_#{k}").val v
 
-    removeForm = (id) ->
-      form = $("#edit_stream_#{id}")
-      console.log form
-      form.remove()
+      window.newStreamForm clone
+      clone.on 'submit', ->
+        cloneIndex = clone.index()-1
+        console.log 'cloneIndex', cloneIndex
+        hideForm cloneIndex
+        s = streams.children().eq(cloneIndex)
+        s.find('.form-control').removeClass('chosen').addClass 'done'
+        s.find('.select-suggestion').prop('disabled', true)
 
-    
+        i = findNextStream()
+        console.log 'findNextStream', i
+        showForm i
+
+
+    hideForm = (index) ->
+      f = forms.children().eq index+1
+      f.addClass 'hidden'
+
+    showForm = (index) ->
+      console.log index
+      f = forms.children().eq index+1
+      #if f.hasClass 'hidden'
+      forms.children().addClass('hidden')
+      f.removeClass 'hidden'
+      # streams.find('.form-control').css "background-color", "white"
+      # streams.children().eq index+1.css "background-color", "lightblue"
+
+      #else
+        #forms.children().addClass('hidden')
+
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
     graphWidth = $("#graph-canvas").width()
@@ -317,6 +223,9 @@ $ ->
       alert value
       toggle value
 
+  $(document).bind "streams_edit", (e, obj) =>
+    form = $ 'form'
+    window.newStreamForm form
 
   action = "streams_" + $("body").data("action")
   $.event.trigger action
