@@ -9,6 +9,7 @@
 //= require 'include/client.js'
 
 $ ->
+
   $(document).bind "streams_index", (e, obj) =>
     showDetails = (event) ->
       el = $(this)
@@ -18,7 +19,6 @@ $ ->
         .toggleClass('glyphicon-chevron-down')
 
     $('body').on 'click', '.list-group-item', showDetails
-
 
   $(document).bind "streams_new", (e, obj) =>
     form = $ 'form'
@@ -223,6 +223,9 @@ $ ->
       alert value
       toggle value
 
+  $(document).bind "streams_edit", (e, obj) =>
+    form = $ 'form'
+    window.newStreamForm form
 
   action = "streams_" + $("body").data("action")
   $.event.trigger action
