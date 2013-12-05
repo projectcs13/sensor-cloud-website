@@ -8,6 +8,9 @@
           <div class="col-md-10 pull-left"><%= f.text_field :query, class: "form-control" %></div>
         <% end %>
           <div class="col-md-2 pull-right"><%= submit_tag "Search", class: "btn btn-primary pull-right" %></div>
+        <%= f.hidden_field :filter_longitude, id: "long"%>
+        <%= f.hidden_field :filter_latitude, id: "lati"%>
+        <%= f.hidden_field :filter_distance, id: "radkm"%>
         <% end %>
         </div>
     </td>
@@ -18,7 +21,7 @@
         <%= f.select "sort_by", options_for_select(
                                   [["None", "none"], 
                                    ['Name', "name"],
-                                   ['User ranking', "user_ranking"]], 
+                                   ['User ranking', "average"]], 
                                 params['search']['sort_by']),
                                 {}, onchange: "this.form.submit();",
                                 class: "form-control" %>

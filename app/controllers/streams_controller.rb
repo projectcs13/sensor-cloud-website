@@ -6,9 +6,15 @@ class StreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-    @user = current_user
-    cid = current_user.username
-    res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
+
+    # @streams = Stream.search(params[:search])
+    # @streams = Stream.all(_user_id: current_user.username)
+    # @count= @streams.count
+    #Before MERGING User Profile branch
+    # cid = @user.username
+    @cid = User.find_by_username(:username)
+    logger.debug "CURRENT_PAGE: ##{CONF['API_URL']}/users/#{params[:username]}/streams/"
+    res = Faraday.get "#{CONF['API_URL']}/users/#{params[:username]}/streams/"
     @streams = JSON.parse(res.body)['streams']
     @count= @streams.length
     logger.debug "CURRENT_PAGE: #{@streams}"
@@ -18,7 +24,9 @@ class StreamsController < ApplicationController
 		@stream_id = params[:id]
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
-		@stream_owner = User.find_by(id: stream_owner_id)
+		@stream_owner = User.find_by_username(stream_owner_id)
+    @usern = @stream_owner.username
+    logger.debug "Owner: #{@usern}"
   end
 
   def new
@@ -74,22 +82,7 @@ class StreamsController < ApplicationController
   def smartnew
   end
 
-  def edit
-    logger.debug "#{@stream.attributes}"
-
-    if @stream.accuracy      == nil then @stream.accuracy     = "" end
-    if @stream.min_val       == nil then @stream.min_val      = "" end
-    if @stream.max_val       == nil then @stream.max_val      = "" end
-    if @stream.polling_freq  == nil then @stream.polling_freq = "" end
-    if @stream.location      == nil then @stream.location     = "," end
-
-    logger.debug "#{@stream.attributes}"
-
-    location = @stream.location.split(",", 2)
-
-    @stream.send("latitude=", location[0])
-    @stream.send("longitude=", location[1])
-  end
+  
 
   def correctBooleanFields
     @stream.location = "#{@stream.latitude},#{@stream.longitude}"
@@ -125,12 +118,12 @@ class StreamsController < ApplicationController
     logger.debug @stream.attributes
 
     respond_to do |format|
-    	res = post
+      res = post
         logger.debug "BODY: #{res.body}"
-      	if res.status == 200
+        if res.status == 200
 
           @stream.id = JSON.parse(res.body)['_id']
-  				# TODO
+          # TODO
           # The API is currently sending back the response before the database has
   				# been updated. The line below will be removed once this bug is fixed.
         	sleep(1.0)
@@ -149,35 +142,35 @@ class StreamsController < ApplicationController
     correctBooleanFields
 
     respond_to do |format|
-    	res = put
+      res = put
       logger.debug "attributes: #{@stream.attributes}"
-    	res.on_complete do
-      	if res.status == 200
+      res.on_complete do
+        if res.status == 200
           # TODO
           # The API is currently sending back the response before the database has
           # been updated. The line below will be removed once this bug is fixed.
-					sleep(1.0)
+          sleep(1.0)
 
-        	format.html { redirect_to stream_path(@stream.id) }
-        	format.json { head :no_content }
-      	else
-        	format.html { render action: 'edit' }
-        	format.json { render json: @stream.errors, status: :unprocessable_entity }
-      	end
-    	end
+          format.html { redirect_to stream_path(@stream.id) }
+          format.json { head :no_content }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @stream.errors, status: :unprocessable_entity }
+        end
+      end
     end
   end
 
   def destroy
     @stream.destroy
-		Relationship.all.where(followed_id: @stream.id).each do |r|
-			r.destroy
-		end
+    Relationship.all.where(followed_id: @stream.id).each do |r|
+      r.destroy
+    end
 
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
-		sleep(1.0)
+    sleep(1.0)
 
     respond_to do |format|
       format.html { redirect_to streams_path }
@@ -198,6 +191,7 @@ class StreamsController < ApplicationController
     end
   end
 
+
   def fetch_datapoints
     res = Faraday.get "#{CONF['API_URL']}/streams/" + params[:id] + "/data/_search"
     respond_to do |format|
@@ -213,11 +207,7 @@ class StreamsController < ApplicationController
     end
   end
 
-  def deleteAll
-    cid = current_user.username
-    url = "#{CONF['API_URL']}/users/#{cid}/streams/"
-    send_data(:delete, url, nil)
-  end
+  
 
   def post
     cid = current_user.username
@@ -247,6 +237,8 @@ class StreamsController < ApplicationController
   end
 
   private
+
+  
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
       #@stream = Stream.find(params[:id], _user_id: current_user.id)
@@ -270,6 +262,29 @@ class StreamsController < ApplicationController
         req.body = json
       end
     end
+
+    def deleteAll
+    cid = current_user.username
+    url = "#{CONF['API_URL']}/users/#{cid}/streams/"
+    send_data(:delete, url, nil)
+    end
+
+    def edit
+    logger.debug "#{@stream.attributes}"
+
+    if @stream.accuracy      == nil then @stream.accuracy     = "" end
+    if @stream.min_val       == nil then @stream.min_val      = "" end
+    if @stream.max_val       == nil then @stream.max_val      = "" end
+    if @stream.polling_freq  == nil then @stream.polling_freq = "" end
+    if @stream.location      == nil then @stream.location     = "," end
+
+    logger.debug "#{@stream.attributes}"
+
+    location = @stream.location.split(",", 2)
+
+    @stream.send("latitude=", location[0])
+    @stream.send("longitude=", location[1])
+  end
 
     def new_connection
       cid = current_user.username

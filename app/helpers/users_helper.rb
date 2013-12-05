@@ -16,10 +16,11 @@ module UsersHelper
 	end
 
 	def emptydescription(user)
-    if @user.description.blank?
-       link_to "Edit your Profile", edit_user_path(current_user) 
-    else
-      @user.description
-    end
+    			if @user.description.blank? && @user.username == current_user.username
+       				link_to "Edit your Profile", edit_user_path(current_user) 
+    			else
+      				@user.description
+    			end  
+
   end
 end
