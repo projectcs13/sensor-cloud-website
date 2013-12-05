@@ -1,6 +1,5 @@
 //= require 'include/search_graph'
 //= require 'include/stream_graph_multiline'
-//= require 'include/jquery.timeago'
 //= require 'include/scrolling'
 //= require 'include/filter_map'
 
