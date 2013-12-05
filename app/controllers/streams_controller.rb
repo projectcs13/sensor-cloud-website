@@ -121,6 +121,7 @@ class StreamsController < ApplicationController
 
   def destroy
     @user = current_user
+    #@stream.destroy(_user_id: current_user.username)
     @stream.destroy
     Relationship.all.where(followed_id: @stream.id).each do |r|
       r.destroy
@@ -228,7 +229,7 @@ class StreamsController < ApplicationController
 		end
 
 		def correct_user
-      stream = Stream.find(params[:id])
+      stream = Stream.find(params[:id], :_user_id => current_user.username)
 			@user = User.find_by_username(stream.user_id)
 			redirect_to(root_url) unless current_user?(@user)
 		end
