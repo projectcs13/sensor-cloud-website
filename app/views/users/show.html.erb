@@ -37,6 +37,8 @@
   }
 </style>
 
+<% provide(:title, @user.username) %>
+
 <div class="row">
   	<aside class="user-profile-aside">
         <%= gravatar_for_profile @user %>
@@ -69,7 +71,6 @@
                   <div class="user-profile-lengthfix panel panel-default">
                     <div class="panel-heading">Description</div>
                       <div class="panel-body">
-                        <%= emptydescription @user %>
                       </div>
                   </div>
                 </div>
