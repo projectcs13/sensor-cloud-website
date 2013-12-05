@@ -35,7 +35,6 @@ class StreamsController < ApplicationController
 
   def new_from_resource
     @stream = Stream.new
-    # @stream.id = "REPLACE_THIS_ID"
   end
 
   def multi
@@ -82,7 +81,7 @@ class StreamsController < ApplicationController
   def smartnew
   end
 
-  
+
 
   def correctBooleanFields
     @stream.location = "#{@stream.latitude},#{@stream.longitude}"
@@ -207,7 +206,7 @@ class StreamsController < ApplicationController
     end
   end
 
-  
+
 
   def post
     cid = current_user.username
@@ -238,7 +237,7 @@ class StreamsController < ApplicationController
 
   private
 
-  
+
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
       #@stream = Stream.find(params[:id], _user_id: current_user.id)
