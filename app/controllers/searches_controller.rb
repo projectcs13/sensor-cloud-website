@@ -112,8 +112,14 @@ class SearchesController < ApplicationController
 			logger.debug "CURRENT_PAGE_USERS: #{@current_page_users}"
 
       if params['search']['refresh'] == "false"
-        respond_to do |format|
-          format.json { render json: @streams, status: 200 }
+        if (not params['search']['page'].blank?)
+          respond_to do |format|
+            format.json { render json: @streams, status: 200 }
+          end
+        else
+          respond_to do |format|
+            format.json {render json: @users, status: 200}
+          end
         end
       else
         render :action => 'show'        

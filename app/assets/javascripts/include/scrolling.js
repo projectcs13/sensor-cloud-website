@@ -24,7 +24,7 @@ function add_new_stream_item(item, father){
                 +"<div class=\"panel-heading\"><a href="+stream_url+">"+stream_name+"</a></div>"
                 +"<div class=\"panel-body\">"
                 +"<span class=\"stream-description\">"+stream_description+"</span>"
-                +"<span class=\"last-update\">Last updated "+stream_last_updated+" ago</span>"
+                +"<span class=\"last-update\">Last updated "+jQuery.timeago(stream_last_updated)+" ago</span>"
                 +"<div class=\"star-rating\">";
     var x = 0 ;
     for(x=0;x<ranking;x++){
@@ -100,6 +100,8 @@ function init_scrolling() {
   //get the current location
   stream_count = $('#streams ul.pagination li.active').index();
   user_count = $('#users ul.pagination li.active').index();
+  if(stream_count==-1) stream_count=1;
+  if(user_count==-1) user_count=1;
 
   var pane1 = $("#scroll-pane1");
   var pane2 = $("#scroll-pane2");
