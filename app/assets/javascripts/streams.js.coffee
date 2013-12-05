@@ -23,29 +23,7 @@ $ ->
   $(document).bind "streams_new", (e, obj) =>
     form = $ 'form'
     window.newStreamForm form
-
-    $("#update-switch").on 'switch-change', switchChanged
-
-    mapOptions =
-      center: new google.maps.LatLng 60, 18
-      zoom: 8
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      disableDefaultUI: true
-
-    map = new google.maps.Map $('#map-canvas')[0], mapOptions
-
-    marker = new google.maps.Marker
-      map: map
-      draggable: true
-      animation: google.maps.Animation.DROP
-      position: mapOptions.center
-
-    $('#lat').val marker.getPosition().lat()
-    $('#lon').val marker.getPosition().lng()
-
-    google.maps.event.addListener marker, "dragend", (evt) ->
-      $('#lat').val evt.latLng.lat()
-      $('#lon').val evt.latLng.lng()
+    window.createMap form
 
   $(document).bind "streams_new_from_resource", (e, obj) =>
     forms = $('#forms')
@@ -158,6 +136,7 @@ $ ->
          clone.find("#stream_#{k}").val v
 
       window.newStreamForm clone
+      window.createMap clone
       clone.on 'submit', ->
         cloneIndex = clone.index()-1
         console.log 'cloneIndex', cloneIndex

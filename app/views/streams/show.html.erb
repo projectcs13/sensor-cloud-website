@@ -6,13 +6,13 @@
 
   <div class="col-lg-4 text-right">
           <p>
-            <% if @stream.private == "true" %>
+            <% if @stream.private == true %>
               <span class="label label-danger">Private</span>
             <% else %>
               <span class="label label-success">Public</span>
             <% end %>
 
-            <% if @stream.active == "true" %>
+            <% if @stream.active == true %>
               <span class="label label-success">Active</span>
             <% else %>
               <span class="label label-danger">Inactive</span>
