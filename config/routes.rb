@@ -18,14 +18,14 @@ SensorCloud::Application.routes.draw do
 
   root  'static_pages#home'
 
-  match '/resources/:id',  to: 'streams#fetchResource', via: 'get'
-  match '/suggest/:model',     to: 'resources#suggest', via: 'get'
-  match '/autocomplete/:attr', to: 'resources#autocomplete', via: 'get'
-  #match '/suggest',        to: 'resources#suggest',    via: 'post'
-  match '/datapoints/:id',    to: 'streams#fetch_datapoints', via: 'get'
-  match '/prediction/:id',    to: 'streams#fetch_prediction', via: 'get'
-  match '/users/:username/edit/edit_profile', :to => 'users#profile', via: 'get'
+  match '/resources/:id',  to: 'streams#fetchResource',    via: 'get'
+  match '/suggest/:model', to: 'streams#suggest',          via: 'get'
+  match '/datapoints/:id', to: 'streams#fetch_datapoints', via: 'get'
+  match '/prediction/:id', to: 'streams#fetch_prediction', via: 'get'
 
+  match '/users/:username/edit/edit_profile', :to => 'users#profile', via: 'get'
+  match '/users/:username/following', :to => 'users#following', via: 'get'
+  match '/users/:username/streams', :to => 'streams#index', via: 'get'
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'

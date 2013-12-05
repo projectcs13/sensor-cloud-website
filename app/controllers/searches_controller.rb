@@ -14,7 +14,7 @@ class SearchesController < ApplicationController
 			end
 
 		res = conn.put do | req |
-			json = { :user_id => "#{current_user.id}", :ranking => params[:json][:value] }
+			json = { :user_id => "#{current_user.username}", :ranking => params[:json][:value] }
 			logger.debug json.to_json
 			req.url "#{CONF['API_URL']}/streams/#{params[:json][:stream_id]}/_rank"
 			req.headers['Content-Type'] = 'application/json'

@@ -1,16 +1,17 @@
 class UsersController < ApplicationController
-	before_action :signed_in_user, only: [:index, :edit, :update, :destroy, :profile]
+	before_action :signed_in_user, only: [:index, :edit, :update, :destroy, :profile, :following]
 	before_action :correct_user, 	 only: [:edit, :update]
 	before_action :admin_user, 		 only: :destroy
 
 
 	def show
 		@user = User.find_by_username(params[:id])
-    cid = current_user.username
+    cid = @user.username
     res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
     @streams = JSON.parse(res.body)['streams']
     @count= @streams.length
 	end
+
 
 	def following
 		@title = "Following"
@@ -28,9 +29,9 @@ class UsersController < ApplicationController
 
 	def new
 		@user = User.new
-    attributes = ["username"]
+    attributes = ["username", "firstname", "lastname", "description", "password", "email"]
     attributes.each do |attr|
-      @user.send("#{attr}=", nil)
+       @user.send("#{attr}=", nil)
     end
   end
 
@@ -38,7 +39,8 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 		if @user.save
 			sign_in @user
-      post
+      res = post
+      logger.debug "RES: #{res.body}"
       flash[:success] = "Welcome to the Sample App!"
       redirect_to @user
 		else
@@ -46,20 +48,16 @@ class UsersController < ApplicationController
 		end
 	end
 
-
-	def profile
-		@user = User.find_by_username(params[:username])
-		render 'profile'
-		@user.save
-	end
-
 	def update
-		if @user.update_attributes(profile_params)
+    if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
-			@user.save
+      @user.save
+      res = put
+      logger.debug "RES: #{res.body}"
 			redirect_to @user
+      
 		else
-			render 'edit'
+      render 'edit'
 		end
 	end
 
@@ -80,8 +78,8 @@ class UsersController < ApplicationController
   end
 
   def put
-    url = "#{CONF['API_URL']}/users"
-    send_data(:put, url)
+    url = "#{CONF['API_URL']}/users/#{@user.username}"
+    put_data(:put, url)
   end
   
 
@@ -91,11 +89,6 @@ class UsersController < ApplicationController
 		end
 
 		def user_params
-			params.require(:user).permit(:username, :email, :password, 
-																	 :password_confirmation)
-		end
-
-		def profile_params
 			params.require(:user).permit(:username, :email, :password, 
 																	 :password_confirmation, :firstname, :lastname, :description)
 		end
@@ -119,15 +112,25 @@ class UsersController < ApplicationController
 		end
 
 
+
     def send_data(method, url)
       new_connection unless @conn
       @conn.send(method) do |req|
         req.url url
         req.headers['Content-Type'] = 'application/json'
-        req.body = '{"username" : "' + params[:user][:username] + '"}'
+        logger.debug "value : #{@user.id}"
+        req.body = '{"username" : "' + params[:user][:username] + '", "email" : "' + params[:user][:email] + '", "password" : "' + params[:user][:password] + '", "firstname" : "' + params[:user][:firstname] + '", "lastname" : "' + params[:user][:lastname] + '", "description" : "' + params[:user][:description] + '"}'
       end
     end
-
+     def put_data(method, url)
+      new_connection unless @conn
+      @conn.send(method) do |req|
+        req.url url
+        req.headers['Content-Type'] = 'application/json'
+        logger.debug "value : #{@user.id}"
+        req.body = '{"email" : "' + params[:user][:email] + '", "password" : "' + params[:user][:password] + '", "firstname" : "' + params[:user][:firstname] + '", "lastname" : "' + params[:user][:lastname] + '", "description" : "' + params[:user][:description] + '"}'
+      end
+    end
     def new_connection
       @conn = Faraday.new(:url => "#{CONF['API_URL']}/users") do |faraday|
         faraday.request  :url_encoded               # form-encode POST params

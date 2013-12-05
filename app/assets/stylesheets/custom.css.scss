@@ -19,9 +19,6 @@ html, body {
   height: 100%;
 }
 
-body {
-  padding-top: 120px;
-}
 
 body.homepage {
 /*  background: url('http://images.cdn.fotopedia.com/BJGsMXqQnoA-uugFhQX5L3k-ifill_1024x768.jpg') no-repeat center center fixed; */
@@ -113,6 +110,7 @@ p {
 
 #body {
 	padding-bottom: 96px; /* Height of the footer + 20px */
+  padding-top: 72px; /* Height of the header + 20px */
 }
 
 #footer {
