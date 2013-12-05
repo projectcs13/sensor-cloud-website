@@ -1,9 +1,9 @@
 <div class="row title-row">
   <div class="col-lg-8">
-		<h2 class="text-left"><%= @stream.name %></h2>
+		<h2 class="text-left"><%= @stream.name %> <small><%= @stream.user_id %></small></h2>
 		<%= render 'follow_form' if signed_in? %>
 	</div>
-		
+
   <div class="col-lg-4 text-right">
           <p>
             <% if @stream.private == "true" %>
@@ -19,7 +19,7 @@
             <% end %>
           </p>
 
-          <p><small>Created: <%= @stream.creation_date %></small></p>
+          <!-- <p><small>Created: <%#= @stream.creation_date %></small></p> -->
   </div>
 </div>
 
@@ -62,7 +62,7 @@
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
         <% end %>
       </div>
-			<% if !(@user.nil?) && (@user.id == @stream.user_id.to_i) %>
+			<% if not @user.nil? and @user.username == @stream.user_id %>
       	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
       	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
 			<% end %>

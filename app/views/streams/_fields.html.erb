@@ -12,16 +12,19 @@
         </div>
       <% end %>
 
-      <div>
-        <h4>Step 1</h4>
-        <strong><p>Tell us the basic information about your stream using the form below</p></strong>
+      <header>
+        <h4 class="step-label"></h4>
+        <strong>
+          <p class="step-description"></p>
+        </strong>
 
         <div class="progress progress-striped active">
-          <div id="progress-bar" class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 0%"></div>
+          <div class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 0%"></div>
         </div>
 
         <hr>
-      </div>
+      </header>
+
       <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>
 
       <div class="steps">
@@ -111,6 +114,16 @@
           <!-- <p>Triggers ???</p> -->
 
           <div class="form-group">
+            <%= f.label :parser %><br>
+            <%= f.text_field :parser, class: "form-control" %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :data_type %><br>
+            <%= f.select :data_type, [["Json", "application/json"]], {}, { :class => 'form-control' } %>
+          </div>
+
+          <div class="form-group">
             <label class="left">Mechanism for updating data values</label>
             <div class="clearfix"></div>
             <div class="make-switch left" id="update-switch" data-on-label="Push" data-off-label="Pull">
@@ -132,30 +145,21 @@
               <%= f.text_field :polling_freq, class: "form-control" %>
             </div>
 
-            <div class="form-group">
-              <%= f.label :parser %><br>
-              <%= f.text_field :parser, class: "form-control" %>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :data_type %><br>
-              <%= f.select :data_type, [["Json", "application/json"]], {}, { :class => 'form-control' } %>
-            </div>
           </div>
+
         </div>
       </div>
 
 			<br/>
 
       <div class="form-button center">
-        <div id="btn-back" class="btn btn-primary">
+        <div class="btn btn-primary btn-back">
           <i class="glyphicon glyphicon-chevron-left"></i>
           Back
         </div>
 
-        <div id="btn-next" class="btn btn-primary">
+        <div class="btn btn-primary btn-next">
           Next
           <i class="glyphicon glyphicon-chevron-right"></i>
         </div>
 
-        

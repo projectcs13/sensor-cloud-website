@@ -1,12 +1,9 @@
 SensorCloud::Application.routes.draw do
 
   resources :users
-  resources :multistreams
   resources :streams do
     collection do
       get '/new_from_resource', :to => :new_from_resource
-      post '/smartnew',         :to => :smartnew
-      post '/multi',            :to => :multi
       delete '/',               :to => :destroyAll
     end
   end
@@ -41,10 +38,10 @@ SensorCloud::Application.routes.draw do
   match '/autocomplete', to: 'searches#fetch_autocomplete',  via: 'get'
   match '/history',      to: 'searches#fetch_graph_data',    via: 'get'
 
+	get 'users/:username/following' => 'users#following', as: :following
 
-	get 'users/:id/following' => 'users#following', as: :following
-
-
+  get '/users/:username/edit/edit_profile' => 'users#profile'
+  get '/users/:username/streams' => 'streams#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

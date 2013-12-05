@@ -1,0 +1,10 @@
+<% @users.each do |user| %>
+  <% user_id = user['_id'] %>
+  <% url = "/users/#{user_id}" %>
+  <% user_name = user['_source']['username'] %>
+	<div class="panel panel-default search-result">
+    <div class="panel-heading">
+      <%= link_to(user_name, url) %>
+    </div>
+  </div>
+<% end %>

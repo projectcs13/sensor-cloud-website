@@ -74,8 +74,21 @@
   stroke: $custom-greyish-blue;
 }
 
-#map-canvas-show {
-  height: 200px;
-  width: 170px;
+#map-canvas {
+  height: 300px;
+  width: 300px;
 }
 
+.inactive {
+  background-color: #ddd;
+  color: #999;
+}
+
+.chosen {
+  background-color: lightblue !important;
+}
+
+.done {
+  background-color: lightgreen;
+  color: green;
+}
