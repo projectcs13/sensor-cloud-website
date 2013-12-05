@@ -27,7 +27,7 @@ class StreamsController < ApplicationController
 
   def new_from_resource
     @stream = Stream.new
-    @stream.id = "REPLACE_THIS_ID"
+    # @stream.id = "REPLACE_THIS_ID"
   end
 
   def multi
