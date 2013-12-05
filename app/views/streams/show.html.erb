@@ -66,6 +66,28 @@
       	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
       	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
 			<% end %>
+
+      <!-- =============  TRIGGERS ============= -->
+      <!-- ADD CHECK TO SHOW ONLY IF OWNER -->
+      <h4>Triggers: </h4>
+      <div class="stream-triggers well">
+        <% triggerlist = @user.triggers %>
+        <!-- triggerlist = [{func, input, streams = [id, id, ...]}] -->
+        <% triggerlist.each {
+            |trigger|
+            JSON.parse(trigger)['streams'].each {
+              as
+            }} %>
+        <% for trigger in triggerlist %>
+          <% for list in trigger[streams] %> <!-- HOW TO ACCESS THE ELEMENT? -->
+            <% if (list == @stream_id) %>
+              Hej
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+      <!-- ===================================== -->
+
   </div>
   <div class="col-md-4"> <!-- Right side -->
     <div id="map-canvas">
