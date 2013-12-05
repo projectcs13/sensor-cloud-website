@@ -37,6 +37,8 @@
   }
 </style>
 
+<% provide(:title, @user.username) %>
+
 <div class="row">
   	<aside class="user-profile-aside">
         <%= gravatar_for_profile @user %>
@@ -69,7 +71,6 @@
                   <div class="user-profile-lengthfix panel panel-default">
                     <div class="panel-heading">Description</div>
                       <div class="panel-body">
-                        <%= emptydescription @user %>
                       </div>
                   </div>
                 </div>
@@ -78,9 +79,9 @@
                   <div class="panel panel-default">
                     <div class="panel-heading">Statistics</div>
                       <div class="list">
-                        <a href="/streams" class="list-group-item"><span class="badge"><%= @count %></span>Streams Owned</a>
-                        <a href="/users/#{@user.username}/followings" class="list-group-item"><span class="badge">20</span>Streams Following</a>
-                        <a href="/streams" class="list-group-item"><span class="badge"><%= @count %></span>Streams Owned</a>
+
+                        <a href="/users/<%=@user.username%>/streams" class="list-group-item"><span class="badge"><%= @count %></span>Streams Owned</a>
+                        <a href="/users/<%=@user.username%>/following" class="list-group-item"><span class="badge">20</span>Streams Following</a>
                       </div>
                   </div>
                 </div>

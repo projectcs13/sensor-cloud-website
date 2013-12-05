@@ -23,9 +23,10 @@ body {
   padding-top: 53px;
 }
 
+
 .banner {
 background: url('new-york-city.jpg') no-repeat center center;
-  /*background: url('http://4.bp.blogspot.com/-GRLQAHTM1f0/T-LoxfCivWI/AAAAAAAACGo/RzCKabaaFWA/s1600/159.jpg') no-repeat center center;*/ 
+  /*background: url('http://4.bp.blogspot.com/-GRLQAHTM1f0/T-LoxfCivWI/AAAAAAAACGo/RzCKabaaFWA/s1600/159.jpg') no-repeat center center;*/
   height: 550px;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -114,6 +115,7 @@ p {
 
 #body {
 	padding-bottom: 96px; /* Height of the footer + 20px */
+  padding-top: 72px; /* Height of the header + 20px */
 }
 
 #footer {
@@ -201,7 +203,7 @@ input, textarea, select, .uneditable-input {
 }
 */
 
-#login-form {
+.login-form {
 	background-color: white;
 	padding: 40px;
 	border: 1px solid $custom-grey;

@@ -9,64 +9,29 @@
 //= require 'include/client.js'
 
 $ ->
-  $(document).bind "streams_new_from_resource", (e, obj) => # js only loaded on "streams_new_from_resource" action
-    fetchStreamsFromResource = (id) ->
-      res = $.get "/resources/#{id}"
-      res.done listStreams
 
-    render = (stream) ->
-      """
-        <li class="input-group stream">
-          <span class="input-group-addon">
-            <input type="checkbox">
-          </span>
-          <div class="form-control">
-            <h4 class="left">#{stream.type}</h4>
-            <div class="clearfix"></div>
-            <h6 class="left">Description:</h6>
-            <div class="clearfix"></div>
-            <p class="left">#{stream.description}</p>
-            <div class="clearfix"></div>
-          </div>
-        </li>
-      """
+  $(document).bind "streams_index", (e, obj) =>
+    showDetails = (event) ->
+      el = $(this)
+      el.find('.details').toggle(500)
+      el.find('.show-details')
+        .toggleClass('glyphicon-chevron-up')
+        .toggleClass('glyphicon-chevron-down')
 
-    listStreams = (json) ->
-      console.log json
-      place = $('#streams')
-      elem = ""
-      for stream in json.streams_suggest
-        elem = elem + render stream
-      elem = elem + """
-        <div id="btn-next" class="btn btn-primary">
-          Next
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        </div>
-      """
-      html = $(elem)
-      place.html html
-      place.find('#btn-next').on 'click', ->
-        data = []
-        streams = $('.stream')
-        streams.each (i, el) ->
-          input = $(el).find('input')[0]
-          data.push json.streams_suggest[i] if input.checked
+    $('body').on 'click', '.list-group-item', showDetails
 
-        data = { multistream: data }
+  $(document).bind "streams_new", (e, obj) =>
+    form = $ 'form'
+    window.newStreamForm form
+    window.createMap form
 
-        res = $.ajax
-          type: "POST"
-          #url: "/streams/smartnew"
-          url: "/streams/multi"
-          data: data
-          #dataType: 'json'
+  $(document).bind "streams_new_from_resource", (e, obj) =>
+    forms = $('#forms')
+    streams = $('#streams')
 
-        res.done (data) ->
-          window.location.pathname = data.url if data.hasOwnProperty 'url'
-
-        res.fail (xhr, result) ->
-          alert "Error: Redirection not working properly\n Response from server: #{result}"
-
+    $(window).on 'beforeunload', (event) ->
+      cleanUpDom()
+      undefined
 
     $("#resource_model").bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
@@ -82,48 +47,154 @@ $ ->
         false
 
       select: (event, ui) ->
-        pl = ui.item.payload
-        $("#resource_model").val(pl.model)
-        fetchStreamsFromResource pl.resource
+        console.log "CleanUp"
+        cleanUpDom()
+        console.log "/CleanUp"
 
+        pl = ui.item.payload
+        text = pl.manufacturer
+        text = text+" "+pl.model
+        $("#resource_model").val(text)
+
+        fetchStreamsFromResource pl.resource
         false
+
     ).data('ui-autocomplete')._renderItem = (ul, item) ->
       console.log item
+      text = item.payload.manufacturer
+      text = text+" "+item.payload.model
       $('<li>')
           .data('item.autocomplete', item)
-          .append('<a>' + item.payload.model + '</a>')
+          .append('<a>'+text+'</a>')
           .appendTo(ul);
 
+    cleanUpDom = ->
+      $('#streams').empty()
+      template = $('#form-template').clone()
+      forms.empty()
+      forms.append template
 
-  showDetails = (event) ->
-    el = $(this)
-    el.find('.details').toggle(500)
-    el.find('.show-details')
-      .toggleClass('glyphicon-chevron-up')
-      .toggleClass('glyphicon-chevron-down')
-  $('body').on 'click', '.list-group-item', showDetails
+    fetchStreamsFromResource = (id) ->
+      res = $.get "/resources/#{id}"
+      res.done listStreams
 
+
+    listStreams = (json) ->
+      console.log json
+      for stream in json.streams_suggest
+        dom = $(render stream)
+        streams.append dom
+        createForm stream
+
+      $('body').on 'click', '.select-suggestion', ->
+        div = $(this).parent().siblings('.form-control')
+        console.log div
+        if $(this).prop('checked') or $(this).hasClass('done')
+          div.removeClass('inactive')
+        else
+          div.addClass('inactive').removeClass 'chosen'
+          hideForm div.parent().index()
+          i = findNextStream()
+          showForm i
+
+      $('body').on 'click', '.stream .form-control', (event) ->
+        stream = $(this).parent()
+        input = stream.find('.select-suggestion')
+        if input.prop("checked")
+          streams.find('.form-control').removeClass('chosen')
+          $(this).addClass('chosen')
+          index = stream.index()
+          showForm index
+
+    render = (stream) ->
+      """
+        <li class="input-group stream">
+          <span class="input-group-addon">
+            <input class="select-suggestion" type="checkbox">
+          </span>
+          <div class="form-control inactive">
+            <h4 class="left">#{stream.type}</h4>
+            <div class="clearfix"></div>
+          </div>
+        </li>
+      """
+      #<img class="spinner hidden" src="/assets/ajax-loader.gif" />
+
+    findNextStream = ->
+      for s in streams.children()
+        div = $(s).find('.form-control')
+        if not div.hasClass('done') and not div.hasClass('inactive')
+          div.addClass 'chosen'
+          return div.parent().index()
+
+    createForm = (json) ->
+      form = $('#form-template')
+      clone = form.clone()
+      clone.append $("""<div class="btn btn-primary btn-create">Create a stream</div>""")
+      form.parent().append clone
+      for k, v of json
+         clone.find("#stream_#{k}").val v
+
+      window.newStreamForm clone
+      window.createMap clone
+
+      clone.on 'submit', ->
+        cloneIndex = clone.index()-1
+        console.log 'cloneIndex', cloneIndex
+        hideForm cloneIndex
+        s = streams.children().eq(cloneIndex)
+        s.find('.form-control').removeClass('chosen').addClass 'done'
+        s.find('.select-suggestion').prop('disabled', true)
+
+        i = findNextStream()
+        console.log 'findNextStream', i
+        showForm i
+
+
+    hideForm = (index) ->
+      f = forms.children().eq index+1
+      f.addClass 'hidden'
+
+    showForm = (index) ->
+      console.log index
+      f = forms.children().eq index+1
+      #if f.hasClass 'hidden'
+      forms.children().addClass('hidden')
+      f.removeClass 'hidden'
+
+      # Update MAP
+      mapWidth = f.find('#map-canvas').parent().width()
+      mapHeight = f.find('#map-canvas').parent().height()
+      console.log "Dimensions: #{mapWidth} - #{mapHeight}"
+      f.find('#map-canvas').width(mapWidth).height(mapHeight)
+      # streams.find('.form-control').css "background-color", "white"
+      # streams.children().eq index+1.css "background-color", "lightblue"
+
+      #else
+        #forms.children().addClass('hidden')
 
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
-    graphWidth = $("#graph-canvas").width();
-    window.graph_object = new stream_graph(graphWidth);
-    graph_object.init();
+    graphWidth = $("#graph-canvas").width()
+    window.graph_object = new stream_graph(graphWidth)
+    graph_object.init()
 
     # Set up buttons
-    $("#prediction-description").hide();
+    $("#prediction-description").hide()
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
       graph_object.fetch_prediction_data()
 
     loc = document.getElementById('location').getAttribute('value').split ","
-    
-    mapDiv = document.getElementById('map-canvas')
-    
+
+
+    mapWidth = $('#map-canvas').parent().width()
+    $('#map-canvas').width(mapWidth).height(mapWidth)
+
     mapOptions =
       center: new google.maps.LatLng loc[0], loc[1]
-      zoom: 8,
+      zoom: 8
       mapTypeId: google.maps.MapTypeId.ROADMAP
       disableDefaultUI: true
 
@@ -131,34 +202,17 @@ $ ->
 
     marker = new google.maps.Marker
       map: map
-      draggable:false
+      draggable: false
       animation: google.maps.Animation.DROP
       position: mapOptions.center
 
     $("#live-update-btn").on 'switch-change', (e, data) ->
       value = data.value
-      toggle(value)
-  $(document).bind 'streams_new', (e,obj) => 
-    mapDiv = document.getElementById('map-canvas')
-    
-    mapOptions =
-      center: new google.maps.LatLng 60, 18
-      zoom: 8,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      disableDefaultUI: true
+      toggle value
 
-    map = new google.maps.Map $('#map-canvas')[0], mapOptions
-
-    marker = new google.maps.Marker
-      map: map
-      draggable:true
-      animation: google.maps.Animation.DROP
-      position: mapOptions.center
-
-    google.maps.event.addListener marker, "dragend", (evt) ->
-      $('#lat').val(evt.latLng.lat())
-      $('#lon').val(evt.latLng.lng())
+  $(document).bind "streams_edit", (e, obj) =>
+    form = $ 'form'
+    window.newStreamForm form
 
   action = "streams_" + $("body").data("action")
   $.event.trigger action
-
