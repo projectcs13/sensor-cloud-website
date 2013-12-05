@@ -24,7 +24,9 @@ class StreamsController < ApplicationController
 		@stream_id = params[:id]
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
-		@stream_owner = User.find_by_username(stream_owner_id)
+    logger.debug "*** stream_owner_id: #{stream_owner_id} ***"
+		@stream_owner = User.find_by(username: stream_owner_id)
+    logger.debug "*** @stream_owner: #{@stream_owner} ***"
     @usern = @stream_owner.username
     logger.debug "Owner: #{@usern}"
   end

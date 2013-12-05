@@ -31,12 +31,18 @@ class User < ActiveRecord::Base
 	def feed
 	end
 
-	def following?(stream_id)
-		relationships.find_by(followed_id: stream_id)
+	def self.following?(user_id, stream_id)
+		#relationships.find_by(followed_id: stream_id)
+		response = Faraday.get "#{CONF['API_URL']}/users/#{user_id}"
+		logger.debug "*** QQQ: #{JSON.parse(response.body)["subscriptions"]} ***"
+		unless ((JSON.parse(response.body)["subscriptions"]).empty?) 
+			stream_id == JSON.parse(response.body)["subscriptions"][0]["stream_id"]
+		end
 	end
 
 	def follow!(stream_id)
-		relationships.create!(followed_id: stream_id)
+		#relationships.create!(followed_id: stream_id)
+		# Faraday.put "#{CONF['API_URL']}/users/#{self.username}/_subscribe", { :stream_id => stream_id }
 	end
 
 	def unfollow!(stream_id)
