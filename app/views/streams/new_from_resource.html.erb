@@ -1,0 +1,21 @@
+<div class="resource_box">
+  <h1 class="title">Create Streams</h1>
+  <div class="clearfix"></div>
+
+  <div class="">
+  	<label>Resource's Model</label>
+  	<input type="text" class="form-control" id="resource_model">
+    <br>
+  	<div class="clearfix"></div>
+  </div>
+
+  <ul id="streams" class="list-group col-md-5">
+  	<!-- Add suggested streams creation form here -->
+  </ul>
+
+  <div id="forms" class="col-md-6 right">
+    <%= form_for @stream, remote: true, html: { :id => "form-template", :class => "hidden" } do |f| %>
+      <%= render 'fields', f: f %>
+    <% end %>
+  </div>
+</div>

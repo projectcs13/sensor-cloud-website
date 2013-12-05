@@ -2,29 +2,47 @@
 //= require 'include/stream_graph_multiline'
 //= require 'include/jquery.timeago'
 //= require 'include/scrolling'
+//= require 'include/filter_map'
 
 $ ->
-  graphColors = ["#aabbcc", "#a21bc4", "#8bbbbc", "#5ab1cc", "#a3b1cc", "#aabbff", "#a124cc"]
-  graphWidth = $(".search-graph").width()
-  #console.log graphWidth
+  #setup map and graph containers
+  #height still statically set since height() needs to render page to calculate correctly
+  contentWidth = $(".right-side-content").width()
+  $('#map-canvas').width(contentWidth).height(500)
+  multiGraph = streamGraphMultiLine().width(contentWidth).height(300)
   graphData = []
-  nr = 0
-  test_graph = streamGraphMultiLine().width(700).height(500)
-  search_graph = searchGraph().width(1000).margin({top:0, right:0, left:0, bottom:0})
-  search_params = "?stream_id="
+  d3.select("#multiline-graph").datum(graphData).call(multiGraph)
+  #setup functions for populating graph
   for graph in $('#streams .search-result')
     $(graph).on "click", (event) ->
       stream_id = this.dataset.streamid
-      console.log $(this)
-      res = $.get '/datapoints/' + stream_id
-      res.done (result) ->
-        result['stream_id'] = stream_id
-        graphData.push result
-        $("#test-multiline svg").remove()
-        d3.select("#test-multiline").datum(graphData).call(test_graph)
-        console.log result
-      res.fail (e, data) ->
-        console.log e
+      iteration = this.dataset.iteration
+      isSelected = $(this).children().hasClass("selected")
+      selectedSpan = "<span class='pull-right glyphicon glyphicon-ok-sign selected" + iteration + "'></span>"
+      noDataSpan = "<span class='pull-right no-data'>[NO DATA]</span>"
+      panelHeader = $(this).children().first()
+      if isSelected
+        $(this).children().removeClass("selected")
+        panelHeader.children().remove("span")
+        graphData = graphData.filter (el) -> 
+          return el.stream_id.toString() != stream_id
+        $("#multiline-graph svg").remove()
+        d3.select("#multiline-graph").datum(graphData).call(multiGraph)
+      else
+        $(this).children().addClass("selected")
+        # ajax call
+        res = $.get '/datapoints/' + stream_id
+        res.done (result) ->
+          result['stream_id'] = stream_id
+          graphData.push result
+          if result['data'].length == 0
+            panelHeader.append(noDataSpan)
+          else
+            panelHeader.append(selectedSpan)
+          $("#multiline-graph svg").remove()
+          d3.select("#multiline-graph").datum(graphData).call(multiGraph)
+        res.fail (e, data) ->
+          console.log e
   init_scrolling()
 
 
@@ -38,37 +56,16 @@ $ ->
      $( "#min_val" ).val ui.values[ 0 ]
      $( "#max_val" ).val ui.values[ 1 ]
 
-  #$( "#slider-range" ).css("width","11em")
-  #map
-  mapDiv = document.getElementById('map-canvas')
-  mapWidth = $(".right-side-content").width()
-  mapHeight = 500
-  console.log mapWidth
-  $('#map-canvas').width(mapWidth)
-  $('#map-canvas').height(mapHeight)
-  #console.log mapDiv
-  map = new google.maps.Map(mapDiv, {
-      center: new google.maps.LatLng(59, 18),
-      zoom: 8,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      disableDefaultUI: true
-    })
-
-  bounds = new google.maps.LatLngBounds()
-  
-  $('#streams .search-result').each (i, elem) ->
-     location = $(elem).data('location')
-     if location != " "
-       console.log location
-       loc = location.split ","
-       lon = loc[0]
-       lat = loc[1]
-       pos = new google.maps.LatLng(lon, lat)
-       marker = new google.maps.Marker({position: pos,map: map,title:"Hello World!"})
-       bounds.extend(pos)
-    map.fitBounds(bounds);
-
-  #console.log searchresults
-  #for result in $("#stream-result > li")
-  #  console.log result
-
+  $('.star-rating').on 'click', ->
+    obj =
+      json:
+        stream_id: $(this).attr('id')
+        value: parseFloat($(this).children('a').text())
+    res = $.ajax
+      url: '/userranking'
+      type: 'PUT'
+      data: JSON.stringify obj
+      contentType: "application/json",
+      dataType: "json",
+      success: (result, thing) ->
+        console.log result, thing

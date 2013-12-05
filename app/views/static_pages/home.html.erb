@@ -1,3 +1,5 @@
+
+
 <div class="center jumbotron">
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
@@ -17,4 +19,26 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="list_carousel" id="carousel_items">
+
+	    <ul id="foo">
+
+	    	<% @streams.each do |stream| %>
+	    		<li>
+	    			<br><br>
+	    			<%= @values["#{stream['_id']}"]%>
+	    		<h4>
+					<% resource_id = stream['_source']['resource_id'] %>
+					<% stream_id = stream['_id'] %>
+					<% url = "/streams/#{stream_id}" %>
+					<%= link_to(stream['_source']['name'], url) %></h4>
+	    		
+	    		</li>
+
+			<% end %>
+			
+		</ul>
+	    <div class="clearfix"></div>
 </div>

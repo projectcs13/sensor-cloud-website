@@ -1,0 +1,5 @@
+<% if @type=="stream" %>
+	$('#scroll-pane1').append("<%=escape_javascript(render('searches/stream_results'))%>")
+<% else %>
+	$('#scroll-pane2').append("<%=escape_javascript(render('searches/user_results'))%>")
+<% end %>

@@ -1,11 +1,107 @@
-<% provide(:title, @user.name) %>
+<style>
+  .actual-name {
+    float: left;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .user-profile-aside {
+    /* width: 21%; */
+    float: left;
+    margin-left: 2.5%;
+    margin-right: 1.5%;
+  }
+
+  .user-profile-lengthfix {
+    height: 182px;
+  }
+
+  .list-group-item {
+    margin-bottom: 0;
+    border: 0;
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .list-group-item:last-child {
+    border-bottom: 0;
+  }
+
+  .user-alerts,
+  .user-graphs {
+    margin-top: 2em;
+  }
+
+  .user-graphs > div {
+    border: 1px solid black;
+    height: 370px;
+  }
+</style>
+
+<% provide(:title, @user.username) %>
+
 <div class="row">
-	<aside class="span4">
-		<section>
-			<h1>
-				<%= gravatar_for @user %>
-				<%= @user.name %>
-			</h1>
-		</section>
-	</aside>
+  	<aside class="user-profile-aside">
+        <%= gravatar_for_profile @user %>
+
+        <div class="user-alerts panel panel-default">
+          <div class="panel-heading">Alerts</div>
+            <ul class="list">
+              <!-- TODO Change this and make it dynamic!!! -->
+              <% 8.times do |i| %>
+                <li class="list-group-item">This is the alert number <%= i+1 %></li>
+              <% end %>
+            </ul>
+        </div>
+    </aside>
+
+    <div class="col-lg-9">
+          <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="actual-name">
+                      <%= @user.firstname %> <%= @user.lastname %>
+                      <small>(<%= @user.username %>)</small>
+                    </h2>
+
+                    <h5><%= @user.email %></h5>
+                </div>
+          </div>
+
+          <div class="row">
+                <div class="col-lg-9">
+                  <div class="user-profile-lengthfix panel panel-default">
+                    <div class="panel-heading">Description</div>
+                      <div class="panel-body">
+                      </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 right">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Statistics</div>
+                      <div class="list">
+
+                        <a href="/users/<%=@user.username%>/streams" class="list-group-item"><span class="badge"><%= @count %></span>Streams Owned</a>
+                        <a href="/users/<%=@user.username%>/following" class="list-group-item"><span class="badge">20</span>Streams Following</a>
+                      </div>
+                  </div>
+                </div>
+          </div>
+
+          <div class="user-graphs row">
+            <div class="col-lg-4">
+              <div class="graph-placeholder">
+                Placeholder which will be replaced by an actual graph in the future!
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="graph-placeholder">
+                Placeholder which will be replaced by an actual graph in the future!
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="graph-placeholder">
+                Placeholder which will be replaced by an actual graph in the future!
+              </div>
+            </div>
+          </div>
 </div>

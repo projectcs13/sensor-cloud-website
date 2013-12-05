@@ -1,18 +1,36 @@
 <div>
-  <h1 class="title">My Streams</h1>
+  <% logger.debug "PARAMS: #{params}" %>
+  <% if @user.username == params[:username] %>
+    <h1 class="title">My Streams</h1>
+  <% else %>
+    <h1 class="title"><%= params[:username]%>'s Streams</h1>
+  <% end %>
 
-  <div class="corner">
-    <div class="btn btn-danger right">
+  <%if @user.username == params[:username] %>
+    <div class="corner">
+      <div class="btn btn-danger right">
       <%= link_to 'Delete All Streams', streams_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
-    </div>
-    <div class="btn btn-primary right">
-      <%= link_to 'New Stream', new_stream_path, class: "glyphicon glyphicon-plus" %>
-    </div>
-  </div>
+      </div>
 
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary">
+            <%= link_to 'New Stream', new_stream_path, class: "glyphicon glyphicon-plus" %>
+          </button>
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li>
+              <%= link_to "From resource", controller: "streams", action: "new_from_resource" %>
+            </li>
+          </ul>
+        </div>
+    </div>
+  <% end %>
   <div class="clearfix"></div>
-</div>
 
+</div>
 <!-- <div class="panel panel-default"> -->
 <div>
   <ul class="list-group col-md-6 left">
@@ -22,11 +40,11 @@
 
         <div class="right">
           <i class="show-details glyphicon glyphicon-chevron-down right"></i>
-
-          <div class="btn btn-sm btn-danger right">
-            <%= link_to 'Delete', stream, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
-          </div>
-
+          <%if @user.username == params[:username] %>
+            <div class="btn btn-sm btn-danger right">
+						  <%= link_to 'Delete', "streams/#{stream.id}", method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+            </div>
+          <% end %>
           <div class="btn btn-sm btn-primary right">
             <%= link_to 'View', stream_path(stream.id), class: "glyphicon glyphicon-pencil" %>
           </div>

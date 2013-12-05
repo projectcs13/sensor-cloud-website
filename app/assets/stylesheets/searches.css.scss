@@ -9,7 +9,23 @@
 	opacity: 0.3;
 }
 .selected {
-  background-color: #cccccc; 
+  background-color: $custom-blue !important;
+}
+
+$colors: #4a786e, #d15868, #8b83ab, #e8b169, #eb4e23, #618c57, #612439;
+
+@for $i from 1 through length($colors) {
+    .selected#{$i} {
+        color: nth($colors, $i);
+        stroke: nth($colors, $i);
+        fill: nth($colors, $i);
+        &:hover {
+            color: nth($colors, $i);
+        }
+    }
+}
+.no-data {
+  color: #ffffff;
 }
 
 .axis path,
@@ -33,16 +49,50 @@
   stroke-width: 1.5px;
 }
 
-
-li.search-result>div.row {
-	position: relative;
-	
+.svg-back {
+  background-color: #cccccc;
+  fill: #cccccc;
+  opacity:0.3;
 }
 
 .search-graph {
 	position: absolute;
 	top: 0;
 	z-index:-1;
+}
+.search-result {
+  background-color: #FFFFFF;
+}
+.search-result:hover {
+  background-color: #ebebeb;
+}
+
+.search-result .panel-heading{
+  padding: 5px 5px 5px 15px;
+  border: none;
+  background-color: transparent;
+}
+.search-result .panel-body{
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  background-color: transparent;
+}
+.search-result-footer .last-update {
+  font-size: 10px;
+  position:relative;
+  bottom: -5px;
+  padding: 0;
+  color: $custom-greyish-blue;
+}
+
+.search-result a {
+  font-weight: 700;
+  color: #8c8c8c;
+}
+
+.search-result .selected a {
+  font-weight: 700;
+  color: #ffffff;
 }
 .scroll-pane
 {

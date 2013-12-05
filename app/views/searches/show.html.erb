@@ -1,65 +1,40 @@
 <% provide(:title, 'Search') %>
 
   <div class="row search-header">
-        <%= form_for(:search, url: searches_path) do |f| %>
-          <% unless @query.nil? %>
-          <div class="col-md-10 pull-left"><%= f.text_field :query, value: @query, class: "form-control" %></div>
-          <% else %>
-          <div class="col-md-10 pull-left"><%= f.text_field :query, class: "form-control" %></div>
-          <% end %>
-          <div class="col-md-2 pull-right"><%= submit_tag "Search", class: "btn btn-primary pull-right" %></div>
-        <% end %>
-  </div>
-  <div class="row">
-    <div class="col-md-6 number-results-found">
-      We have found <%= @count_all %> results
-    </div>
-    <div class="col-md-2">
-      <%= label_tag "Sort by: " %>
-    </div>
-    <div class="col-md-4">
-      <%= form_for(:search, url: searches_path) do |f| %>
-        <%= f.select "sort_by", options_for_select(
-                                  [["None", "none"], 
-                                   ['Name', "name"],
-                                   ['User ranking', "user_ranking"]], 
-                                params['search']['sort_by']),
-                                {}, onchange: "this.form.submit();",
-                                class: "form-control" %>
-        <%= f.hidden_field :query, value: @query  %>
-      <% end %>
-    </div>
+    <%= render 'search_bar' %>
   </div>
 	<div class="row main">
 		<div class="col-md-4 tab-content"> <!-- Left side container-->
-      <ul class="nav nav-pills">
+      <ul class="nav nav-tabs nav-justified">
         <li class="active"><a href="#streams" data-toggle="tab">Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
         <li><a href="#users" data-toggle="tab">Users <span class="badge badge-info"><%= @count_users %></span></a></li>
       </ul>
       <div class="row results-container tab-pane active fade in" id="streams">
-        <div class="scroll-pane" id="scroll-pane1">
-          <%= render 'stream_results' %>
+        <div class="col-md-12">
+          <div class="scroll-pane" id="scroll-pane1">
+            <%= render 'stream_results' %>
+          </div>
+          <%= render 'stream_pagination' %>
         </div>
-        <%= render 'stream_pagination' %>
       </div>
 
       <div class="row results-container tab-pane fade" id="users">
-        <div class="scroll-pane" id="scroll-pane2">
-          <%= render 'user_results' %>
+        <div class="col-md-12">
+          <div class="scroll-pane" id="scroll-pane2">
+            <%= render 'user_results' %>
+          </div>
+          <%= render 'user_pagination' %>
         </div>
-        <%= render 'user_pagination' %>
       </div>
-
 		</div>
-
 		<div class="col-md-8 right-side-content"> <!-- Right side container-->
-      <ul class="nav nav-pills">
+      <ul class="nav nav-tabs nav-justified">
         <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
         <li><a href="#graph" data-toggle="tab">Graph</a></li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane fade" id="graph">
-          <div id="test-multiline"></div>
+          <div id="multiline-graph"></div>
         </div>
         <div class="tab-pane active fade in" id="map">
           <div id="map-canvas"></div>
@@ -67,5 +42,4 @@
       </div>
     </div>
 	</div>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" >
-</script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false&callback=map_init"></script>

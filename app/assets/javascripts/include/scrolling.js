@@ -8,17 +8,22 @@ var stream_count;
 var user_count;
 var waiting = false;
 
-function add_new_stream_item(item, father){
+/*function add_new_stream_item(item, father){
 	var stream_id = item._id;
 	var stream_url = "/streams/" + stream_id;
 	var stream_name = item._source.name;
 	var stream_description = item._source.description;
-	var stream_last_updated = item._source.last_updated;
+	var stream_last_updated = jQuery.timeago(item._source.last_updated);
 	var stream_subscribers = item._source.subscribers;
 	if(item._source.location == undefined) var stream_location = " "; else var stream_location = item._source.location;
 	var scale = 5;
 	var starcount = 0;
 	var ranking = item._source.user_ranking.average / (100/scale);
+  var empty_stars = scale;
+  var part = (100/scale);
+  var percentage = item._source.user_ranking.average;
+  var ranking = percentage/(100/scale);
+  var nr_rankings = item._source.user_ranking.nr_rankings;
 
 	var item_pane = "<div class=\"panel panel-default search-result\" data-location=\""+stream_location+"\" data-streamid=\""+stream_id+"\">"
                 +"<div class=\"panel-heading\"><a href="+stream_url+">"+stream_name+"</a></div>"
@@ -65,7 +70,7 @@ function add_new_user_item(item, father){
               +"<br /><br />"
               +"</li>";
   father.append(item_pane);
-}
+}*/
 
 function add_new_content(page, content, type){
 	if(waiting==true)
@@ -76,8 +81,9 @@ function add_new_content(page, content, type){
   		  url: "/get_more_info",
   		  data: { search: { page: stream_count, sort_by: $('#search_sort_by').val(), query: $('#search_query').val(), refresh: false}}
 	   }).done(function( msg ) {
-      	for(var j=0;j<msg.length;j++)
-          add_new_stream_item(msg[j], content);
+        //alert(msg);
+      	//for(var j=0;j<msg.length;j++)
+        //  add_new_stream_item(msg[j], content);
     	  waiting = false;
     	  stream_count = stream_count + 1;
   	 });
@@ -88,8 +94,8 @@ function add_new_content(page, content, type){
         url: "/get_more_info",
         data: { search: { page_users: user_count, sort_by: $('#search_sort_by').val(), query: $('#search_query').val(), refresh: false}}
      }).done(function( msg ) {
-        for(var j=0;j<msg.length;j++)
-          add_new_user_item(msg[j], content);
+        //for(var j=0;j<msg.length;j++)
+        //  add_new_user_item(msg[j], content);
         waiting = false;
         user_count = user_count + 1;
      });
@@ -118,6 +124,9 @@ function init_scrolling() {
        waiting = true;
    }
   });
+
+  add_new_content(user_count, pane2, "user");
+  waiting = true;
 
   return false;	
 }

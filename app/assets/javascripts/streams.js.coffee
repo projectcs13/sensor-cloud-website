@@ -10,28 +10,222 @@
 
 $ ->
 
-  showDetails = (event) ->
-    el = $(this)
-    el.find('.details').toggle(500)
-    el.find('.show-details')
-      .toggleClass('glyphicon-chevron-up')
-      .toggleClass('glyphicon-chevron-down')
+  $(document).bind "streams_index", (e, obj) =>
+    showDetails = (event) ->
+      el = $(this)
+      el.find('.details').toggle(500)
+      el.find('.show-details')
+        .toggleClass('glyphicon-chevron-up')
+        .toggleClass('glyphicon-chevron-down')
 
-  $('body').on 'click', '.list-group-item', showDetails
+    $('body').on 'click', '.list-group-item', showDetails
 
-  # Set up graph element
-  graphWidth = $("#graph-canvas").width();
-  window.graph_object = new stream_graph(graphWidth);
-  graph_object.init();
+  $(document).bind "streams_new", (e, obj) =>
+    form = $ 'form'
+    window.newStreamForm form
 
-  # Set up buttons
-  $("#prediction-description").hide();
+    $("#update-switch").on 'switch-change', switchChanged
 
-  $("#prediction-btn").on 'click', ->
-    $("#prediction-description").show()
-    graph_object.fetch_prediction_data()
+    mapOptions =
+      center: new google.maps.LatLng 60, 18
+      zoom: 8
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+      disableDefaultUI: true
 
-  $("#live-update-btn").on 'switch-change', (e, data) ->
-    value = data.value
-    alert value
-    toggle(value)
+    map = new google.maps.Map $('#map-canvas')[0], mapOptions
+
+    marker = new google.maps.Marker
+      map: map
+      draggable: true
+      animation: google.maps.Animation.DROP
+      position: mapOptions.center
+
+    $('#lat').val marker.getPosition().lat()
+    $('#lon').val marker.getPosition().lng()
+
+    google.maps.event.addListener marker, "dragend", (evt) ->
+      $('#lat').val evt.latLng.lat()
+      $('#lon').val evt.latLng.lng()
+
+  $(document).bind "streams_new_from_resource", (e, obj) =>
+    forms = $('#forms')
+    streams = $('#streams')
+
+    $(window).on 'beforeunload', (event) ->
+      cleanUpDom()
+      undefined
+
+    $("#resource_model").bind "keydown", (event) ->
+      event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
+
+    $("#resource_model").autocomplete(
+      minLength: 1
+
+      source: (request, response) ->
+        $.getJSON "/suggest/#{request.term}", response
+
+      focus: ->
+        # prevent value inserted on focus
+        false
+
+      select: (event, ui) ->
+        console.log "CleanUp"
+        cleanUpDom()
+        console.log "/CleanUp"
+
+        pl = ui.item.payload
+        text = pl.manufacturer
+        text = text+" "+pl.model
+        $("#resource_model").val(text)
+
+        fetchStreamsFromResource pl.resource
+        false
+
+    ).data('ui-autocomplete')._renderItem = (ul, item) ->
+      console.log item
+      text = item.payload.manufacturer
+      text = text+" "+item.payload.model
+      $('<li>')
+          .data('item.autocomplete', item)
+          .append('<a>'+text+'</a>')
+          .appendTo(ul);
+
+    cleanUpDom = ->
+      $('#streams').empty()
+      template = $('#form-template').clone()
+      forms.empty()
+      forms.append template
+
+    fetchStreamsFromResource = (id) ->
+      res = $.get "/resources/#{id}"
+      res.done listStreams
+
+
+    listStreams = (json) ->
+      console.log json
+      for stream in json.streams_suggest
+        dom = $(render stream)
+        streams.append dom
+        createForm stream
+
+      $('body').on 'click', '.select-suggestion', ->
+        div = $(this).parent().siblings('.form-control')
+        console.log div
+        if $(this).prop('checked') or $(this).hasClass('done')
+          div.removeClass('inactive')
+        else
+          div.addClass('inactive').removeClass 'chosen'
+          hideForm div.parent().index()
+          i = findNextStream()
+          showForm i
+
+      $('body').on 'click', '.stream .form-control', (event) ->
+        stream = $(this).parent()
+        input = stream.find('.select-suggestion')
+        if input.prop("checked")
+          streams.find('.form-control').removeClass('chosen')
+          $(this).addClass('chosen')
+          index = stream.index()
+          showForm index
+
+    render = (stream) ->
+      """
+        <li class="input-group stream">
+          <span class="input-group-addon">
+            <input class="select-suggestion" type="checkbox">
+          </span>
+          <div class="form-control inactive">
+            <h4 class="left">#{stream.type}</h4>
+            <div class="clearfix"></div>
+          </div>
+        </li>
+      """
+      #<img class="spinner hidden" src="/assets/ajax-loader.gif" />
+
+    findNextStream = ->
+      for s in streams.children()
+        div = $(s).find('.form-control')
+        if not div.hasClass('done') and not div.hasClass('inactive')
+          div.addClass 'chosen'
+          return div.parent().index()
+
+    createForm = (json) ->
+      form = $('#form-template')
+      clone = form.clone()
+      clone.append $("""<div class="btn btn-primary btn-create">Create a stream</div>""")
+      form.parent().append clone
+      for k, v of json
+         clone.find("#stream_#{k}").val v
+
+      window.newStreamForm clone
+      clone.on 'submit', ->
+        cloneIndex = clone.index()-1
+        console.log 'cloneIndex', cloneIndex
+        hideForm cloneIndex
+        s = streams.children().eq(cloneIndex)
+        s.find('.form-control').removeClass('chosen').addClass 'done'
+        s.find('.select-suggestion').prop('disabled', true)
+
+        i = findNextStream()
+        console.log 'findNextStream', i
+        showForm i
+
+
+    hideForm = (index) ->
+      f = forms.children().eq index+1
+      f.addClass 'hidden'
+
+    showForm = (index) ->
+      console.log index
+      f = forms.children().eq index+1
+      #if f.hasClass 'hidden'
+      forms.children().addClass('hidden')
+      f.removeClass 'hidden'
+      # streams.find('.form-control').css "background-color", "white"
+      # streams.children().eq index+1.css "background-color", "lightblue"
+
+      #else
+        #forms.children().addClass('hidden')
+
+  $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
+    # Set up graph element
+    graphWidth = $("#graph-canvas").width()
+    window.graph_object = new stream_graph(graphWidth)
+    graph_object.init()
+
+    # Set up buttons
+    $("#prediction-description").hide()
+
+    $("#prediction-btn").on 'click', ->
+      $("#prediction-description").show()
+      graph_object.fetch_prediction_data()
+
+    loc = document.getElementById('location').getAttribute('value').split ","
+
+
+
+    mapOptions =
+      center: new google.maps.LatLng loc[0], loc[1]
+      zoom: 8
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+      disableDefaultUI: true
+
+    map = new google.maps.Map $('#map-canvas')[0], mapOptions
+
+    marker = new google.maps.Marker
+      map: map
+      draggable: false
+      animation: google.maps.Animation.DROP
+      position: mapOptions.center
+
+    $("#live-update-btn").on 'switch-change', (e, data) ->
+      value = data.value
+      alert value
+      toggle value
+
+  $(document).bind "streams_edit", (e, obj) =>
+    form = $ 'form'
+    window.newStreamForm form
+
+  action = "streams_" + $("body").data("action")
+  $.event.trigger action
