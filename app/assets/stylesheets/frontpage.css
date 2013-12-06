@@ -31,7 +31,7 @@
 #wrapper {
     width: 735px;
     height: 220px;
-    margin: 50px 0 0 -367px;
+    margin: 100px 0 0 -367px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -147,4 +147,5 @@
 
 .search-bar {
     padding-top: 220px;
+    margin-right: 0px;
 }
