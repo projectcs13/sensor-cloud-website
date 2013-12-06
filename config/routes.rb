@@ -11,9 +11,11 @@ SensorCloud::Application.routes.draw do
   resources :searches
 	resources :sessions, 			only: [:new, :create, :destroy]
   resources :contacts, 			only: [:new, :create]
-	resources :relationships, only: [:create, :destroy]
 
   root  'static_pages#home'
+
+  match '/relationships/unfollow', to: 'relationships#custom_destroy',    via: 'post'
+  match '/relationships/follow',     to: 'relationships#custom_create',     via: 'post'
 
   match '/resources/:id',  to: 'streams#fetchResource',    via: 'get'
   match '/suggest/:model', to: 'streams#suggest',          via: 'get'
