@@ -26,6 +26,7 @@ SensorCloud::Application.routes.draw do
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
 
+  match '/get_more_info',  to: 'searches#create',    via: 'post'
   match '/terms',    to: 'static_pages#terms',        via: 'get'
   match '/privacy',  to: 'static_pages#privacy',      via: 'get'
   match '/security', to: 'static_pages#security',     via: 'get'

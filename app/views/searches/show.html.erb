@@ -11,14 +11,17 @@
       </ul>
       <div class="row results-container tab-pane active fade in" id="streams">
         <div class="col-md-12">
-          <%= render 'stream_results' %>
-          <%= render 'stream_pagination' %>
+          <div class="scroll-pane" id="scroll-pane1">
+            <%= render 'stream_results' %>
+          </div>
         </div>
       </div>
+
       <div class="row results-container tab-pane fade" id="users">
         <div class="col-md-12">
-          <%= render 'user_results' %>
-          <%= render 'user_pagination' %>
+          <div class="scroll-pane" id="scroll-pane2">
+            <%= render 'user_results' %>
+          </div>
         </div>
       </div>
 		</div>

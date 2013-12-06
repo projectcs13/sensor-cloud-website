@@ -1,4 +1,10 @@
-<% i = 0 %>
+<%  if defined? @stream_page_number 
+    p @stream_page_number.to_i
+    i = @stream_page_number.to_i
+    else
+    i = 0
+    end
+%>
 <% @streams.each do |stream| %>
   <% i = i+1 %>
   <% stream_id = stream['_id'] %>
@@ -7,7 +13,15 @@
   <% stream_desciption = stream['_source']['description'] %>
   <% stream_last_updated = stream['_source']['last_updated'] %>
   <% stream_subscribers = stream['_source']['subscribers'] %>
-  <% stream_location = if stream['_source']['location'].nil? then " " else  stream['_source']['location'] end %>
+  <% stream_location = 
+    if stream['_source']['location'].nil? then " " 
+    else 
+      if stream['_source']['location'].has_key?('lat') then
+        stream['_source']['location']['lat'].to_s+","+stream['_source']['location']['lon'].to_s
+      else stream['_source']['location'] 
+      end
+    end
+  %>
   <% stream_last_updated = distance_of_time_in_words(Date.iso8601(stream_last_updated), Time.now, include_seconds: true) %>
   <% scale = 5%>
   <% starcount = 0%>
