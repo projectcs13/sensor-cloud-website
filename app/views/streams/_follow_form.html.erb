@@ -1,6 +1,6 @@
 <% unless current_user?(@stream_owner) %>
 	<div id="follow_form">
-		<% if User.following?(current_user.username, @stream.id) %>
+		<% if current_user.following?(@stream.id) %>
 			<%= render 'unfollow' %>
 		<% else %>
 			<%= render 'follow' %>
