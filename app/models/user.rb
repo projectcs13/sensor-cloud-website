@@ -31,16 +31,49 @@ class User < ActiveRecord::Base
 	def feed
 	end
 
-	def following?(stream_id)
-		relationships.find_by(followed_id: stream_id)
+	def self.following?(user_id, stream_id)
+		#relationships.find_by(followed_id: stream_id)
+		response = Faraday.get "#{CONF['API_URL']}/users/#{user_id}"
+		unless (JSON.parse(response.body)["subscriptions"]).empty?
+			#stream_id == JSON.parse(response.body)["subscriptions"][0]["stream_id"]
+			logger.debug "*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|"
+			logger.debug "{\"stream_id\"=>\"#{stream_id}\"}"
+			logger.debug JSON.parse(response.body)["subscriptions"][0]
+			JSON.parse(response.body)["subscriptions"].include?({"stream_id"=>"#{stream_id}"})
+		end
 	end
 
 	def follow!(stream_id)
-		relationships.create!(followed_id: stream_id)
+		#relationships.create!(followed_id: stream_id)
+
+		conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
+		  faraday.request  :url_encoded             # form-encode POST params
+		  faraday.response :logger                  # log requests to STDOUT
+		  faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+		end
+
+		resp = conn.put do |req|
+		  req.url "/users/#{self.username}/_subscribe"
+		  req.headers['Content-Type'] = 'application/json'
+		  req.body = "{\"stream_id\":\"#{stream_id}\"}"
+		end
+		logger.debug "RESP....... #{resp.body}"
 	end
 
 	def unfollow!(stream_id)
-		relationships.find_by(followed_id: stream_id).destroy!
+		#relationships.find_by(followed_id: stream_id).destroy!
+
+		conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
+		  faraday.request  :url_encoded             # form-encode POST params
+		  faraday.response :logger                  # log requests to STDOUT
+		  faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+		end
+
+		resp = conn.put do |req|
+		  req.url "/users/#{self.username}/_unsubscribe"
+		  req.headers['Content-Type'] = 'application/json'
+		  req.body = "{\"stream_id\":\"#{stream_id}\"}"
+		end
 	end
 
 	private

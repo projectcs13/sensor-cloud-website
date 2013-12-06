@@ -19,10 +19,15 @@ html, body {
   height: 100%;
 }
 
+body {
+  padding-top: 53px;
+}
 
-body.homepage {
-/*  background: url('http://images.cdn.fotopedia.com/BJGsMXqQnoA-uugFhQX5L3k-ifill_1024x768.jpg') no-repeat center center fixed; */
-  background: url('http://4.bp.blogspot.com/-GRLQAHTM1f0/T-LoxfCivWI/AAAAAAAACGo/RzCKabaaFWA/s1600/159.jpg') no-repeat center center fixed;
+
+.banner {
+background: url('new-york-city.jpg') no-repeat center center;
+  /*background: url('http://4.bp.blogspot.com/-GRLQAHTM1f0/T-LoxfCivWI/AAAAAAAACGo/RzCKabaaFWA/s1600/159.jpg') no-repeat center center;*/
+  height: 550px;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -110,7 +115,7 @@ p {
 
 #body {
 	padding-bottom: 96px; /* Height of the footer + 20px */
-  padding-top: 72px; /* Height of the header + 20px */
+  padding-top: 0px; /* Height of the header + 20px */
 }
 
 #footer {
@@ -198,7 +203,7 @@ input, textarea, select, .uneditable-input {
 }
 */
 
-#login-form {
+.login-form {
 	background-color: white;
 	padding: 40px;
 	border: 1px solid $custom-grey;
@@ -259,6 +264,14 @@ input {
   padding-top: 10px;
   padding-bottom: 10px;
   line-height: 30px;
+
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  display: block;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  font-family: "Open Sans";
 }
 
 .categories {

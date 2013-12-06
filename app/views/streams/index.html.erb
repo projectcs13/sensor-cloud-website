@@ -42,7 +42,7 @@
           <i class="show-details glyphicon glyphicon-chevron-down right"></i>
           <%if @user.username == params[:username] %>
             <div class="btn btn-sm btn-danger right">
-						  <%= link_to 'Delete', "streams/#{stream.id}", method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+						  <%= link_to 'Delete', "/streams/#{stream.id}", method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
             </div>
           <% end %>
           <div class="btn btn-sm btn-primary right">

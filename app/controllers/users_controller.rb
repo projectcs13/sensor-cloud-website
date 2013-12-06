@@ -17,14 +17,29 @@ class UsersController < ApplicationController
 		@title = "Following"
 		@user = User.find_by_username(params[:id])
     cid = current_user.username
-		@relationships = Relationship.all.where(follower_id: cid)
-		 @streams = @relationships.map do |r|
-			url = "#{CONF['API_URL']}/streams/" + r.followed_id
+
+		#@relationships = Relationship.all.where(follower_id: cid)
+		#@streams = @relationships.map do |r|
+			#url = "#{CONF['API_URL']}/streams/" + r.followed_id
 			#logger.debug "*** url: #{url} ***"
+			#resp = Faraday.get url
+			#JSON.parse resp.body
+			#logger.debug "*** parsed_resp: #{parsed_resp} ***"
+		#end
+
+		response = Faraday.get "#{CONF['API_URL']}/users/#{cid}"
+		resp = JSON.parse(response.body)['subscriptions']
+		logger.debug "TTTTTTTTTTTT resp: #{resp} TTTTTTTTTTTT"
+		@stream_ids = resp.map { |e| e["stream_id"] }
+		logger.debug "TTTTTTTTTTTT @stream_ids: #{@stream_ids} TTTTTTTTTTTT"
+		@streams = @stream_ids.map do |s|
+			url = "#{CONF['API_URL']}/streams/" + s
+			logger.debug "*** url: #{url} ***"
 			resp = Faraday.get url
 			JSON.parse resp.body
-			#logger.debug "*** parsed_resp: #{parsed_resp} ***"
 		end
+		logger.debug "YYYYYYYYYYY @streams: #{@streams} YYYYYYYYYYY"
+
 	end
 
 	def new

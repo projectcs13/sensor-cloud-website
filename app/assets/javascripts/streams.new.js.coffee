@@ -24,7 +24,7 @@ window.newStreamForm = (form) ->
   btnCreate = form.find ".btn-create"
 
   polling = form.find ".polling"
-
+  updateSwitch = form.find("#update-switch")
   progress = form.find ".progress-bar"
   # ratio = ratio + ratio / 10;
 
@@ -98,3 +98,4 @@ window.newStreamForm = (form) ->
   do btnBack.on('click', back).hide
   do btnCreate.on('click', create).hide
   do updateStepInformation
+  updateSwitch.on 'switch-change', switchChanged

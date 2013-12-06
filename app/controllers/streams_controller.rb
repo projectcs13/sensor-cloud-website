@@ -14,6 +14,12 @@ class StreamsController < ApplicationController
   end
 
   def show
+
+		@stream_id = params[:id]
+		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
+		stream_owner_id = JSON.parse(resp.body)['user_id']
+		@stream_owner = User.find_by(username: stream_owner_id)
+
     @user = current_user
   end
 
@@ -27,7 +33,7 @@ class StreamsController < ApplicationController
   end
 
   def suggest
-    res = Faraday.get "#{CONF['API_URL']}/suggest/#{model}?size=10"
+    res = Faraday.get "#{CONF['API_URL']}/suggest/#{params[:model]}?size=10"
     data = if res.status == 404 then {} else JSON.parse(res.body)['suggestions'] end
     render :json => data, :status => res.status
   end
@@ -121,6 +127,7 @@ class StreamsController < ApplicationController
 
   def destroy
     @user = current_user
+    #@stream.destroy(_user_id: current_user.username)
     @stream.destroy
     Relationship.all.where(followed_id: @stream.id).each do |r|
       r.destroy
@@ -191,8 +198,8 @@ class StreamsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      #@stream = Stream.find(params[:id], _user_id: current_user.id)
-      @stream = Stream.find(params[:id])
+      @stream = Stream.find(params[:id], _user_id: current_user.username)
+      #@stream = Stream.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -228,7 +235,7 @@ class StreamsController < ApplicationController
 		end
 
 		def correct_user
-      stream = Stream.find(params[:id])
+      stream = Stream.find(params[:id], :_user_id => current_user.username)
 			@user = User.find_by_username(stream.user_id)
 			redirect_to(root_url) unless current_user?(@user)
 		end

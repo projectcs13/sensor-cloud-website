@@ -23,3 +23,4 @@
 //= require 'include/autocomplete'
 //= require frontpage
 //= require streams.new
+//= require map
