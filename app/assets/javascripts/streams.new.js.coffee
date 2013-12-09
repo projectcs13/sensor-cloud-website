@@ -93,16 +93,10 @@ window.newStreamForm = (form) ->
     , TIME * 2
 
 
-  keypress = (event) ->
-    btnNext.removeClass 'btn-disabled'
-
-
   switchChanged = (event) ->
     do event.preventDefault
     polling.toggle TIME * 2
 
-
-  inputName.on 'keypress', keypress
   btnNext.on 'click', next
   do btnBack.on('click', back).hide
   do btnCreate.on('click', create).hide
