@@ -1,5 +1,6 @@
 @import 'variables';
 
+
 .panel {
   margin-bottom: 0px;
   margin-top: 5px;
@@ -59,7 +60,6 @@ $colors: #4a786e, #d15868, #8b83ab, #e8b169, #eb4e23, #618c57, #612439;
 	top: 0;
 	z-index:-1;
 }
-
 .search-result {
   background-color: #FFFFFF;
 }
@@ -93,4 +93,10 @@ $colors: #4a786e, #d15868, #8b83ab, #e8b169, #eb4e23, #618c57, #612439;
 .search-result .selected a {
   font-weight: 700;
   color: #ffffff;
+}
+.scroll-pane
+{
+  width: 100%;
+  height: 550px;
+  overflow: auto;
 }

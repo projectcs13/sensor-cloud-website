@@ -6,11 +6,8 @@ class StreamsController < ApplicationController
 
   def index
     @user = current_user
-    logger.debug @user.attributes
-    @streams = Stream.all(_user_id: @user.username)
-    @streams.each do |s|
-      logger.debug s.attributes
-    end
+    response = Faraday.get "#{CONF['API_URL']}/users/#{current_user.username}/streams"
+    @streams = JSON.parse(response.body)['streams']
   end
 
   def show
@@ -198,8 +195,8 @@ class StreamsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      @stream = Stream.find(params[:id], _user_id: current_user.username)
-      #@stream = Stream.find(params[:id])
+      #@stream = Stream.find(params[:id], _user_id: current_user.username)
+      @stream = Stream.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

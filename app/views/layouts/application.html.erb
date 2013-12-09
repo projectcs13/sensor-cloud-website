@@ -25,13 +25,15 @@
 				<%= yield %>
 
 			<% else %>
-		  	<section class="parent margin">
-					<% flash.each do |key, value| %>
-						<div class="alert alert-<%= key %>"><%= value %></div>
-					<% end %>
+				<div style="margin-top:50px;">
+			  	<section class="parent margin">
+						<% flash.each do |key, value| %>
+							<div class="alert alert-<%= key %>"><%= value %></div>
+						<% end %>
 
-					<%= yield %>
-		  	</section>
+						<%= yield %>
+			  	</section>
+			  </div>
 			<% end %>
 		</div>
 

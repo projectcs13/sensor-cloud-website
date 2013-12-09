@@ -42,7 +42,7 @@ class SearchesController < ApplicationController
 	end
 
 	def create
-		@nb_results_per_page = 5.0
+		@nb_results_per_page = 8.0
 		if params['search']['query'].blank?
 			redirect_to root_path
 		else
@@ -137,7 +137,20 @@ class SearchesController < ApplicationController
 			end
 			logger.debug "CURRENT_PAGE: #{@current_page}"
 			logger.debug "CURRENT_PAGE_USERS: #{@current_page_users}"
-			render :action => 'show'
+
+      if params['search']['refresh'] == "false"
+        if (not params['search']['page'].blank?)
+          @type = "stream"
+          @stream_page_number = (params['search']['page'].to_i)*@nb_results_per_page;
+        else
+          @type = "user"
+        end
+        respond_to do |format|
+          format.js
+        end
+      else
+        render :action => 'show'        
+      end
 		end
 	end
 end
