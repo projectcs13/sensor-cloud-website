@@ -28,6 +28,8 @@ $ ->
   $(document).bind "streams_new_from_resource", (e, obj) =>
     forms = $('#forms')
     streams = $('#streams')
+    uuid = $('#resource_uuid')
+    selectedTemplates = 0
 
     $(window).on 'beforeunload', (event) ->
       cleanUpDom()
@@ -56,7 +58,10 @@ $ ->
         text = text+" "+pl.model
         $("#resource_model").val(text)
 
+        uuid.parent().parent().removeClass('hidden')
+
         fetchStreamsFromResource pl.resource
+        streams.parent().removeClass('hidden')
         false
 
     ).data('ui-autocomplete')._renderItem = (ul, item) ->
@@ -91,11 +96,16 @@ $ ->
         console.log div
         if $(this).prop('checked') or $(this).hasClass('done')
           div.removeClass('inactive')
+          selectedTemplates = selectedTemplates + 1
+          if selectedTemplates == 1
+            div.addClass('chosen')
+            showForm div.parent().index()
         else
           div.addClass('inactive').removeClass 'chosen'
           hideForm div.parent().index()
           i = findNextStream()
           showForm i
+          selectedTemplates = selectedTemplates - 1
 
       $('body').on 'click', '.stream .form-control', (event) ->
         stream = $(this).parent()
