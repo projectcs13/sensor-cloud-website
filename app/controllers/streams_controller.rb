@@ -41,7 +41,7 @@ class StreamsController < ApplicationController
   end
 
   def correctBooleanFields
-    @stream.location = "#{@stream.latitude},#{@stream.longitude}"
+    @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
     @stream.attributes.delete 'longitude'
     @stream.attributes.delete 'latitude'
 

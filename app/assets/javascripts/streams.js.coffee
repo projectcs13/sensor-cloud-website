@@ -186,8 +186,11 @@ $ ->
       $("#prediction-description").show()
       graph_object.fetch_prediction_data()
 
-    loc = document.getElementById('location').getAttribute('value').split ","
-
+    loc = [];
+    loc[0] = document.getElementById('lat').getAttribute("value");
+    loc[1] = document.getElementById('lon').getAttribute("value");
+    console.log loc[0];
+    console.log loc[1];
 
     mapWidth = $('#map-canvas').parent().width()
     $('#map-canvas').width(mapWidth).height(mapWidth)
