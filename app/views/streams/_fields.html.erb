@@ -50,17 +50,24 @@
 <div class="steps">
   <div class="step" id="step-1">
     <div class="form-group">
-      <%= f.label :name %><br>
+      <div class="left">
+        <%= f.label :name %>
+        <label class="small required">(required)</label>
+      </div>
+      <label class="explanation">What is the name of the stream?</label><br>
       <%= f.text_field :name, class: "form-control input-name", placeholder: "e.g: Temperature outdoor in Engelska Park" %>
     </div>
 
     <div class="form-group">
-      <%= f.label :description %><br>
+      <%= f.label :description, class: "left" %>
+      <label class="explanation">Describe what does your stream in just few words</label><br>
       <%= f.text_field :description, class: "form-control", placeholder: "e.g: It measures how warm is the most popular park in Uppsala" %>
 		</div>
 
     <div class="form-group">
-      <%= f.label :type %><br>
+      <%= f.label :type, class: "left" %>
+      <label class="explanation">Please, specify the type of your stream</label>
+      <div class="clearfix"></div>
       <%= f.text_field :type, class: "form-control", placeholder: "e.g: Temperature" %>
     </div>
 
@@ -70,11 +77,12 @@
         <!-- <input type="checkbox" checked> -->
         <%= f.check_box :private, class: "form-control" %>
       </div>
+      <div class="clearfix"></div>
     </div>
 
     <div class="form-group">
-      <br>
-      <%= f.label "Location" %><br>
+      <%= f.label "Location", style: "margin-bottom: 0;" %>
+      <p>Click on the map the location of your stream</p>
       <div id="map-canvas" style="width:550px;height:200px"></div>
     </div>
 
@@ -85,61 +93,52 @@
     <div class="form-group">
       <%= f.text_field :longitude, id: "lon", class: "form-control hidden" %>
     </div>
-
   </div>
 
+
   <div class="step" id="step-2">
-    <!-- <div class="form-group">
-      <%#= f.label :model %><br>
-      <%#= f.text_field :model, class: "form-control" %>
-    </div>
-
     <div class="form-group">
-      <%#= f.label :manufacturer %><br>
-      <%#= f.text_field :manufacturer, class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%#= f.label :uuid %><br>
-      <%#= f.text_field :uuid, class: "form-control" %>
-    </div>
--->
-    <div class="form-group">
-      <%= f.label :tags %><br>
+      <%= f.label :tags, class: "left" %>
+      <label class="explanation">Tell us some keywords which describe or identify your stream</label>
       <%= f.text_field :tags, class: "form-control", placeholder: "e.g: temperature, outdoor, uppsala, park" %>
     </div>
 
     <div class="form-group">
-      <%= f.label :accuracy %><br>
-      <%= f.text_field :accuracy, class: "form-control", placeholder: "e.g: 0.5" %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :unit %><br>
+      <%= f.label :unit, class: "left" %>
+      <label class="explanation">Which unit are you going to use?</label>
       <%= f.text_field :unit, class: "form-control", placeholder: "e.g: Celsius" %>
     </div>
 
     <div class="form-group">
-      <%= f.label :min_val %><br>
+      <%= f.label :min_val, class: "left" %>
+      <label class="explanation">Specify the minimum value expected to measure</label>
       <%= f.text_field :min_val, class: "form-control", placeholder: "e.g: -30" %>
     </div>
 
     <div class="form-group">
-      <%= f.label :max_val %><br>
+      <%= f.label :max_val, class: "left" %>
+      <label class="explanation">Specify the maximum value expected to measure</label>
       <%= f.text_field :max_val, class: "form-control", placeholder: "e.g: 40" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :accuracy, "Accuracy (+/-)", class: "left" %>
+      <label class="explanation">Also, please remark the accuracy of the device used</label>
+      <%= f.text_field :accuracy, class: "form-control", placeholder: "e.g: 0.5" %>
     </div>
   </div>
 
-  <div class="step" id="step-3">
-    <!-- <p>Triggers ???</p> -->
 
+  <div class="step" id="step-3">
     <div class="form-group">
-      <%= f.label :parser %><br>
+      <%= f.label :parser, class: "left" %>
+      <label class="explanation">Make clear the path to follow when parsing from a document</label>
       <%= f.text_field :parser, class: "form-control", placeholder: "e.g: main/temp" %>
     </div>
 
     <div class="form-group">
-      <%= f.label :data_type %><br>
+      <%= f.label :data_type, class: "left" %>
+      <label class="explanation">Select the type of data your stream will provide</label>
       <%= f.select :data_type, [["Json", "application/json"]], {}, { :class => 'form-control' } %>
     </div>
 
@@ -156,12 +155,14 @@
 
     <div class="polling" style="display: none;">
       <div class="form-group">
-        <%= f.label :uri %><br>
+        <%= f.label :uri, class: "left" %>
+        <label class="explanation">Which URL will be used to poll data points from?</label>
         <%= f.text_field :uri, class: "form-control", placeholder: "e.g: http://example.com/temperature/uppsala" %>
       </div>
 
       <div class="form-group">
-        <%= f.label :polling_freq, "(in seconds)" %><br>
+        <%= f.label :polling_freq, "Polling Frequency (in seconds)", class: "left" %>
+        <label class="explanation">How much frequency is necessary to poll data from your stream?</label>
         <%= f.text_field :polling_freq, class: "form-control", placeholder: "e.g: 30" %>
       </div>
 

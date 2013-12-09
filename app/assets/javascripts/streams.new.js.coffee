@@ -1,6 +1,10 @@
 
 window.newStreamForm = (form) ->
 
+  #
+  # Variables
+  #
+
   TIME = 250
 
   descriptions = [
@@ -14,19 +18,19 @@ window.newStreamForm = (form) ->
 
   currentStep = 0
   steps = form.find '.step'
-  steps.each (i, step) ->
-    $(step).css 'display', 'none' if i != 0
 
-  # steps.first().removeClass('hidden');
-  inputName = form.find ".input-name"
   btnBack   = form.find ".btn-back"
   btnNext   = form.find ".btn-next"
   btnCreate = form.find ".btn-create"
 
   polling = form.find ".polling"
-  updateSwitch = form.find("#update-switch")
+  updateSwitch = form.find "#update-switch"
   progress = form.find ".progress-bar"
-  # ratio = ratio + ratio / 10;
+
+  explanations = form.find '.explanation'
+  #
+  # Auxiliary Functions
+  #
 
   updateStepInformation = ->
     stepLabel.text "Step #{currentStep+1} / #{steps.length}"
@@ -50,6 +54,11 @@ window.newStreamForm = (form) ->
     currentStep += if next then 1 else -1
     steps.eq(currentStep).show TIME
 
+
+  #
+  # Event Handlers
+  #
+
   back = (event) ->
     do event.preventDefault
 
@@ -70,7 +79,7 @@ window.newStreamForm = (form) ->
 
   next = (event) ->
     do event.preventDefault
-    console.log "Next Btn"
+
     if currentStep < steps.length-1
       btnBack.css 'display', 'inline-block'
 
@@ -97,9 +106,29 @@ window.newStreamForm = (form) ->
     do event.preventDefault
     polling.toggle TIME * 2
 
+
+  explain = (event) ->
+    console.log "explain"
+    explanations.hide TIME
+    exp = $(this).siblings '.explanation'
+    exp.show TIME
+
+
+  #
+  # Initialization
+  #
+
+  form.find('input').on 'focus', explain
+
   btnNext.on 'click', next
   do btnBack.on('click', back).hide
   do btnCreate.on('click', create).hide
   do updateStepInformation
   do setInputFocus
+
   updateSwitch.on 'switch-change', switchChanged
+
+  steps.each (i, step) ->
+    steps.eq(i).css 'display', 'none' if i isnt 0
+
+
