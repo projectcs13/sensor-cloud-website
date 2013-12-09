@@ -108,10 +108,10 @@ window.newStreamForm = (form) ->
 
 
   explain = (event) ->
-    console.log "explain"
-    explanations.hide TIME
     exp = $(this).siblings '.explanation'
-    exp.show TIME
+    if exp.css('display') is 'none'
+      explanations.hide TIME
+      exp.show TIME
 
 
   #
