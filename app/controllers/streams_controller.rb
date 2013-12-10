@@ -7,27 +7,25 @@ class StreamsController < ApplicationController
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
-    logger.debug params
-    # redirect_to "/users/#{@user.username}/streams"
-    response = Faraday.get "#{CONF['API_URL']}/users/#{@user.username}/streams"
-    @streams = JSON.parse(response.body)['streams']
+    res = get "/users/#{@user.username}/streams"
+    @streams = JSON.parse(res.body)['streams']
   end
 
   def show
 		@stream_id = params[:id]
-		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
-		stream_owner_id = JSON.parse(resp.body)['user_id']
+		res = get "/streams/#{@stream_id}"
+		stream_owner_id = JSON.parse(res.body)['user_id']
 		@stream_owner = User.find_by(username: stream_owner_id)
   end
 
   def suggest
-    res = Faraday.get "#{CONF['API_URL']}/suggest/#{params[:model]}?size=10"
+    res = get "/suggest/#{params[:model]}?size=10"
     data = if res.status == 404 then {} else JSON.parse(res.body)['suggestions'] end
     render :json => data, :status => res.status
   end
 
   def fetchResource
-    res = Faraday.get "#{CONF['API_URL']}/resources/#{params[:id]}"
+    res = get "/resources/#{params[:id]}"
     render :json => res.body, :status => res.status
   end
 
@@ -149,7 +147,6 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
       res.on_complete do
-        # format.html { redirect_to streams_path }
         format.html { redirect_to "/users/#{@user.username}/streams" }
         format.json { head :no_content }
       end
@@ -157,17 +154,21 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = Faraday.get "#{CONF['API_URL']}/streams/" + params[:id] + "/data/_search"
+    res = get "/streams/#{params[:id]}/data/_search"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
   end
 
   def fetch_prediction
-    res = Faraday.get "#{CONF['API_URL']}/streams/" + params[:id] + "/_analyse"
+    res = get "/streams/#{params[:id]}/_analyse"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
+  end
+
+  def get path
+    Faraday.get "#{CONF['API_URL']}#{path}"
   end
 
   def post
