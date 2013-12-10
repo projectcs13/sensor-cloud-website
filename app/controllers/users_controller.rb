@@ -6,10 +6,9 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.find_by_username(params[:id])
-    cid = @user.username
-    res = Faraday.get "#{CONF['API_URL']}/users/#{cid}/streams/"
+    res = Faraday.get "#{CONF['API_URL']}/users/#{@user.username}/streams/"
     @streams = JSON.parse(res.body)['streams']
-    @count= @streams.length
+    @nb_streams = @streams.length
 	end
 
 

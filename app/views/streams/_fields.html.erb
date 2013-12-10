@@ -1,169 +1,172 @@
-      <% if @stream.errors.any? %>
-        <div id="error_explanation">
-  	      <div class="alert alert-danger">
-            The form contains <%= pluralize(@stream.errors.count, "error") %>.
-          </div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>
 
-          <ul>
-            <% @stream.errors.full_messages.each do |msg| %>
-              <li>* <%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
+<% if @stream.errors.any? %>
+  <div id="error_explanation">
+    <div class="alert alert-danger">
+      The form contains <%= pluralize(@stream.errors.count, "error") %>.
+    </div>
+
+    <ul>
+      <% @stream.errors.full_messages.each do |msg| %>
+        <li>* <%= msg %></li>
       <% end %>
+    </ul>
+  </div>
+<% end %>
 
-      <header>
-        <h4 class="step-label"></h4>
-        <strong>
-          <p class="step-description"></p>
-        </strong>
+<header>
+  <h4 class="step-label left"></h4>
 
-        <div class="progress progress-striped active">
-          <div class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 0%"></div>
-        </div>
+  <%= render 'form_buttons' %>
 
-        <hr>
-      </header>
+  <div class="clearfix"></div>
 
-      <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>
+  <strong>
+    <p class="step-description"></p>
+  </strong>
 
-      <div class="steps">
-        <div class="form-group">
-          <%= f.hidden_field :resource_type, class: "form-control" %>
-        </div>
-        <div class="form-group">
-          <%= f.hidden_field :uuid, class: "form-control" %>
-        </div>
+  <div class="progress progress-striped active">
+    <div class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 0%"></div>
+  </div>
 
-        <div class="step" id="step-1">
-          <div class="form-group">
-            <%= f.label :name %><br>
-            <%= f.text_field :name, class: "form-control" %>
-          </div>
+  <hr>
+</header>
 
-          <div class="form-group">
-            <%= f.label :description %><br>
-            <%= f.text_field :description, class: "form-control" %>
-    			</div>
+<div class="steps">
 
-          <div class="form-group">
-            <%= f.label :type %><br>
-            <%= f.text_field :type, class: "form-control" %>
-          </div>
+  <div class="form-group">
+    <%= f.hidden_field :resource_type, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.hidden_field :uuid, class: "form-control" %>
+  </div>
 
-          <div class="form-group">
-            <%= f.label :private %><br>
-            <div class="make-switch left" data-on-label="Yes" data-off-label="No">
-              <!-- <input type="checkbox" checked> -->
-              <%= f.check_box :private, class: "form-control" %>
-            </div>
-          </div>
+  <div class="step" id="step-1">
+    <div class="form-group">
+      <div class="left">
+        <%= f.label :name %>
+        <label class="small required">(required)</label>
+      </div>
+      <label class="explanation">What is the name of the stream?</label><br>
+      <%= f.text_field :name, class: "form-control input-name", placeholder: "e.g: Temperature outdoor in Engelska Park" %>
+    </div>
 
-          <div class="form-group">
-            <br>
-            <%= f.label "Location" %><br>
-            <div id="map-canvas" style="width:550px;height:200px"></div>
-          </div>
+    <div class="form-group">
+      <%= f.label :description, class: "left" %>
+      <label class="explanation">Describe what does your stream in just few words</label><br>
+      <%= f.text_field :description, class: "form-control", placeholder: "e.g: It measures how warm is the most popular park in Uppsala" %>
+		</div>
 
-          <div class="form-group">
-            <%= f.text_field :latitude, id: "lat", class: "form-control hidden" %>
-          </div>
+    <div class="form-group">
+      <%= f.label :type, class: "left" %>
+      <label class="explanation">Please, specify the type of your stream</label>
+      <div class="clearfix"></div>
+      <%= f.text_field :type, class: "form-control", placeholder: "e.g: Temperature" %>
+    </div>
 
-          <div class="form-group">
-            <%= f.text_field :longitude, id: "lon", class: "form-control hidden" %>
-          </div>
+    <div class="form-group">
+      <%= f.label :private %><br>
+      <div class="make-switch left" data-on-label="Yes" data-off-label="No">
+        <!-- <input type="checkbox" checked> -->
+        <%= f.check_box :private, class: "form-control" %>
+      </div>
+      <div class="clearfix"></div>
+    </div>
 
-        </div>
+    <div class="form-group">
+      <%= f.label "Location", style: "margin-bottom: 0;" %>
+      <p>Click on the map the location of your stream</p>
+      <div id="map-canvas" style="width:550px;height:200px"></div>
+    </div>
 
-        <div class="step" id="step-2">
-          <!-- <div class="form-group">
-            <%#= f.label :model %><br>
-            <%#= f.text_field :model, class: "form-control" %>
-          </div>
+    <div class="form-group">
+      <%= f.text_field :latitude, id: "lat", class: "form-control hidden" %>
+    </div>
 
-          <div class="form-group">
-            <%#= f.label :manufacturer %><br>
-            <%#= f.text_field :manufacturer, class: "form-control" %>
-          </div>
-          <div class="form-group">
-            <%#= f.label :uuid %><br>
-            <%#= f.text_field :uuid, class: "form-control" %>
-          </div>
-          -->
-          <div class="form-group">
-            <%= f.label :tags %><br>
-            <%= f.text_field :tags, class: "form-control" %>
-          </div>
+    <div class="form-group">
+      <%= f.text_field :longitude, id: "lon", class: "form-control hidden" %>
+    </div>
+  </div>
 
-          <div class="form-group">
-            <%= f.label :accuracy %><br>
-            <%= f.text_field :accuracy, class: "form-control" %>
-          </div>
 
-          <div class="form-group">
-            <%= f.label :unit %><br>
-            <%= f.text_field :unit, class: "form-control" %>
-          </div>
+  <div class="step" id="step-2">
+    <div class="form-group">
+      <%= f.label :tags, class: "left" %>
+      <label class="explanation">Tell us some keywords which describe or identify your stream</label>
+      <%= f.text_field :tags, class: "form-control", placeholder: "e.g: temperature, outdoor, uppsala, park" %>
+    </div>
 
-          <div class="form-group">
-            <%= f.label :min_val %><br>
-            <%= f.text_field :min_val, class: "form-control" %>
-          </div>
+    <div class="form-group">
+      <%= f.label :unit, class: "left" %>
+      <label class="explanation">Which unit are you going to use?</label>
+      <%= f.text_field :unit, class: "form-control", placeholder: "e.g: Celsius" %>
+    </div>
 
-          <div class="form-group">
-            <%= f.label :max_val %><br>
-            <%= f.text_field :max_val, class: "form-control" %>
-          </div>
-        </div>
+    <div class="form-group">
+      <%= f.label :min_val, class: "left" %>
+      <label class="explanation">Specify the minimum value expected to measure</label>
+      <%= f.text_field :min_val, class: "form-control", placeholder: "e.g: -30" %>
+    </div>
 
-        <div class="step" id="step-3">
-          <!-- <p>Triggers ???</p> -->
+    <div class="form-group">
+      <%= f.label :max_val, class: "left" %>
+      <label class="explanation">Specify the maximum value expected to measure</label>
+      <%= f.text_field :max_val, class: "form-control", placeholder: "e.g: 40" %>
+    </div>
 
-          <div class="form-group">
-            <%= f.label :parser %><br>
-            <%= f.text_field :parser, class: "form-control" %>
-          </div>
+    <div class="form-group">
+      <%= f.label :accuracy, "Accuracy (+/-)", class: "left" %>
+      <label class="explanation">Also, please remark the accuracy of the device used</label>
+      <%= f.text_field :accuracy, class: "form-control", placeholder: "e.g: 0.5" %>
+    </div>
+  </div>
 
-          <div class="form-group">
-            <%= f.label :data_type %><br>
-            <%= f.select :data_type, [["Json", "application/json"]], {}, { :class => 'form-control' } %>
-          </div>
-          <div class="form-group">
-            <label class="left">Mechanism for updating data values</label>
-            <div class="clearfix"></div>
-            <div class="make-switch left" id="update-switch" data-on-label="Push" data-off-label="Pull">
-              <!-- <input type="checkbox" checked> -->
-              <%= f.check_box :polling, class: "form-control", checked: true %>
-            </div>
 
-            <div class="clearfix"></div>
-          </div>
+  <div class="step" id="step-3">
+    <div class="form-group">
+      <%= f.label :parser, class: "left" %>
+      <label class="explanation">Make clear the path to follow when parsing from a document</label>
+      <%= f.text_field :parser, class: "form-control", placeholder: "e.g: main/temp" %>
+    </div>
 
-          <div class="polling" style="display: none;">
-            <div class="form-group">
-              <%= f.label :uri %><br>
-              <%= f.text_field :uri, class: "form-control" %>
-            </div>
+    <div class="form-group">
+      <%= f.label :data_type, class: "left" %>
+      <label class="explanation">Select the type of data your stream will provide</label>
+      <%= f.select :data_type, [["Json", "application/json"]], {}, { :class => 'form-control' } %>
+    </div>
 
-            <div class="form-group">
-              <%= f.label :polling_freq %><br>
-              <%= f.text_field :polling_freq, class: "form-control" %>
-            </div>
-          </div>
-
-        </div>
+    <div class="form-group">
+      <label class="left">Mechanism for updating data values</label>
+      <div class="clearfix"></div>
+      <div class="make-switch left" id="update-switch" data-on-label="Push" data-off-label="Pull">
+        <!-- <input type="checkbox" checked> -->
+        <%= f.check_box :polling, class: "form-control", checked: true %>
       </div>
 
-			<br/>
+      <div class="clearfix"></div>
+    </div>
 
-      <div class="form-button center">
-        <div class="btn btn-primary btn-back">
-          <i class="glyphicon glyphicon-chevron-left"></i>
-          Back
-        </div>
+    <div class="polling" style="display: none;">
+      <div class="form-group">
+        <%= f.label :uri, class: "left" %>
+        <label class="explanation">Which URL will be used to poll data points from?</label>
+        <%= f.text_field :uri, class: "form-control", placeholder: "e.g: http://example.com/temperature/uppsala" %>
+      </div>
 
-        <div class="btn btn-primary btn-next">
-          Next
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        </div>
 
+      <div class="form-group">
+        <%= f.label :polling_freq, "Polling Frequency (in seconds)", class: "left" %>
+        <label class="explanation">How much frequency is necessary to poll data from your stream?</label>
+        <%= f.text_field :polling_freq, class: "form-control", placeholder: "e.g: 30" %>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<footer class="center">
+  <%= render 'form_buttons' %>
+</footer>
+
+<br/>
