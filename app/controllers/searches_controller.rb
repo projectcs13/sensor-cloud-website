@@ -14,7 +14,7 @@ class SearchesController < ApplicationController
 			end
 
 		res = conn.put do | req |
-			json = { :user_id => "#{current_user.id}", :ranking => params[:json][:value] }
+			json = { :user_id => "#{current_user.username}", :ranking => params[:json][:value] }
 			logger.debug json.to_json
 			req.url "#{CONF['API_URL']}/streams/#{params[:json][:stream_id]}/_rank"
 			req.headers['Content-Type'] = 'application/json'
@@ -42,7 +42,7 @@ class SearchesController < ApplicationController
 	end
 
 	def create
-		@nb_results_per_page = 5.0
+		@nb_results_per_page = 8.0
 		if params['search']['query'].blank?
 			redirect_to root_path
 		else
@@ -54,11 +54,11 @@ class SearchesController < ApplicationController
 
 			res = conn.post do |req|
 				if (not params['search']['page'].blank?)
-					req.url "/_search?from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&?from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				elsif (not params['search']['page_users'].blank?)
-					req.url "/_search?from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&?from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				else
-					req.url "/_search?from=0&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&?from=0&size=#{@nb_results_per_page.to_i}"
 				end
 				req.headers['Content-Type'] = 'application/json'
 
@@ -92,11 +92,10 @@ class SearchesController < ApplicationController
 						activeFilter = {"regexp"=>{ "active" => { "value" => params['search']['active'] }}}
 						filters.push(activeFilter.to_json)
 			end
-
-			#if params['search']['filter_map'] == "1"
-						#mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "pin.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
-						#filters.push(mapFilter.to_json)
-			#end
+			if params['search']['filter_longitude'].to_s.strip.length != 0
+						mapFilter = {"geo_distance"=>{ "distance" => params['search']['filter_distance'] +"km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] }}}
+						filters.push(mapFilter.to_json)
+			end
 				#A quick way to check if filter is nil or empty or just whitespace
 				if filters.empty?
 					req.body = '{ "sort": ['+ sort_by + '],
@@ -138,7 +137,20 @@ class SearchesController < ApplicationController
 			end
 			logger.debug "CURRENT_PAGE: #{@current_page}"
 			logger.debug "CURRENT_PAGE_USERS: #{@current_page_users}"
-			render :action => 'show'
+
+      if params['search']['refresh'] == "false"
+        if (not params['search']['page'].blank?)
+          @type = "stream"
+          @stream_page_number = (params['search']['page'].to_i)*@nb_results_per_page;
+        else
+          @type = "user"
+        end
+        respond_to do |format|
+          format.js
+        end
+      else
+        render :action => 'show'        
+      end
 		end
 	end
 end

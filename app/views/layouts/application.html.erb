@@ -1,46 +1,45 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title><%= full_title(yield(:title)) %></title>
+	<%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
+	<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+	<%= javascript_include_tag params[:controller] %>
+	<%= stylesheet_link_tag params[:controller] %>
+	<%= csrf_meta_tags %>
+	<%= render 'layouts/shim' %>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,600,300,400,700,800' rel='stylesheet' type='text/css'>
+</head>
+<body class="<%= @home_page ? 'homepage' : ''%>" data-controller="<%=params[:controller]%>" data-action="<%=params[:action]%>">
+	<%#= render 'layouts/modal' %>
+
 	<div id="container">
-
 		<div id="header">
-	  	<head>
-	    	<meta charset="UTF-8">
-	    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	    	<title><%= full_title(yield(:title)) %></title>
-	    	<%= stylesheet_link_tag "application", media: "all",
-		                                   "data-turbolinks-track" => true %>
-				<%= javascript_include_tag "application", 
-																	 "data-turbolinks-track" => true %>
-				<%= javascript_include_tag params[:controller] %>
-				<%= stylesheet_link_tag params[:controller] %>
-	    	<%= csrf_meta_tags %>
-	    	<%= render 'layouts/shim' %>
-			</head>
+			<%= render 'layouts/header' %>
 		</div>
+
 		<div id="body">
-	  	<body class="<%= @home_page ? 'homepage' : ''%>" data-controller="<%=params[:controller]%>" data-action="<%=params[:action]%>">
-	    	<%= render 'layouts/modal' %>
+			<% if @home_page %>
+				<%= yield %>
 
-				<%= render 'layouts/header' %>
-
-	    	<% if @home_page %>
-					<%= yield %>
-					<%#= debug(params) if Rails.env.development? %>
-				<% else %>
-		    	<section class="parent margin">
+			<% else %>
+				<div style="margin-top:50px;">
+			  	<section class="parent margin">
 						<% flash.each do |key, value| %>
 							<div class="alert alert-<%= key %>"><%= value %></div>
 						<% end %>
+
 						<%= yield %>
-						<%#= debug(params) if Rails.env.development? %>
-		    	</section>
-				<% end %>
-			</body>
+			  	</section>
+			  </div>
+			<% end %>
 		</div>
 
 		<div id="footer">
 			<%= render 'layouts/footer' %>
 		</div>
-
 	</div>
+</body>
 </html>

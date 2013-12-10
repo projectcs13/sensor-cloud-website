@@ -1,3 +1,40 @@
 // Place all the styles related to the Users controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.actual-name {
+  float: left;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.user-profile-aside {
+  /* width: 21%; */
+  float: left;
+  margin-left: 2.5%;
+  margin-right: 1.5%;
+}
+
+.user-profile-lengthfix {
+  height: 182px;
+}
+
+.list-group-item {
+  margin-bottom: 0;
+  border: 0;
+  border-bottom: 1px solid #dddddd;
+}
+
+.list-group-item:last-child {
+  border-bottom: 0;
+}
+
+.user-alerts,
+.user-graphs {
+  margin-top: 2em;
+}
+
+.user-graphs > div {
+  border: 1px solid black;
+  height: 370px;
+}

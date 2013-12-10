@@ -9,7 +9,7 @@
         <span class="icon-bar"></span>
       </button>
 			<%= link_to root_path, class: "navbar-brand", id: "logo" do %>
-				<span style=:"color:#000000; letter-spacing:-2px; font:26px/28px Arial, Helvetica, sans-serif;">Sensor</span><span style="color:#e64c4c; letter-spacing:-1px; font:bold 26px/28px Arial, Helvetica, sans-serif; margin-left: 5px;">Cloud</span>
+				<span style=:"color:#000000; letter-spacing:-2px; font:26px/28px Arial, Helvetica, sans-serif;">Sensor</span><span style="color:#F97E76; letter-spacing:-1px; font:bold 26px/28px Arial, Helvetica, sans-serif; margin-left: 5px;">Cloud</span>
 			<% end %>
     </div>
 
@@ -33,17 +33,17 @@
 
     	<ul class="nav navbar-nav">
 				<% if signed_in? %>
-					<li><%= link_to "My Streams", streams_path %></li>
-					<li><%= link_to "Following", "/users/#{current_user.id}/following" %></li>
+					<li><%= link_to "My Streams", "/users/#{current_user.username}/streams" %></li>
+					<li><%= link_to "Following", "/users/#{current_user.username}/following" %></li>
 				<% end %>
 			</ul>
 
 			<ul class="nav navbar-nav right">
 				<% if signed_in? %>
 					<li>
-						<%= link_to user_path(current_user), id: "name" do %>
-							<%= gravatar_for current_user %>
-							<%= current_user.name %>
+						<%= link_to user_path(current_user), id: "username" do %>
+							<%= gravatar_for(current_user, {size: 32}) %>
+							<%= current_user.username %>
 						<% end %>
 					</li>
 				<% end %>
@@ -58,7 +58,7 @@
 				<li><%#= link_to "Home",    root_path %></li>
 				<li><%#= link_to "Help", help_path %></li>
 				<% if signed_in? %>
-					<li><%= link_to "Users", users_path %></li>
+					<li><%#= link_to "Users", users_path %></li>
 					<li id="fat-menu" class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Account <b class="caret"></b>
@@ -66,6 +66,7 @@
 						<ul class="dropdown-menu">
 							<li><%= link_to "Profile", current_user %></li>
 							<li><%= link_to "Settings", edit_user_path(current_user) %></li>
+							<!-- <li><%#= link_to "Profile Settings", url_for([:profile, @user]) %></li> -->
 							<li class="divider"></li>
 							<li>
 								<%= link_to "Sign out", signout_path, method: "delete" %>
