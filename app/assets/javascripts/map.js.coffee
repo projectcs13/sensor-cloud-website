@@ -4,7 +4,7 @@ window.createMap = (options) ->
 
   #Try W3C Geolocation (Preferred)
   if location is null
-    location = new google.maps.LatLng 18, 60
+    location = new google.maps.LatLng 60, 18
     if navigator.geolocation
       browserSupportFlag = true
       navigator.geolocation.getCurrentPosition (position) ->
