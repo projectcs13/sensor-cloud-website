@@ -1,7 +1,7 @@
 class StreamsController < ApplicationController
 
   before_action :correct_user,     only: [:edit, :update, :destroy]
-  before_action :get_current_user, only: [:index, :show, :new, :edit, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
+  before_action :get_current_user, only: [:index, :get_streams, :show, :new, :edit, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
   before_action :new_stream,       only: [:new, :new_from_resource]
   before_action :set_stream,       only: [:show, :edit, :update, :destroy]
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
@@ -9,6 +9,10 @@ class StreamsController < ApplicationController
   def index
     res = get "/users/#{@user.username}/streams"
     @streams = JSON.parse(res.body)['streams']
+  end
+
+  def get_streams
+    redirect_to "/users/#{@user.username}/streams"
   end
 
   def show
@@ -30,40 +34,21 @@ class StreamsController < ApplicationController
   end
 
   def correctModelFields
-
-    # Fix the model to follow ES JSON on Resource_type and uuid
-    logger.debug "id and uuid"
-    logger.debug @stream.resource_type
-    logger.debug @stream.uuid
-    @stream.resource = {:resource_type => @stream.resource_type, :uuid =>  @stream.uuid}
-    @stream.attributes.delete 'resource_type'
-    @stream.attributes.delete 'uuid'
-
-    @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
-    @stream.attributes.delete 'longitude'
-    @stream.attributes.delete 'latitude'
-
-    # Remove attributes when editing a stream
-    @stream.attributes.delete 'active'
-    @stream.attributes.delete 'user_ranking'
-    @stream.attributes.delete 'last_updated'
-    @stream.attributes.delete 'history_size'
-    @stream.attributes.delete 'creation_date'
-    @stream.attributes.delete 'quality'
-    @stream.attributes.delete 'subscribers'
-    @stream.attributes.delete 'user_id'
-    @stream.attributes.delete 'nr_subscribers'
-
     @stream.polling = if @stream.polling == "1" then false else true end
     @stream.private = if @stream.private == "0" then false else true end
 
-    if @stream.accuracy     == ""  then @stream.accuracy     = nil end
-    if @stream.min_val      == ""  then @stream.min_val      = nil end
-    if @stream.max_val      == ""  then @stream.max_val      = nil end
-    if @stream.polling_freq == ""  then @stream.polling_freq = nil end
-    if @stream.location     == "," then @stream.location     = nil end
+    @stream.resource = {:resource_type => @stream.resource_type, :uuid =>  @stream.uuid}
+    @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
 
-    @stream.polling_freq = @stream.polling_freq.to_i
+    ['resource_type', 'uuid', 'longitude', 'latitude', 'active', 'user_ranking', 'last_updated',
+      'history_size', 'creation_date', 'quality', 'subscribers', 'user_id', 'nr_subscribers' ].each do |attr|
+      @stream.attributes.delete attr
+    end
+
+    ['accuracy', 'min_val', 'max_val', 'polling_freq'].each do |method|
+      if @stream.send(method) == "" then @stream.send(method, nil) end
+      if method == 'polling_freq'   then @stream.polling_freq = @stream.polling_freq.to_i end
+    end
   end
 
   def create
