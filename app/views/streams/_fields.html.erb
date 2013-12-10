@@ -15,22 +15,7 @@
 <header>
   <h4 class="step-label left"></h4>
 
-  <div class="form-button right">
-    <div class="btn btn-primary btn-back">
-      <i class="glyphicon glyphicon-chevron-left"></i>
-      Back
-    </div>
-
-    <div class="btn btn-primary btn-next">
-      Next
-      <i class="glyphicon glyphicon-chevron-right"></i>
-    </div>
-
-    <div class="btn btn-primary btn-create">
-      <%= if params[:action] == "new" then "Create" else "Edit" end %>
-      a stream
-    </div>
-  </div>
+  <%= render 'form_buttons' %>
 
   <div class="clearfix"></div>
 
@@ -44,8 +29,6 @@
 
   <hr>
 </header>
-
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>
 
 <div class="steps">
   <div class="step" id="step-1">
@@ -171,4 +154,10 @@
   </div>
 </div>
 
+<footer class="center">
+  <%= render 'form_buttons' %>
+</footer>
+
 <br/>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>

@@ -1,0 +1,16 @@
+<div class="form-button right">
+  <div class="btn btn-primary btn-back">
+    <i class="glyphicon glyphicon-chevron-left"></i>
+    Back
+  </div>
+
+  <div class="btn btn-primary btn-next">
+    Next
+    <i class="glyphicon glyphicon-chevron-right"></i>
+  </div>
+
+  <div class="btn btn-primary btn-create">
+    <%= if params[:action] == "new" or params[:action] == "new_from_resource" then "Create" else "Edit" end %>
+    a stream
+  </div>
+</div>

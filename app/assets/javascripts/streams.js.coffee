@@ -130,7 +130,7 @@ $ ->
     createForm = (json) ->
       form = $('#form-template')
       clone = form.clone()
-      clone.append $("""<div class="btn btn-primary btn-create">Create a stream</div>""")
+      # clone.append $("""<div class="btn btn-primary btn-create">Create a stream</div>""")
       form.parent().append clone
       for k, v of json
          clone.find("#stream_#{k}").val v
