@@ -24,38 +24,22 @@ class User < ActiveRecord::Base
 	end
 
 	def following?(stream_id)
-		response = Faraday.get "#{CONF['API_URL']}/users/#{self.username}"
-		unless (JSON.parse(response.body)["subscriptions"]).empty?
-			JSON.parse(response.body)["subscriptions"].include?({"stream_id"=>"#{stream_id}"})
+		res = Api::Api.new.get("/users/#{self.username}")
+		unless (res["subscriptions"]).empty?
+			res["subscriptions"].include?({"stream_id"=>"#{stream_id}"})
 		end
 	end
 
 	def follow!(stream_id)
-		conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
-		  faraday.request  :url_encoded             # form-encode POST params
-		  faraday.response :logger                  # log requests to STDOUT
-		  faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-		end
-
-		resp = conn.put do |req|
-		  req.url "/users/#{self.username}/_subscribe"
-		  req.headers['Content-Type'] = 'application/json'
-		  req.body = "{\"stream_id\":\"#{stream_id}\"}"
-		end
+		res = Api::Api.new.put(
+			"/users/#{self.username}/_subscribe", {stream_id: "#{stream_id}"}
+		)
 	end
 
 	def unfollow!(stream_id)
-		conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
-		  faraday.request  :url_encoded             # form-encode POST params
-		  faraday.response :logger                  # log requests to STDOUT
-		  faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-		end
-
-		resp = conn.put do |req|
-		  req.url "/users/#{self.username}/_unsubscribe"
-		  req.headers['Content-Type'] = 'application/json'
-		  req.body = "{\"stream_id\":\"#{stream_id}\"}"
-		end
+		res = Api::Api.new.put(
+			"/users/#{self.username}/_unsubscribe", {stream_id: "#{stream_id}"}
+		)
 	end
 
 	private
