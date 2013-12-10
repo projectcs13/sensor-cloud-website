@@ -1,11 +1,13 @@
 class StreamsController < ApplicationController
 
-  before_action :get_current_user, only: [:index, :show, :new, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
   before_action :correct_user,     only: [:edit, :update, :destroy]
+  before_action :get_current_user, only: [:index, :show, :new, :edit, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
   before_action :set_stream,       only: [:show, :edit, :update, :destroy]
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
+    logger.debug params
+    # redirect_to "/users/#{@user.username}/streams"
     response = Faraday.get "#{CONF['API_URL']}/users/#{@user.username}/streams"
     @streams = JSON.parse(response.body)['streams']
   end
@@ -187,14 +189,7 @@ class StreamsController < ApplicationController
 
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_stream
-      @stream = Stream.find(params[:id])
-    end
-
-    def get_current_user
-      @user = current_user
-    end
+    # Aux Functions
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
@@ -219,18 +214,26 @@ class StreamsController < ApplicationController
 		end
 
 		# Before filters
+
+    def correct_user
+      stream = Stream.find(params[:id], :_user_id => current_user.username)
+      user = User.find_by_username(stream.user_id)
+      redirect_to(root_url) unless current_user?(user)
+    end
+
+    def get_current_user
+      @user = current_user
+    end
+
+    def set_stream
+      @stream = Stream.find(params[:id])
+    end
+
 		def signed_in_user
 			unless signed_in?
 				store_location
 				flash[:warning] = "Please sign in"
 				redirect_to signin_url
 			end
-		end
-
-		def correct_user
-      @user = current_user
-      stream = Stream.find(params[:id], :_user_id => @user.username)
-			# @user = User.find_by_username(stream.user_id)
-			redirect_to(root_url) unless current_user?(@user)
 		end
 end
