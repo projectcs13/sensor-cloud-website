@@ -214,6 +214,7 @@ $ ->
   $(document).bind "streams_edit", (e, obj) =>
     form = $ 'form'
     window.newStreamForm form
+    window.createMap form
 
   action = "streams_" + $("body").data("action")
   $.event.trigger action
