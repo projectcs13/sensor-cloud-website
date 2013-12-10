@@ -265,6 +265,8 @@
                 });
 
 				google.maps.event.addListener(map, 'zoom_changed', function() {
+          if(map.getZoom() == 1)
+            map.setZoom(2);
 					radiusChange(map);
 				});
 
