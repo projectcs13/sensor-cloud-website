@@ -16,12 +16,22 @@ module Api
 			JSON.parse(res.body)
 		end
 
+		def post(url, body)
+			res = connect.post do |req|
+			  req.url url
+			  req.headers['Content-Type'] = 'application/json'
+			  req.body = body.to_json
+			end
+			res = JSON.parse(res.body)
+		end
+
 		def put(url, body)
 			res = connect.put do |req|
 			  req.url url
 			  req.headers['Content-Type'] = 'application/json'
 			  req.body = body.to_json
 			end
+			res = JSON.parse(res.body)
 		end
 
 	end
