@@ -28,15 +28,18 @@ $ ->
   $(document).bind "streams_new_from_resource", (e, obj) =>
     forms = $('#forms')
     streams = $('#streams')
+    uuid = $('#resource_uuid')
+    resource_model = $('#resource_model')
+    selectedTemplates = 0
 
     $(window).on 'beforeunload', (event) ->
       cleanUpDom()
       undefined
 
-    $("#resource_model").bind "keydown", (event) ->
+    resource_model.bind "keydown", (event) ->
       event.preventDefault() if event.keyCode is $.ui.keyCode.TAB and $(this).data("ui-autocomplete").menu.active
 
-    $("#resource_model").autocomplete(
+    resource_model.autocomplete(
       minLength: 1
 
       source: (request, response) ->
@@ -47,16 +50,18 @@ $ ->
         false
 
       select: (event, ui) ->
-        console.log "CleanUp"
         cleanUpDom()
-        console.log "/CleanUp"
 
         pl = ui.item.payload
         text = pl.manufacturer
         text = text+" "+pl.model
-        $("#resource_model").val(text)
+        resource_model.val(text)
+        resource_model.data 'id', pl.resource
+
+        uuid.parent().parent().removeClass('hidden')
 
         fetchStreamsFromResource pl.resource
+        streams.parent().removeClass('hidden')
         false
 
     ).data('ui-autocomplete')._renderItem = (ul, item) ->
@@ -91,11 +96,16 @@ $ ->
         console.log div
         if $(this).prop('checked') or $(this).hasClass('done')
           div.removeClass('inactive')
+          selectedTemplates = selectedTemplates + 1
+          if selectedTemplates == 1
+            div.addClass('chosen')
+            showForm div.parent().index()
         else
           div.addClass('inactive').removeClass 'chosen'
           hideForm div.parent().index()
           i = findNextStream()
           showForm i
+          selectedTemplates = selectedTemplates - 1
 
       $('body').on 'click', '.stream .form-control', (event) ->
         stream = $(this).parent()
@@ -133,12 +143,14 @@ $ ->
       # clone.append $("""<div class="btn btn-primary btn-create">Create a stream</div>""")
       form.parent().append clone
       for k, v of json
-         clone.find("#stream_#{k}").val v
+        clone.find("#stream_#{k}").val v
+      clone.find("#stream_resource_type").val resource_model.data 'id'
 
       window.newStreamForm clone
       window.createMap clone
 
       clone.on 'submit', ->
+        clone.find("#stream_uuid").val uuid.val()
         cloneIndex = clone.index()-1
         console.log 'cloneIndex', cloneIndex
         hideForm cloneIndex

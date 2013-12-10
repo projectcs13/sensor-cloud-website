@@ -32,6 +32,15 @@ class StreamsController < ApplicationController
   end
 
   def correctModelFields
+
+    # Fix the model to follow ES JSON on Resource_type and uuid
+    logger.debug "id and uuid"
+    logger.debug @stream.resource_type
+    logger.debug @stream.uuid
+    @stream.resource = {:resource_type => @stream.resource_type, :uuid =>  @stream.uuid}
+    @stream.attributes.delete 'resource_type'
+    @stream.attributes.delete 'uuid'
+
     @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
     @stream.attributes.delete 'longitude'
     @stream.attributes.delete 'latitude'
@@ -183,7 +192,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser)
+      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser, :resource_type, :uuid)
     end
 
     def send_data(method, url, json)
