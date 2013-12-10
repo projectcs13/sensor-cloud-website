@@ -139,6 +139,8 @@ $ ->
         if not div.hasClass('done') and not div.hasClass('inactive')
           div.addClass 'chosen'
           return div.parent().index()
+      $('#btnFinished').removeClass('hidden')
+      undefined
 
     createForm = (json) ->
       form = $('#form-template')
@@ -170,15 +172,18 @@ $ ->
       f.addClass 'hidden'
 
     showForm = (index) ->
-      console.log index
-      f = forms.children().eq index+1
-      #if f.hasClass 'hidden'
-      forms.children().addClass('hidden')
-      f.removeClass 'hidden'
-      window.createMap
-        dom: f
-        location: null
-        editable: true
+      if index != undefined
+        $('#btnFinished').addClass('hidden')
+
+        console.log index
+        f = forms.children().eq index+1
+        #if f.hasClass 'hidden'
+        forms.children().addClass('hidden')
+        f.removeClass 'hidden'
+        window.createMap
+          dom: f
+          location: null
+          editable: true
 
 
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action

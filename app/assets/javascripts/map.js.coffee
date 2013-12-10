@@ -24,6 +24,9 @@ getLocationByIP = () ->
 
 setup = (dom, location, editable) ->
   # Maximize Map Canvas Dimensions
+  console.log dom
+  console.log location
+  console.log editable
   canvas = dom.find('#map-canvas')
   w = canvas.parent().width()
   h = canvas.parent().height()
