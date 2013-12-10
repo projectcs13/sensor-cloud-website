@@ -1,6 +1,10 @@
 
 window.newStreamForm = (form) ->
 
+  #
+  # Variables
+  #
+
   TIME = 250
 
   descriptions = [
@@ -14,22 +18,22 @@ window.newStreamForm = (form) ->
 
   currentStep = 0
   steps = form.find '.step'
-  steps.each (i, step) ->
-    $(step).css 'display', 'none' if i != 0
-
-  # steps.first().removeClass('hidden');
 
   btnBack   = form.find ".btn-back"
   btnNext   = form.find ".btn-next"
   btnCreate = form.find ".btn-create"
 
   polling = form.find ".polling"
-  updateSwitch = form.find("#update-switch")
+  updateSwitch = form.find "#update-switch"
   progress = form.find ".progress-bar"
-  # ratio = ratio + ratio / 10;
+
+  explanations = form.find '.explanation'
+  #
+  # Auxiliary Functions
+  #
 
   updateStepInformation = ->
-    stepLabel.text "Step #{currentStep+1}"
+    stepLabel.text "Step #{currentStep+1} / #{steps.length}"
     stepDescription.text descriptions[ currentStep ]
 
   decreaseBar = ->
@@ -42,6 +46,19 @@ window.newStreamForm = (form) ->
     ratio = progress.parent().width() / steps.length
     progress.width(w + ratio)
 
+  setInputFocus = ->
+    steps.eq(currentStep).find('input').first().focus()
+
+  moveToNextStep = (next) ->
+    steps.eq(currentStep).hide TIME
+    currentStep += if next then 1 else -1
+    steps.eq(currentStep).show TIME
+
+
+  #
+  # Event Handlers
+  #
+
   back = (event) ->
     do event.preventDefault
 
@@ -51,12 +68,10 @@ window.newStreamForm = (form) ->
         btnNext.css 'display', 'inline-block'
         # btnNext.removeClass('btn-disabled').addClass('btn-primary')
 
-      steps.eq(currentStep).hide TIME
-      currentStep--
-      steps.eq(currentStep).show TIME
-
+      moveToNextStep false
       do decreaseBar
       do updateStepInformation
+      do setInputFocus
 
       if currentStep is 0
         btnBack.css 'display', 'none'
@@ -64,16 +79,14 @@ window.newStreamForm = (form) ->
 
   next = (event) ->
     do event.preventDefault
-    console.log "Next Btn"
+
     if currentStep < steps.length-1
       btnBack.css 'display', 'inline-block'
 
-      steps.eq(currentStep).hide TIME
-      currentStep++
-      steps.eq(currentStep).show TIME
-
+      moveToNextStep true
       do increaseBar
       do updateStepInformation
+      do setInputFocus
 
       if currentStep is steps.length-1
         btnCreate.css 'display', 'inline-block'
@@ -94,8 +107,28 @@ window.newStreamForm = (form) ->
     polling.toggle TIME * 2
 
 
+  explain = (event) ->
+    exp = $(this).siblings '.explanation'
+    if exp.css('display') is 'none'
+      explanations.hide TIME
+      exp.show TIME
+
+
+  #
+  # Initialization
+  #
+
+  form.find('input').on 'focus', explain
+
   btnNext.on 'click', next
   do btnBack.on('click', back).hide
   do btnCreate.on('click', create).hide
   do updateStepInformation
+  do setInputFocus
+
   updateSwitch.on 'switch-change', switchChanged
+
+  steps.each (i, step) ->
+    steps.eq(i).css 'display', 'none' if i isnt 0
+
+

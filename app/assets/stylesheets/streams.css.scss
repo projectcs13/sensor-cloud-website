@@ -96,3 +96,15 @@
 #forms {
   padding: 0;
 }
+
+.explanation {
+  display: none;
+  color: lightseagreen;
+  font-weight: normal;
+  float: left;
+  margin-left: 1em;
+}
+
+.required {
+  color: $custom-red;
+}
