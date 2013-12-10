@@ -11,7 +11,6 @@ class StreamsController < ApplicationController
   end
 
   def show
-
 		@stream_id = params[:id]
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
@@ -41,6 +40,16 @@ class StreamsController < ApplicationController
   end
 
   def correctBooleanFields
+
+    # Fix the model to follow ES JSON on Resource_type and uuid
+    logger.debug "id and uuid"
+    logger.debug @stream.resource_type
+    logger.debug @stream.uuid
+    @stream.resource = {:resource_type => @stream.resource_type, :uuid =>  @stream.uuid}
+    @stream.attributes.delete 'resource_type'
+    @stream.attributes.delete 'uuid'
+
+    #
     @stream.location = "#{@stream.latitude},#{@stream.longitude}"
     @stream.attributes.delete 'longitude'
     @stream.attributes.delete 'latitude'
@@ -201,7 +210,7 @@ class StreamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
-      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser)
+      params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser, :resource_type, :uuid)
     end
 
     def send_data(method, url, json)
