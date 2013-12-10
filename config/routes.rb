@@ -1,50 +1,55 @@
 SensorCloud::Application.routes.draw do
 
-  resources :users
+  resources :users do
+    member do
+      get 'edit/edit_profile' => 'users#profile'
+      get 'streams' => 'streams#index'
+      # get 'following' => 'users#following', as: :following
+      get 'following' => 'users#following'
+    end
+  end
+
   resources :streams do
     collection do
-      get '/new_from_resource', :to => :new_from_resource
-      delete '/',               :to => :destroyAll
+      get '/'                  => :get_streams
+      get '/new_from_resource' => :new_from_resource
+      delete '/'               => :destroyAll
     end
   end
 
   resources :searches
-	resources :sessions, 			only: [:new, :create, :destroy]
-  resources :contacts, 			only: [:new, :create]
+	resources :sessions, only: [:new, :create, :destroy]
+  resources :contacts, only: [:new, :create]
 
   root  'static_pages#home'
 
-  match '/relationships/unfollow',   to: 'relationships#destroy',    via: 'post'
-  match '/relationships/follow',     to: 'relationships#create',     via: 'post'
+  post '/relationships/unfollow' => 'relationships#destroy'
+  post '/relationships/follow'   => 'relationships#create'
 
-  match '/resources/:id',  to: 'streams#fetchResource',    via: 'get'
-  match '/suggest/:model', to: 'streams#suggest',          via: 'get'
-  match '/datapoints/:id', to: 'streams#fetch_datapoints', via: 'get'
-  match '/prediction/:id', to: 'streams#fetch_prediction', via: 'get'
+  get '/resources/:id'  => 'streams#fetchResource'
+  get '/suggest/:model' => 'streams#suggest'
+  get '/datapoints/:id' => 'streams#fetch_datapoints'
+  get '/prediction/:id' => 'streams#fetch_prediction'
 
-  match '/signup',    to: 'users#new',            via: 'get'
-	match '/signin', 		to: 'sessions#new',					via: 'get'
-	match '/signout',		to: 'sessions#destroy',			via: 'delete'
+  get '/filter'         => 'searches#filter'
+  get '/autocomplete'   => 'searches#fetch_autocomplete'
+  get '/history'        => 'searches#fetch_graph_data'
+  put '/userranking'    => 'searches#update_user_ranking'
+  post '/get_more_info' => 'searches#create'
 
-  match '/get_more_info',  to: 'searches#create',    via: 'post'
-  match '/terms',    to: 'static_pages#terms',        via: 'get'
-  match '/privacy',  to: 'static_pages#privacy',      via: 'get'
-  match '/security', to: 'static_pages#security',     via: 'get'
-  match '/api',      to: 'static_pages#api',          via: 'get'
-  match '/faq',      to: 'static_pages#faq',          via: 'get'
-  match '/manual',   to: 'static_pages#manual',       via: 'get'
-  match '/help',     to: 'static_pages#help',         via: 'get'
-  match '/about',    to: 'static_pages#about',        via: 'get'
+  get '/signup'     => 'users#new'
+  get '/signin'     => 'sessions#new'
+  delete '/signout' => 'sessions#destroy'
 
-  match '/filter',       to: 'searches#filter',              via: 'get'
-  match '/userranking',  to: 'searches#update_user_ranking', via: 'put'
-  match '/autocomplete', to: 'searches#fetch_autocomplete',  via: 'get'
-  match '/history',      to: 'searches#fetch_graph_data',    via: 'get'
+  get '/terms'    => 'static_pages#terms'
+  get '/privacy'  => 'static_pages#privacy'
+  get '/security' => 'static_pages#security'
+  get '/api'      => 'static_pages#api'
+  get '/faq'      => 'static_pages#faq'
+  get '/manual'   => 'static_pages#manual'
+  get '/help'     => 'static_pages#help'
+  get '/about'    => 'static_pages#about'
 
-	get 'users/:username/following' => 'users#following', as: :following
-
-  get '/users/:username/edit/edit_profile' => 'users#profile'
-  get '/users/:username/streams' => 'streams#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
