@@ -187,7 +187,8 @@ $ ->
       graph_object.fetch_prediction_data()
 
     loc = document.getElementById('location').getAttribute('value').split ","
-
+    console.log loc[0]
+    console.log loc[1]
 
     mapWidth = $('#map-canvas').parent().width()
     $('#map-canvas').width(mapWidth).height(mapWidth)
