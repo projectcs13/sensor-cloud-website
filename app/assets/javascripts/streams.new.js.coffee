@@ -49,6 +49,9 @@ window.newStreamForm = (form) ->
   setInputFocus = ->
     steps.eq(currentStep).find('input').first().focus()
 
+  goBack = -> moveToNextStep false
+  goNext = -> moveToNextStep true
+
   moveToNextStep = (next) ->
     steps.eq(currentStep).hide TIME
     currentStep += if next then 1 else -1
@@ -68,13 +71,12 @@ window.newStreamForm = (form) ->
         btnNext.css 'display', 'inline-block'
         # btnNext.removeClass('btn-disabled').addClass('btn-primary')
 
-      moveToNextStep false
+      do goBack
       do decreaseBar
       do updateStepInformation
       do setInputFocus
 
-      if currentStep is 0
-        btnBack.css 'display', 'none'
+      btnBack.css 'display', 'none' if currentStep is 0
 
 
   next = (event) ->
@@ -83,7 +85,7 @@ window.newStreamForm = (form) ->
     if currentStep < steps.length-1
       btnBack.css 'display', 'inline-block'
 
-      moveToNextStep true
+      do goNext
       do increaseBar
       do updateStepInformation
       do setInputFocus
