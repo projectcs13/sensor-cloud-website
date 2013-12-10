@@ -228,6 +228,7 @@ class StreamsController < ApplicationController
 		end
 
 		def correct_user
+      @user = current_user
       stream = Stream.find(params[:id], :_user_id => @user.username)
 			# @user = User.find_by_username(stream.user_id)
 			redirect_to(root_url) unless current_user?(@user)
