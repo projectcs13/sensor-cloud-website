@@ -2,6 +2,7 @@ class StreamsController < ApplicationController
 
   before_action :correct_user,     only: [:edit, :update, :destroy]
   before_action :get_current_user, only: [:index, :show, :new, :edit, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
+  before_action :new_stream,       only: [:new, :new_from_resource]
   before_action :set_stream,       only: [:show, :edit, :update, :destroy]
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
@@ -17,17 +18,6 @@ class StreamsController < ApplicationController
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
 		@stream_owner = User.find_by(username: stream_owner_id)
-  end
-
-  def edit
-  end
-
-  def new
-    @stream = Stream.new
-  end
-
-  def new_from_resource
-    @stream = Stream.new
   end
 
   def suggest
@@ -223,6 +213,10 @@ class StreamsController < ApplicationController
 
     def get_current_user
       @user = current_user
+    end
+
+    def new_stream
+      @stream = Stream.new
     end
 
     def set_stream
