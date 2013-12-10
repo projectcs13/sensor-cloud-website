@@ -1,26 +1,26 @@
 window.createMap = (options) ->
   { dom, location, editable } = options
-  browserSupportFlag
 
   #Try W3C Geolocation (Preferred)
   if location is null
     location = new google.maps.LatLng 60, 18
     if navigator.geolocation
-      browserSupportFlag = true
       navigator.geolocation.getCurrentPosition (position) ->
         location = new google.maps.LatLng position.coords.latitude, position.coords.longitude
         setup dom, location, editable
-      ,() ->
+      , ->
         console.log "error"
         # Get GeoLocation from IP here
-        #
+        # location = getLocationByIP()
         setup dom, location, editable
-    #Browser doesn't support Geolocation
-    else
-      browserSupportFlag = false;
+
+    else #Browser doesn't support Geolocation
       # Get GeoLocation from IP here
-      #
+      # location = getLocationByIP()
       setup dom, location, editable
+
+getLocationByIP = () ->
+  # nothing now
 
 setup = (dom, location, editable) ->
   # Maximize Map Canvas Dimensions
