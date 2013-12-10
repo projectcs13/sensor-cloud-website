@@ -17,8 +17,8 @@
 <%= render "form_header" %>
 
 <div class="steps">
-  <% [1,2,3].each do |i| %>
-   <%= render "form_step#{i}", f: f %>
+  <% 3.times do |i| %>
+   <%= render "form_step#{i+1}", f: f %>
   <% end %>
 </div>
 
