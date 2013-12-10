@@ -54,11 +54,11 @@ class SearchesController < ApplicationController
 
 			res = conn.post do |req|
 				if (not params['search']['page'].blank?)
-					req.url "/_search?from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&?from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				elsif (not params['search']['page_users'].blank?)
-					req.url "/_search?from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&?from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				else
-					req.url "/_search?from=0&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&?from=0&size=#{@nb_results_per_page.to_i}"
 				end
 				req.headers['Content-Type'] = 'application/json'
 

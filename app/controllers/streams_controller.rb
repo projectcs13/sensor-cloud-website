@@ -1,6 +1,6 @@
 class StreamsController < ApplicationController
 
-  before_action :get_current_user, only: [:index, :show, :new, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll]
+  before_action :get_current_user, only: [:index, :show, :new, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
   before_action :correct_user,     only: [:edit, :update, :destroy]
   before_action :set_stream,       only: [:show, :edit, :update, :destroy]
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
@@ -15,6 +15,9 @@ class StreamsController < ApplicationController
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
 		@stream_owner = User.find_by(username: stream_owner_id)
+  end
+
+  def edit
   end
 
   def new
@@ -37,7 +40,7 @@ class StreamsController < ApplicationController
   end
 
   def correctModelFields
-    @stream.location = "#{@stream.latitude},#{@stream.longitude}"
+    @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
     @stream.attributes.delete 'longitude'
     @stream.attributes.delete 'latitude'
 
@@ -208,8 +211,7 @@ class StreamsController < ApplicationController
     end
 
     def new_connection
-      cid = current_user.username
-      @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{cid}/") do |faraday|
+      @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{@user.username}/") do |faraday|
         faraday.request  :url_encoded               # form-encode POST params
         faraday.response :logger                    # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
@@ -226,8 +228,8 @@ class StreamsController < ApplicationController
 		end
 
 		def correct_user
-      stream = Stream.find(params[:id], :_user_id => current_user.username)
-			@user = User.find_by_username(stream.user_id)
+      stream = Stream.find(params[:id], :_user_id => @user.username)
+			# @user = User.find_by_username(stream.user_id)
 			redirect_to(root_url) unless current_user?(@user)
 		end
 end
