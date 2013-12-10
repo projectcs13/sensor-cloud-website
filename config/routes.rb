@@ -14,8 +14,8 @@ SensorCloud::Application.routes.draw do
 
   root  'static_pages#home'
 
-  match '/relationships/unfollow', to: 'relationships#custom_destroy',    via: 'post'
-  match '/relationships/follow',     to: 'relationships#custom_create',     via: 'post'
+  match '/relationships/unfollow',   to: 'relationships#destroy',    via: 'post'
+  match '/relationships/follow',     to: 'relationships#create',     via: 'post'
 
   match '/resources/:id',  to: 'streams#fetchResource',    via: 'get'
   match '/suggest/:model', to: 'streams#suggest',          via: 'get'
