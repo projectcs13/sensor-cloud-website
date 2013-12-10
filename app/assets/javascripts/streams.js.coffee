@@ -147,7 +147,6 @@ $ ->
       clone.find("#stream_resource_type").val resource_model.data 'id'
 
       window.newStreamForm clone
-      window.createMap clone
 
       clone.on 'submit', ->
         clone.find("#stream_uuid").val uuid.val()
@@ -173,6 +172,7 @@ $ ->
       #if f.hasClass 'hidden'
       forms.children().addClass('hidden')
       f.removeClass 'hidden'
+      window.createMap f
 
       # Update MAP
       mapWidth = f.find('#map-canvas').parent().width()
