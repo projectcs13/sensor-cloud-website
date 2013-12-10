@@ -23,7 +23,10 @@ $ ->
   $(document).bind "streams_new", (e, obj) =>
     form = $ 'form'
     window.newStreamForm form
-    window.createMap form
+    window.createMap
+      dom: form
+      location: null
+      editable: true
 
   $(document).bind "streams_new_from_resource", (e, obj) =>
     forms = $('#forms')
@@ -172,18 +175,11 @@ $ ->
       #if f.hasClass 'hidden'
       forms.children().addClass('hidden')
       f.removeClass 'hidden'
-      window.createMap f
+      window.createMap
+        dom: f
+        location: null
+        editable: true
 
-      # Update MAP
-      mapWidth = f.find('#map-canvas').parent().width()
-      mapHeight = f.find('#map-canvas').parent().height()
-      console.log "Dimensions: #{mapWidth} - #{mapHeight}"
-      f.find('#map-canvas').width(mapWidth).height(mapHeight)
-      # streams.find('.form-control').css "background-color", "white"
-      # streams.children().eq index+1.css "background-color", "lightblue"
-
-      #else
-        #forms.children().addClass('hidden')
 
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
@@ -202,22 +198,11 @@ $ ->
     console.log loc[0]
     console.log loc[1]
 
-    mapWidth = $('#map-canvas').parent().width()
-    $('#map-canvas').width(mapWidth).height(mapWidth)
+    window.createMap
+      dom: $('#map-canvas').parent()
+      location: loc
+      editable: false
 
-    mapOptions =
-      center: new google.maps.LatLng loc[0], loc[1]
-      zoom: 8
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      disableDefaultUI: true
-
-    map = new google.maps.Map $('#map-canvas')[0], mapOptions
-
-    marker = new google.maps.Marker
-      map: map
-      draggable: false
-      animation: google.maps.Animation.DROP
-      position: mapOptions.center
 
     $("#live-update-btn").on 'switch-change', (e, data) ->
       value = data.value
@@ -226,7 +211,10 @@ $ ->
   $(document).bind "streams_edit", (e, obj) =>
     form = $ 'form'
     window.newStreamForm form
-    window.createMap form
+    window.createMap
+      dom: form
+      location: null
+      editable: true
 
   action = "streams_" + $("body").data("action")
   $.event.trigger action
