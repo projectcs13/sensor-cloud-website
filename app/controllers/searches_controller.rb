@@ -1,6 +1,16 @@
 class SearchesController < ApplicationController
+	def new
+        @vstream = Vstream.new
+
+    end
+	
+    def index
+    	@vstream = Vstream.new
+    end	
+
 
 	def show
+		@vstream = Vstream.new
 	end
 
 	def filter
@@ -42,6 +52,7 @@ class SearchesController < ApplicationController
 	end
 
 	def create
+		@vstream = Vstream.new
 		@nb_results_per_page = 8.0
 		if params['search']['query'].blank?
 			redirect_to root_path

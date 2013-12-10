@@ -1,5 +1,6 @@
 SensorCloud::Application.routes.draw do
 
+  get "vstreams/index"
   resources :users
   resources :streams do
     collection do
@@ -8,6 +9,7 @@ SensorCloud::Application.routes.draw do
     end
   end
 
+  resources :vstreams
   resources :searches
 	resources :sessions, 			only: [:new, :create, :destroy]
   resources :contacts, 			only: [:new, :create]
@@ -21,7 +23,7 @@ SensorCloud::Application.routes.draw do
   match '/suggest/:model', to: 'streams#suggest',          via: 'get'
   match '/datapoints/:id', to: 'streams#fetch_datapoints', via: 'get'
   match '/prediction/:id', to: 'streams#fetch_prediction', via: 'get'
-
+  match '/vsdatapoints/:id', to: 'vstreams#fetch_datapoints', via: 'get'
   match '/signup',    to: 'users#new',            via: 'get'
 	match '/signin', 		to: 'sessions#new',					via: 'get'
 	match '/signout',		to: 'sessions#destroy',			via: 'delete'
@@ -35,12 +37,16 @@ SensorCloud::Application.routes.draw do
   match '/manual',   to: 'static_pages#manual',       via: 'get'
   match '/help',     to: 'static_pages#help',         via: 'get'
   match '/about',    to: 'static_pages#about',        via: 'get'
+  match '/vstreams/create2', to: 'vstreams#create2',  via: 'post'
 
   match '/filter',       to: 'searches#filter',              via: 'get'
   match '/userranking',  to: 'searches#update_user_ranking', via: 'put'
   match '/autocomplete', to: 'searches#fetch_autocomplete',  via: 'get'
   match '/history',      to: 'searches#fetch_graph_data',    via: 'get'
 
+  # get "vstreams/new_vstream" => 'vstreams#new_vstream', :as => :new_vstream
+
+  
 	get 'users/:username/following' => 'users#following', as: :following
 
   get '/users/:username/edit/edit_profile' => 'users#profile'

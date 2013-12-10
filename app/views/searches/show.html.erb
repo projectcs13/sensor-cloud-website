@@ -3,6 +3,7 @@
   <div class="row search-header">
     <%= render 'search_bar' %>
   </div>
+      
 	<div class="row main">
 		<div class="col-md-4 tab-content"> <!-- Left side container-->
       <ul class="nav nav-tabs nav-justified">
@@ -39,5 +40,93 @@
         </div>
       </div>
     </div>
-	</div>
+    <br>
+    <br>
+    <div class="col-md-8 right-side-content right ">
+    <button class="btn btn-primary btn-lg glyphicon glyphicon-plus" data-toggle="modal" data-target="#myModal" onclick="getStreams();">Virtual Stream</button>
+
+
+    <script type="text/javascript">
+              function getStreams() {
+                streams = $('.search-result');
+                arr = streams.filter(function(i) { return streams.eq(i).children().first().hasClass('selected'); });
+                results=[]; 
+                arr.each(function(i) { results.push(arr.eq(i).data('streamid')); });
+                jsonstr = JSON.stringify(results)
+                $('#streams_involved').val (JSON.stringify(results)); 
+              }
+    </script>
+
+    </div>        
+  </div>     
+                    
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false&callback=map_init"></script>
+
+
+
+<!-- VSTREAMS  -->
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Create Virtual Stream</h4>
+      </div>
+      <div class="modal-body">
+
+
+        <form  action="/vstreams/create2" id="newVstreamForm" method="post" onsubmit=" function() {
+                                      
+                                      $.ajax( {
+                                          type: 'POST',
+                                          url: '/vstreams/create2',
+                                          data: $('form').serialize(),
+                                          success: function( response ) {
+                                          Code to process the response
+                                        }
+                                      }); 
+             
+                                      return false;
+                                      } "> 
+                                <div class="login-form" >
+
+
+
+                              <div class="form-group" style="display:none;">
+                                 <label for="streams_involved">streams_involved</label>
+                                <input type="text" name="streams_involved" id = "streams_involved"class="form-control" value=""/>
+                              </div>
+                              <div class="form-group">
+                                 <label for="name">Name</label>
+                                <input type="text" name="name" class="form-control"/>
+                              </div>
+                              <div class="form-group ">
+                                 <label for="description">Description</label>
+                                <input type="text" name="description" class="form-control" />
+                              </div>
+                              <div class="form-group">
+                                <label for="function">Function</label>
+                                <select class="form-control" name="function">
+                                  <option value='["total", "2s"]'>Sum</option>
+                                  <option value='["max", "2s"]'>Max</option>
+                                  <option value='["min", "2s"]'>Min</option>
+                                  <option value='["mean", "2s"]'>Average</option>
+                                </select>
+                              </div>
+
+
+                          </div>
+            </form>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" form="newVstreamForm"/>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
