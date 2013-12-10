@@ -1,18 +1,33 @@
 <div class="resource_box">
-  <h1 class="title">Create Streams</h1>
+  <h1 class="title">Create streams from resource</h1>
   <div class="clearfix"></div>
 
-  <div class="">
-  	<label>Resource's Model</label>
-  	<input type="text" class="form-control" id="resource_model">
-    <br>
-  	<div class="clearfix"></div>
+  <div class="col-md-5">
+    <div class="form-group">
+      <div>
+        <p><em class="form-control">Start typing a resource name to get suggestions.</em></p>
+        <div class="input-group">
+          <span class="input-group-addon">Resource Model</span>
+          <input type="text" class="form-control" id="resource_model">
+        </div>
+      </div>
+      <br />
+      <div class="hidden">
+        <p><em class="form-control">Type in the UUID to uniquely identify your resource in the streams.</em></p>
+        <div class="input-group">
+          <span class="input-group-addon">UUID</span>
+          <input type="text" class="form-control" id="resource_uuid">
+        </div>
+      </div>
+    </div>
+
+    <div class="hidden">
+      <p><em class="form-control">Select which stream templates to create from.</em></p>
+      <ul id="streams" class="list-group">
+        <!-- Add suggested streams creation form here -->
+      </ul>
+    </div>
   </div>
-
-  <ul id="streams" class="list-group col-md-5">
-  	<!-- Add suggested streams creation form here -->
-  </ul>
-
   <div id="forms" class="col-md-6 right">
     <%= form_for @stream, remote: true, html: { :id => "form-template", :class => "hidden login-form" } do |f| %>
       <%= render 'fields', f: f %>
