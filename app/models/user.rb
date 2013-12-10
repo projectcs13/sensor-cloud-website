@@ -24,20 +24,20 @@ class User < ActiveRecord::Base
 	end
 
 	def following?(stream_id)
-		res = Api::Api.new.get("/users/#{self.username}")
+		res = Api.get("/users/#{self.username}")
 		unless (res["subscriptions"]).empty?
 			res["subscriptions"].include?({"stream_id"=>"#{stream_id}"})
 		end
 	end
 
 	def follow!(stream_id)
-		res = Api::Api.new.put(
+		res = Api.put(
 			"/users/#{self.username}/_subscribe", {stream_id: "#{stream_id}"}
 		)
 	end
 
 	def unfollow!(stream_id)
-		res = Api::Api.new.put(
+		res = Api.put(
 			"/users/#{self.username}/_unsubscribe", {stream_id: "#{stream_id}"}
 		)
 	end
