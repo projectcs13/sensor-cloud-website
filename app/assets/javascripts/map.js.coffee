@@ -1,7 +1,28 @@
 window.createMap = (options) ->
   { dom, location, editable } = options
-  location = [60, 18] if location is null   # Default values
 
+  #Try W3C Geolocation (Preferred)
+  if location is null
+    location = new google.maps.LatLng 60, 18
+    if navigator.geolocation
+      navigator.geolocation.getCurrentPosition (position) ->
+        location = new google.maps.LatLng position.coords.latitude, position.coords.longitude
+        setup dom, location, editable
+      , ->
+        console.log "error"
+        # Get GeoLocation from IP here
+        # location = getLocationByIP()
+        setup dom, location, editable
+
+    else #Browser doesn't support Geolocation
+      # Get GeoLocation from IP here
+      # location = getLocationByIP()
+      setup dom, location, editable
+
+getLocationByIP = () ->
+  # nothing now
+
+setup = (dom, location, editable) ->
   # Maximize Map Canvas Dimensions
   canvas = dom.find('#map-canvas')
   w = canvas.parent().width()
@@ -9,7 +30,7 @@ window.createMap = (options) ->
   canvas.width(w).height(h)
 
   mapOptions =
-    center: new google.maps.LatLng location[0], location[1]
+    center: location
     zoom: 8
     mapTypeId: google.maps.MapTypeId.ROADMAP
     disableDefaultUI: true
@@ -20,7 +41,7 @@ window.createMap = (options) ->
     map: map
     draggable: true
     animation: google.maps.Animation.DROP
-    position: mapOptions.center
+    position: location
 
   dom.find('#lat').val marker.getPosition().lat()
   dom.find('#lon').val marker.getPosition().lng()
