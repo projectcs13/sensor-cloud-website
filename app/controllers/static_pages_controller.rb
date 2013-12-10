@@ -5,7 +5,7 @@ class StaticPagesController < ApplicationController
 
 		sort = { "user_ranking.average" => "desc" }
 		query = { match_all: {} }
-		res = Api::Api.new.post("/_search?from=0&size=10", { sort: sort, query: query })
+		res = Api.post("/_search?from=0&size=10", { sort: sort, query: query })
 
 		@streams = res['streams']['hits']['hits']
 
@@ -14,7 +14,7 @@ class StaticPagesController < ApplicationController
 			q = q + "," + "#{stream['_id']}"
 		end
 
-		res = Api::Api.new.get("/_history?" + q + "&size=1")
+		res = Api.get("/_history?" + q + "&size=1")
 
 		@values_ = res['history']
 

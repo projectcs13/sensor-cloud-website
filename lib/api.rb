@@ -1,7 +1,7 @@
 require 'json'
 
 module Api
-	class Api
+	class << self
 
 		def connect
 			conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
@@ -31,7 +31,7 @@ module Api
 			  req.headers['Content-Type'] = 'application/json'
 			  req.body = body.to_json
 			end
-			res = JSON.parse(res.body)
+		  res = JSON.parse(res.body)
 		end
 
 	end

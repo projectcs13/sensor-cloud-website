@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.find_by_username(params[:id])
-    res = Api::Api.new.get("/users/#{@user.username}/streams")
+    res = Api.get("/users/#{@user.username}/streams")
     @streams = res['streams']
     @nb_streams = @streams.length
 	end
@@ -15,11 +15,11 @@ class UsersController < ApplicationController
 		@title = "Following"
 		@user = User.find_by_username(params[:id])
     cid = current_user.username
-		res = Api::Api.new.get("/users/#{cid}")
+		res = Api.get("/users/#{cid}")
 		@subscriptions = res['subscriptions']
 		@stream_ids = @subscriptions.map { |e| e["stream_id"] }
 		@streams = @stream_ids.map do |s|
-			res = Api::Api.new.get("/streams/" + s)
+			res = Api.get("/streams/" + s)
 			res
 		end
 	end
@@ -36,7 +36,7 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 		if @user.save
 			sign_in @user
-      res = Api::Api.new.post(
+      res = Api.post(
       	"/users", 
       	params[:user].slice(:username, :email, :password, :firstname, :lastname, :description)
       )
@@ -51,7 +51,7 @@ class UsersController < ApplicationController
     if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
       @user.save
-      res = Api::Api.new.put(
+      res = Api.put(
       	"/users/#{@user.username}", 
       	params[:user].slice(:email, :password, :firstname, :lastname, :description)
       )
