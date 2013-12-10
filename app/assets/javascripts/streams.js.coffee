@@ -140,6 +140,7 @@ $ ->
           div.addClass 'chosen'
           return div.parent().index()
       $('#btnFinished').removeClass('hidden')
+      undefined
 
     createForm = (json) ->
       form = $('#form-template')
