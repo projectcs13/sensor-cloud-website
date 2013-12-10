@@ -1,32 +1,46 @@
-<table>
-  <tr>
-    <td>
-      <%= form_for(:search, url: searches_path) do |f| %>
-        <% unless @query.nil? %>
-          <div class="col-md-10 pull-left"><%= f.text_field :query, value: @query, class: "form-control" %></div>
-        <% else %>
-          <div class="col-md-10 pull-left"><%= f.text_field :query, class: "form-control" %></div>
-        <% end %>
-          <div class="col-md-2 pull-right"><%= submit_tag "Search", class: "btn btn-primary pull-right" %></div>
-        <%= f.hidden_field :filter_longitude, id: "long"%>
-        <%= f.hidden_field :filter_latitude, id: "lati"%>
-        <%= f.hidden_field :filter_distance, id: "radkm"%>
-        <% end %>
-        </div>
-    </td>
-    <td>
-      <%= label_tag "Sort by: " %>
-    </td><td>
-      <%= form_for(:search, url: searches_path) do |f| %>
-        <%= f.select "sort_by", options_for_select(
-                                  [["None", "none"], 
-                                   ['Name', "name"],
-                                   ['User ranking', "average"]], 
-                                params['search']['sort_by']),
-                                {}, onchange: "this.form.submit();",
-                                class: "form-control" %>
-        <%= f.hidden_field :query, value: @query  %>
+<div class="row">
+  <%= form_for(:search, url: searches_path) do |f| %>
+
+    <div class="col-md-6">
+      <% unless @query.nil? %>
+          <%= f.text_field :query, value: @query, class: "form-control" %>
+      <% else %>
+          <%= f.text_field :query, class: "form-control" %>
       <% end %>
-    </td></tr></table>
-    <br>
-    <br>
+    </div>
+
+    <div class="col-md-2">
+      <div class="pull-left">
+        <%= submit_tag "Search", class: "btn btn-primary pull-right" %>
+      </div>
+    </div>
+
+    <%= f.hidden_field :filter_longitude, id: "long"%>
+    <%= f.hidden_field :filter_latitude, id: "lati"%>
+    <%= f.hidden_field :filter_distance, id: "radkm"%>
+
+  <% end %>
+
+  <%= form_for(:search, url: searches_path) do |f| %>
+
+    <div class="col-md-2">
+      <div class="pull-right">
+        <%= label_tag "Sort by: " %>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <%= f.select "sort_by", options_for_select(
+                                [["None", "none"], 
+                                 ['Name', "name"],
+                                 ['User ranking', "average"]], 
+                              params['search']['sort_by']),
+                              {}, onchange: "this.form.submit();",
+                              class: "form-control" %>
+    </div>
+    <%= f.hidden_field :query, value: @query  %>
+
+  <% end %>
+</div>
+
+<br>
+<br>
