@@ -1,27 +1,23 @@
 class StreamsController < ApplicationController
 
-	before_action :correct_user,   only: [:edit, :update, :destroy]
-  before_action :set_stream,     only: [:show, :edit, :update, :destroy]
-  before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
+  before_action :get_current_user, only: [:index, :show, :new, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll]
+  before_action :correct_user,     only: [:edit, :update, :destroy]
+  before_action :set_stream,       only: [:show, :edit, :update, :destroy]
+  before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
-    @user = current_user
-    response = Faraday.get "#{CONF['API_URL']}/users/#{current_user.username}/streams"
+    response = Faraday.get "#{CONF['API_URL']}/users/#{@user.username}/streams"
     @streams = JSON.parse(response.body)['streams']
   end
 
   def show
-
 		@stream_id = params[:id]
 		resp = Faraday.get "#{CONF['API_URL']}/streams/#{@stream_id}"
 		stream_owner_id = JSON.parse(resp.body)['user_id']
 		@stream_owner = User.find_by(username: stream_owner_id)
-
-    @user = current_user
   end
 
   def new
-    @user = current_user
     @stream = Stream.new
   end
 
@@ -40,7 +36,7 @@ class StreamsController < ApplicationController
     render :json => res.body, :status => res.status
   end
 
-  def correctBooleanFields
+  def correctModelFields
     @stream.location = "#{@stream.latitude},#{@stream.longitude}"
     @stream.attributes.delete 'longitude'
     @stream.attributes.delete 'latitude'
@@ -69,17 +65,14 @@ class StreamsController < ApplicationController
   end
 
   def create
-    @user = current_user.username
+    @user = current_user
     @stream = Stream.new(stream_params)
-    correctBooleanFields
-
-    logger.debug "attributes"
-    logger.debug @stream.attributes
+    correctModelFields
 
     respond_to do |format|
       res = post
-        logger.debug "BODY: #{res.body}"
-        if res.status == 200
+      res.on_complete do
+        if res.status == 200 and @stream.valid?
 
           @stream.id = JSON.parse(res.body)['_id']
           # TODO
@@ -93,20 +86,20 @@ class StreamsController < ApplicationController
         	format.html { render action: 'new' }
         	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
       	end
+      end
     end
   end
 
   def update
     @user = current_user
     @stream.assign_attributes(stream_params)
-    correctBooleanFields
+    correctModelFields
 
     respond_to do |format|
       stream_id = @stream.id
       res = put
-      logger.debug "attributes: #{@stream.attributes}"
       res.on_complete do
-        if res.status == 200
+        if res.status == 200 and @stream.valid?
           # TODO
           # The API is currently sending back the response before the database has
           # been updated. The line below will be removed once this bug is fixed.
@@ -136,7 +129,6 @@ class StreamsController < ApplicationController
     sleep(1.0)
 
     respond_to do |format|
-      # format.html { redirect_to streams_path }
       format.html { redirect_to "/users/#{@user.username}/streams" }
       format.json { head :no_content }
     end
@@ -144,16 +136,19 @@ class StreamsController < ApplicationController
 
   def destroyAll
     @user = current_user
-    deleteAll
+    res = deleteAll
+
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
     sleep(1.0)
 
     respond_to do |format|
-      # format.html { redirect_to streams_path }
-      format.html { redirect_to "/users/#{@user.username}/streams" }
-      format.json { head :no_content }
+      res.on_complete do
+        # format.html { redirect_to streams_path }
+        format.html { redirect_to "/users/#{@user.username}/streams" }
+        format.json { head :no_content }
+      end
     end
   end
 
@@ -172,31 +167,30 @@ class StreamsController < ApplicationController
   end
 
   def post
-    cid = current_user.username
-    url = "#{CONF['API_URL']}/users/#{cid}/streams/"
+    url = "#{CONF['API_URL']}/users/#{@user.username}/streams/"
     send_data(:post, url, @stream.attributes.to_json)
   end
 
   def put
-    cid = current_user.username
-    url = "#{CONF['API_URL']}/users/#{cid}/streams/#{@stream.id}"
+    url = "#{CONF['API_URL']}/users/#{@user.username}/streams/#{@stream.id}"
     @stream.attributes.delete 'id'
     send_data(:put, url, @stream.attributes.to_json)
   end
 
   def deleteAll
-    cid = current_user.username
-    url = "#{CONF['API_URL']}/users/#{cid}/streams/"
+    url = "#{CONF['API_URL']}/users/#{@user.username}/streams/"
     send_data(:delete, url, nil)
   end
 
 
   private
-
     # Use callbacks to share common setup or constraints between actions.
     def set_stream
-      #@stream = Stream.find(params[:id], _user_id: current_user.username)
       @stream = Stream.find(params[:id])
+    end
+
+    def get_current_user
+      @user = current_user
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
