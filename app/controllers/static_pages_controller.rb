@@ -6,8 +6,7 @@ class StaticPagesController < ApplicationController
 		sort = { "user_ranking.average" => "desc" }
 		query = { match_all: {} }
 		res = Api.post("/_search?from=0&size=10", { sort: sort, query: query })
-
-		@streams = res['streams']['hits']['hits']
+		@streams = res["body"]["streams"]["hits"]["hits"]
 
 		q = "stream_id="
 		@streams.each do |stream|
@@ -16,7 +15,7 @@ class StaticPagesController < ApplicationController
 
 		res = Api.get("/_history?" + q + "&size=1")
 
-		@values_ = res['history']
+		@values_ = res["body"]["history"]
 
 		@values = Hash.new("NO DATA")
 		@values_.each do |val|
