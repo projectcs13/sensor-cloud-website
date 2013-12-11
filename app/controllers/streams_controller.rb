@@ -152,6 +152,13 @@ class StreamsController < ApplicationController
     end
   end
 
+  def fetch_datapreview
+    res = Api.get("#{params[:uri]}")
+    respond_to do |format|
+      format.json { render json: res["body"], status: res["status"] }
+    end
+  end
+
   private
     # Aux Functions
 

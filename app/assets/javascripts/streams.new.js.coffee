@@ -25,7 +25,7 @@ window.newStreamForm = (form) ->
   btnPreview = form.find ".btn-preview"
 
   textUri = form.find "#stream_uri"
-  areaPreview = form.find ".preview-area"
+  areaPreview = form.find "#preview-area"
 
   polling = form.find ".polling"
   pollingSwitch = form.find ".polling-switch"
@@ -110,10 +110,15 @@ window.newStreamForm = (form) ->
 
   preview = (event) ->
     do event.preventDefault
-    console.log "WHAT?", textUri.val()
-    $.getJSON textUri.val(), (data) ->
-      console.log "RETURN!", data
-      areaPreview.val data 
+    $.ajax
+      type: "post",
+      dataType: "json",
+      url: "/preview/",
+      data: { uri: textUri.val() }
+    .done (data) ->
+      console.log data
+      console.log areaPreview
+      areaPreview.val JSON.stringify data, undefined, 2
 
 
   switchChanged = (event) ->

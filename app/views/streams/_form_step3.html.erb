@@ -15,9 +15,9 @@
       <%= f.label :uri, class: "left" %>
       <label class="explanation">Which URL will be used to poll data points from?</label>
       <div class="input-group left">
-        <%= f.text_field :uri, class: "form-control", placeholder: "e.g: http://example.com/temperature/uppsala" %>
+        <%= f.text_field :uri, class: "form-control input", placeholder: "e.g: http://example.com/temperature/uppsala" %>
         <span class="input-group-btn">
-          <button class="btn btn-default btn-preview" type="button">Get!</button>
+          <button class="btn btn-default btn-preview" type="button">Preview!</button>
         </span>
       </div>
     </div>
@@ -25,7 +25,7 @@
     <div>
       <div class="left col-md-6">
         <label class="left" >Data preview</label><br>
-        <textarea class="form-control" rows="8"></textarea>
+        <textarea id="preview-area" class="form-control" rows="8"></textarea>
       </div>
 
       <div class="right col-md-6">
