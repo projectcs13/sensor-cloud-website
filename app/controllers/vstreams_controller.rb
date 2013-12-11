@@ -157,9 +157,6 @@ class VstreamsController < ApplicationController
   end
 
 def create2
-  logger.debug "PARAMS: #{params}"
-  logger.debug '{"user_id" : "#{current_user.username}", "name" : "'+params[:name]+'", "description" :  "'+params[:description]+'", "streams_involved" : '+params[:streams_involved]+', "timestampfrom" : "now-1w", "function" : ' + params[:function] + '}'
-
   conn = Faraday.new(:url => "#{CONF['API_URL']}/vstreams/") do |faraday|
     faraday.request  :url_encoded               # form-encode POST params
     faraday.response :logger                    # log requests to STDOUT
@@ -170,7 +167,7 @@ def create2
   res = conn.post do |req|
     req.url "#{CONF['API_URL']}/vstreams/"
     req.headers['Content-Type'] = 'application/json'
-    req.body = '{"user_id" : "sookie2", "name" : "'+params[:name]+'", "description" :  "'+params[:description]+'", "streams_involved" : '+params[:streams_involved]+', "timestampfrom" : "now-1w", "function" : ' + params[:function] + '}'
+    req.body = '{"user_id" : "'+params[:user_id]+'", "name" : "'+params[:name]+'", "description" :  "'+params[:description]+'", "streams_involved" : '+params[:streams_involved]+', "timestampfrom" : "'+params[:starting_date]+'", "function" : ' + params[:function] + '}'
   end
 
 

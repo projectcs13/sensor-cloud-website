@@ -1,7 +1,7 @@
 class Vstream
   include Her::Model
 
-  attributes :name, :description, :user_id, :function, :streams_involved
+  attributes :name, :description, :user_id, :function, :streams_involved, :starting_date
 	validates :name,  presence: true, length: { maximum:50 }
 
   belongs_to :user

@@ -1,7 +1,10 @@
 SensorCloud::Application.routes.draw do
 
   get "vstreams/index"
-  resources :users
+  resources :users do   
+      resources :vstreams
+  end    
+
   resources :streams do
     collection do
       get '/new_from_resource', :to => :new_from_resource
@@ -51,6 +54,7 @@ SensorCloud::Application.routes.draw do
 
   get '/users/:username/edit/edit_profile' => 'users#profile'
   get '/users/:username/streams' => 'streams#index'
+  post '/users/:user_id/vstreams/create2' => 'vstreams#create2'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -78,7 +78,7 @@
       <div class="modal-body">
 
 
-        <form  action="/vstreams/create2" id="newVstreamForm" method="post" onsubmit=" function() {
+        <form  action="/users/<%= current_user.username %>/vstreams/create2" id="newVstreamForm" method="post" onsubmit=" function() {
                                       
                                       $.ajax( {
                                           type: 'POST',
@@ -107,20 +107,28 @@
                                  <label for="description">Description</label>
                                 <input type="text" name="description" class="form-control" />
                               </div>
+                              <div class="form-group ">
+                                 <label for="starting_date">Starting Date</label>
+                                <input type="text" name="starting_date" class="form-control" id="datepicker"/>
+                              </div>
                               <div class="form-group">
                                 <label for="function">Function</label>
                                 <select class="form-control" name="function">
-                                  <option value='["total", "2s"]'>Sum</option>
-                                  <option value='["max", "2s"]'>Max</option>
-                                  <option value='["min", "2s"]'>Min</option>
-                                  <option value='["mean", "2s"]'>Average</option>
+                                  <option value='["total", "1m"]'>Sum</option>
+                                  <option value='["max", "1m"]'>Max</option>
+                                  <option value='["min", "1m"]'>Min</option>
+                                  <option value='["mean", "1m"]'>Average</option>
                                 </select>
                               </div>
 
 
                           </div>
             </form>
-
+<script>
+  $(function() {
+    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-ddT00:00:00.000" });
+  });
+  </script>
 
       </div>
       <div class="modal-footer">
