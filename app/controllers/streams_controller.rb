@@ -136,14 +136,14 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = Faraday.get "{CONF['API_URL']}/streams/#{params[:id]}/data/_search"
+    res = Faraday.get "#{CONF['API_URL']}/streams/#{params[:id]}/data/_search"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
   end
 
   def fetch_prediction
-    res = Faraday.get "{CONF['API_URL']}/streams/#{params[:id]}/_analyse"
+    res = Faraday.get "#{CONF['API_URL']}/streams/#{params[:id]}/_analyse"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
