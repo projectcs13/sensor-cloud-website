@@ -1,42 +1,43 @@
 <div class="row title-row">
-  <div class="col-lg-8">
-		<h2 class="text-left"><%= @vstream.name %> <small><%= @vstream.user_id %></small></h2>
+    <div class="col-lg-8">
+		    <h2 class="text-left"><%= @vstream.name %> <small><%= @vstream.user_id %></small></h2>
 		<%#= render 'follow_form' if signed_in? %>
-	</div>
-
-  
+    </div>
 </div>
 
 
 
 <div class="row">
-  <div class="col-lg-8"> <!-- Left side -->
-    <div class="stream-graph graph-canvas" id="graph-canvas"></div>
-    <span class="btn btn-primary" id="prediction-btn">Fetch Prediction</span>
-      <div id="prediction-description" class="pull-right">
-        <span class="label prediction-80">80% Confidence interval</span>
-        <span class="label prediction-95">95% Confidence interval</span>
-      </div>
-        <div class="pull-right">Live update:
-          <div class="make-switch switch-mini" id="live-update-btn">
-            <input id="live-update-checkbox" type="checkbox">
-          </div>
+    <div class="col-lg-8"> <!-- Left side -->
+        <div class="stream-graph graph-canvas" id="graph-canvas"></div>
+        <span class="btn btn-primary" id="prediction-btn">Fetch Prediction</span>
+        <div id="prediction-description" class="pull-right">
+            <span class="label prediction-80">80% Confidence interval</span>
+            <span class="label prediction-95">95% Confidence interval</span>
         </div>
-      
-      <h4>Description: </h4>
-      <div class="stream-description well"><%= @vstream.description %></div>
-      <h4>Tags: </h4>
-     
-			<% if not @user.nil? and @user.username == @vstream.user_id %>
-      	<%= link_to 'Edit', edit_vstream_path(@vstream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
-      	<%= link_to 'Delete', @vstream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
-			<% end %>
-  </div>
-  <div class="col-md-4"> <!-- Right side -->
-    <div id="map-canvas">
+        <div class="pull-right">Live update:
+            <div class="make-switch switch-mini" id="live-update-btn">
+                <input id="live-update-checkbox" type="checkbox" />
+            </div>
+        </div>
+
+        <h4>Description: </h4>
+        <div class="stream-description well"><%= @vstream.description %></div>
+        <h4>Tags: </h4>
+        
+        <% if not @user.nil? and @user.username == @vstream.user_id %>
+            <h4>Streams: </h4>
+            <div class="streams-involved well"><%= @vstream.streams_involved %></div>
+            <h4>Tags: </h4>
+        <% end %>
+
+
+        <% if not @user.nil? and @user.username == @vstream.user_id %>
+        <%= link_to 'Edit', edit_vstream_path(@vstream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+        <%= link_to 'Delete', @vstream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+        <% end %>
     </div>
-      <!-- <div id="location" style="display: none;" value="<%#= @stream.location %>"></div> -->
-  </div>
+    
 </div>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>
 

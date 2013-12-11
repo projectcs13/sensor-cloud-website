@@ -96,3 +96,19 @@
 #forms {
   padding: 0;
 }
+
+.input-group {
+  width: 100% !important;
+}
+
+.explanation {
+  display: none;
+  color: lightseagreen;
+  font-weight: normal;
+  float: left;
+  margin-left: 1em;
+}
+
+.required {
+  color: $custom-red;
+}

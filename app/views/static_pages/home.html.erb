@@ -4,94 +4,61 @@
 			<div class="col-md-11" style="padding-right: 0px;">
 
 				<%= form_for(:search, url: searches_path) do |f| %>
-					<%= f.text_field :query, class: "form-control input-lg pull-right", style: "border-radius: 0px;" %>
+					<%= f.text_field :query, class: "searchbar form-control input-lg pull-right", placeholder: "e.g. Temperature in Uppsala" %>
 					<%= f.hidden_field :sort_by, :value => "none" %>
 
 			</div>
 			<div class="col-md-1" style="padding-left: 0px;">
 
 					<%= f.submit "Search", class: "btn btn-lg btn-primary pull-left", style: "border-radius: 0px;" %>
-				<% end %>	
-
-			</div>
-			
-		</div>
-	</div>
-	<div class="center" style="color: #ffffff; font-weight:bold; padding-top: 10px;">
-				E.g. temperature in Uppsala
-			</div>
-</div>
-
-<div style="height:400px;">
-
-	<div id="wrapper">
-		<div id="carousel">
-			<ul>
-				<% @streams.each do |stream| %>
-				<li>
-					<div>
-					<span class="glyphicon glyphicon-search"></span>
-	    		<h4>
-						<% stream_id = stream['_id'] %>
-						<% url = "/streams/#{stream_id}" %>
-						<%= link_to(stream['_source']['name'], url) %>
-					</h4>
-					<p style="font-size: 14px;">
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-					</p>
-					</div>
-				</li>
 				<% end %>
-				<!--
-				<li><%= image_tag "up2.jpg" %><span>Image2</span></li>
-				<li><%= image_tag "up3.jpg" %><span>Image3</span></li>
-				<li><%= image_tag "up4.jpg" %><span>Image4</span></li>
-				<li><%= image_tag "up5.jpg" %><span>Image5</span></li>
-				<li><%= image_tag "up6.jpg" %><span>Image6</span></li>
-				-->					
-			</ul>
-			<div class="clearfix"></div>
-			<a id="prev" class="prev" href="#">&lt;</a>
-			<a id="next" class="next" href="#">&gt;</a>
-			<br/>
-			<div id="pager" class="pager"></div>
+
+			</div>
+
 		</div>
 	</div>
-
 </div>
+
+<div id="wrapper">
+	<div id="carousel">
+		<ul>
+			<% @streams.each do |stream| %>
+			<li>
+				<div>
+				<span class="glyphicon glyphicon-search"></span>
+    		<h4>
+					<% stream_id = stream['_id'] %>
+					<% url = "/streams/#{stream_id}" %>
+					<%= link_to(stream['_source']['name'], url) %>
+				</h4>
+				<p style="font-size: 14px;">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				</p>
+				</div>
+			</li>
+			<% end %>
+		</ul>
+		<div class="clearfix"></div>
+		<a id="prev" class="prev" href="#">&lt;</a>
+		<a id="next" class="next" href="#">&gt;</a>
+		<br/>
+		<div id="pager" class="pager"></div>
+	</div>
+</div>
+
+<%= render "marketing.html.erb" %>
+
 
 <script type="text/javascript">
 	$(function() {
- 
+
 	$('#carousel ul').carouFredSel({
 		prev: '#prev',
 		next: '#next',
 		pagination: "#pager",
 		scroll: 1000
 	});
-	
+
 });
 </script>
 
-<!--
-<div class="list_carousel" id="carousel_items">
-
-	    <ul id="foo">
-
-	    	<% @streams.each do |stream| %>
-	    		<li>
-	    			<br><br>
-	    			<%= @values["#{stream['_id']}"]%>
-	    			<h4>
-							<% resource_id = stream['_source']['resource_id'] %>
-							<% stream_id = stream['_id'] %>
-							<% url = "/streams/#{stream_id}" %>
-							<%= link_to(stream['_source']['name'], url) %>
-						</h4>
-	    		</li>
-				<% end %>
-			
-		</ul>
-	    <div class="clearfix"></div>
-</div>
--->

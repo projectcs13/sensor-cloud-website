@@ -1,3 +1,14 @@
+<% def_location = 
+  if @stream.location.nil? then " " 
+  elsif @stream.location.is_a?(String) then
+        @stream.location
+  elsif @stream.location.is_a?(Array) then
+        @stream.location[0].to_s+","+@stream.location[1].to_s
+  else
+        @stream.location['lat'].to_s+","+@stream.location['lon'].to_s
+  end
+%>
+
 <div class="row title-row">
   <div class="col-lg-8">
 		<h2 class="text-left"><%= @stream.name %> <small><%= @stream.user_id %></small></h2>
@@ -62,15 +73,22 @@
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
         <% end %>
       </div>
-			<% if not @user.nil? and @user.username == @stream.user_id %>
+      <% if not @user.nil? and @user.username.downcase == @stream.user_id %>
+      	<h4>Parser: </h4>
+      	<div class="stream-description well">
+      	 	Path : <%= @stream.parser %> <br>
+     	 	Data-Type : <%= @stream.data_type %> <br>
+     	 	URI : <%= @stream.uri %> <br>
+     	 	Polling Frequency : <%= @stream.polling_freq %> (sec) <br>
+     	</div>
       	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
       	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
-			<% end %>
+	 <% end %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
     <div id="map-canvas">
     </div>
-      <div id="location" style="display: none;" value="<%= @stream.location %>"></div>
+      <div id="location" style="display: none;" value="<%= def_location %>"></div>
   </div>
 </div>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>

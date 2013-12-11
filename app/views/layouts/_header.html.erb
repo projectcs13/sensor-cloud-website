@@ -42,7 +42,7 @@
 				<% if signed_in? %>
 					<li>
 						<%= link_to user_path(current_user), id: "username" do %>
-							<%= gravatar_for current_user %>
+							<%= gravatar_for(current_user, {size: 32}) %>
 							<%= current_user.username %>
 						<% end %>
 					</li>
