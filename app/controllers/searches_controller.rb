@@ -54,16 +54,19 @@ class SearchesController < ApplicationController
 
 			res = conn.post do |req|
 				if (not params['search']['page'].blank?)
-					req.url "/_search?location=true&?from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+
+					req.url "/_search?location=true&from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				elsif (not params['search']['page_users'].blank?)
-					req.url "/_search?location=true&?from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				else
-					req.url "/_search?location=true&?from=0&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&from=0&size=#{@nb_results_per_page.to_i}"
 				end
 				req.headers['Content-Type'] = 'application/json'
 
-				if params['search']['sort_by'] == "none" or params['search']['sort_by'].nil?
+				if params['search']['sort_by'] == "none"
 					sort_by = '{}'
+				elsif params['search']['sort_by'].nil?
+					sort_by = '{"average":"desc"}'
 				else
 					sort_by = '{"' + params['search']['sort_by'] + '":"desc" }'
 				end

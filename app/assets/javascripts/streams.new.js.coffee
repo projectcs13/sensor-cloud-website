@@ -24,10 +24,11 @@ window.newStreamForm = (form) ->
   btnCreate = form.find ".btn-create"
 
   polling = form.find ".polling"
-  updateSwitch = form.find "#update-switch"
+  pollingSwitch = form.find ".polling-switch"
   progress = form.find ".progress-bar"
 
   explanations = form.find '.explanation'
+
   #
   # Auxiliary Functions
   #
@@ -47,7 +48,10 @@ window.newStreamForm = (form) ->
     progress.width(w + ratio)
 
   setInputFocus = ->
-    steps.eq(currentStep).find('input').first().focus()
+    steps.eq(currentStep).find('.input').first().focus()
+
+  goBack = -> moveToNextStep false
+  goNext = -> moveToNextStep true
 
   moveToNextStep = (next) ->
     steps.eq(currentStep).hide TIME
@@ -68,13 +72,12 @@ window.newStreamForm = (form) ->
         btnNext.css 'display', 'inline-block'
         # btnNext.removeClass('btn-disabled').addClass('btn-primary')
 
-      moveToNextStep false
+      do goBack
       do decreaseBar
       do updateStepInformation
       do setInputFocus
 
-      if currentStep is 0
-        btnBack.css 'display', 'none'
+      btnBack.css 'display', 'none' if currentStep is 0
 
 
   next = (event) ->
@@ -83,7 +86,7 @@ window.newStreamForm = (form) ->
     if currentStep < steps.length-1
       btnBack.css 'display', 'inline-block'
 
-      moveToNextStep true
+      do goNext
       do increaseBar
       do updateStepInformation
       do setInputFocus
@@ -105,6 +108,7 @@ window.newStreamForm = (form) ->
   switchChanged = (event) ->
     do event.preventDefault
     polling.toggle TIME * 2
+    do setInputFocus
 
 
   explain = (event) ->
@@ -113,22 +117,24 @@ window.newStreamForm = (form) ->
       explanations.hide TIME
       exp.show TIME
 
+  initBootstrapSwitches = ->
+    input = """<input class="form-control" id="stream_private" name="stream[private]" type="checkbox" value="1">"""
+    form.find('.private-switch').empty().append(input).bootstrapSwitch()
+
+    input = """<input checked="checked" class="form-control" id="stream_polling" name="stream[polling]" type="checkbox" value="false">"""
+    pollingSwitch.empty().append(input).bootstrapSwitch().on 'switch-change', switchChanged
 
   #
   # Initialization
   #
 
-  form.find('input').on 'focus', explain
-
+  form.find('.input').on 'focus', explain
   btnNext.on 'click', next
   do btnBack.on('click', back).hide
   do btnCreate.on('click', create).hide
   do updateStepInformation
   do setInputFocus
-
-  updateSwitch.on 'switch-change', switchChanged
+  do initBootstrapSwitches
 
   steps.each (i, step) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
-
-

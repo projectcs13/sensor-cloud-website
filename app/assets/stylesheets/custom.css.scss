@@ -593,3 +593,10 @@ input.search-query {
   margin-bottom: 0;
 }
 
+.searchbar {
+  border-radius: 0px;
+}
+
+.searchbar::-webkit-input-placeholder {
+  font-style: italic;
+}
