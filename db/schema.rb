@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20131211122314) do
 
+  create_table "multistreams", force: true do |t|
+  end
+
   create_table "relationships", force: true do |t|
     t.integer  "follower_id"
     t.string   "followed_id"

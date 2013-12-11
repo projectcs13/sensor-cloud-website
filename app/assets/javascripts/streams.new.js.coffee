@@ -22,6 +22,10 @@ window.newStreamForm = (form) ->
   btnBack   = form.find ".btn-back"
   btnNext   = form.find ".btn-next"
   btnCreate = form.find ".btn-create"
+  btnPreview = form.find ".btn-preview"
+
+  textUri = form.find "#stream_uri"
+  areaPreview = form.find "#preview-area"
 
   polling = form.find ".polling"
   pollingSwitch = form.find ".polling-switch"
@@ -104,6 +108,18 @@ window.newStreamForm = (form) ->
       form.trigger 'submit'
     , TIME * 2
 
+  preview = (event) ->
+    do event.preventDefault
+    $.ajax
+      type: "post",
+      dataType: "json",
+      url: "/preview/",
+      data: { uri: textUri.val() }
+    .done (data) ->
+      console.log data
+      console.log areaPreview
+      areaPreview.val JSON.stringify data, undefined, 2
+
 
   switchChanged = (event) ->
     do event.preventDefault
@@ -135,6 +151,7 @@ window.newStreamForm = (form) ->
   do updateStepInformation
   do setInputFocus
   do initBootstrapSwitches
+  btnPreview.on 'click', preview
 
   steps.each (i, step) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
