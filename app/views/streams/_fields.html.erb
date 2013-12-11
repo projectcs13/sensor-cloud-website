@@ -14,7 +14,7 @@
   </div>
 <% end %>
 
-<%= render "form_header" %>
+<%= render "form_header", f: f %>
 
 <div class="steps">
   <% 3.times do |i| %>
@@ -22,8 +22,10 @@
   <% end %>
 </div>
 
+<%= render "form_hidden_fields", f: f %>
+
 <footer class="center">
-  <%= render "form_buttons" %>
+  <%= render "form_buttons", f: f %>
 </footer>
 
 <br/>
