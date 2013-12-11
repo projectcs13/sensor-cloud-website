@@ -5,7 +5,7 @@
 
 				<%= form_for(:search, url: searches_path) do |f| %>
 					<%= f.text_field :query, class: "searchbar form-control input-lg pull-right", placeholder: "e.g. Temperature in Uppsala" %>
-					<%= f.hidden_field :sort_by, :value => "none" %>
+					<%= f.hidden_field :sort_by, :value => "average" %>
 
 			</div>
 			<div class="col-md-1" style="padding-left: 0px;">
