@@ -1,6 +1,6 @@
 <div class="row title-row">
     <div class="col-lg-8">
-		    <h2 class="text-left"><%= @vstream.name %> <small><%= @vstream.user_id %></small></h2>
+		    <h2 class="text-left"><%= @vstream.name %> </h2>
 		<%#= render 'follow_form' if signed_in? %>
     </div>
 </div>
@@ -20,10 +20,12 @@
                 <input id="live-update-checkbox" type="checkbox" />
             </div>
         </div>
+        <h4>Owner: </h4>
+      <div class="stream-description well"><a href="/users/<%= @vstream.user_id %>" ><%= @vstream.user_id %></a></div>
 
         <h4>Description: </h4>
         <div class="stream-description well"><%= @vstream.description %></div>
-        <h4>Tags: </h4>
+        
         
         <% if not current_user.username.nil? and current_user.username == @vstream.user_id %>
             <h4>Streams Involved: </h4>

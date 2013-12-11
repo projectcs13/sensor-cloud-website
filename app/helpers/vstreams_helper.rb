@@ -6,8 +6,8 @@ module VstreamsHelper
                 
 
 		res = Api.get("/streams/#{stream_id}")
-	    stream_owner_id = res['user_id']
-		stream_name= res['name']
+	    stream_owner_id = res["body"]["user_id"]
+		stream_name= res["body"]["name"]
 		link_to "#{stream_name}", "/streams/#{stream_id}"
 	end
 

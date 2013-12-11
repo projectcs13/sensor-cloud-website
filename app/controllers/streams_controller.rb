@@ -7,6 +7,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
+    logger.debug "#{@user.username}"
     res = Api.get("/users/#{@user.username}/streams")
     @streams = res["body"]["streams"]
   end
