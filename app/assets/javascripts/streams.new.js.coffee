@@ -151,7 +151,7 @@ window.newStreamForm = (form) ->
   do updateStepInformation
   do setInputFocus
   do initBootstrapSwitches
-  do btnPreview.on 'click', preview
+  btnPreview.on 'click', preview
 
   steps.each (i, step) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
