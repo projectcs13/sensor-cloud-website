@@ -9,6 +9,9 @@ SensorCloud::Application.routes.draw do
       get 'following' => 'users#following'
     end
   end
+  resources :users do
+    resources :vstreams
+  end  
 
   resources :streams do
     collection do
@@ -18,7 +21,7 @@ SensorCloud::Application.routes.draw do
     end
   end
 
-  resources :vstreams
+  # resources :vstreams
   resources :searches
 	resources :sessions, only: [:new, :create, :destroy]
   resources :contacts, only: [:new, :create]

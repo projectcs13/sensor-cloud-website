@@ -129,8 +129,11 @@ class SearchesController < ApplicationController
 			logger.debug "#{res.body}"
 			json = JSON.parse(res.body)
 			@streams = json['streams']['hits']['hits']
+			@vstreams = json['vstreams']
 			@users = json['users']['hits']['hits']
 			@count_streams = json['streams']['hits']['total']
+			
+			
 			@count_users = json['users']['hits']['total']
 			@count_all = json['streams']['hits']['total'] + json['users']['hits']['total']
 			@nb_pages = (@count_streams / @nb_results_per_page).ceil

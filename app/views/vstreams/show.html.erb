@@ -25,10 +25,17 @@
         <div class="stream-description well"><%= @vstream.description %></div>
         <h4>Tags: </h4>
         
-        <% if not @user.nil? and @user.username == @vstream.user_id %>
-            <h4>Streams: </h4>
-            <div class="streams-involved well"><%= @vstream.streams_involved %></div>
-            <h4>Tags: </h4>
+        <% if not current_user.username.nil? and current_user.username == @vstream.user_id %>
+            <h4>Streams Involved: </h4>
+            <div class="streams-involved well">
+                <% @vstream.streams_involved.each do | cur | %>
+                    <!-- <a href="/users/<%=@vstream.user_id%>/streams/<%#=cur%>"> <%= cur %></a><br> -->
+                    <%= vstreamname(cur) %><br>
+                <%end%>
+
+
+
+            </div>
         <% end %>
 
 

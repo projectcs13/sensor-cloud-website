@@ -127,10 +127,10 @@ class VstreamsController < ApplicationController
   end
 
   def destroy
+    @user = current_user
+    #@stream.destroy(_user_id: current_user.username)
     @vstream.destroy
-		Relationship.all.where(followed_id: @vstream.id).each do |r|
-			r.destroy
-		end
+	
 
     # TODO
     # The API is currently sending back the response before the database has
@@ -138,13 +138,14 @@ class VstreamsController < ApplicationController
 		sleep(1.0)
 
     respond_to do |format|
-      format.html { redirect_to vstreams_path }
+      format.html { redirect_to "/users/#{current_user.username}/vstreams" }
       format.json { head :no_content }
     end
   end
 
   def destroyAll
-    deleteAll
+    @user = current_user
+    res = deleteAll
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
@@ -174,7 +175,8 @@ def create2
   respond_to do |format|
     json = JSON.parse(res.body)
     id = json["_id"]
-    format.html { redirect_to "/vstreams/#{id}" }
+    user_id= json["user_id"]
+    format.html { redirect_to "/users/"+params[:user_id]+"/vstreams/#{id}" }
     #render :action => 'show', :id => json["_id"]
   end
 
@@ -197,7 +199,7 @@ end
   end
 
   def deleteAll
-    cid = current_user.username
+    cid = @user.username
     url = "#{CONF['API_URL']}/users/#{cid}/vstreams/"
     send_data(:delete, url, nil)
   end
@@ -272,8 +274,9 @@ end
 			end
 		end
 
-		def correct_user
-			@user = User.find(Vstream.find(params[:id]).user_id)
-			redirect_to(root_url) unless current_user?(@user)
-		end
+    def correct_user
+      stream = Vstream.find(params[:id], :_user_id => current_user.username)
+      user = User.find_by_username(:user_id)
+      redirect_to(root_url) unless current_user?(user)
+    end
 end
