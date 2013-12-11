@@ -7,8 +7,8 @@ class StreamsController < ApplicationController
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
-    res = get "/users/#{@user.username}/streams"
-    @streams = JSON.parse(res.body)['streams']
+    res = Api.get("/users/#{@user.username}/streams")
+    @streams = res['streams']
   end
 
   def get_streams
@@ -17,8 +17,8 @@ class StreamsController < ApplicationController
 
   def show
 		@stream_id = params[:id]
-		res = get "/streams/#{@stream_id}"
-		stream_owner_id = JSON.parse(res.body)['user_id']
+    res = Api.get("/streams/#{@stream_id}")
+    stream_owner_id = res['user_id']
 		@stream_owner = User.find_by(username: stream_owner_id)
   end
 
@@ -106,9 +106,6 @@ class StreamsController < ApplicationController
     @user = current_user
     #@stream.destroy(_user_id: current_user.username)
     @stream.destroy
-    Relationship.all.where(followed_id: @stream.id).each do |r|
-      r.destroy
-    end
 
     # TODO
     # The API is currently sending back the response before the database has
@@ -139,26 +136,23 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = get "/streams/#{params[:id]}/data/_search"
+    res = Faraday.get "{CONF['API_URL']}/streams/#{params[:id]}/data/_search"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
   end
 
   def fetch_prediction
-    res = get "/streams/#{params[:id]}/_analyse"
+    res = Faraday.get "{CONF['API_URL']}/streams/#{params[:id]}/_analyse"
     respond_to do |format|
       format.json { render json: res.body, status: res.status }
     end
   end
 
-  def get path
-    Faraday.get "#{CONF['API_URL']}#{path}"
-  end
-
   def post
     url = "#{CONF['API_URL']}/users/#{@user.username}/streams/"
     send_data(:post, url, @stream.attributes.to_json)
+
   end
 
   def put
