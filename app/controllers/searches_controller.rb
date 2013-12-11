@@ -17,37 +17,27 @@ class SearchesController < ApplicationController
 	end
 
 	def update_user_ranking
-		conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
-				faraday.request  :url_encoded             # form-encode POST params
-				faraday.response :logger                  # log requests to STDOUT
-				faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-			end
+		res = Api.put(
+			"/streams/#{params[:json][:stream_id]}/_rank", 
+			{ user_id: current_user.username, ranking: params[:json][:value] }
+		)
 
-		res = conn.put do | req |
-			json = { :user_id => "#{current_user.username}", :ranking => params[:json][:value] }
-			logger.debug json.to_json
-			req.url "#{CONF['API_URL']}/streams/#{params[:json][:stream_id]}/_rank"
-			req.headers['Content-Type'] = 'application/json'
-			req.body = json.to_json
-		end
-		
 		respond_to do |format|
-			format.json { render json: res.body, status: res.status }
+			format.json { render json: res["body"], status: res["status"] }
 		end
 	end
 
 	def fetch_graph_data
-		res = Faraday.get "#{CONF['API_URL']}/_history?stream_id=" + params[:stream_id]
+		res = Api.get("/_history?stream_id=#{params[:stream_id]}")
 		respond_to do |format|
-			format.json { render json: res.body, status: 200 }
+			format.json { render json: res["body"], status: 200 }
 		end
 	end
 
 	def fetch_autocomplete
-		res = Faraday.get "#{CONF['API_URL']}/suggest/_search?query=" + params[:term]
+		res = Api.get("/suggest/_search?query=#{params[:term]}")
 		respond_to do |format|
-			json = JSON.parse(res.body)
-			format.json { render json: json['suggestions'], status: 200 }
+			format.json { render json: res["body"]["suggestions"], status: 200 }
 		end
 	end
 
@@ -65,29 +55,26 @@ class SearchesController < ApplicationController
 
 			res = conn.post do |req|
 				if (not params['search']['page'].blank?)
-					req.url "/_search?location=true&?from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+
+					req.url "/_search?location=true&from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				elsif (not params['search']['page_users'].blank?)
-					req.url "/_search?location=true&?from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
 				else
-					req.url "/_search?location=true&?from=0&size=#{@nb_results_per_page.to_i}"
+					req.url "/_search?location=true&from=0&size=#{@nb_results_per_page.to_i}"
 				end
 				req.headers['Content-Type'] = 'application/json'
 
-				if params['search']['sort_by'] == "none" or params['search']['sort_by'].nil?
+				if params['search']['sort_by'] == "none"
 					sort_by = '{}'
+				elsif params['search']['sort_by'].nil?
+					sort_by = '{"average":"desc"}'
 				else
 					sort_by = '{"' + params['search']['sort_by'] + '":"desc" }'
 				end
 
-				#req.body = '{"query" : {"query_string" : { "query" : "' + params['search']['query'] + '"}}}'
-
 		filters = Array.new
 			if params['search']['filter_unit'].to_s.strip.length != 0
-#         keywords_name = params['search']['filter_name'].downcase.gsub(/\s+/m, ' ').gsub(/^\s+|\s+$/m, '').split(" ")
-#         keywords_name.each do |i|
-#          nameFilter = {"regexp"=>{"name" =>{ "value" => i}}}
-#          filters.push(nameFilter.to_json)
-#         end
+
 				nameFilter = {"regexp"=>{ "unit" => { "value" => params['search']['filter_unit'] }}}
 				filters.push(nameFilter.to_json)
 				end

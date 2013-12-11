@@ -3,11 +3,14 @@ class UsersController < ApplicationController
 	before_action :correct_user, 	 only: [:edit, :update]
 	before_action :admin_user, 		 only: :destroy
 
+	def edit
+		@user.private = if @user.private == true then "1" else "0" end
+	end
 
 	def show
 		@user = User.find_by_username(params[:id])
     res = Api.get("/users/#{@user.username}/streams")
-    @streams = res['streams']
+    @streams = res["body"]["streams"]
     @nb_streams = @streams.length
 	end
 
@@ -16,17 +19,17 @@ class UsersController < ApplicationController
 		@user = User.find_by_username(params[:id])
     cid = current_user.username
 		res = Api.get("/users/#{cid}")
-		@subscriptions = res['subscriptions']
+		@subscriptions = res["body"]["subscriptions"]
 		@stream_ids = @subscriptions.map { |e| e["stream_id"] }
 		@streams = @stream_ids.map do |s|
 			res = Api.get("/streams/" + s)
-			res
+			res["body"]
 		end
 	end
 
 	def new
 		@user = User.new
-    attributes = ["username", "firstname", "lastname", "description", "password", "email"]
+    attributes = ["username", "firstname", "lastname", "description", "password", "email", "private"]
     attributes.each do |attr|
        @user.send("#{attr}=", nil)
     end
@@ -34,11 +37,12 @@ class UsersController < ApplicationController
 
 	def create
 		@user = User.new(user_params)
+		params[:user][:private] = !(params[:user][:private].to_i).zero?
 		if @user.save
 			sign_in @user
       res = Api.post(
       	"/users", 
-      	params[:user].slice(:username, :email, :password, :firstname, :lastname, :description)
+      	params[:user].slice(:username, :email, :password, :firstname, :lastname, :description, :private)
       )
       flash[:success] = "Welcome to the Sample App!"
       redirect_to @user
@@ -48,12 +52,13 @@ class UsersController < ApplicationController
 	end
 
 	def update
+	params[:user][:private] = !(params[:user][:private].to_i).zero?
     if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
       @user.save
       res = Api.put(
       	"/users/#{@user.username}", 
-      	params[:user].slice(:email, :password, :firstname, :lastname, :description)
+      	params[:user].slice(:email, :password, :firstname, :lastname, :description, :private)
       )
 			redirect_to @user
 		else
@@ -76,7 +81,7 @@ class UsersController < ApplicationController
 
 		def user_params
 			params.require(:user).permit(:username, :email, :password, 
-																	 :password_confirmation, :firstname, :lastname, :description)
+																	 :password_confirmation, :firstname, :lastname, :description, :private)
 		end
 
 		# Before filters

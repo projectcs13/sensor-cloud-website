@@ -30,9 +30,9 @@
     </div>
     <div class="col-md-2">
       <%= f.select "sort_by", options_for_select(
-                                [["None", "none"], 
+                                [['User ranking', "average"],
                                  ['Name', "name"],
-                                 ['User ranking', "average"]], 
+                                 ["None", "none"]], 
                               params['search']['sort_by']),
                               {}, onchange: "this.form.submit();",
                               class: "form-control" %>

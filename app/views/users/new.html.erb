@@ -36,10 +36,15 @@
 				<%= f.text_field :lastname, class: "form-control" %>
 			</div>
 
-    	<div class="form-group">
-      	<%= f.label :description %><br>
-      	<%= f.text_area :description, class: "form-control" %>
-     	</div>
+	    	<div class="form-group">
+	      	<%= f.label :description %><br>
+	      	<%= f.text_area :description, class: "form-control" %>
+	     	</div>
+
+	     	<div class="form-group">
+	      	<%= f.label :private %><br>
+	      	<%= f.check_box :private, class: "form-control" %>
+	     	</div>
 
 			<br/>
 			<div class="form-button">

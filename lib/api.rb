@@ -13,7 +13,9 @@ module Api
 
 		def get(url)
 			res = connect.get(url)
-			JSON.parse(res.body)
+			resp = res.to_hash
+			resp[:body] = JSON.parse(resp[:body])
+			resp.stringify_keys!
 		end
 
 		def post(url, body)
@@ -22,7 +24,9 @@ module Api
 			  req.headers['Content-Type'] = 'application/json'
 			  req.body = body.to_json
 			end
-			res = JSON.parse(res.body)
+			resp = res.to_hash
+			resp[:body] = JSON.parse(resp[:body])
+			resp.stringify_keys!
 		end
 
 		def put(url, body)
@@ -31,7 +35,20 @@ module Api
 			  req.headers['Content-Type'] = 'application/json'
 			  req.body = body.to_json
 			end
-		  res = JSON.parse(res.body)
+		  resp = res.to_hash
+			resp[:body] = JSON.parse(resp[:body])
+			resp.stringify_keys!
+		end
+
+		def delete(url, body)
+			res = connect.delete do |req|
+			  req.url url
+			  req.headers['Content-Type'] = 'application/json'
+			  req.body = body.to_json
+			end
+		  resp = res.to_hash
+			resp[:body] = JSON.parse(resp[:body])
+			resp.stringify_keys!
 		end
 
 	end
