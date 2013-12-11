@@ -7,7 +7,7 @@ class UsersController < ApplicationController
 	def show
 		@user = User.find_by_username(params[:id])
     res = Api.get("/users/#{@user.username}/streams")
-    @streams = res['streams']
+    @streams = res["body"]["streams"]
     @nb_streams = @streams.length
 	end
 
@@ -16,11 +16,11 @@ class UsersController < ApplicationController
 		@user = User.find_by_username(params[:id])
     cid = current_user.username
 		res = Api.get("/users/#{cid}")
-		@subscriptions = res['subscriptions']
+		@subscriptions = res["body"]["subscriptions"]
 		@stream_ids = @subscriptions.map { |e| e["stream_id"] }
 		@streams = @stream_ids.map do |s|
 			res = Api.get("/streams/" + s)
-			res
+			res["body"]
 		end
 	end
 

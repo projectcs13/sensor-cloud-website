@@ -8,7 +8,7 @@ class StreamsController < ApplicationController
 
   def index
     res = Api.get("/users/#{@user.username}/streams")
-    @streams = res['streams']
+    @streams = res["body"]["streams"]
   end
 
   def get_streams
@@ -18,7 +18,7 @@ class StreamsController < ApplicationController
   def show
 		@stream_id = params[:id]
     res = Api.get("/streams/#{@stream_id}")
-    stream_owner_id = res['user_id']
+    stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
   end
 

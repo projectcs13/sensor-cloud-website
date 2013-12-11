@@ -13,7 +13,7 @@ module Api
 
 		def get(url)
 			res = connect.get(url)
-			JSON.parse(res.body)
+			resp = { "body" => JSON.parse(res.body), "status" => res.status}
 		end
 
 		def post(url, body)
@@ -22,7 +22,7 @@ module Api
 			  req.headers['Content-Type'] = 'application/json'
 			  req.body = body.to_json
 			end
-			res = JSON.parse(res.body)
+			resp = { "body" => JSON.parse(res.body), "status" => res.status}
 		end
 
 		def put(url, body)
@@ -31,7 +31,7 @@ module Api
 			  req.headers['Content-Type'] = 'application/json'
 			  req.body = body.to_json
 			end
-		  res = JSON.parse(res.body)
+		  resp = { "body" => JSON.parse(res.body), "status" => res.status}
 		end
 
 	end
