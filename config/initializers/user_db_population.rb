@@ -4,7 +4,6 @@ res["body"]["users"].each do | user |
 	user.delete 'rankings'
 	user.delete 'subscriptions'
 	user.delete 'triggers'
-	user.delete 'private'
 	user.delete 'id'
 	user['password_confirmation'] = user['password']
 	newuser = User.create(user)
