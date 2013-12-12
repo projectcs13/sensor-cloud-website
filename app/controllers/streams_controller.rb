@@ -7,8 +7,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
-    logger.debug "#{@user.username}"
-    res = Api.get("/users/#{@user.username}/streams")
+    res = Api.get("/users/#{params[:id]}/streams")
     @streams = res["body"]["streams"]
   end
 
@@ -41,7 +40,7 @@ class StreamsController < ApplicationController
     @stream.resource = {:resource_type => @stream.resource_type, :uuid =>  @stream.uuid}
     @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
 
-    ['resource_type', 'uuid', 'longitude', 'latitude', 'active', 'user_ranking', 'last_updated',
+    [ 'id', 'resource_type', 'uuid', 'longitude', 'latitude', 'active', 'user_ranking', 'last_updated',
       'history_size', 'creation_date', 'quality', 'subscribers', 'user_id', 'nr_subscribers' ].each do |attr|
       @stream.attributes.delete attr
     end
@@ -53,41 +52,41 @@ class StreamsController < ApplicationController
   end
 
   def create
-    @user = current_user
-    @stream = Stream.new(stream_params)
+    @stream = Stream.new stream_params
     correctModelFields
 
     respond_to do |format|
-      res = Api.post("/users/#{@user.username}/streams", @stream.attributes)
-      res["response"].on_complete do
-        if res["status"] == 200 and @stream.valid?
+      if @stream.valid?
+        res = Api.post "/users/#{@user.username}/streams", @stream.attributes
+        res["response"].on_complete do
+          if res["status"] == 200
 
-          @stream.id = res["body"]["_id"]
-          # TODO
-          # The API is currently sending back the response before the database has
-  				# been updated. The line below will be removed once this bug is fixed.
-        	sleep(1.0)
-
-  				format.html { redirect_to stream_path(@stream.id) }
-        	format.json { render json: {"id" => @stream.id}, status: res.status }
-      	else
-        	format.html { render action: 'new' }
-        	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
-      	end
-      end
+            @stream.id = res["body"]["_id"]
+            # TODO
+            # The API is currently sending back the response before the database has
+    				# been updated. The line below will be removed once this bug is fixed.
+          	sleep(1.0)
+    				format.html { redirect_to stream_path(@stream.id) }
+          	format.json { render json: {"id" => @stream.id}, status: res.status }
+          else
+            format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
+            format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
+          end
+        end
+    	else
+      	format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
+      	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
+    	end
     end
   end
 
   def update
-    @user = current_user
-    @stream.assign_attributes(stream_params)
+    @stream.assign_attributes stream_params
     correctModelFields
 
     respond_to do |format|
-      stream_id = @stream.id
-
-      @stream.attributes.delete 'id'
-      res = Api.put("/users/#{@user.username}/streams/#{@stream.id}", @stream.attributes)
+      stream_id = params[:id]
+      res = Api.put "/streams/#{stream_id}", @stream.attributes
 
       res["response"].on_complete do
         if res["status"] == 200 and @stream.valid?
