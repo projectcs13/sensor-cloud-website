@@ -1,0 +1,13 @@
+
+  <%= f.text_field :filter_unit, :placeholder => "Unit" , class: "form-control" %>
+  <%= f.text_field :filter_tag, :placeholder => "Tag" , class: "form-control"%>
+  <%= f.select :filter_active,
+  	options_for_select([
+              ["Any","any"],
+              ["On", true],
+  						["Off", false]
+  						], "any"),
+  							{},
+  							class: "form-control"
+  						%>
+  

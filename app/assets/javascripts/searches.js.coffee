@@ -65,7 +65,6 @@ $ ->
   setupButtons()
   init_scrolling()
 
-
   # Setting up the slider
   $("#slider-range").slider 
    range: true,

@@ -1,34 +1,24 @@
 <div class="row">
   <%= form_for(:search, url: searches_path) do |f| %>
-
     <div class="col-md-6">
-      <% unless @query.nil? %>
-          <%= f.text_field :query, value: @query, class: "form-control" %>
-      <% else %>
-          <%= f.text_field :query, class: "form-control" %>
-      <% end %>
-    </div>
-
-    <div class="col-md-2">
-      <div class="pull-left">
-        <%= submit_tag "Search", class: "btn btn-primary pull-right" %>
+      <div class="input-group">
+        <% unless @query.nil? %>
+            <%= f.text_field :query, value: @query, class: "form-control" %>
+             <span id="blob" class="input-group-addon">filter</span>
+             
+        <% else %>
+            <%= f.text_field :query, class: "form-control" %>
+             <span id="blob" class="input-group-addon">filter</span>
+        <% end %>
       </div>
     </div>
-
-    <%= f.hidden_field :filter_longitude, id: "long"%>
-    <%= f.hidden_field :filter_latitude, id: "lati"%>
-    <%= f.hidden_field :filter_distance, id: "radkm"%>
-
-  <% end %>
-
-  <%= form_for(:search, url: searches_path) do |f| %>
-
-    <div class="col-md-2">
-      <div class="pull-right">
-        <%= label_tag "Sort by: " %>
+    <div class="col-md-2 popover bottom" id="filter">
+      <div class="arrow"></div>
+      <div class="popover-content">
+        <%= render 'filter', f: f %>
       </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2"><%= label_tag "Sort by: " %>
       <%= f.select "sort_by", options_for_select(
                                 [['User ranking', "average"],
                                  ['Name', "name"],
@@ -37,10 +27,21 @@
                               {}, onchange: "this.form.submit();",
                               class: "form-control" %>
     </div>
-    <%= f.hidden_field :query, value: @query  %>
+    <%= f.hidden_field :filter_longitude, id: "long"%>
+    <%= f.hidden_field :filter_latitude, id: "lati"%>
+    <%= f.hidden_field :filter_distance, id: "radkm"%>
+    <div class="col-md-2">
+      <div class="pull-left">
+        <%= submit_tag "Search", class: "btn btn-primary pull-right" %>
+      </div>
+    </div>
+
+    
 
   <% end %>
-</div>
 
-<br>
-<br>
+<script>
+  $("#blob").on("click", function(){
+    $("#filter").toggle();
+  });
+</script>
