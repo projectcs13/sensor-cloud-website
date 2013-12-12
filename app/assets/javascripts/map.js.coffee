@@ -12,12 +12,12 @@ window.createMap = (options) ->
         console.log "error"
         # Get GeoLocation from IP here
         # location = getLocationByIP()
-        setup dom, location, editable
+        setup dom, location, editable, draggable
 
     else #Browser doesn't support Geolocation
       # Get GeoLocation from IP here
       # location = getLocationByIP()
-      setup dom, location, editable
+      setup dom, location, editable, draggable
   else
     location = new google.maps.LatLng location[0], location[1]
     setup dom, location, editable
@@ -35,6 +35,11 @@ setup = (dom, location, editable) ->
   h = canvas.parent().height()
   canvas.width(w).height(h)
 
+  if !editable
+    drag = false
+  else
+    drag = true
+
   mapOptions =
     center: location
     zoom: 8
@@ -45,7 +50,7 @@ setup = (dom, location, editable) ->
 
   marker = new google.maps.Marker
     map: map
-    draggable: true
+    draggable: drag
     animation: google.maps.Animation.DROP
     position: location
 
