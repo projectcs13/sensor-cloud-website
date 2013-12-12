@@ -12,12 +12,12 @@ window.createMap = (options) ->
         console.log "error"
         # Get GeoLocation from IP here
         # location = getLocationByIP()
-        setup dom, location, editable, draggable
+        setup dom, location, editable
 
     else #Browser doesn't support Geolocation
       # Get GeoLocation from IP here
       # location = getLocationByIP()
-      setup dom, location, editable, draggable
+      setup dom, location, editable
   else
     location = new google.maps.LatLng location[0], location[1]
     setup dom, location, editable
