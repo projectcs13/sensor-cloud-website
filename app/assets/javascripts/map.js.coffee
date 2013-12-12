@@ -18,6 +18,9 @@ window.createMap = (options) ->
       # Get GeoLocation from IP here
       # location = getLocationByIP()
       setup dom, location, editable
+  else
+    location = new google.maps.LatLng location[0], location[1]
+    setup dom, location, editable
 
 getLocationByIP = () ->
   # nothing now
