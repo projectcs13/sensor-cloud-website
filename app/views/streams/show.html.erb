@@ -73,10 +73,10 @@
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
         <% end %>
       </div>
-      <% if not @user.nil? and @user.username.downcase == @stream.user_id %>
+      <% if not @user.nil? and @user.username.downcase == @stream.user_id and @stream.polling == true %>
       	<h4>Parser: </h4>
       	<div class="stream-description well">
-      	 	Path : <%= @stream.parser %> <br>
+      	Path : <%= @stream.parser %> <br>
      	 	Data-Type : <%= @stream.data_type %> <br>
      	 	URI : <%= @stream.uri %> <br>
      	 	Polling Frequency : <%= @stream.polling_freq %> (sec) <br>
