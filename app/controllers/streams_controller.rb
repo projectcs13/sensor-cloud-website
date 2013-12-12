@@ -86,7 +86,6 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
       stream_id = params[:id]
-      # @stream.attributes.delete 'id'
       res = Api.put "/streams/#{stream_id}", @stream.attributes
 
       res["response"].on_complete do
