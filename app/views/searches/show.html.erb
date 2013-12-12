@@ -12,7 +12,11 @@
       <div class="row results-container tab-pane active fade in" id="streams">
         <div class="col-md-12">
           <div class="scroll-pane" id="scroll-pane1">
-            <%= render 'stream_results' %>
+            <% if @streams == [] then %>
+              <h3><center><%= "We could not find any streams for"%> <br> <%= "\"#{@query}\""%></center></h3>
+            <% else %>
+              <%= render 'stream_results' %>
+            <% end %>
           </div>
         </div>
       </div>
@@ -20,7 +24,11 @@
       <div class="row results-container tab-pane fade" id="users">
         <div class="col-md-12">
           <div class="scroll-pane" id="scroll-pane2">
-            <%= render 'user_results' %>
+            <% if @users == [] then %>
+              <h3><center><%= "We could not find any users for"%> <br> <%= "\"#{@query}\""%></center></h3>
+            <% else %>
+              <%= render 'user_results' %>
+            <% end %>
           </div>
         </div>
       </div>
