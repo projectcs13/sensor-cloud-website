@@ -25,8 +25,8 @@ class User < ActiveRecord::Base
 
 	def following?(stream_id)
 		res = Api.get("/users/#{self.username}")
-		unless (res["subscriptions"]).empty?
-			res["subscriptions"].include?({"stream_id"=>"#{stream_id}"})
+		unless (res['body']["subscriptions"]).empty?
+			res['body']["subscriptions"].include?({"stream_id"=>"#{stream_id}"})
 		end
 	end
 
