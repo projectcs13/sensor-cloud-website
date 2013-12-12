@@ -18,6 +18,9 @@ window.createMap = (options) ->
       # Get GeoLocation from IP here
       # location = getLocationByIP()
       setup dom, location, editable
+  else
+    location = new google.maps.LatLng location[0], location[1]
+    setup dom, location, editable
 
 getLocationByIP = () ->
   # nothing now
@@ -32,6 +35,11 @@ setup = (dom, location, editable) ->
   h = canvas.parent().height()
   canvas.width(w).height(h)
 
+  if !editable
+    drag = false
+  else
+    drag = true
+
   mapOptions =
     center: location
     zoom: 8
@@ -42,7 +50,7 @@ setup = (dom, location, editable) ->
 
   marker = new google.maps.Marker
     map: map
-    draggable: true
+    draggable: drag
     animation: google.maps.Animation.DROP
     position: location
 
