@@ -7,7 +7,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
-    res = Api.get("/users/#{@user.username}/streams")
+    res = Api.get("/users/#{params[:id]}/streams")
     @streams = res["body"]["streams"]
   end
 
@@ -23,14 +23,14 @@ class StreamsController < ApplicationController
   end
 
   def suggest
-    res = get "/suggest/#{params[:model]}?size=10"
-    data = if res.status == 404 then {} else JSON.parse(res.body)['suggestions'] end
-    render :json => data, :status => res.status
+    res = Api.get("/suggest/#{params[:model]}?size=10")
+    data = if res["status"] == 404 then {} else res["body"]["suggestions"] end
+    render :json => data, :status => res["status"]
   end
 
   def fetchResource
-    res = get "/resources/#{params[:id]}"
-    render :json => res.body, :status => res.status
+    res = Api.get("/resources/#{params[:id]}")
+    render :json => res["body"], :status => res["status"]
   end
 
   def correctModelFields
@@ -57,11 +57,11 @@ class StreamsController < ApplicationController
     correctModelFields
 
     respond_to do |format|
-      res = post
-      res.on_complete do
-        if res.status == 200 and @stream.valid?
+      res = Api.post("/users/#{@user.username}/streams", @stream.attributes)
+      res["response"].on_complete do
+        if res["status"] == 200 and @stream.valid?
 
-          @stream.id = JSON.parse(res.body)['_id']
+          @stream.id = res["body"]["_id"]
           # TODO
           # The API is currently sending back the response before the database has
   				# been updated. The line below will be removed once this bug is fixed.
@@ -84,9 +84,12 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
       stream_id = @stream.id
-      res = put
-      res.on_complete do
-        if res.status == 200 and @stream.valid?
+
+      @stream.attributes.delete 'id'
+      res = Api.put("/users/#{@user.username}/streams/#{@stream.id}", @stream.attributes)
+
+      res["response"].on_complete do
+        if res["status"] == 200 and @stream.valid?
           # TODO
           # The API is currently sending back the response before the database has
           # been updated. The line below will be removed once this bug is fixed.
@@ -120,7 +123,7 @@ class StreamsController < ApplicationController
 
   def destroyAll
     @user = current_user
-    res = deleteAll
+    res = Api.delete("/users/#{@user.username}/streams/", nil)
 
     # TODO
     # The API is currently sending back the response before the database has
@@ -128,7 +131,7 @@ class StreamsController < ApplicationController
     sleep(1.0)
 
     respond_to do |format|
-      res.on_complete do
+      res["response"].on_complete do
         format.html { redirect_to "/users/#{@user.username}/streams" }
         format.json { head :no_content }
       end
@@ -136,36 +139,25 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = Faraday.get "#{CONF['API_URL']}/streams/#{params[:id]}/data/_search"
+    res = Api.get("/streams/#{params[:id]}/data/_search")
     respond_to do |format|
-      format.json { render json: res.body, status: res.status }
+      format.json { render json: res["body"], status: res["status"] }
     end
   end
 
   def fetch_prediction
-    res = Faraday.get "#{CONF['API_URL']}/streams/#{params[:id]}/_analyse"
+    res = Api.get "/streams/#{params[:id]}/_analyse"
     respond_to do |format|
-      format.json { render json: res.body, status: res.status }
+      format.json { render json: res["body"], status: res["status"] }
     end
   end
 
-  def post
-    url = "#{CONF['API_URL']}/users/#{@user.username}/streams/"
-    send_data(:post, url, @stream.attributes.to_json)
-
+  def fetch_datapreview
+    res = Api.get("#{params[:uri]}")
+    respond_to do |format|
+      format.json { render json: res["body"], status: res["status"] }
+    end
   end
-
-  def put
-    url = "#{CONF['API_URL']}/users/#{@user.username}/streams/#{@stream.id}"
-    @stream.attributes.delete 'id'
-    send_data(:put, url, @stream.attributes.to_json)
-  end
-
-  def deleteAll
-    url = "#{CONF['API_URL']}/users/#{@user.username}/streams/"
-    send_data(:delete, url, nil)
-  end
-
 
   private
     # Aux Functions
@@ -174,23 +166,6 @@ class StreamsController < ApplicationController
     def stream_params
       params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser, :resource_type, :uuid)
     end
-
-    def send_data(method, url, json)
-      new_connection unless @conn
-      @conn.send(method) do |req|
-        req.url url
-        req.headers['Content-Type'] = 'application/json'
-        req.body = json
-      end
-    end
-
-    def new_connection
-      @conn = Faraday.new(:url => "#{CONF['API_URL']}/users/#{@user.username}/") do |faraday|
-        faraday.request  :url_encoded               # form-encode POST params
-        faraday.response :logger                    # log requests to STDOUT
-        faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
-      end
-		end
 
 		# Before filters
 
