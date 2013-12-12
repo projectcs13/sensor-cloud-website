@@ -3,6 +3,10 @@ class UsersController < ApplicationController
 	before_action :correct_user, 	 only: [:edit, :update]
 	before_action :admin_user, 		 only: :destroy
 
+  def index
+    @users = User.paginate(page: params[:page])
+  end
+
 	def edit
 		@user.private = if @user.private == true then "1" else "0" end
 	end
@@ -41,7 +45,7 @@ class UsersController < ApplicationController
 		if @user.save
 			sign_in @user
       res = Api.post(
-      	"/users", 
+      	"/users",
       	params[:user].slice(:username, :email, :password, :firstname, :lastname, :description, :private)
       )
       flash[:success] = "Welcome to the Sample App!"
@@ -57,7 +61,7 @@ class UsersController < ApplicationController
 			flash[:success] = "Account updated"
       @user.save
       res = Api.put(
-      	"/users/#{@user.username}", 
+      	"/users/#{@user.username}",
       	params[:user].slice(:email, :password, :firstname, :lastname, :description, :private)
       )
 			redirect_to @user
@@ -75,13 +79,8 @@ class UsersController < ApplicationController
 	end
 
 	private
-		def index
-			@users = User.paginate(page: params[:page])
-		end
-
 		def user_params
-			params.require(:user).permit(:username, :email, :password, 
-																	 :password_confirmation, :firstname, :lastname, :description, :private)
+			params.require(:user).permit(:username, :email, :password, :password_confirmation, :firstname, :lastname, :description, :private)
 		end
 
 		# Before filters
