@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131211122314) do
-
-  create_table "multistreams", force: true do |t|
-  end
+ActiveRecord::Schema.define(version: 20131212085307) do
 
   create_table "relationships", force: true do |t|
     t.integer  "follower_id"
@@ -38,6 +35,7 @@ ActiveRecord::Schema.define(version: 20131211122314) do
     t.string   "firstname"
     t.string   "lastname"
     t.string   "description"
+    t.boolean  "private"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
