@@ -110,7 +110,7 @@ class SearchesController < ApplicationController
 
 			res = Api.post(url, body)
 
-			@vstreams = json['vstreams']
+			#@vstreams = json['vstreams']
 			@streams = res["body"]['streams']['hits']['hits']
 			@users = res["body"]['users']['hits']['hits']
 			@count_streams = res["body"]['streams']['hits']['total']
