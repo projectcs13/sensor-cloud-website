@@ -16,6 +16,10 @@ class UsersController < ApplicationController
     res = Api.get("/users/#{@user.username}/streams")
     @streams = res["body"]["streams"]
     @nb_streams = @streams.length
+    res2 = Api.get("/users/#{@user.username}")
+    @notifications = res2["body"]["notifications"]
+    sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
+    @notifications = sorted
 	end
 
 	def following
