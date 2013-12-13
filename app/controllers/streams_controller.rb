@@ -11,6 +11,13 @@ class StreamsController < ApplicationController
     @streams = res["body"]["streams"]
   end
 
+  def new
+    if session[:stream]
+      @stream = session[:stream]
+      session[:stream] = nil
+    end
+  end
+
   def get_streams
     redirect_to "/users/#{@user.username}/streams"
   end
@@ -20,6 +27,15 @@ class StreamsController < ApplicationController
     res = Api.get("/streams/#{@stream_id}")
     stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
+    @prediction = {:in => "50", :out => "25"}
+    @polling_history = nil
+    if res["body"]["polling"] == true then
+      res2 = Api.get("/streams/#{@stream_id}/pollinghistory")
+      @polling_history = res2["body"]["history"]
+      sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
+      @polling_history = sorted_history
+    end
+    
   end
 
   def suggest
@@ -34,8 +50,9 @@ class StreamsController < ApplicationController
   end
 
   def correctModelFields
-    @stream.polling = if @stream.polling == "1" then false else true end
-    @stream.private = if @stream.private == "0" then false else true end
+    # This is due to the 'Bootstrap Switch' plugin
+    @stream.polling = if @stream.polling == "0" then true  else false end
+    @stream.private = if @stream.private == "0" then false else true  end
 
     @stream.resource = {:resource_type => @stream.resource_type, :uuid =>  @stream.uuid}
     @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
@@ -74,7 +91,10 @@ class StreamsController < ApplicationController
           end
         end
     	else
-      	format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
+      	format.html {
+          session[:stream] = @stream
+          redirect_to new_stream_path
+        }
       	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
     	end
     end
@@ -145,10 +165,12 @@ class StreamsController < ApplicationController
     end
   end
 
+
+
   def fetch_prediction
-    res = Api.get "/streams/#{params[:id]}/_analyse"
+    res = Api.get "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
     respond_to do |format|
-      format.json { render json: res["body"], status: res["status"] }
+      format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
   end
 
