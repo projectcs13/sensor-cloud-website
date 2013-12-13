@@ -6,7 +6,8 @@ class TriggersController < ApplicationController
 		res = Api.get("/users/#{@username}/streams")
 		@streams = res['body']['streams']
 		logger.debug "*** @streams: #{@streams}***"
-		@stream_ids = @streams.map { |e| e['id'] }
+		@stream_ids = {}
+		@streams.each { |e| @stream_ids[e['name']] = e['id'] }
 		logger.debug "*** @stream_ids: #{@stream_ids} ***"
 	end
 

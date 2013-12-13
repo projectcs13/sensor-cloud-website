@@ -1,7 +1,7 @@
 <%= form_for(@trigger, :url => {:action => "create"}) do |f| %>
 	
 	<%= f.label :function %>
-	<%= f.select :function, ['greater_than', 'less_than'] %>
+	<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than"} %>
 
 	<%= f.label :input %>
 	<%= f.text_field :input %>
