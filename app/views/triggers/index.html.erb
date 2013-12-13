@@ -1,0 +1,9 @@
+<% @triggers.each do |t| %>
+	<%= t['function'] %>
+	<%= t['input'] %>
+	<% t['streams'].each do |s| %>
+		<%= s %>
+	<% end %>
+	<%= link_to "Delete", controller: "triggers", action: "custom_destroy", query: "foobar" %>
+	<br />
+<% end %>
