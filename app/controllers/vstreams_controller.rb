@@ -6,10 +6,6 @@ class VstreamsController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
   def index
-    # @streams = Stream.search(params[:search])
-    # @streams = Stream.all(_user_id: current_user.username)
-    # @count= @streams.count
-    #Befor MERGING User Profile branch
     cid = current_user.username
     res = Faraday.get "#{CONF['API_URL']}/users/#{params[:user_id]}/vstreams/"
     @vstreams = JSON.parse(res.body)['users']
@@ -24,82 +20,19 @@ class VstreamsController < ApplicationController
 		@vstream_owner = User.find_by(id: vstream_owner_id)
   end
 
-  def new_vstream
-    @vstream = Vstream.new
-    respond_to do |format|
-      format.html
-      format.js
-    end
-  end
 
   def edit
-    logger.debug "#{@vstream.attributes}"
 
-    if @vstream.accuracy      == nil then @vstream.accuracy     = "" end
-    if @vstream.min_val       == nil then @vstream.min_val      = "" end
-    if @vstream.max_val       == nil then @vstream.max_val      = "" end
-    if @vstream.polling_freq  == nil then @vstream.polling_freq = "" end
-    if @vstream.location      == nil then @vstream.location     = "," end
-
-    logger.debug "#{@vstream.attributes}"
-
-    location = @vstream.location.split(",", 2)
-
-    @vstream.send("latitude=", location[0])
-    @vstream.send("longitude=", location[1])
   end
 
   def correctBooleanFields
-    @vstream.location = "#{@vstream.latitude},#{@vstream.longitude}"
-    @vstream.attributes.delete 'longitude'
-    @vstream.attributes.delete 'latitude'
 
-    # Remove attributes when editing a vstream
-    @vstream.attributes.delete 'active'
-    @vstream.attributes.delete 'user_ranking'
-    @vstream.attributes.delete 'last_updated'
-    @vstream.attributes.delete 'history_size'
-    @vstream.attributes.delete 'creation_date'
-    @vstream.attributes.delete 'quality'
-    @vstream.attributes.delete 'subscribers'
-
-    @vstream.polling = if @vstream.polling == "1" then false   else true   end
     @vstream.private = if @vstream.private == "0" then "false" else "true" end
 
-    if @vstream.accuracy     == ""  then @vstream.accuracy     = nil end
-    if @vstream.min_val      == ""  then @vstream.min_val      = nil end
-    if @vstream.max_val      == ""  then @vstream.max_val      = nil end
-    if @vstream.polling_freq == ""  then @vstream.polling_freq = nil end
-    if @vstream.location     == "," then @vstream.location     = nil end
-
-    @vstream.polling_freq = @vstream.polling_freq.to_i
   end
 
   def create
-    @vstream = Vstream.new(vstream_params)
-    correctBooleanFields
-
-    logger.debug "attributes"
-    logger.debug @vstream.attributes
-
-    respond_to do |format|
-    	res = post
-        logger.debug "BODY: #{res.body}"
-      	if res.status == 200
-
-          @vstream.id = JSON.parse(res.body)['_id']
-  				# TODO
-          # The API is currently sending back the response before the database has
-  				# been updated. The line below will be removed once this bug is fixed.
-        	sleep(1.0)
-
-  				format.html { redirect_to vstream_path(@vstream.id) }
-        	format.json { render action: 'show', status: :created, location: @vstream }
-      	else
-        	format.html { render action: 'new' }
-        	format.json { render json: @vstream.errors, status: :unprocessable_entity }
-      	end
-    end
+    
   end
 
   def update
