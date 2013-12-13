@@ -20,6 +20,7 @@ class StreamsController < ApplicationController
     res = Api.get("/streams/#{@stream_id}")
     stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
+    @prediction = {:in => "50", :out => "25"}
   end
 
   def suggest
@@ -52,6 +53,7 @@ class StreamsController < ApplicationController
   end
 
   def create
+    logger.debug "*** params2: #{params} ***" 
     @stream = Stream.new stream_params
     correctModelFields
 
@@ -145,10 +147,12 @@ class StreamsController < ApplicationController
     end
   end
 
+
+
   def fetch_prediction
-    res = Api.get "/streams/#{params[:id]}/_analyse"
+    res = Api.get "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
     respond_to do |format|
-      format.json { render json: res["body"], status: res["status"] }
+      format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
   end
 

@@ -41,6 +41,26 @@ function stream_graph(width) {
         });
     }
 
+    this.draw_prediction_data = function(predictionData){
+        var timeOrigin = data[data.length-1].timestamp;
+        var timeDiff = timeOrigin - data[data.length-2].timestamp;
+        var predictionOrigin = data[data.length-1];
+            predictionOrigin['hi95'] = predictionOrigin.value;
+            predictionOrigin['hi80'] = predictionOrigin.value;
+            predictionOrigin['lo95'] = predictionOrigin.value;
+            predictionOrigin['lo80'] = predictionOrigin.value;
+        predictionData = predictionData.predictions; // parse the response
+            console.log(predictionData);
+            var i = 1;
+            predictionData.map(function(d){
+                d['timestamp'] = new Date(timeOrigin.getTime()+timeDiff*i);
+                i += 1;
+            });
+            p_data = predictionData;
+            p_data.unshift(predictionOrigin); // Add last real datapoint as an origin for the prediction data-set
+            draw_graph();
+    }
+
     this.fetch_prediction_data = function(){
         var timeOrigin = data[data.length-1].timestamp;
         var timeDiff = timeOrigin - data[data.length-2].timestamp;
