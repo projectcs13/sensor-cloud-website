@@ -1,7 +1,7 @@
 class RelationshipsController < ApplicationController
 	#before_action :signed_in_user
 
-	def custom_create
+	def create
 		@stream_id = params[:followed_id]
 		current_user.follow!(@stream_id)
 
@@ -11,7 +11,7 @@ class RelationshipsController < ApplicationController
 		end
 	end
 
-	def custom_destroy
+	def destroy
 		@stream_id = params[:followed_id]
 		current_user.unfollow!(@stream_id)
 

@@ -143,6 +143,7 @@
                 var base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
                 var not_highlighted = '|FF776B|000000'
                 var highlighted = '|FFFF00|000000'
+                if($('#streams .search-result').size() != 0) {
                 $('#streams .search-result').each(function(i, elem) {
                         var location = $(elem).data('location');
                         searchres_length++
@@ -168,6 +169,10 @@
                 map.fitBounds(bounds);
                 map.setCenter(bounds.getCenter());
 
+        }else {
+                map.setZoom(2);
+                map.setCenter(new google.maps.LatLng(21, 20));
+        }
                 function zoomToBounds()
 				{
 				var empty = true;
@@ -241,6 +246,7 @@
                         simplebool = true;
                         radiusChange(map);
                         distanceWidget.set("map",map);
+                        distanceWidget.set("position", map.getCenter());
                         displayInfo(distanceWidget);
                 }else{
                         simplebool = false;
@@ -265,6 +271,8 @@
                 });
 
 				google.maps.event.addListener(map, 'zoom_changed', function() {
+          if(map.getZoom() == 1)
+            map.setZoom(2);
 					radiusChange(map);
 				});
 

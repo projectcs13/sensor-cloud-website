@@ -3,33 +3,41 @@ class UsersController < ApplicationController
 	before_action :correct_user, 	 only: [:edit, :update]
 	before_action :admin_user, 		 only: :destroy
 
+  def index
+    @users = User.paginate(page: params[:page])
+  end
+
+	def edit
+		@user.private = if @user.private == true then "1" else "0" end
+	end
 
 	def show
 		@user = User.find_by_username(params[:id])
-    res = Faraday.get "#{CONF['API_URL']}/users/#{@user.username}/streams/"
-    @streams = JSON.parse(res.body)['streams']
+    res = Api.get("/users/#{@user.username}/streams")
+    @streams = res["body"]["streams"]
     @nb_streams = @streams.length
+    res2 = Api.get("/users/#{@user.username}")
+    @notifications = res2["body"]["notifications"]
+    sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
+    @notifications = sorted
 	end
-
 
 	def following
 		@title = "Following"
 		@user = User.find_by_username(params[:id])
     cid = current_user.username
-
-		response = Faraday.get "#{CONF['API_URL']}/users/#{cid}"
-		resp = JSON.parse(response.body)['subscriptions']
-		@stream_ids = resp.map { |e| e["stream_id"] }
+		res = Api.get("/users/#{cid}")
+		@subscriptions = res["body"]["subscriptions"]
+		@stream_ids = @subscriptions.map { |e| e["stream_id"] }
 		@streams = @stream_ids.map do |s|
-			url = "#{CONF['API_URL']}/streams/" + s
-			resp = Faraday.get url
-			JSON.parse resp.body
+			res = Api.get("/streams/" + s)
+			res["body"]
 		end
 	end
 
 	def new
 		@user = User.new
-    attributes = ["username", "firstname", "lastname", "description", "password", "email"]
+    attributes = ["username", "firstname", "lastname", "description", "password", "email", "private"]
     attributes.each do |attr|
        @user.send("#{attr}=", nil)
     end
@@ -37,10 +45,13 @@ class UsersController < ApplicationController
 
 	def create
 		@user = User.new(user_params)
+		params[:user][:private] = !(params[:user][:private].to_i).zero?
 		if @user.save
 			sign_in @user
-      res = post
-      logger.debug "RES: #{res.body}"
+      res = Api.post(
+      	"/users",
+      	params[:user].slice(:username, :email, :password, :firstname, :lastname, :description, :private)
+      )
       flash[:success] = "Welcome to the Sample App!"
       redirect_to @user
 		else
@@ -49,13 +60,15 @@ class UsersController < ApplicationController
 	end
 
 	def update
+	params[:user][:private] = !(params[:user][:private].to_i).zero?
     if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
       @user.save
-      res = put
-      logger.debug "RES: #{res.body}"
+      res = Api.put(
+      	"/users/#{@user.username}",
+      	params[:user].slice(:email, :password, :firstname, :lastname, :description, :private)
+      )
 			redirect_to @user
-      
 		else
       render 'edit'
 		end
@@ -64,36 +77,17 @@ class UsersController < ApplicationController
 	def destroy
 		@user = User.find_by_username(params[:id])
 		@user.destroy
-		Relationship.all.where(followed_id: @user.username).each do |r|
-			r.destroy
-		end
 
 		flash[:success] = "User destroyed."
 		redirect_to users_url
 	end
 
-  def post
-    url = "#{CONF['API_URL']}/users"
-    send_data(:post, url)
-  end
-
-  def put
-    url = "#{CONF['API_URL']}/users/#{@user.username}"
-    put_data(:put, url)
-  end
-  
-
 	private
-		def index
-			@users = User.paginate(page: params[:page])
+		def user_params
+			params.require(:user).permit(:username, :email, :password, :password_confirmation, :firstname, :lastname, :description, :private)
 		end
 
-		def user_params
-			params.require(:user).permit(:username, :email, :password, 
-																	 :password_confirmation, :firstname, :lastname, :description)
-		end
 		# Before filters
-		
 		def signed_in_user
 			unless signed_in?
 				store_location
@@ -110,32 +104,4 @@ class UsersController < ApplicationController
 		def admin_user
 			redirect_to(root_url) unless current_user.admin?
 		end
-
-
-
-    def send_data(method, url)
-      new_connection unless @conn
-      @conn.send(method) do |req|
-        req.url url
-        req.headers['Content-Type'] = 'application/json'
-        logger.debug "value : #{@user.id}"
-        req.body = '{"username" : "' + params[:user][:username] + '", "email" : "' + params[:user][:email] + '", "password" : "' + params[:user][:password] + '", "firstname" : "' + params[:user][:firstname] + '", "lastname" : "' + params[:user][:lastname] + '", "description" : "' + params[:user][:description] + '"}'
-      end
-    end
-     def put_data(method, url)
-      new_connection unless @conn
-      @conn.send(method) do |req|
-        req.url url
-        req.headers['Content-Type'] = 'application/json'
-        logger.debug "value : #{@user.id}"
-        req.body = '{"email" : "' + params[:user][:email] + '", "password" : "' + params[:user][:password] + '", "firstname" : "' + params[:user][:firstname] + '", "lastname" : "' + params[:user][:lastname] + '", "description" : "' + params[:user][:description] + '"}'
-      end
-    end
-    def new_connection
-      @conn = Faraday.new(:url => "#{CONF['API_URL']}/users") do |faraday|
-        faraday.request  :url_encoded               # form-encode POST params
-        faraday.response :logger                    # log requests to STDOUT
-        faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
-      end
-    end
 end

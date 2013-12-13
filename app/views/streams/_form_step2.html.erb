@@ -1,0 +1,34 @@
+<div class="step" id="step-2">
+  <div class="form-group">
+    <%= f.label :tags, class: "left" %>
+    <label class="explanation">Tell us some keywords which describe or identify your stream</label>
+    <%= f.text_field :tags, class: "form-control input clearfix", placeholder: "e.g: temperature, outdoor, uppsala, park" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :unit, class: "left" %>
+    <label class="explanation">Which unit are you going to use?</label>
+    <%= f.text_field :unit, class: "form-control input clearfix", placeholder: "e.g: Celsius" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :min_val, class: "left" %>
+    <label class="explanation">Specify the minimum value expected to measure</label>
+    <%= f.text_field :min_val, class: "form-control input clearfix", placeholder: "e.g: -30" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :max_val, class: "left" %>
+    <label class="explanation">Specify the maximum value expected to measure</label>
+    <%= f.text_field :max_val, class: "form-control input clearfix", placeholder: "e.g: 40" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :accuracy, class: "left" %>
+    <label class="explanation">Also, please remark the accuracy of the device used</label>
+    <div class="input-group clearfix">
+      <span class="input-group-addon" style="padding: 9px 12px; width: 1em;">±</span>
+      <%= f.text_field :accuracy, class: "form-control input", placeholder: "e.g: 0.5" %>
+    </div>
+  </div>
+</div>

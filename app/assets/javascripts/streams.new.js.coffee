@@ -22,12 +22,16 @@ window.newStreamForm = (form) ->
   btnBack   = form.find ".btn-back"
   btnNext   = form.find ".btn-next"
   btnCreate = form.find ".btn-create"
+  btnPreview = form.find ".btn-preview"
+
+  textUri = form.find "#stream_uri"
+  areaPreview = form.find "#preview-area"
 
   polling = form.find ".polling"
-  updateSwitch = form.find "#update-switch"
   progress = form.find ".progress-bar"
 
   explanations = form.find '.explanation'
+
   #
   # Auxiliary Functions
   #
@@ -36,18 +40,21 @@ window.newStreamForm = (form) ->
     stepLabel.text "Step #{currentStep+1} / #{steps.length}"
     stepDescription.text descriptions[ currentStep ]
 
-  decreaseBar = ->
-    w = progress.width()
-    ratio = progress.parent().width() / steps.length
-    progress.width(w - ratio)
+  decreaseBar = -> moveBar false
+  increaseBar = -> moveBar true
 
-  increaseBar = ->
+  moveBar = (increase) ->
     w = progress.width()
     ratio = progress.parent().width() / steps.length
+    ratio *= -1 if not increase
     progress.width(w + ratio)
 
-  setInputFocus = ->
-    steps.eq(currentStep).find('input').first().focus()
+  setInputFocus = -> steps.eq(currentStep).find('.input').first().focus()
+
+  showPollingPanel = -> polling.toggle TIME * 2
+
+  goBack = -> moveToNextStep false
+  goNext = -> moveToNextStep true
 
   moveToNextStep = (next) ->
     steps.eq(currentStep).hide TIME
@@ -66,15 +73,13 @@ window.newStreamForm = (form) ->
       if currentStep is steps.length-1
         btnCreate.css 'display', 'none'
         btnNext.css 'display', 'inline-block'
-        # btnNext.removeClass('btn-disabled').addClass('btn-primary')
 
-      moveToNextStep false
+      do goBack
       do decreaseBar
       do updateStepInformation
       do setInputFocus
 
-      if currentStep is 0
-        btnBack.css 'display', 'none'
+      btnBack.css 'display', 'none' if currentStep is 0
 
 
   next = (event) ->
@@ -83,7 +88,7 @@ window.newStreamForm = (form) ->
     if currentStep < steps.length-1
       btnBack.css 'display', 'inline-block'
 
-      moveToNextStep true
+      do goNext
       do increaseBar
       do updateStepInformation
       do setInputFocus
@@ -102,33 +107,72 @@ window.newStreamForm = (form) ->
     , TIME * 2
 
 
+  preview = (event) ->
+    do event.preventDefault
+    $.ajax
+      type: "post",
+      dataType: "json",
+      url: "/preview/",
+      data: { uri: textUri.val() }
+    .done (data) ->
+      console.log data
+      console.log areaPreview
+      areaPreview.val JSON.stringify data, undefined, 2
+
+
   switchChanged = (event) ->
     do event.preventDefault
-    polling.toggle TIME * 2
+    do showPollingPanel
+    do setInputFocus
 
 
   explain = (event) ->
     exp = $(this).siblings '.explanation'
+    exp = $(this).parent().siblings '.explanation' unless exp.text()
     if exp.css('display') is 'none'
       explanations.hide TIME
       exp.show TIME
 
 
+  keyup = (event) ->
+    inputName = $(this)
+    if inputName.val().length is 0
+      btnNext.addClass 'disabled'
+    else if inputName.val().length > 0
+      form.find('#error_explanation').hide()
+      btnNext.removeClass 'disabled'
+
+
+  initBootstrapSwitches = ->
+    html = '<div class="make-switch" />'
+
+    sw = form.find('.switch-private').wrap(html).parent().bootstrapSwitch()
+    sw.bootstrapSwitch 'setOnLabel', 'Yes'
+    sw.bootstrapSwitch 'setOffLabel', 'No'
+
+    sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
+    sw.bootstrapSwitch 'setOnLabel', 'Push'
+    sw.bootstrapSwitch 'setOffLabel', 'Poll'
+    sw.bootstrapSwitch 'setState', true
+    sw.on 'switch-change', switchChanged
+
   #
   # Initialization
   #
 
-  form.find('input').on 'focus', explain
+  form.find('.input-name').on 'keyup', keyup
+  form.find('.input').on 'focus', explain
 
   btnNext.on 'click', next
-  do btnBack.on('click', back).hide
-  do btnCreate.on('click', create).hide
+  btnPreview.on 'click', preview
+  btnBack.on('click', back).hide()
+  btnCreate.on('click', create).hide()
+
   do updateStepInformation
   do setInputFocus
-
-  updateSwitch.on 'switch-change', switchChanged
+  do initBootstrapSwitches
 
   steps.each (i, step) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
 
-
+  btnNext.addClass 'disabled'
