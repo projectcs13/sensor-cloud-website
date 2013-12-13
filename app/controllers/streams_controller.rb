@@ -11,6 +11,13 @@ class StreamsController < ApplicationController
     @streams = res["body"]["streams"]
   end
 
+  def new
+    if session[:stream]
+      @stream = session[:stream]
+      session[:stream] = nil
+    end
+  end
+
   def get_streams
     redirect_to "/users/#{@user.username}/streams"
   end
@@ -54,7 +61,6 @@ class StreamsController < ApplicationController
   end
 
   def create
-    logger.debug "*** params2: #{params} ***" 
     @stream = Stream.new stream_params
     correctModelFields
 
@@ -77,7 +83,10 @@ class StreamsController < ApplicationController
           end
         end
     	else
-        format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
+      	format.html {
+          session[:stream] = @stream
+          redirect_to new_stream_path
+        }
       	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
     	end
     end
