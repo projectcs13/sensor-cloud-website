@@ -28,7 +28,6 @@ window.newStreamForm = (form) ->
   areaPreview = form.find "#preview-area"
 
   polling = form.find ".polling"
-  pollingSwitch = form.find ".polling-switch"
   progress = form.find ".progress-bar"
 
   explanations = form.find '.explanation'
@@ -74,7 +73,6 @@ window.newStreamForm = (form) ->
       if currentStep is steps.length-1
         btnCreate.css 'display', 'none'
         btnNext.css 'display', 'inline-block'
-        # btnNext.removeClass('btn-disabled').addClass('btn-primary')
 
       do goBack
       do decreaseBar
@@ -140,13 +138,13 @@ window.newStreamForm = (form) ->
     html = '<div class="make-switch" />'
 
     sw = form.find('.switch-private').wrap(html).parent().bootstrapSwitch()
-    sw.bootstrapSwitch('setOnLabel', 'Yes')
-    sw.bootstrapSwitch('setOffLabel', 'No')
+    sw.bootstrapSwitch 'setOnLabel', 'Yes'
+    sw.bootstrapSwitch 'setOffLabel', 'No'
 
     sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
-    sw.bootstrapSwitch('setOnLabel', 'Push')
-    sw.bootstrapSwitch('setOffLabel', 'Poll')
-    sw.bootstrapSwitch('setState', true);
+    sw.bootstrapSwitch 'setOnLabel', 'Push'
+    sw.bootstrapSwitch 'setOffLabel', 'Poll'
+    sw.bootstrapSwitch 'setState', true
     sw.on 'switch-change', switchChanged
 
   #
