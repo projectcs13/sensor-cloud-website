@@ -12,12 +12,19 @@ class TriggersController < ApplicationController
 
 	def create
 		@username = current_user.username
-		trigger = params[:trigger]
-		trigger['input'] = trigger['input'].to_i
-		logger.debug "*** trigger: #{trigger} ***"
-		res = Api.post("/users/#{@username}/triggers/add", trigger)
-		respond_to do |format|
-			format.html { redirect_to triggers_path }
+		trigger_params = params[:trigger]
+		#trigger_params['input'] = trigger_params['input'].to_i
+		@trigger = Trigger.new(trigger_params)
+		logger.debug "*** @trigger: #{@trigger.valid?} ***"
+		if @trigger.valid?
+			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
+			respond_to do |format|
+				format.html { redirect_to triggers_path }
+			end
+		else
+			respond_to do |format|
+				format.html { redirect_to triggers_new_path }
+			end
 		end
 	end
 
