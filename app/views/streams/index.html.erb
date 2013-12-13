@@ -28,47 +28,56 @@
 <!-- <div class="panel panel-default"> -->
 <div>
   <ul class="list-group col-md-6 left">
-    <% @streams.each do | stream | %>
-      <li class="list-group-item">
-        <h4 class="left"><%= stream['name'] %></h4>
+    <% if @streams == [] then %>
+      <% if @user.username == params[:id] then %>
+        <h4> You currenlty have no streams</h4>
+      <% else %>
+        <h4> <%= params[:id]%> currently have no streams </h4>
+      <% end %>
+    <% else %>
+      <% @streams.each do | stream | %>
+        <li class="list-group-item">
+          <h4 class="left"><%= stream['name'] %></h4>
 
-        <div class="right">
-          <i class="show-details glyphicon glyphicon-chevron-down right"></i>
-          <%if @user.username == params[:id] %>
-						<%= link_to 'Delete', "/streams/#{stream['id']}", method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger right glyphicon glyphicon-remove" %>
-          <% end %>
-          <%= link_to 'View', stream_path(stream['id']), class: "btn btn-sm btn-primary right glyphicon glyphicon-pencil" %>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="details" style="display: none;">
-          <p><%= stream['description'] %></p>
-          <p><%= stream['tags'] %></p>
-          <p><%= stream['type'] %></p>
-          <p>
-            <% if stream['private'] == "true" %>
-              <span class="label label-danger">Private</span>
-            <% else %>
-              <span class="label label-success">Public</span>
+          <div class="right">
+            <i class="show-details glyphicon glyphicon-chevron-down right"></i>
+            <%if @user.username == params[:id] %>
+  						<%= link_to 'Delete', "/streams/#{stream['id']}", method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger right glyphicon glyphicon-remove" %>
             <% end %>
+            <%= link_to 'View', stream_path(stream['id']), class: "btn btn-sm btn-primary right glyphicon glyphicon-pencil" %>
+          </div>
 
-            <% if stream['active'] == "true" %>
-              <span class="label label-success">Active</span>
-            <% else %>
-              <span class="label label-danger">Inactive</span>
-            <% end %>
-          </p>
-          <%#= stream.user_ranking %>
-          <%#= stream.subscribers %>
-        </div>
-      </li>
+          <div class="clearfix"></div>
+
+          <div class="details" style="display: none;">
+            <p><%= stream['description'] %></p>
+            <p><%= stream['tags'] %></p>
+            <p><%= stream['type'] %></p>
+            <p>
+              <% if stream['private'] == "true" %>
+                <span class="label label-danger">Private</span>
+              <% else %>
+                <span class="label label-success">Public</span>
+              <% end %>
+
+              <% if stream['active'] == "true" %>
+                <span class="label label-success">Active</span>
+              <% else %>
+                <span class="label label-danger">Inactive</span>
+              <% end %>
+            </p>
+            <%#= stream.user_ranking %>
+            <%#= stream.subscribers %>
+          </div>
+        </li>
+      <% end %>
     <% end %>
   </ul>
-
-  <div class="map col-md-4 right">
-    MAP
-  </div>
+  <% if @streams != [] then %>
+    <div class="map col-md-4 right">
+      MAP
+    </div>
+  <% end %>
 </div>
 
 <div class="center">

@@ -35,6 +35,11 @@ setup = (dom, location, editable) ->
   h = canvas.parent().height()
   canvas.width(w).height(h)
 
+  if !editable
+    drag = false
+  else
+    drag = true
+
   mapOptions =
     center: location
     zoom: 8
@@ -45,7 +50,7 @@ setup = (dom, location, editable) ->
 
   marker = new google.maps.Marker
     map: map
-    draggable: true
+    draggable: drag
     animation: google.maps.Animation.DROP
     position: location
 
