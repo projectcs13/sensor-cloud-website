@@ -35,8 +35,9 @@ class StreamsController < ApplicationController
   end
 
   def correctModelFields
-    @stream.polling = if @stream.polling == "1" then false else true end
-    @stream.private = if @stream.private == "0" then false else true end
+    # This is due to the 'Bootstrap Switch' plugin
+    @stream.polling = if @stream.polling == "0" then true  else false end
+    @stream.private = if @stream.private == "0" then false else true  end
 
     @stream.resource = {:resource_type => @stream.resource_type, :uuid =>  @stream.uuid}
     @stream.location = { :lat => @stream.latitude.to_f, :lon => @stream.longitude.to_f }
@@ -76,7 +77,7 @@ class StreamsController < ApplicationController
           end
         end
     	else
-      	format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
+        format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
       	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
     	end
     end
