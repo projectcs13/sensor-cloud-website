@@ -21,8 +21,8 @@ SensorCloud::Application.routes.draw do
 	resources :sessions, only: [:new, :create, :destroy]
   resources :contacts, only: [:new, :create]
 
-  resources :triggers
-  delete '/triggers/remove' => 'triggers#custom_destroy'
+  get '/triggers' => 'triggers#index'
+  delete '/triggers/remove' => 'triggers#destroy'
 
 
   root  'static_pages#home'

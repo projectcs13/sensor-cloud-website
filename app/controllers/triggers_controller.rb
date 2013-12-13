@@ -10,8 +10,13 @@ class TriggersController < ApplicationController
 	def show
 	end
 
-	def custom_destroy
+	def destroy
+		@username = current_user.username
 		@trigger = params[:query]
 		logger.debug "*** @trigger: #{@trigger} ***"
+		res = Api.post("/users/#{@username}/triggers/remove", JSON.parse(@trigger))
+		respond_to do |format|
+			format.html { redirect_to triggers_path }
+		end
 	end
 end
