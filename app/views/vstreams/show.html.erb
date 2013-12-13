@@ -25,6 +25,9 @@
 
         <h4>Description: </h4>
         <div class="stream-description well"><%= @vstream.description %></div>
+
+        <h4>Tags: </h4>
+        <div class="stream-description well"><%= @vstream.tags %></div>
         
         
         <% if not current_user.username.nil? and current_user.username == @vstream.user_id %>

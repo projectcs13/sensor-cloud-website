@@ -168,7 +168,7 @@ def create2
   res = conn.post do |req|
     req.url "#{CONF['API_URL']}/vstreams/"
     req.headers['Content-Type'] = 'application/json'
-    req.body = '{"user_id" : "'+params[:user_id]+'", "name" : "'+params[:name]+'", "description" :  "'+params[:description]+'", "streams_involved" : '+params[:streams_involved]+', "timestampfrom" : "'+params[:starting_date]+'", "function" : ' + params[:function] + '}'
+    req.body = '{"tags" : "'+params[:tags]+'", "user_id" : "'+params[:user_id]+'", "name" : "'+params[:name]+'", "description" :  "'+params[:description]+'", "streams_involved" : '+params[:streams_involved]+', "timestampfrom" : "'+params[:starting_date]+'", "function" : ' + params[:function] + '}'
   end
 
 
@@ -240,7 +240,7 @@ end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def vstream_params
-      params.require(:vstream).permit(:name, :description, :function)
+      params.require(:vstream).permit(:name, :description, :function, :tags)
     end
 
     # def load_parent
