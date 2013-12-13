@@ -23,7 +23,9 @@
         stream['_source']['location']['lat'].to_s+","+stream['_source']['location']['lon'].to_s
     end
   %>
+  <% logger.debug "-------> #{stream_last_updated}" %>
   <% stream_last_updated = distance_of_time_in_words(Date.iso8601(stream_last_updated), Time.now, include_seconds: true) %>
+  <% logger.debug "+++++++> #{stream_last_updated}" %>
   <% scale = 5%>
   <% starcount = 0%>
   <% part = (100/scale)%>
