@@ -108,20 +108,20 @@
     </div>
     </div>
       <div id="location" style="display: none;" value="<%= def_location %>"></div>
-            <div class="user-alerts panel panel-default">
-      <div class="panel-heading">Polling System Log (100 latest messages)</div>
-      <ul class="list alerts-list">
-
-        <% if current_user != nil and @user.username == current_user.username %>
-          <% @polling_history.each do |message| %>
+      <% if not @user.nil? and @user.username.downcase == @stream.user_id and @stream.polling == true %>
+        <div class="user-alerts panel panel-default">
+        <div class="panel-heading">Polling System Log (100 latest messages)</div>
+        <ul class="list alerts-list">
+        <% @polling_history.each do |message| %>
             <li class="list-group-item">
               <%= message["polling"]["message"] %> at
               <%= message["polling"]["timestamp"]%>
             </li>
          <% end %>
-        <% end %>
+        
       </ul>
     </div>
+    <% end %>
   </div>
 
 </div>
