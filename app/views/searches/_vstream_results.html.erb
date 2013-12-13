@@ -13,7 +13,12 @@
   <% vstream_desciption = vstream['_source']['description'] %>
   <% vstream_last_updated = vstream['_source']['last_updated'] %>
   <% vstream_subscribers = vstream['_source']['subscribers'] %>
-  <% vstream_last_updated = distance_of_time_in_words(Date.iso8601(vstream_last_updated), Time.now, include_seconds: true) %>
+  <% if vstream_last_updated.nil?
+     vstream_last_updated = 0 
+   else
+     vstream_last_updated = distance_of_time_in_words(Date.iso8601(vstream_last_updated), Time.now, include_seconds: true) 
+   end
+  %>
 
   <div class="panel panel-default search-result" data-streamid="<%= vstream_id %>" data-iteration="<%=i%>">
     <div class="panel-heading">
