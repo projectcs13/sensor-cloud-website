@@ -35,6 +35,7 @@
 				<% if signed_in? %>
 					<li><%= link_to "My Streams", "/users/#{current_user.username}/streams" %></li>
 					<li><%= link_to "Following", "/users/#{current_user.username}/following" %></li>
+					<li><%= link_to "My Triggers", "/users/#{current_user.username}/triggers" %></li>
 				<% end %>
 			</ul>
 

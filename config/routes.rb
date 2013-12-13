@@ -6,6 +6,7 @@ SensorCloud::Application.routes.draw do
       get 'streams' => 'streams#index'
       # get 'following' => 'users#following', as: :following
       get 'following' => 'users#following'
+      get 'triggers' => 'triggers#index'
     end
   end
 
