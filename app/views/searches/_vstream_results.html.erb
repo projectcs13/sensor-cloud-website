@@ -14,17 +14,6 @@
   <% vstream_last_updated = vstream['_source']['last_updated'] %>
   <% vstream_subscribers = vstream['_source']['subscribers'] %>
   <% vstream_last_updated = distance_of_time_in_words(Date.iso8601(vstream_last_updated), Time.now, include_seconds: true) %>
-  <% scale = 5%>
-  <% starcount = 0%>
-  <% part = (100/scale)%>
-  <% empty_stars = scale%>
-  <%# percentage = vstream['_source']['user_ranking']['average']%>
-
-  <% percentage = 0 %>
-  <%# ranking = (vstream['_source']['user_ranking']['average']/(100/scale))%>
-  <% ranking = (percentage/(100/scale))%>
-  <%# nr_rankings = vstream['_source']['user_ranking']['nr_rankings'] %>
-  <% nr_rankings = 1 %>
 
   <div class="panel panel-default search-result" data-streamid="<%= vstream_id %>" data-iteration="<%=i%>">
     <div class="panel-heading">
@@ -36,49 +25,7 @@
       <span class="stream-description"><%= vstream_desciption %></span>
       <div class="search-result-footer">
         <span class="last-update pull-right">Last updated <%= vstream_last_updated %> ago</span>
-      <!-- display stars -->                                                                       
-        <% for stars in (ranking.to_i).times %>
-          <%starcount += 1%>
-          <%empty_stars -= 1%>
-            <%if stars == 0%>
-              <%if ranking <= 1.5 and ranking >= 0.5%>
-                <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" 
-                       class="star required" checked="checked"  value = "<%=starcount * part%>"/>
-              <%else%>
-                <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" 
-                       class="star required"  value = "<%=starcount * part%>"/>
-              <%end%>
-            <%elsif starcount < (ranking-1) %>
-              <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" 
-                     class="star" value = "<%=starcount * part%>"/>
-            <%else%>
-              <%if ranking % 1 <= 0.5 %>
-                <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" class="star" checked="checked" value = "<%=starcount * part%>"/>  
-              <%else%>
-                <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" class="star" value = "<%=starcount * part%>"/>
-              <%end%>
-            <%end%>
-            <%end%>
-           <%if ranking > 0.1%>
-            <%if ranking % 1 > 0.5 %>
-              <%empty_stars -= 1%>
-              <%starcount += 1%>
-              <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" 
-                     class="star" checked="checked" value = "<%=starcount * part%>"/>
-            <% end %>
-          <%end%>
-          <% for stars in (empty_stars).times %>
-            <%starcount += 1%>
-            <%if starcount <= 1%>
-              <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" class="star required" value = "<%=starcount * part%>"/>
-            <%else%>
-              <input id = "<%= vstream_id %>" name="star<%= vstream_id %>" type="radio" class="star" value = "<%=starcount * part%>"/>
-            <%end%>
-          <%end%>                          
-      <!-- Star display ends here -->
-      <%= nr_rankings %>
-      <!-- This line displays percentage -->
-      <%= percentage %>%
+        
     </div>
     </div>
   </div>
