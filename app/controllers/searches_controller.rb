@@ -31,7 +31,6 @@ class SearchesController < ApplicationController
 	end
 
 	def create
-    logger.debug "DEEEEEEBUGGG!!:: #{params}"
 		@nb_results_per_page = 20
 		@query = params['search']['query']
 		query_from = if params['search']['page'].blank? then 0 else (params['search']['page'].to_i * @nb_results_per_page).to_i end
@@ -73,7 +72,6 @@ class SearchesController < ApplicationController
 								}
 							}
 		end
-      logger.debug "DEEEEEEBUGGG!!:: #{body}"
 			res = Api.post(url, body)
 
 			@streams = res["body"]['streams']['hits']['hits']
