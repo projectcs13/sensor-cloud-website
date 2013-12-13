@@ -95,16 +95,37 @@
      	 	URI : <%= @stream.uri %> <br>
      	 	Polling Frequency : <%= @stream.polling_freq %> (sec) <br>
      	</div>
+
+
+
       	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
       	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
 	 <% end %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
+    <div class="row" style="height:300px;">
     <div id="map-canvas">
     </div>
+    </div>
       <div id="location" style="display: none;" value="<%= def_location %>"></div>
+            <div class="user-alerts panel panel-default">
+      <div class="panel-heading">Polling System Log (100 latest messages)</div>
+      <ul class="list alerts-list">
+
+        <% if current_user != nil and @user.username == current_user.username %>
+          <% @polling_history.each do |message| %>
+            <li class="list-group-item">
+              <%= message["polling"]["message"] %> at
+              <%= message["polling"]["timestamp"]%>
+            </li>
+         <% end %>
+        <% end %>
+      </ul>
+    </div>
   </div>
+
 </div>
+
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false" ></script>
 
 
