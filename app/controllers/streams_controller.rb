@@ -28,6 +28,14 @@ class StreamsController < ApplicationController
     stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
     @prediction = {:in => "50", :out => "25"}
+    @polling_history = nil
+    if res["body"]["polling"] == true then
+      res2 = Api.get("/streams/#{@stream_id}/pollinghistory")
+      @polling_history = res2["body"]["history"]
+      sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
+      @polling_history = sorted_history
+    end
+    
   end
 
   def suggest
