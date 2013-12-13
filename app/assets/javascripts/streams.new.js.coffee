@@ -134,6 +134,15 @@ window.newStreamForm = (form) ->
       exp.show TIME
 
 
+  keyup = (event) ->
+    inputName = $(this)
+    if inputName.val().length is 0
+      btnNext.addClass 'disabled'
+    else if inputName.val().length > 0
+      form.find('#error_explanation').hide()
+      btnNext.removeClass 'disabled'
+
+
   initBootstrapSwitches = ->
     html = '<div class="make-switch" />'
 
@@ -151,6 +160,7 @@ window.newStreamForm = (form) ->
   # Initialization
   #
 
+  form.find('.input-name').on 'keyup', keyup
   form.find('.input').on 'focus', explain
 
   btnNext.on 'click', next
@@ -164,3 +174,5 @@ window.newStreamForm = (form) ->
 
   steps.each (i, step) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
+
+  btnNext.addClass 'disabled'
