@@ -2,6 +2,12 @@ class TriggersController < ApplicationController
 
 	def new
 		@trigger = Trigger.new
+		@username = current_user.username
+		res = Api.get("/users/#{@username}/streams")
+		@streams = res['body']['streams']
+		logger.debug "*** @streams: #{@streams}***"
+		@stream_ids = @streams.map { |e| e['id'] }
+		logger.debug "*** @stream_ids: #{@stream_ids} ***"
 	end
 
 	def create
