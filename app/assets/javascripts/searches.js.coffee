@@ -4,6 +4,9 @@
 //= require 'include/filter_map'
 
 $ ->
+  $("#filter-btn").on 'click', ->
+    $("#filter").slideToggle()
+
   #setup map and graph containers
   #height still statically set since height() needs to render page to calculate correctly
   contentWidth = $(".right-side-content").width()

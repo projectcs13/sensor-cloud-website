@@ -46,7 +46,7 @@ class SearchesController < ApplicationController
     tags = params['search']['filter_tag'].split(",") unless params['search']['filter_tag'].nil? or params['search']['filter_tag'].blank?
     filters = Array.new
     filters.push({ "regexp" => { "unit" => { "value" => params['search']['filter_unit'] } } }) unless params['search']['filter_unit'].nil? or params['search']['filter_unit'].blank?
-    filters.push({ "regexp" => { "active" => { "value" => params['search']['active'] } } }) unless params['search']['filter_active'] == "any" or params['search']['filter_active'].blank?
+    filters.push({ "regexp" => { "active" => { "value" => params['search']['filter_active'] } } }) unless params['search']['filter_active'] == "any" or params['search']['filter_active'].blank?
     filters.push({ "terms" => { "tags" =>  tags } }) unless tags.nil? 
     filters.push({ "geo_distance" => { "distance" => params['search']['filter_distance'] + "km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] } } }) unless params['search']['filter_longitude'].nil? or params['search']['filter_longitude'].blank? 
 	
