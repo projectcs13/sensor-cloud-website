@@ -4,30 +4,25 @@
       <%= f.label :name %>
       <label class="small required">(required)</label>
     </div>
-    <label class="explanation">What is the name of the stream?</label><br>
+    <label class="explanation">What is the name of the stream?</label>
     <%= f.text_field :name, class: "form-control input input-name", placeholder: "e.g: Temperature outdoor in Engelska Park" %>
   </div>
 
   <div class="form-group">
     <%= f.label :description, class: "left" %>
-    <label class="explanation">Describe what does your stream in just few words</label><br>
+    <label class="explanation">Describe what does your stream in just few words</label>
     <%= f.text_field :description, class: "form-control input", placeholder: "e.g: It measures how warm is the most popular park in Uppsala" %>
   </div>
 
   <div class="form-group">
     <%= f.label :type, class: "left" %>
     <label class="explanation">Please, specify the type of your stream</label>
-    <div class="clearfix"></div>
     <%= f.text_field :type, class: "form-control input", placeholder: "e.g: Temperature" %>
   </div>
 
   <div class="form-group">
     <%= f.label :private %><br>
-    <div class="make-switch left private-switch" data-on-label="Yes" data-off-label="No">
-      <!-- <input type="checkbox" checked> -->
-      <%= f.check_box :private, class: "form-control" %>
-    </div>
-    <div class="clearfix"></div>
+    <%= f.check_box :private, class: "form-control switch-private", checked: true  %>
   </div>
 
   <div class="form-group">
