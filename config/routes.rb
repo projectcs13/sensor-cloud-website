@@ -23,6 +23,8 @@ SensorCloud::Application.routes.draw do
 
   get '/triggers' => 'triggers#index'
   delete '/triggers/remove' => 'triggers#destroy'
+  get '/triggers/new' => 'triggers#new'
+  post '/triggers/create' => 'triggers#create'
 
 
   root  'static_pages#home'
