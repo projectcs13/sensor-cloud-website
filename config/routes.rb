@@ -1,5 +1,6 @@
 SensorCloud::Application.routes.draw do
 
+
   resources :users do
     member do
       get 'edit/edit_profile' => 'users#profile'
@@ -9,6 +10,9 @@ SensorCloud::Application.routes.draw do
       get 'triggers' => 'triggers#index'
     end
   end
+  resources :users do
+    resources :vstreams
+  end  
 
   resources :streams do
     collection do
@@ -18,6 +22,7 @@ SensorCloud::Application.routes.draw do
     end
   end
 
+  # resources :vstreams
   resources :searches
 	resources :sessions, only: [:new, :create, :destroy]
   resources :contacts, only: [:new, :create]
@@ -29,6 +34,11 @@ SensorCloud::Application.routes.draw do
 
 
   root  'static_pages#home'
+
+
+  get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
+  post '/users/:user_id/vstreams/create2' => 'vstreams#create2'
+
 
   post '/relationships/unfollow' => 'relationships#destroy'
   post '/relationships/follow'   => 'relationships#create'

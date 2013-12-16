@@ -8,12 +8,20 @@
       <div class="panel-heading">Alerts</div>
       <ul class="list alerts-list">
         <!-- TODO Change this and make it dynamic!!! -->
-        <% if current_user == nil or @user.username == current_user.username %>
+        <% if current_user != nil and @user.username == current_user.username %>
           <% @notifications.each do |notification| %>
             <li class="list-group-item">
-                <%= notification["trigger"]["timestamp"] %> <br>
-                Value : <%= notification["trigger"]["value"] %> <br>
-                Stream: <%= link_to notification["trigger"]["stream_id"] , "/streams/#{notification["trigger"]["stream_id"]}" %>
+                <% if notification.has_key?("trigger") then %>
+                  Alert from trigger: <br>
+                  <%= notification["trigger"]["timestamp"] %> <br>
+                  Value : <%= notification["trigger"]["value"] %> <br>
+                  Stream: <%= link_to notification["trigger"]["stream_id"] , "/streams/#{notification["trigger"]["stream_id"]}" %>
+                <% else %>
+                  Alert from polling system: <br>
+                  <%= notification["polling"]["timestamp"] %> <br>
+                  <%= notification["polling"]["message"] %> <br>
+                  Stream: <%= link_to notification["polling"]["stream"] , "/streams/#{notification["polling"]["stream"]}" %>
+                <% end %>
             </li>
          <% end %>
         <% end %>
@@ -37,7 +45,9 @@
       <div class="col-lg-9">
         <div class="user-profile-lengthfix panel panel-default">
           <div class="panel-heading">Description</div>
-            <div class="panel-body"></div>
+            <div class="panel-body">
+              <%= @user.description %>
+            </div>
         </div>
       </div>
 
