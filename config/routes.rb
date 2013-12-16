@@ -37,7 +37,7 @@ SensorCloud::Application.routes.draw do
   post '/relationships/follow'   => 'relationships#create'
 
   get '/resources/:id'  => 'streams#fetchResource'
-  get '/suggest/:model', to: 'streams#suggest', model: /.*/
+  get '/suggest/:model' => 'streams#suggest', model: /.*/
   get '/datapoints/:id' => 'streams#fetch_datapoints'
   get '/prediction/:id' => 'streams#fetch_prediction'
   post '/preview'   => 'streams#fetch_datapreview'

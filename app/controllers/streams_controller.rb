@@ -40,9 +40,7 @@ class StreamsController < ApplicationController
 
   def suggest
     uri = ERB::Util.url_encode params[:model]
-    logger.debug uri
-    uri.gsub! "." "%2E"
-    logger.debug uri
+
     res = Api.get("/suggest/#{uri}?size=10")
     data = if res["status"] == 404 then {} else res["body"]["suggestions"] end
     render :json => data, :status => res["status"]
