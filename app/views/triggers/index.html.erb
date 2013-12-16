@@ -2,7 +2,7 @@
 <br />
 <br />
 <% @triggers.each do |t| %>
-	<%= t['function'] %>
+	<%= @functions[t['function']] %>
 	<%= t['input'] %>
 	<% t['streams'].each do |s| %>
 		<%= @stream_names[s] %>
