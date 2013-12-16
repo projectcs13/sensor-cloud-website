@@ -13,7 +13,7 @@ class TriggersController < ApplicationController
 	def create
 		@username = current_user.username
 		trigger_params = params[:trigger]
-		#trigger_params['input'] = trigger_params['input'].to_i
+		#trigger_params['input'] = [4,7]
 		@trigger = Trigger.new(trigger_params)
 		if @trigger.valid?
 			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
@@ -37,7 +37,7 @@ class TriggersController < ApplicationController
 		@stream_names = {}
 		@streams.each { |e| @stream_names[e['id']] = e['name'] }
 		
-		@functions = {"greater_than" => "Greater than", "less_than" => "Less than"}
+		@functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
 	end
 
 	def show

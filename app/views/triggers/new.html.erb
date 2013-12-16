@@ -1,13 +1,39 @@
 <%= form_for(@trigger, :url => {:action => "create"}) do |f| %>
 	
 	<%= f.label :function %>
-	<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than"} %>
+	<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than", "span" => "span"} %>
 
-	<%= f.label :input %>
-	<%= f.text_field :input %>
+	<%#= f.label :input %>
+	<%#= f.text_field :input %>
+
+	<span id="input-fields"></span>
 
 	<%= f.label  :streams %>
 	<%= f.select :streams, @stream_ids %>
 
 	<%= f.submit "Submit" %>
 <% end %>
+<div></div>
+
+<script>
+	$( "#trigger_function" )
+		.change(function () {
+			var selectedOption = "";
+			var inputFields = "";
+			$("#trigger_function option:selected").each(function(){
+				selectedOption = $( this ).text();
+			});
+			if (selectedOption == "span") {
+				inputFields = "<label for='trigger_min'>Min</label> \
+											 <input id='trigger_min' name='trigger[min]' type='text'> \
+											 <label for='trigger_max'>Max</label> \
+											 <input id='trigger_max' name='trigger[max]' type='text'>";
+			}
+			else {
+				inputFields = "<label for='trigger_input'>Input</label> \
+											 <input id='trigger_input' name='trigger[input]' type='text'>";
+			}
+			$("#input-fields").html(inputFields);
+		})
+		.change();
+</script>
