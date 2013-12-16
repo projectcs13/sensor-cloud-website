@@ -64,6 +64,9 @@
     <br>
     <br>
     <div class="col-md-8 right-side-content right ">
+
+
+<% if not current_user.nil? %>
     <button class="btn btn-primary btn-lg glyphicon glyphicon-plus" data-toggle="modal" data-target="#myModal" onclick="getStreams();">Virtual Stream</button>
 
 
@@ -77,6 +80,8 @@
                 $('#streams_involved').val (JSON.stringify(results)); 
               }
     </script>
+    
+<% end %>
 
     </div>        
   </div>     
@@ -88,6 +93,7 @@
 <!-- VSTREAMS  -->
 
 
+<% if not current_user.nil? %>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -97,7 +103,6 @@
         <h4 class="modal-title" id="myModalLabel">Create Virtual Stream</h4>
       </div>
       <div class="modal-body">
-
 
         <form  action="/users/<%= current_user.username %>/vstreams/create2" id="newVstreamForm" method="post" onsubmit=" function() {
                                       
@@ -163,3 +168,5 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<% end %>
