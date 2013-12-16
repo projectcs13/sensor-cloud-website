@@ -2,17 +2,7 @@
 <div class="col-md-6 col-md-offset-3 login-form">
 <%= form_for(@trigger, :url => {:action => "create"}) do |f| %>
 	
-<<<<<<< HEAD
-	<%= f.label :function, class: "left"%>
-	<label class="explanation">The function for the trigger</label><br>
-	<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than"}, {}, { :class => 'form-control input clearfix' } %>
-	<br>
 
-	<%= f.label :input, class: "left" %>
-	<label class="explanation">The limit Value</label><br>
-	<%= f.text_field :input , class: "form-control input clearfix", placeholder: "e.g: 3.14"%>
-	<br>
-=======
 	<%= f.label :function %>
 	<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than", "span" => "span"} %>
 
@@ -20,19 +10,13 @@
 	<%#= f.text_field :input %>
 
 	<span id="input-fields"></span>
->>>>>>> f9f5b6154457aa8cd78afc9d60f6ce229c5a80e2
 
 	<%= f.label  :streams, class: "left" %>
 	<label class="explanation">Pick the stream to use</label><br>
 	<%= f.select :streams, @stream_ids, {}, { :class => 'form-control input clearfix' } %>
 	<br>
 
-<<<<<<< HEAD
 	<%= f.submit "Submit", {:class => "btn btn-primary btn-create right"} %>
-<% end %>
-</div>
-=======
-	<%= f.submit "Submit" %>
 <% end %>
 <div></div>
 
@@ -58,4 +42,3 @@
 		})
 		.change();
 </script>
->>>>>>> f9f5b6154457aa8cd78afc9d60f6ce229c5a80e2
