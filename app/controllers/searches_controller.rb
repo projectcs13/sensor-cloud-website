@@ -1,16 +1,6 @@
 class SearchesController < ApplicationController
-	def new
-        @vstream = Vstream.new
-
-    end
-	
-    def index
-    	@vstream = Vstream.new
-    end	
-
 
 	def show
-		@vstream = Vstream.new
 	end
 
 	def filter
@@ -41,14 +31,18 @@ class SearchesController < ApplicationController
 	end
 
 	def create
-		@vstream = Vstream.new
 		@nb_results_per_page = 8.0
 		if params['search']['query'].blank?
 			redirect_to root_path
 		else
-			query_from = if params['search']['page'].blank? then 0 else (params['search']['page'].to_i * @nb_results_per_page).to_i end
-			url = "/_search?location=false&from=#{query_from}&size=#{@nb_results_per_page.to_i}"
 
+			if (not params['search']['page'].blank?)
+				url = "/_search?location=true&from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+			elsif (not params['search']['page_users'].blank?)
+				url = "/_search?location=true&from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+			else
+				url = "/_search?location=true&from=0&size=#{@nb_results_per_page.to_i}"
+			end
 
 			if params['search']['sort_by'] == "none"
 				sort_by = {}
@@ -61,23 +55,23 @@ class SearchesController < ApplicationController
 			filters = Array.new
 			if params['search']['filter_unit'].to_s.strip.length != 0
 				nameFilter = { "regexp" => { "unit" => { "value" => params['search']['filter_unit'] } } }
-				filters.push(nameFilter.to_json)
+				filters.push(nameFilter)
 			end
 			if params['search']['filter_tag'].to_s.strip.length != 0
 				tagFilter = { "regexp" => { "tags" => { "value" => params['search']['filter_tag'] } } }
-				filters.push(tagFilter.to_json)
+				filters.push(tagFilter)
 			end
 			if params['search']['filter_rank'] == "1"
 				rankFilter = {"range" => { "user_ranking.average" => { "gte" => params['search']['min_val'], "lte" => params['search']['max_val'] } } }
-				filters.push(rankFilter.to_json)
+				filters.push(rankFilter)
 			end
 			if params['search']['filter_active'] == "1"
 				activeFilter = { "regexp" => { "active" => { "value" => params['search']['active'] } } }
-				filters.push(activeFilter.to_json)
+				filters.push(activeFilter)
 			end
 			if params['search']['filter_longitude'].to_s.strip.length != 0
 				mapFilter = { "geo_distance" => { "distance" => params['search']['filter_distance'] + "km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] } } }
-				filters.push(mapFilter.to_json)
+				filters.push(mapFilter)
 			end
 			#A quick way to check if filter is nil or empty or just whitespace
 			if filters.empty?
@@ -96,22 +90,20 @@ class SearchesController < ApplicationController
 												} 
 											}, "filter" => 
 											{
-												"and" => ['+ filters.join(",") + ']
+												"and" => filters
 											}
 										}
 									}
 								}
 			end
-
+			logger.debug(body)
 			res = Api.post(url, body)
 
-			@vstreams = res["body"]['vstreams']['hits']['hits']
 			@streams = res["body"]['streams']['hits']['hits']
 			@users = res["body"]['users']['hits']['hits']
 			@count_streams = res["body"]['streams']['hits']['total']
-			@count_vstreams = res["body"]['vstreams']['hits']['total']
 			@count_users = res["body"]['users']['hits']['total']
-			@count_all = @count_streams + @count_users + @count_vstreams
+			@count_all = @count_streams + @count_users
 			
 			@query = params['search']['query']
 
