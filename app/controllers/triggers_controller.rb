@@ -37,7 +37,7 @@ class TriggersController < ApplicationController
 		@stream_names = {}
 		@streams.each { |e| @stream_names[e['id']] = e['name'] }
 		
-		@functions = {"greater_than" => "greater than", "less_than" => "less than"}
+		@functions = {"greater_than" => "Greater than", "less_than" => "Less than"}
 	end
 
 	def show
