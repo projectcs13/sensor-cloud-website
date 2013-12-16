@@ -143,20 +143,6 @@ end
     send_data(:post, url, @vstream.attributes.to_json)
   end
 
-  def multipost
-    cid = current_user.id
-    url = "#{CONF['API_URL']}/users/#{cid}/vstreams/"
-
-    arr = []
-    @vstreams.each do |vstream|
-      arr.push vstream.attributes
-    end
-    req = { :multi_json => arr }.to_json
-    logger.debug "REQ: #{req}"
-
-    send_data(:post, url, req)
-  end
-
   def put
     cid = current_user.username
     url = "#{CONF['API_URL']}/users/#{cid}/vstreams/#{@vstream.id}"
@@ -167,8 +153,8 @@ end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vstream
-      #@vstream = vstream.find(params[:id], _user_id: current_user.id)
-      @vstream = Vstream.find(params[:id])
+      @vstream = Vstream.find(params[:id], user_id: params[:user_id])
+      #@vstream = Vstream.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -208,8 +194,11 @@ end
 		end
 
     def correct_user
-      stream = Vstream.find(params[:id], :_user_id => current_user.username)
-      user = User.find_by_username(:user_id)
-      redirect_to(root_url) unless current_user?(user)
+      resp = Faraday.get "#{CONF['API_URL']}/vstreams/#{params[:id]}"
+      @stream_owner_id = JSON.parse(resp.body)['user_id']
+      # stream = Stream.find(_user_id: params[:id])
+      @user = User.find_by_username(@stream_owner_id)
+      redirect_to(root_url) unless current_user?(@user)
+
     end
 end
