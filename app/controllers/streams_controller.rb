@@ -20,6 +20,11 @@ class StreamsController < ApplicationController
     res = Api.get("/streams/#{@stream_id}")
     stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
+    @triggers = nil
+    if current_user.username == @stream_owner.username then
+      response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
+      @triggers = response['body']['triggers']
+    end
   end
 
   def suggest

@@ -1,0 +1,20 @@
+<% unless @triggers.nil? %>
+	<h4>Triggers:</h4>
+	<div class="stream-tags well">
+		<% @triggers.each do |t| %>
+			<% @trigger = Trigger.new(t) %>
+			<%= form_for(@trigger, :url => triggers_new_path) do |f| %>
+				<%= f.label :function %>
+				<%= f.text_field :function, disabled: true%>
+
+				<%= f.label :input %>
+				<%= f.text_field :input, disabled: true %>
+
+				<%= f.hidden_field :streams %>
+
+				<%= f.submit "Submit" %>
+			<% end %>
+		<% end %>
+	</div>
+<% end %>
+
