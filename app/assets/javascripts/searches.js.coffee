@@ -23,8 +23,10 @@ $ ->
     selectedSpan = "<span class='pull-right glyphicon glyphicon-ok-sign selected" + iteration + "'></span>"
     noDataSpan = "<span class='pull-right no-data'>[NO DATA]</span>"
     panelHeader = $(this).children().first()
+
     if isSelected
       $(this).children().removeClass("selected")
+      
       panelHeader.children().remove("span")
       graphData = graphData.filter (el) -> 
         return el.stream_id.toString() != stream_id
@@ -34,6 +36,7 @@ $ ->
       $(this).children().addClass("selected")
       # ajax call
       res = $.get '/datapoints/' + stream_id
+
       res.done (result) ->
         result['stream_id'] = stream_id
         graphData.push result
@@ -64,6 +67,9 @@ $ ->
         dataType: "json",
         success: (result, thing) ->
           console.log result, thing
+
+
+
 
   setupButtons()
   init_scrolling()

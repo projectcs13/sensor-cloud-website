@@ -1,0 +1,98 @@
+// Place all the styles related to the Streams controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'variables';
+@import 'tags';
+
+.corner {
+  float: right;
+  margin-top: 25px;
+  margin-bottom: 30px;
+  width: 35em;
+}
+
+  .corner .btn {
+    margin-left: 1em;
+  }
+
+  .corner .query-result {
+    float: right;
+    line-height: 2em;
+  }
+
+
+.axis path,
+.axis line pline{
+  fill: none;
+  stroke: $custom-grey-dark;
+}
+
+.axis text {
+  fill: $custom-grey-dark;
+}
+
+.labels text{
+  font-size: 1em;
+}
+
+.prediction-80 {
+  fill: $custom-grey;
+  background-color: $custom-grey;
+}
+
+.prediction-95 {
+  fill: $custom-blue-lighter;
+  background-color:$custom-blue-lighter;
+}
+
+.line {
+  fill: none;
+  stroke: $custom-greyish-blue;
+  stroke-width: 1.5px;
+}
+
+.prediction-line {
+  fill: none;
+  stroke: $custom-blue-light;
+  stroke-width: 1.5px;
+}
+
+.datapoints {
+  fill: $custom-greyish-blue;
+  stroke: $custom-greyish-blue;
+  stroke-width: 1px;
+}
+
+.pdatapoints{
+  stroke: $custom-blue-light;
+  stroke-width: 1px;
+  fill: $custom-blue-lighter;
+}
+
+.delimiter{
+  stroke: $custom-greyish-blue;
+}
+
+#map-canvas {
+  height: 300px;
+  width: 300px;
+}
+
+.inactive {
+  background-color: #ddd;
+  color: #999;
+}
+
+.chosen {
+  background-color: lightblue !important;
+}
+
+.done {
+  background-color: lightgreen;
+  color: green;
+}
+
+#forms {
+  padding: 0;
+}

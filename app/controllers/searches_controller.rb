@@ -50,30 +50,49 @@ class SearchesController < ApplicationController
     filters.push({ "regexp" => { "active" => { "value" => params['search']['filter_active'] } } }) unless params['search']['filter_active'] == "any" or params['search']['filter_active'].blank?
     filters.push({ "terms" => { "tags" =>  tags } }) unless tags.nil? 
     filters.push({ "geo_distance" => { "distance" => params['search']['filter_distance'] + "km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] } } }) unless params['search']['filter_longitude'].nil? or params['search']['filter_longitude'].blank? 
-	
-		#A quick way to check if filter is nil or empty or just whitespace
-		if filters.empty?
-			body = { "sort" => sort_by, "query" => 
-						    { "query_string" => 
-									{ "query" => params['search']['query'] } 
-							  }
-							}
-		else
-			body = { "sort" => sort_by, "query" => 
-								{ "filtered" => 
-									{ "query" => 
-										{ "query_string" => 
-											{ "query" => 
-												params['search']['query'] 
-											} 
-										}, "filter" => 
-										{
-											"and" => filters
+
+			if (not params['search']['page'].blank?)
+				url = "/_search?location=true&from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+			elsif (not params['search']['page_users'].blank?)
+				url = "/_search?location=true&from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+			else
+				url = "/_search?location=true&from=0&size=#{@nb_results_per_page.to_i}"
+			end
+
+			if params['search']['sort_by'] == "none"
+				sort_by = {}
+			elsif params['search']['sort_by'].nil?
+				sort_by = { "average" => "desc" }
+			elsif params['search']['sort_by'] == "name"
+			    sort_by = { "stream.name.untouched" => "asc" }
+			else
+				sort_by = { "#{params['search']['sort_by']}" => "desc" }
+			end
+1
+			#A quick way to check if filter is nil or empty or just whitespace
+			if filters.empty?
+				body = { "sort" => sort_by, "query" => 
+							    { "query_string" => 
+										{ "query" => params['search']['query'] } 
+								  }
+								}
+			else
+				body = { "sort" => sort_by, "query" => 
+									{ "filtered" => 
+										{ "query" => 
+											{ "query_string" => 
+												{ "query" => 
+													params['search']['query'] 
+												} 
+											}, "filter" => 
+											{
+												"and" => filters
+											}
 										}
 									}
 								}
-							}
-		end
+			end
+			logger.debug(body)
 			res = Api.post(url, body)
 
 			@streams = res["body"]['streams']['hits']['hits']
