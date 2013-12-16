@@ -133,7 +133,7 @@ end
 
   def deleteAll
     cid = @user.username
-    url = "#{CONF['API_URL']}/vstreams/"
+    url = "#{CONF['API_URL']}/users/#{cid}/vstreams/"
     send_data(:delete, url, nil)
   end
 
