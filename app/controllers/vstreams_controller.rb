@@ -124,10 +124,10 @@ end
   end
 
   def fetch_prediction
-    res = Faraday.get "#{CONF['API_URL']}/vstreams/" + params[:id] + "/_analyse"
-    logger.debug "RES: #{res.body}"
+    res = Api.get "/vstreams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    logger.debug "VS:"
     respond_to do |format|
-      format.json { render json: res.body, status: res.status }
+      format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
   end
 

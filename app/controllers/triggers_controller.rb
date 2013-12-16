@@ -49,6 +49,7 @@ class TriggersController < ApplicationController
 		res = Api.post("/users/#{@username}/triggers/remove", JSON.parse(@trigger))
 		respond_to do |format|
 			format.html { redirect_to triggers_path }
+			format.json { render json: {"deleted" => "ok"}, status: res.status }
 		end
 	end
 end
