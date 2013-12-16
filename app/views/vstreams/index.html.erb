@@ -4,13 +4,13 @@
     <h1 class="title">My Virtual Streams</h1>
 
 
-    <div class="corner">
+    <!-- <div class="corner">
       <div class="btn btn-danger right">
-      <%= link_to 'Delete All Streams', user_vstreams_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+      <%= link_to 'Delete All Streams', user_vstreams_path(params[:user_id]), method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
       </div>
 
         
-    </div>
+    </div> -->
   <div class="clearfix"></div>
 
 </div>
@@ -25,11 +25,11 @@
           <i class="show-details glyphicon glyphicon-chevron-down right"></i>
 
             <div class="btn btn-sm btn-danger right">
-						  <%= link_to 'Delete', "/users/#{vstream['user_id']}/vstreams/#{vstream['id']}", method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+						  <%= link_to 'Delete', user_vstream_path(params[:user_id], vstream['id']), method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
             </div>
 
           <div class="btn btn-sm btn-primary right">
-            <%= link_to 'View', "/users/#{vstream['user_id']}/vstreams/#{vstream['id']}", class: "glyphicon glyphicon-pencil" %>
+            <%= link_to 'View', user_vstream_path(params[:user_id], vstream['id']), class: "glyphicon glyphicon-pencil" %>
           </div>
         </div>
 
@@ -52,9 +52,6 @@
     <% end %>
   </ul>
 
-  <div class="map col-md-4 right">
-    MAP
-  </div>
 </div>
 
 <div class="center">
