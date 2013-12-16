@@ -13,9 +13,12 @@ class TriggersController < ApplicationController
 	def create
 		@username = current_user.username
 		trigger_params = params[:trigger]
-		#trigger_params['input'] = [4,7]
 		@trigger = Trigger.new(trigger_params)
 		if @trigger.valid?
+			unless (trigger_params['min'].nil? || trigger_params['max'].nil?)
+				input = [trigger_params['min'], trigger_params['max']]
+				trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams']}
+			end
 			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
 			respond_to do |format|
 				format.html { redirect_to triggers_path }
@@ -46,7 +49,7 @@ class TriggersController < ApplicationController
 	def destroy
 		@username = current_user.username
 		@trigger = params[:query]
-		res = Api.post("/users/#{@username}/triggers/remove", JSON.parse(@trigger))
+		res = Api.post("/users/#{@username}/triggers/remove", @trigger)
 		respond_to do |format|
 			format.html { redirect_to triggers_path }
 		end
