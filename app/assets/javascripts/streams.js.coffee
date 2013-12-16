@@ -197,7 +197,7 @@ $ ->
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
-      graph_object.fetch_prediction_data()
+     
 
     loc = document.getElementById('location').getAttribute('value').split ","
     console.log loc[0]

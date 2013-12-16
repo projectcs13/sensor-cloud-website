@@ -1,0 +1,62 @@
+<div>
+  <% logger.debug "PARAMS: #{params}" %>
+  
+    <h1 class="title">My Virtual Streams</h1>
+
+
+    <div class="corner">
+      <div class="btn btn-danger right">
+      <%= link_to 'Delete All Streams', user_vstreams_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+      </div>
+
+        
+    </div>
+  <div class="clearfix"></div>
+
+</div>
+<!-- <div class="panel panel-default"> -->
+<div>
+  <ul class="list-group col-md-6 left">
+    <% @vstreams.each do | vstream | %>
+      <li class="list-group-item">
+        <h4 class="left"><%= vstream['name'] %></h4>
+
+        <div class="right">
+          <i class="show-details glyphicon glyphicon-chevron-down right"></i>
+
+            <div class="btn btn-sm btn-danger right">
+						  <%= link_to 'Delete', "/users/#{vstream['user_id']}/vstreams/#{vstream['id']}", method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>
+            </div>
+
+          <div class="btn btn-sm btn-primary right">
+            <%= link_to 'View', "/users/#{vstream['user_id']}/vstreams/#{vstream['id']}", class: "glyphicon glyphicon-pencil" %>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="details" style="display: none;">
+          <p><%= vstream['description'] %></p>
+          <p><%= vstream['tags'] %></p>
+          <p>
+            <% if vstream['private'] == "true" %>
+              <span class="label label-danger">Private</span>
+            <% else %>
+              <span class="label label-success">Public</span>
+            <% end %>
+          </p>
+          <%#= stream.user_ranking %>
+          <%#= stream.subscribers %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="map col-md-4 right">
+    MAP
+  </div>
+</div>
+
+<div class="center">
+  <%#= will_paginate @streams, renderer: BootstrapPagination::Rails, bootstrap: 3, class: "center" %>
+</div>

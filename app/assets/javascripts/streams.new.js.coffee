@@ -28,7 +28,6 @@ window.newStreamForm = (form) ->
   areaPreview = form.find "#preview-area"
 
   polling = form.find ".polling"
-  pollingSwitch = form.find ".polling-switch"
   progress = form.find ".progress-bar"
 
   explanations = form.find '.explanation'
@@ -41,18 +40,18 @@ window.newStreamForm = (form) ->
     stepLabel.text "Step #{currentStep+1} / #{steps.length}"
     stepDescription.text descriptions[ currentStep ]
 
-  decreaseBar = ->
-    w = progress.width()
-    ratio = progress.parent().width() / steps.length
-    progress.width(w - ratio)
+  decreaseBar = -> moveBar false
+  increaseBar = -> moveBar true
 
-  increaseBar = ->
+  moveBar = (increase) ->
     w = progress.width()
     ratio = progress.parent().width() / steps.length
+    ratio *= -1 if not increase
     progress.width(w + ratio)
 
-  setInputFocus = ->
-    steps.eq(currentStep).find('.input').first().focus()
+  setInputFocus = -> steps.eq(currentStep).find('.input').first().focus()
+
+  showPollingPanel = -> polling.toggle TIME * 2
 
   goBack = -> moveToNextStep false
   goNext = -> moveToNextStep true
@@ -74,7 +73,6 @@ window.newStreamForm = (form) ->
       if currentStep is steps.length-1
         btnCreate.css 'display', 'none'
         btnNext.css 'display', 'inline-block'
-        # btnNext.removeClass('btn-disabled').addClass('btn-primary')
 
       do goBack
       do decreaseBar
@@ -108,6 +106,7 @@ window.newStreamForm = (form) ->
       form.trigger 'submit'
     , TIME * 2
 
+
   preview = (event) ->
     do event.preventDefault
     $.ajax
@@ -123,35 +122,57 @@ window.newStreamForm = (form) ->
 
   switchChanged = (event) ->
     do event.preventDefault
-    polling.toggle TIME * 2
+    do showPollingPanel
     do setInputFocus
 
 
   explain = (event) ->
     exp = $(this).siblings '.explanation'
+    exp = $(this).parent().siblings '.explanation' unless exp.text()
     if exp.css('display') is 'none'
       explanations.hide TIME
       exp.show TIME
 
-  initBootstrapSwitches = ->
-    input = """<input class="form-control" id="stream_private" name="stream[private]" type="checkbox" value="1">"""
-    form.find('.private-switch').empty().append(input).bootstrapSwitch()
 
-    input = """<input checked="checked" class="form-control" id="stream_polling" name="stream[polling]" type="checkbox" value="false">"""
-    pollingSwitch.empty().append(input).bootstrapSwitch().on 'switch-change', switchChanged
+  keyup = (event) ->
+    inputName = $(this)
+    if inputName.val().length is 0
+      btnNext.addClass 'disabled'
+    else if inputName.val().length > 0
+      form.find('#error_explanation').hide()
+      btnNext.removeClass 'disabled'
+
+
+  initBootstrapSwitches = ->
+    html = '<div class="make-switch" />'
+
+    sw = form.find('.switch-private').wrap(html).parent().bootstrapSwitch()
+    sw.bootstrapSwitch 'setOnLabel', 'Yes'
+    sw.bootstrapSwitch 'setOffLabel', 'No'
+
+    sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
+    sw.bootstrapSwitch 'setOnLabel', 'Push'
+    sw.bootstrapSwitch 'setOffLabel', 'Poll'
+    sw.bootstrapSwitch 'setState', true
+    sw.on 'switch-change', switchChanged
 
   #
   # Initialization
   #
 
+  form.find('.input-name').on 'keyup', keyup
   form.find('.input').on 'focus', explain
+
   btnNext.on 'click', next
-  do btnBack.on('click', back).hide
-  do btnCreate.on('click', create).hide
+  btnPreview.on 'click', preview
+  btnBack.on('click', back).hide()
+  btnCreate.on('click', create).hide()
+
   do updateStepInformation
   do setInputFocus
   do initBootstrapSwitches
-  btnPreview.on 'click', preview
 
   steps.each (i, step) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
+
+  btnNext.addClass 'disabled'

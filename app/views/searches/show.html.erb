@@ -3,11 +3,13 @@
   <div class="row search-header">
     <%= render 'search_bar' %>
   </div>
+      
 	<div class="row main">
 		<div class="col-md-4 tab-content"> <!-- Left side container-->
       <ul class="nav nav-tabs nav-justified">
         <li class="active"><a href="#streams" data-toggle="tab">Streams <span class="badge badge-info"><%= @count_streams %></span></a></li>
-        <li><a href="#users" data-toggle="tab">Users <span class="badge badge-info"><%= @count_users %></span></a></li>
+        <li><a href="#vstreams" data-toggle="tab">Virtual Streams <span class="badge badge-info"><%= @count_vstreams %></span></a></li>
+        <li><a href="#users" data-toggle="tab">Users <span class="badge badge-info"><%#= @count_users %></span></a></li>
       </ul>
       <div class="row results-container tab-pane active fade in" id="streams">
         <div class="col-md-12">
@@ -16,6 +18,18 @@
               <h3><center><%= "We could not find any streams for"%> <br> <%= "\"#{@query}\""%></center></h3>
             <% else %>
               <%= render 'stream_results' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row results-container tab-pane fade" id="vstreams">
+        <div class="col-md-12">
+          <div class="scroll-pane" id="scroll-pane1">
+              <% if @vstreams == [] then %>
+              <h3><center><%= "We could not find any virtual streams for"%> <br> <%= "\"#{@query}\""%></center></h3>
+            <% else %>
+              <%= render 'vstream_results' %>
             <% end %>
           </div>
         </div>
@@ -47,5 +61,105 @@
         </div>
       </div>
     </div>
-	</div>
+    <br>
+    <br>
+    <div class="col-md-8 right-side-content right ">
+    <button class="btn btn-primary btn-lg glyphicon glyphicon-plus" data-toggle="modal" data-target="#myModal" onclick="getStreams();">Virtual Stream</button>
+
+
+    <script type="text/javascript">
+              function getStreams() {
+                streams = $('.search-result');
+                arr = streams.filter(function(i) { return streams.eq(i).children().first().hasClass('selected'); });
+                results=[]; 
+                arr.each(function(i) { results.push(arr.eq(i).data('streamid')); });
+                jsonstr = JSON.stringify(results)
+                $('#streams_involved').val (JSON.stringify(results)); 
+              }
+    </script>
+
+    </div>        
+  </div>     
+                    
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwrjTHAuOL2MG_bEC--E-hYSqn8GC2R8c&sensor=false&callback=map_init"></script>
+
+
+
+<!-- VSTREAMS  -->
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Create Virtual Stream</h4>
+      </div>
+      <div class="modal-body">
+
+
+        <form  action="/users/<%= current_user.username %>/vstreams/create2" id="newVstreamForm" method="post" onsubmit=" function() {
+                                      
+                                      $.ajax( {
+                                          type: 'POST',
+                                          url: '/vstreams/create2',
+                                          data: $('form').serialize(),
+                                          success: function( response ) {
+                                          Code to process the response
+                                        }
+                                      }); 
+             
+                                      return false;
+                                      } "> 
+                                <div class="login-form" >
+
+
+
+                              <div class="form-group" style="display:none;">
+                                 <label for="streams_involved">streams_involved</label>
+                                <input type="text" name="streams_involved" id = "streams_involved"class="form-control" value=""/>
+                              </div>
+                              <div class="form-group">
+                                 <label for="name">Name</label>
+                                <input type="text" name="name" class="form-control"/>
+                              </div>
+                              <div class="form-group ">
+                                 <label for="description">Description</label>
+                                <input type="text" name="description" class="form-control" />
+                              </div>
+                              <div class="form-group ">
+                                 <label for="tags">Tags</label>
+                                <input type="text" name="tags" class="form-control" />
+                              </div>
+                              <div class="form-group ">
+                                 <label for="starting_date">Starting Date</label>
+                                <input type="text" name="starting_date" class="form-control" id="datepicker"/>
+                              </div>
+                              <div class="form-group">
+                                <label for="function">Function</label>
+                                <select class="form-control" name="function">
+                                  <option value='["total", "1m"]'>Sum</option>
+                                  <option value='["max", "1m"]'>Max</option>
+                                  <option value='["min", "1m"]'>Min</option>
+                                  <option value='["mean", "1m"]'>Average</option>
+                                </select>
+                              </div>
+
+
+                          </div>
+            </form>
+<script>
+  $(function() {
+    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-ddT00:00:00.000" });
+  });
+  </script>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" form="newVstreamForm"/>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

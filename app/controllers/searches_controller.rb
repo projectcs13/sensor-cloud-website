@@ -1,6 +1,16 @@
 class SearchesController < ApplicationController
+	def new
+        @vstream = Vstream.new
+
+    end
+	
+    def index
+    	@vstream = Vstream.new
+    end	
+
 
 	def show
+		@vstream = Vstream.new
 	end
 
 	def filter
@@ -31,18 +41,14 @@ class SearchesController < ApplicationController
 	end
 
 	def create
+		@vstream = Vstream.new
 		@nb_results_per_page = 8.0
 		if params['search']['query'].blank?
 			redirect_to root_path
 		else
+			query_from = if params['search']['page'].blank? then 0 else (params['search']['page'].to_i * @nb_results_per_page).to_i end
+			url = "/_search?location=false&from=#{query_from}&size=#{@nb_results_per_page.to_i}"
 
-			if (not params['search']['page'].blank?)
-				url = "/_search?location=true&from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
-			elsif (not params['search']['page_users'].blank?)
-				url = "/_search?location=true&from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
-			else
-				url = "/_search?location=true&from=0&size=#{@nb_results_per_page.to_i}"
-			end
 
 			if params['search']['sort_by'] == "none"
 				sort_by = {}
@@ -96,13 +102,16 @@ class SearchesController < ApplicationController
 									}
 								}
 			end
+
 			res = Api.post(url, body)
 
+			@vstreams = res["body"]['vstreams']['hits']['hits']
 			@streams = res["body"]['streams']['hits']['hits']
 			@users = res["body"]['users']['hits']['hits']
 			@count_streams = res["body"]['streams']['hits']['total']
+			@count_vstreams = res["body"]['vstreams']['hits']['total']
 			@count_users = res["body"]['users']['hits']['total']
-			@count_all = @count_streams + @count_users
+			@count_all = @count_streams + @count_users + @count_vstreams
 			
 			@query = params['search']['query']
 
