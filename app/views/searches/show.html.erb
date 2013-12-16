@@ -27,7 +27,7 @@
         <div class="col-md-12">
           <div class="scroll-pane" id="scroll-pane1">
               <% if @vstreams == [] then %>
-              <h3><center><%= "We could not find any virtual streams for"%> <br> <%= "\"#{@query}\""%></center></h3>
+              <h3><center><%= "We could not find any virtual streams for"%> <%= "\"#{@query}\""%></center></h3>
             <% else %>
               <%= render 'vstream_results' %>
             <% end %>
@@ -37,7 +37,7 @@
 
       <div class="row results-container tab-pane fade" id="users">
         <div class="col-md-12">
-          <div class="scroll-pane" id="scroll-pane2">
+          <div class="scroll-pane" id="scroll-pane1">
             <% if @users == [] then %>
               <h3><center><%= "We could not find any users for"%> <br> <%= "\"#{@query}\""%></center></h3>
             <% else %>
