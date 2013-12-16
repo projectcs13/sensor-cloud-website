@@ -15,7 +15,9 @@ function add_new_content(page, content, type){
 	   $.ajax({
   	   	type: "POST",
   		  url: "/get_more_info",
-  		  data: { search: { page: stream_count, sort_by: $('#search_sort_by').val(), query: $('#search_query').val(), refresh: false}}
+  		  data: { search: { page: stream_count, sort_by: $('#search_sort_by').val(), query: $('#search_query').val(), 
+                                              filter_tag: $('#search_filter_tag').val(), filter_unit: $('#search_filter_unit').val(), filter_longitude: $('#search_filter_longitude').val(), 
+                                              filter_latitude: $('#search_filter_latitude').val(), filter_distance: $('#search_filter_distance').val(),refresh: false}}
 	   }).done(function( msg ) {
     	  waiting = false;
     	  stream_count = stream_count + 1;

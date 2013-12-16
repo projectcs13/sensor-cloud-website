@@ -31,7 +31,7 @@ class SearchesController < ApplicationController
 	end
 
 	def create
-		@nb_results_per_page = 20
+		@nb_results_per_page = 8
 		@query = params['search']['query']
 		query_from = if params['search']['page'].blank? then 0 else (params['search']['page'].to_i * @nb_results_per_page).to_i end
 		sort_by = if params['search']['sort_by'] == "none" then
@@ -68,7 +68,9 @@ class SearchesController < ApplicationController
 			else
 				sort_by = { "#{params['search']['sort_by']}" => "desc" }
 			end
-1
+			puts "Filters"
+			puts filters
+			puts params['search']
 			#A quick way to check if filter is nil or empty or just whitespace
 			if filters.empty?
 				body = { "sort" => sort_by, "query" => 
@@ -94,7 +96,12 @@ class SearchesController < ApplicationController
 			end
 			logger.debug(body)
 			res = Api.post(url, body)
-
+			@filter_unit = params['search']['filter_unit']
+			@filter_tag = params['search']['filter_tag']
+			@filter_longitude = params['search']['filter_longitude']
+			@filter_latitude = params['search']['filter_latitude']
+			@filter_distance = params['search']['filter_distance']
+			@filter_active = params['search']['filter_active']
 			@streams = res["body"]['streams']['hits']['hits']
 			@users = res["body"]['users']['hits']['hits']
 			@count_streams = res["body"]['streams']['hits']['total']
