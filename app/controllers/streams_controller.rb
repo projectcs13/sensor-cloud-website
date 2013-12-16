@@ -175,6 +175,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     res = Api.get "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    logger.debug "S:"
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end

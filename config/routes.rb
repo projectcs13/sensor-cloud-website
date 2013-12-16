@@ -20,6 +20,9 @@ SensorCloud::Application.routes.draw do
       get '/new_from_resource' => :new_from_resource
       delete '/'               => :destroyAll
     end
+    member do
+      get 'predict' => :fetch_prediction
+    end
   end
 
   # resources :vstreams
@@ -37,6 +40,7 @@ SensorCloud::Application.routes.draw do
 
 
   get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
+  get '/vsprediction/:id' => 'vstreams#fetch_prediction'
   post '/users/:user_id/vstreams/create2' => 'vstreams#create2'
 
 
