@@ -11,14 +11,10 @@
 $ ->
 
   $(document).bind "streams_index", (e, obj) =>
-    showDetails = (event) ->
-      el = $(this)
-      el.find('.details').toggle(500)
-      el.find('.show-details')
-        .toggleClass('glyphicon-chevron-up')
-        .toggleClass('glyphicon-chevron-down')
-
-    $('body').on 'click', '.list-group-item', showDetails
+    window.createMap
+      dom: $('#map-canvas').parent()
+      location: null
+      editable: false
 
   $(document).bind "streams_new", (e, obj) =>
     form = $ 'form'
@@ -197,7 +193,7 @@ $ ->
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
-     
+
 
     loc = document.getElementById('location').getAttribute('value').split ","
     console.log loc[0]
