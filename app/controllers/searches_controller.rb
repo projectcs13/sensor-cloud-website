@@ -38,6 +38,8 @@ class SearchesController < ApplicationController
 						     {}
 				       elsif params['search']['sort_by'].nil?
 				         { "average" => "desc" }
+			           elsif params['search']['sort_by'] == "name"
+			      		 { "stream.name.untouched" => "asc" }
 			         else
 				         { "#{params['search']['sort_by']}" => "desc" }
 			         end

@@ -13,8 +13,12 @@
   <% stream_desciption = stream['_source']['description'] %>
   <% stream_last_updated = stream['_source']['last_updated'] %>
   <% stream_subscribers = stream['_source']['subscribers'] %>
+  <% logger.debug(stream['_source']['location'].length) %>
   <% stream_location = 
-    if stream['_source']['location'].nil? then " " 
+
+    if stream['_source']['location'].to_s.strip.length == 0 then 
+      logger.debug("YOLO")
+      " " 
     elsif stream['_source']['location'].is_a?(String) then
           stream['_source']['location']
     elsif stream['_source']['location'].is_a?(Array) then
