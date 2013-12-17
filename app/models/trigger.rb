@@ -6,5 +6,4 @@ class Trigger
 	validates :input, :numericality => true, :allow_nil => true
 	validates :min, 	:numericality => true, :allow_nil => true
 	validates :max, 	:numericality => true, :allow_nil => true
-	validates :uri, :allow_nil => true
 end

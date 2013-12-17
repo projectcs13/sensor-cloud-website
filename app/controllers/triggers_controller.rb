@@ -15,12 +15,13 @@ class TriggersController < ApplicationController
 		trigger_params = params[:trigger]
 		@trigger = Trigger.new(trigger_params)
 		if @trigger.valid?
-			trigger_params['input'] = trigger_params['input'].to_i
-			unless (trigger_params['min'].nil? || trigger_params['max'].nil?)
-				trigger_params['min'] = trigger_params['min'].to_i
-				trigger_params['max'] = trigger_params['max'].to_i
+			if !(trigger_params['min'].nil? || trigger_params['max'].nil?)
+				trigger_params['min'] = trigger_params['min'].to_f
+				trigger_params['max'] = trigger_params['max'].to_f
 				input = [trigger_params['min'], trigger_params['max']]
 				trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams']}
+			else
+				trigger_params['input'] = trigger_params['input'].to_f
 			end
 			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
 			respond_to do |format|
@@ -52,6 +53,7 @@ class TriggersController < ApplicationController
 	def destroy
 		@username = current_user.username
 		@trigger = params[:query]
+		@trigger[:input] = @trigger[:input].to_f if @trigger[:input].kind_of?(String)
 		res = Api.post("/users/#{@username}/triggers/remove", @trigger)
 		respond_to do |format|
 			format.html { redirect_to triggers_path }

@@ -33,6 +33,7 @@ class StreamsController < ApplicationController
       response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
       @triggers = response['body']['triggers']
     end
+    @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
 
     @prediction = {:in => "50", :out => "25"}
     @polling_history = nil
