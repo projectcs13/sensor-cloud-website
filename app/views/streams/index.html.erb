@@ -44,7 +44,7 @@
             <%if @user.username == params[:id] %>
   						<%= link_to 'Delete', "/streams/#{stream['id']}", method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-sm btn-danger right glyphicon glyphicon-remove" %>
             <% end %>
-            <%= link_to 'View', stream_path(stream['id']), class: "btn btn-sm btn-primary right glyphicon glyphicon-pencil" %>
+            <%= link_to 'View', stream_path(stream['id']), class: "btn btn-sm btn-primary right glyphicon glyphicon-eye-open" %>
           </div>
 
           <div class="clearfix"></div>

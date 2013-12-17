@@ -23,3 +23,14 @@ $ ->
 
 	  $("#input-fields").html inputFields
 	).change()
+
+	$("#trigger_uri_enable").change(->
+		uriField = "";
+		if $(this).prop('checked')
+			uriField = """
+				<div class="form-group">
+					<label for="trigger_uri">URI</label>
+					<input id="trigger_uri" name="trigger[uri]" type="text" class="form-control">
+				</div>"""
+		$("#uri-field").html uriField
+	).change()

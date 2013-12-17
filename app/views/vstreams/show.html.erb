@@ -43,7 +43,9 @@
         <div class="stream-description well"><%= @vstream.tags %></div>
         
         
-        <% if not current_user.username.nil? and current_user.username == @vstream.user_id %>
+
+        <%if not current_user.nil? %> 
+          <% if current_user.username == @vstream.user_id %>
             <h4>Streams Involved: </h4>
             <div class="streams-involved well">
                 <% @vstream.streams_involved.each do | cur | %>
@@ -54,6 +56,7 @@
 
 
             </div>
+            <% end %>
         <% end %>
 
 

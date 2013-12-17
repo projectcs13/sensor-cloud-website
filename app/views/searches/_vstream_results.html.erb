@@ -5,6 +5,7 @@
     i = 0
     end
 %>
+<% unless @vestreams.nil? %>
 <% @vstreams.each do |vstream| %>
   <% i = i+1 %>
   <% vstream_id = vstream['_id'] %>
@@ -34,4 +35,5 @@
     </div>
     </div>
   </div>
+<% end %>
 <% end %>
