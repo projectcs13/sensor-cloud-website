@@ -19,7 +19,11 @@ class TriggersController < ApplicationController
 				trigger_params['min'] = trigger_params['min'].to_f
 				trigger_params['max'] = trigger_params['max'].to_f
 				input = [trigger_params['min'], trigger_params['max']]
-				trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams']}
+				if trigger_params['uri'].nil? 
+					trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams'] }
+				else
+					trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams'], 'uri' => trigger_params['uri'] }
+				end
 			else
 				trigger_params['input'] = trigger_params['input'].to_f
 			end
@@ -58,6 +62,7 @@ class TriggersController < ApplicationController
 		else
 			@trigger[:input].map! { |e| e.to_f }
 		end
+		@trigger[:uri] = @trigger[:output_id] if @trigger[:output_type] == "uri"
 		res = Api.post("/users/#{@username}/triggers/remove", @trigger)
 		respond_to do |format|
 			format.html { redirect_to triggers_path }
