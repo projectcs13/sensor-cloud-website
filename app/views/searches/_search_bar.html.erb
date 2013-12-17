@@ -1,4 +1,4 @@
-<%= form_for(:search, url: searches_path, :html => { :role => 'form'}) do |f| %>
+<%= form_for(:search, url: searches_path, :html => { :role => 'form',  :id =>'search-bar'}) do |f| %>
     <div class="input-group">
        
         <%= f.text_field :query, value: @query, class: "form-control" %> 
