@@ -1,9 +1,4 @@
 <% provide(:title, @title) %>
-<ul>
-	<% @streams.each do |s| %>
-		<li>
-			<h4><%= link_to s['name'], "/streams/#{s['id']}" %></h4>
-			<%= s['description'] %>
-		</li>
-	<% end %>
-</ul>
+
+<%= render 'following_header' %>
+<%= render 'layouts/streams/content' %>
