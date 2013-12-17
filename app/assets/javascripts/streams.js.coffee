@@ -181,7 +181,6 @@ $ ->
           location: null
           editable: true
 
-
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
     graphWidth = $("#graph-canvas").width()
@@ -217,5 +216,9 @@ $ ->
       location: null
       editable: true
 
-  action = "streams_" + $("body").data("action")
-  $.event.trigger action
+
+  body = $('body')
+  cont = body.data('controller')
+  meth = body.data('action')
+  event = "#{cont}_#{meth}"
+  $.event.trigger event
