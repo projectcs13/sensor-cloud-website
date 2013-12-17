@@ -40,6 +40,7 @@ window.newStreamForm = (form) ->
     stepLabel.text "Step #{currentStep+1} / #{steps.length}"
     stepDescription.text descriptions[ currentStep ]
 
+
   decreaseBar = -> moveBar false
   increaseBar = -> moveBar true
 
@@ -49,9 +50,11 @@ window.newStreamForm = (form) ->
     ratio *= -1 if not increase
     progress.width(w + ratio)
 
+
   setInputFocus = -> steps.eq(currentStep).find('.input').first().focus()
 
   showPollingPanel = -> polling.toggle TIME * 2
+
 
   goBack = -> moveToNextStep false
   goNext = -> moveToNextStep true
@@ -62,6 +65,25 @@ window.newStreamForm = (form) ->
     steps.eq(currentStep).show TIME
 
 
+  hideBackButton = -> btnBack.css 'display', 'none'
+  showBackButton = -> btnBack.css 'display', 'inline-block'
+
+  showCreateButton = ->
+    btnCreate.css 'display', 'inline-block'
+    btnNext.css 'display', 'none'
+
+  showNextButton = ->
+    btnCreate.css 'display', 'none'
+    btnNext.css 'display', 'inline-block'
+
+
+  post = (url, data) ->
+    $.ajax
+      type: "post",
+      dataType: "json",
+      url: url,
+      data: data
+
   #
   # Event Handlers
   #
@@ -71,22 +93,21 @@ window.newStreamForm = (form) ->
 
     if currentStep > 0
       if currentStep is steps.length-1
-        btnCreate.css 'display', 'none'
-        btnNext.css 'display', 'inline-block'
+        do showNextButton
 
       do goBack
       do decreaseBar
       do updateStepInformation
       do setInputFocus
 
-      btnBack.css 'display', 'none' if currentStep is 0
+      do hideBackButton if currentStep is 0
 
 
   next = (event) ->
     do event.preventDefault
 
     if currentStep < steps.length-1
-      btnBack.css 'display', 'inline-block'
+      do showBackButton
 
       do goNext
       do increaseBar
@@ -94,8 +115,7 @@ window.newStreamForm = (form) ->
       do setInputFocus
 
       if currentStep is steps.length-1
-        btnCreate.css 'display', 'inline-block'
-        btnNext.css 'display', 'none'
+        do showCreateButton
 
 
   create = (event) ->
@@ -109,15 +129,11 @@ window.newStreamForm = (form) ->
 
   preview = (event) ->
     do event.preventDefault
-    $.ajax
-      type: "post",
-      dataType: "json",
-      url: "/preview/",
-      data: { uri: textUri.val() }
+
+    post "/preview", { uri: textUri.val() }
     .done (data) ->
-      console.log data
-      console.log areaPreview
-      areaPreview.val JSON.stringify data, undefined, 2
+      json = JSON.stringify data, undefined, 2
+      areaPreview.val json
 
 
   switchChanged = (event) ->
@@ -136,8 +152,10 @@ window.newStreamForm = (form) ->
 
   keyup = (event) ->
     inputName = $(this)
+
     if inputName.val().length is 0
       btnNext.addClass 'disabled'
+
     else if inputName.val().length > 0
       form.find('#error_explanation').hide()
       btnNext.removeClass 'disabled'
@@ -156,17 +174,22 @@ window.newStreamForm = (form) ->
     sw.bootstrapSwitch 'setState', true
     sw.on 'switch-change', switchChanged
 
+
   #
   # Initialization
   #
 
-  form.find('.input-name').on 'keyup', keyup
-  form.find('.input').on 'focus', explain
+  btnNext.addClass 'disabled'
+  do btnBack.hide
+  do btnCreate.hide
 
-  btnNext.on 'click', next
+  form.find('.input').on 'focus', explain
+  form.find('.input-name').on('keyup', keyup).trigger 'keyup'
+
+  btnBack.on    'click', back
+  btnNext.on    'click', next
+  btnCreate.on  'click', create
   btnPreview.on 'click', preview
-  btnBack.on('click', back).hide()
-  btnCreate.on('click', create).hide()
 
   do updateStepInformation
   do setInputFocus
@@ -174,5 +197,3 @@ window.newStreamForm = (form) ->
 
   steps.each (i, step) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
-
-  btnNext.addClass 'disabled'
