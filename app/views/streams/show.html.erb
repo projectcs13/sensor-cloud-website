@@ -94,13 +94,15 @@
      	 	Data-Type : <%= @stream.data_type %> <br>
      	 	URI : <%= @stream.uri %> <br>
      	 	Polling Frequency : <%= @stream.polling_freq %> (sec) <br>
-     	</div>
-
+     	  </div>
+      <% end %>
+      <% if not @user.nil? and @user.username.downcase == @stream.user_id %>
 
 
       	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
       	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
-	 <% end %>
+	     <% end %>
+    <%# end %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
     <div class="row" style="height:300px;">
