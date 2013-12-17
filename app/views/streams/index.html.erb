@@ -54,7 +54,7 @@
             <p><%= stream['tags'] %></p>
             <p><%= stream['type'] %></p>
             <p>
-              <% if stream['private'] == "true" %>
+              <% if stream['private'] == true %>
                 <span class="label label-danger">Private</span>
               <% else %>
                 <span class="label label-success">Public</span>
