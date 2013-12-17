@@ -114,7 +114,7 @@ window.newStreamForm = (form) ->
 
   next = (event) ->
     do event.preventDefault
-    analyzeRequiredField inputName
+    analyzeRequiredField $('.input-name')
 
     if currentStep < steps.length-1
       do showBackButton
