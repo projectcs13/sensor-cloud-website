@@ -140,8 +140,8 @@ window.newStreamForm = (form) ->
   preview = (event) ->
     do event.preventDefault
 
-    post "/preview", { uri: textUri.val() }
-    .done (data) ->
+    p = post "/preview", { uri: textUri.val() }
+    p.done (data) ->
       json = JSON.stringify data, undefined, 2
       areaPreview.val json
 
