@@ -1,0 +1,52 @@
+<h1>New Trigger</h1>
+<div class="row">
+	<div class="col-md-6 col-md-offset-3 login-form">
+		<%= form_for(@trigger, :url => {:action => "create"}) do |f| %>
+			
+			<div class="form-group">
+				<%= f.label :function %>
+				<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than", "span" => "span"}, {}, { class: "form-control" } %>
+			</div>
+
+			<span id="input-fields"></span>
+
+			<%= f.label  :streams %>
+			<!--<label class="explanation">Pick the stream to use</label><br>-->
+			<%= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
+			<br>
+
+			<br/>
+			<div class="form-button">
+			<%= f.submit "Submit", class: "btn btn-lg btn-primary pull right" %>
+		<% end %>
+	</div>
+</div>
+
+<script>
+	$( "#trigger_function" )
+		.change(function () {
+			var selectedOption = "";
+			var inputFields = "";
+			$("#trigger_function option:selected").each(function(){
+				selectedOption = $( this ).text();
+			});
+			if (selectedOption == "span") {
+				inputFields = "<div class='form-group'> \
+												<label for='trigger_min'>Min</label> \
+												<input id='trigger_min' name='trigger[min]' type='text' class='form-control'> \
+											</div> \
+											<div class='form-group'> \
+												<label for='trigger_max'>Max</label> \
+												<input id='trigger_max' name='trigger[max]' type='text' class='form-control'> \
+											</div>";
+			}
+			else {
+				inputFields = "<div class='form-group'> \
+												<label for='trigger_input'>Input</label> \
+											 	<input id='trigger_input' name='trigger[input]' type='text' class='form-control'> \
+											 </div>" ;
+			}
+			$("#input-fields").html(inputFields);
+		})
+		.change();
+</script>

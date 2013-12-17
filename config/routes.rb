@@ -7,6 +7,7 @@ SensorCloud::Application.routes.draw do
       get 'streams' => 'streams#index'
       # get 'following' => 'users#following', as: :following
       get 'following' => 'users#following'
+      get 'triggers' => 'triggers#index'
     end
   end
   resources :users do
@@ -19,6 +20,9 @@ SensorCloud::Application.routes.draw do
       get '/new_from_resource' => :new_from_resource
       delete '/'               => :destroyAll
     end
+    member do
+      get 'predict' => :fetch_prediction
+    end
   end
 
   # resources :vstreams
@@ -26,10 +30,17 @@ SensorCloud::Application.routes.draw do
 	resources :sessions, only: [:new, :create, :destroy]
   resources :contacts, only: [:new, :create]
 
+  get '/triggers' => 'triggers#index'
+  delete '/triggers/remove' => 'triggers#destroy'
+  get '/triggers/new' => 'triggers#new'
+  post '/triggers/create' => 'triggers#create'
+
+
   root  'static_pages#home'
 
 
   get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
+  get '/vsprediction/:id' => 'vstreams#fetch_prediction'
   post '/users/:user_id/vstreams/create2' => 'vstreams#create2'
 
 

@@ -27,6 +27,13 @@ class StreamsController < ApplicationController
     res = Api.get("/streams/#{@stream_id}")
     stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
+
+    @triggers = nil
+    if current_user.username == @stream_owner.username then
+      response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
+      @triggers = response['body']['triggers']
+    end
+
     @prediction = {:in => "50", :out => "25"}
     @polling_history = nil
     if res["body"]["polling"] == true then
@@ -35,7 +42,6 @@ class StreamsController < ApplicationController
       sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
       @polling_history = sorted_history
     end
-    
   end
 
   def suggest
@@ -171,6 +177,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     res = Api.get "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    logger.debug "S:"
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
