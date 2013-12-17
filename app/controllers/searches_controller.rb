@@ -8,7 +8,7 @@ class SearchesController < ApplicationController
 
 	def update_user_ranking
 		res = Api.put(
-			"/streams/#{params[:json][:stream_id]}/_rank", 
+			"/streams/#{params[:json][:stream_id]}/_rank",
 			{ user_id: current_user.username, ranking: params[:json][:value] }
 		)
 		respond_to do |format|
@@ -75,20 +75,20 @@ class SearchesController < ApplicationController
 			end
 			#A quick way to check if filter is nil or empty or just whitespace
 			if filters.empty?
-				body = { "sort" => sort_by, "query" => 
-							    { "query_string" => 
-										{ "query" => params['search']['query'] } 
+				body = { "sort" => sort_by, "query" =>
+							    { "query_string" =>
+										{ "query" => params['search']['query'] }
 								  }
 								}
 			else
-				body = { "sort" => sort_by, "query" => 
-									{ "filtered" => 
-										{ "query" => 
-											{ "query_string" => 
-												{ "query" => 
-													params['search']['query'] 
-												} 
-											}, "filter" => 
+				body = { "sort" => sort_by, "query" =>
+									{ "filtered" =>
+										{ "query" =>
+											{ "query_string" =>
+												{ "query" =>
+													params['search']['query']
+												}
+											}, "filter" =>
 											{
 												"and" => filters
 											}
@@ -99,12 +99,19 @@ class SearchesController < ApplicationController
 			logger.debug(body)
 			res = Api.post(url, body)
 
-			@streams = res["body"]['streams']['hits']['hits']
+			@streams = []
+			@streams_raw = res["body"]['streams']['hits']['hits']
+			@streams_raw.each do |s|
+				data = s['_source']
+				data['id'] = s['_id']
+				@streams.push data
+			end
+
 			@users = res["body"]['users']['hits']['hits']
 			@count_streams = res["body"]['streams']['hits']['total']
 			@count_users = res["body"]['users']['hits']['total']
 			@count_all = @count_streams + @count_users
-			
+
 			@query = params['search']['query']
 
       if params['search']['refresh'] == "false"
@@ -118,7 +125,7 @@ class SearchesController < ApplicationController
           format.js
         end
       else
-        render :action => 'show'        
+        render :action => 'show'
       end
 		end
 	end
