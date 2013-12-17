@@ -77,6 +77,15 @@ window.newStreamForm = (form) ->
     btnNext.css 'display', 'inline-block'
 
 
+  analyzeRequiredField = (input) ->
+    if input.val().length is 0
+      btnNext.addClass 'disabled'
+
+    else if input.val().length > 0
+      form.find('#error_explanation').hide()
+      btnNext.removeClass 'disabled'
+
+
   post = (url, data) ->
     $.ajax
       type: "post",
@@ -105,6 +114,7 @@ window.newStreamForm = (form) ->
 
   next = (event) ->
     do event.preventDefault
+    analyzeRequiredField inputName
 
     if currentStep < steps.length-1
       do showBackButton
@@ -120,8 +130,8 @@ window.newStreamForm = (form) ->
 
   create = (event) ->
     do event.preventDefault
-
     do increaseBar
+
     setTimeout ->
       form.trigger 'submit'
     , TIME * 2
@@ -130,8 +140,8 @@ window.newStreamForm = (form) ->
   preview = (event) ->
     do event.preventDefault
 
-    post "/preview", { uri: textUri.val() }
-    .done (data) ->
+    p = post "/preview", { uri: textUri.val() }
+    p.done (data) ->
       json = JSON.stringify data, undefined, 2
       areaPreview.val json
 
@@ -151,14 +161,8 @@ window.newStreamForm = (form) ->
 
 
   keyup = (event) ->
-    inputName = $(this)
-
-    if inputName.val().length is 0
-      btnNext.addClass 'disabled'
-
-    else if inputName.val().length > 0
-      form.find('#error_explanation').hide()
-      btnNext.removeClass 'disabled'
+    do event.preventDefault
+    analyzeRequiredField $(this)
 
 
   initBootstrapSwitches = ->
