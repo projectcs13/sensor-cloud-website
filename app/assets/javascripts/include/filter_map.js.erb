@@ -221,7 +221,8 @@
                 }
 
                 // Set CSS for the control border
-                var controlUI = document.createElement('div');
+                var controlUI = document.getElementById('filter_location');
+                /*var controlUI = document.createElement('div');
                 controlUI.style.backgroundColor = 'white';
                 controlUI.style.borderStyle = 'solid';
                 controlUI.style.borderWidth = '2px';
@@ -236,7 +237,7 @@
                 controlText.style.paddingLeft = '4px';
                 controlText.style.paddingRight = '4px';
                 controlText.innerHTML = 'Filter';
-                controlUI.appendChild(controlText);
+                controlUI.appendChild(controlText);*/
 
                 var distanceWidget = new DistanceWidget(map);
                 distanceWidget.set("map", null);
@@ -255,8 +256,8 @@
                 }
                 });
 
-                controlUI.index = 1;
-                  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlUI);
+                //controlUI.index = 1;
+                  //map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlUI);
 
               google.maps.event.addListener(distanceWidget, 'distance_changed', function() {
                   console.log("distance_changed CALLED");
