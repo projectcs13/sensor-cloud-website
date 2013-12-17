@@ -33,96 +33,123 @@ class SearchesController < ApplicationController
 	def create
 		@nb_results_per_page = 8
 		@query = params['search']['query']
-		query_from = if params['search']['page'].blank? then 0 else (params['search']['page'].to_i * @nb_results_per_page).to_i end
-		sort_by = if params['search']['sort_by'] == "none" then
-						     {}
-				       elsif params['search']['sort_by'].nil?
-				         { "average" => "desc" }
-			           elsif params['search']['sort_by'] == "name"
-			      		 { "stream.name.untouched" => "asc" }
-			         else
-				         { "#{params['search']['sort_by']}" => "desc" }
-			         end
-    url = "/_search?location=true&from=#{query_from}&size=#{@nb_results_per_page.to_i}"
-    tags = params['search']['filter_tag'].split(",") unless params['search']['filter_tag'].nil? or params['search']['filter_tag'].blank?
-    filters = Array.new
-    filters.push({ "regexp" => { "unit" => { "value" => params['search']['filter_unit'] } } }) unless params['search']['filter_unit'].nil? or params['search']['filter_unit'].blank?
-    filters.push({ "regexp" => { "active" => { "value" => params['search']['filter_active'] } } }) unless params['search']['filter_active'] == "any" or params['search']['filter_active'].blank?
-    filters.push({ "terms" => { "tags" =>  tags } }) unless tags.nil? 
-    filters.push({ "geo_distance" => { "distance" => params['search']['filter_distance'] + "km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] } } }) unless params['search']['filter_longitude'].nil? or params['search']['filter_longitude'].blank? 
-
-			if (not params['search']['page'].blank?)
-				url = "/_search?location=true&from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
-			elsif (not params['search']['page_users'].blank?)
-				url = "/_search?location=true&from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
-			else
-				url = "/_search?location=true&from=0&size=#{@nb_results_per_page.to_i}"
-			end
-
-			if params['search']['sort_by'] == "none"
-				sort_by = {}
-			elsif params['search']['sort_by'].nil?
-				sort_by = { "average" => "desc" }
-			elsif params['search']['sort_by'] == "name"
-			    sort_by = { "stream.name.untouched" => "asc" }
-			else
-				sort_by = { "#{params['search']['sort_by']}" => "desc" }
-			end
-			puts "Filters"
-			puts filters
-			puts params['search']
-			#A quick way to check if filter is nil or empty or just whitespace
-			if filters.empty?
-				body = { "sort" => sort_by, "query" => 
-							    { "query_string" => 
-										{ "query" => params['search']['query'] } 
-								  }
-								}
-			else
-				body = { "sort" => sort_by, "query" => 
-									{ "filtered" => 
-										{ "query" => 
-											{ "query_string" => 
-												{ "query" => 
-													params['search']['query'] 
-												} 
-											}, "filter" => 
-											{
-												"and" => filters
-											}
-										}
-									}
-								}
-			end
-			logger.debug(body)
-			res = Api.post(url, body)
+		if @query.blank? then
 			@filter_unit = params['search']['filter_unit']
 			@filter_tag = params['search']['filter_tag']
 			@filter_longitude = params['search']['filter_longitude']
 			@filter_latitude = params['search']['filter_latitude']
 			@filter_distance = params['search']['filter_distance']
 			@filter_active = params['search']['filter_active']
-			@streams = res["body"]['streams']['hits']['hits']
-			@users = res["body"]['users']['hits']['hits']
-			@count_streams = res["body"]['streams']['hits']['total']
-			@count_users = res["body"]['users']['hits']['total']
-			@count_all = @count_streams + @count_users
+			@streams = []
+			@users = []
+			@count_streams = nil
+			@count_users = nil
+			@count_all = nil
 			@query = params['search']['query']
+			if params['search']['refresh'] == "false"
+	        	if (not params['search']['page'].blank?)
+	        	  @type = "stream"
+	        	  @stream_page_number = (params['search']['page'].to_i)*@nb_results_per_page;
+	       		else
+	       	 	  @type = "user"
+	       		end
+	        	respond_to do |format|
+	          	  format.js
+	        	end
+	      	else
+	        	render :action => 'show'        
+	     	end
 
-      if params['search']['refresh'] == "false"
-        if (not params['search']['page'].blank?)
-          @type = "stream"
-          @stream_page_number = (params['search']['page'].to_i)*@nb_results_per_page;
-        else
-          @type = "user"
-        end
-        respond_to do |format|
-          format.js
-        end
-      else
-        render :action => 'show'        
-      end
-		
-  
+
+		else
+
+			query_from = if params['search']['page'].blank? then 0 else (params['search']['page'].to_i * @nb_results_per_page).to_i end
+			sort_by = if params['search']['sort_by'] == "none" then
+							     {}
+					       elsif params['search']['sort_by'].nil?
+					         { "average" => "desc" }
+				           elsif params['search']['sort_by'] == "name"
+				      		 { "stream.name.untouched" => "asc" }
+				         else
+					         { "#{params['search']['sort_by']}" => "desc" }
+				         end
+	    	url = "/_search?location=true&from=#{query_from}&size=#{@nb_results_per_page.to_i}"
+	    	tags = params['search']['filter_tag'].split(",") unless params['search']['filter_tag'].nil? or params['search']['filter_tag'].blank?
+	    	filters = Array.new
+	    	filters.push({ "regexp" => { "unit" => { "value" => params['search']['filter_unit'] } } }) unless params['search']['filter_unit'].nil? or params['search']['filter_unit'].blank?
+	    	filters.push({ "regexp" => { "active" => { "value" => params['search']['filter_active'] } } }) unless params['search']['filter_active'] == "any" or params['search']['filter_active'].blank?
+	    	filters.push({ "terms" => { "tags" =>  tags } }) unless tags.nil? 
+	    	filters.push({ "geo_distance" => { "distance" => params['search']['filter_distance'] + "km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] } } }) unless params['search']['filter_longitude'].nil? or params['search']['filter_longitude'].blank? 
+
+				if (not params['search']['page'].blank?)
+					url = "/_search?location=true&from=#{(params['search']['page'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+				elsif (not params['search']['page_users'].blank?)
+					url = "/_search?location=true&from=#{(params['search']['page_users'].to_i)*(@nb_results_per_page.to_i)}&size=#{@nb_results_per_page.to_i}"
+				else
+					url = "/_search?location=true&from=0&size=#{@nb_results_per_page.to_i}"
+				end
+
+				if params['search']['sort_by'] == "none"
+					sort_by = {}
+				elsif params['search']['sort_by'].nil?
+					sort_by = { "average" => "desc" }
+				elsif params['search']['sort_by'] == "name"
+				    sort_by = { "stream.name.untouched" => "asc" }
+				else
+					sort_by = { "#{params['search']['sort_by']}" => "desc" }
+				end
+				#A quick way to check if filter is nil or empty or just whitespace
+				if filters.empty?
+					body = { "sort" => sort_by, "query" => 
+								    { "query_string" => 
+											{ "query" => params['search']['query'] } 
+									  }
+									}
+				else
+					body = { "sort" => sort_by, "query" => 
+										{ "filtered" => 
+											{ "query" => 
+												{ "query_string" => 
+													{ "query" => 
+														params['search']['query'] 
+													} 
+												}, "filter" => 
+												{
+													"and" => filters
+												}
+											}
+										}
+									}
+				end
+				logger.debug(body)
+				res = Api.post(url, body)
+				@filter_unit = params['search']['filter_unit']
+				@filter_tag = params['search']['filter_tag']
+				@filter_longitude = params['search']['filter_longitude']
+				@filter_latitude = params['search']['filter_latitude']
+				@filter_distance = params['search']['filter_distance']
+				@filter_active = params['search']['filter_active']
+				@streams = res["body"]['streams']['hits']['hits']
+				@users = res["body"]['users']['hits']['hits']
+				@count_streams = res["body"]['streams']['hits']['total']
+				@count_users = res["body"]['users']['hits']['total']
+				@count_all = @count_streams + @count_users
+				@query = params['search']['query']
+
+	      if params['search']['refresh'] == "false"
+	        if (not params['search']['page'].blank?)
+	          @type = "stream"
+	          @stream_page_number = (params['search']['page'].to_i)*@nb_results_per_page;
+	        else
+	          @type = "user"
+	        end
+	        respond_to do |format|
+	          format.js
+	        end
+	      else
+	        render :action => 'show'        
+	      end
+	
+  		end
   end
 end
