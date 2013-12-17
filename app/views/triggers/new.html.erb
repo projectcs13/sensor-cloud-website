@@ -13,9 +13,16 @@
 			<%= f.label  :streams %>
 			<!--<label class="explanation">Pick the stream to use</label><br>-->
 			<%= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
-			<br>
 
-			<br/>
+			<div class="form-group">
+    			<label>Trigger to</label><br>
+    			<div class="make-switch" data-on-label="URI" data-off-label="User">
+    				<input id="trigger_uri_enable" type="checkbox">
+				</div>
+  			</div>
+
+  			<div id="uri-field"></div>
+
 			<div class="form-button">
 			<%= f.submit "Submit", class: "btn btn-lg btn-primary pull right" %>
 		<% end %>
@@ -49,4 +56,17 @@
 			$("#input-fields").html(inputFields);
 		})
 		.change();
+
+		$("#trigger_uri_enable")
+			.change(function () {
+			var uriField = "";
+			if ($(this).prop('checked')) {
+				uriField = "<div class='form-group'> \
+						<label for='trigger_uri'>URI</label> \
+						<input id='trigger_uri' name='trigger[url]' type='text' class='form-control'> \
+					</div>";
+			}
+			$("#uri-field").html(uriField);
+		})
+			.change();
 </script>
