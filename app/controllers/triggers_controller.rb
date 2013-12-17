@@ -53,7 +53,11 @@ class TriggersController < ApplicationController
 	def destroy
 		@username = current_user.username
 		@trigger = params[:query]
-		@trigger[:input] = @trigger[:input].to_f if @trigger[:input].kind_of?(String)
+		if @trigger[:input].kind_of?(String)
+			@trigger[:input] = @trigger[:input].to_f
+		else
+			@trigger[:input].map! { |e| e.to_f }
+		end
 		res = Api.post("/users/#{@username}/triggers/remove", @trigger)
 		respond_to do |format|
 			format.html { redirect_to triggers_path }
