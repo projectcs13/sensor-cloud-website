@@ -1,23 +1,17 @@
 <% unless @triggers.nil? %>
 	<h4>Triggers:</h4>
 	<div class="stream-tags well">
-		<% @triggers.each do |t| %>
-			<% @trigger = Trigger.new(t) %>
-			<%= form_for(@trigger, :url => triggers_new_path) do |f| %>
-				<%= f.label :function %>
-				<%= f.text_field :function, disabled: true%>
-               
-				<%= f.label :input, class: "trigger_input" %>
-				<%= f.text_field :input, disabled: true %>
-
-				<%= f.hidden_field :streams %>
-
-				<%= link_to "Delete", {controller: "triggers", action: "destroy", query: t.to_json}, {method: :delete, class: "glyphicon glyphicon-remove btn btn-danger right" } %>
-
+		<table class="table">
+			<th>Functions</th>
+			<th>Input</th>
+			<th>Delete</th>
+			<% @triggers.each do |t| %>
+				<tr>
+					<td><%= @functions[t['function']] %></td>
+					<td><%= t['input'] %></td>
+					<td><%= link_to "Delete", {controller: "triggers", action: "destroy", query: t}, {method: :delete, class:"btn btn-danger"} %></td>
+				</tr>
 			<% end %>
-			<div class="clearfix"></div>
-
-		<% end %>
+		</table>
 	</div>
 <% end %>
-
