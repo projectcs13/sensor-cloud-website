@@ -7,7 +7,6 @@
 %>
 <% @streams.each do |stream| %>
   <% i = i+1 %>
-  <% logger.debug stream %>
   <% stream_id = stream['id'] %>
   <% stream_url = "/streams/#{stream_id}" %>
   <% stream_name = stream['name'] %>
