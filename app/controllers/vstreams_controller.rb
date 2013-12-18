@@ -107,14 +107,8 @@ class VstreamsController < ApplicationController
   def fetch_prediction
     res = Api.get "/vstreams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
     respond_to do |format|
-      format.js { render "fetch_prediction", :locals => {:data => res["body"]} }
+      format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
-  end
-
-  def deleteAll
-    cid = @user.username
-    url = "#{CONF['API_URL']}/users/#{cid}/vstreams/"
-    send_data(:delete, url, nil)
   end
 
   def post
