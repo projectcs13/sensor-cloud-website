@@ -1,4 +1,4 @@
-<% if not current_user.nil? %>
+<% unless current_user.nil? %>
 
   <button class="btn btn-primary btn-lg glyphicon glyphicon-plus" 
     data-toggle="modal" data-target="#myModal" onclick="getStreams();">
@@ -25,10 +25,6 @@
       }
     }
   </script>
-
-<% end %>
-
-<% if not current_user.nil? %>
 
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">

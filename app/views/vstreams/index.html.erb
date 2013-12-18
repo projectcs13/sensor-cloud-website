@@ -1,5 +1,5 @@
 <div>
-  <%if not current_user.nil? %>
+  <% unless current_user.nil? %>
     <% if current_user.username == params[:user_id] %>
       <h1 class="title">My Virtual Streams</h1>
     <% else %>
@@ -12,9 +12,9 @@
 
 <div>
   <ul class="list-group col-md-6 left">
-    <% if @vstreams == [] then %>
+    <% if @vstreams.empty? then %>
 
-      <%if not current_user.nil? %> 
+      <% unless current_user.nil? %> 
         <% if current_user.username == params[:user_id] %>
           <h4> You currenlty have no streams</h4>
         <% else %>
@@ -31,7 +31,7 @@
           <div class="right">
             <i class="show-details glyphicon glyphicon-chevron-down right"></i>
 
-            <%if not current_user.nil? %> 
+            <% unless current_user.nil? %> 
               <% if current_user.username == params[:user_id] %>
                 <div class="btn btn-sm btn-danger right">
     						  <%= link_to 'Delete', user_vstream_path(params[:user_id], vstream['id']), method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove" %>

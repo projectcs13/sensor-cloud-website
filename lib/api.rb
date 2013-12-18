@@ -23,7 +23,6 @@ module Api
 			  req.url url
 			  req.headers['Content-Type'] = 'application/json'
 			  req.body = body.to_json
-			  puts "|||| #{body.to_json} ||||"
 			end
 			resp = res.to_hash
 			resp[:body] = JSON.parse(resp[:body])
