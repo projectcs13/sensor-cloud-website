@@ -115,35 +115,12 @@ class VstreamsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_vstream
       @vstream = Vstream.find(params[:id], user_id: params[:user_id])
-      #@vstream = Vstream.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def vstream_params
       params.require(:vstream).permit(:name, :description, :function, :tags)
     end
-
-    # def load_parent
-    #   @user = User.find(current_user.username)
-    # end
-
-    def send_data(method, url, json)
-      new_connection unless @conn
-      @conn.send(method) do |req|
-        req.url url
-        req.headers['Content-Type'] = 'application/json'
-        req.body = json
-      end
-    end
-
-    def new_connection
-      cid = current_user.username
-      @conn = Faraday.new(:url => "#{CONF['API_URL']}/vstreams") do |faraday|
-        faraday.request  :url_encoded               # form-encode POST params
-        faraday.response :logger                    # log requests to STDOUT
-        faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
-      end
-		end
 
 		# Before filters
 		def signed_in_user
@@ -160,6 +137,5 @@ class VstreamsController < ApplicationController
       # stream = Stream.find(_user_id: params[:id])
       @user = User.find_by_username(@stream_owner_id)
       redirect_to(root_url) unless current_user?(@user)
-
     end
 end
