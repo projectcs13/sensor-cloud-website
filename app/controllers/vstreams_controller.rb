@@ -7,10 +7,9 @@ class VstreamsController < ApplicationController
 
   def index
     cid = current_user.username
-    res = Faraday.get "#{CONF['API_URL']}/users/#{params[:user_id]}/vstreams/"
-    @vstreams = JSON.parse(res.body)['users']
+    res = Api.get "/users/#{params[:user_id]}/vstreams"
+    @vstreams = res['body']['users']
     @count= @vstreams.length
-    logger.debug "CURRENT_PAGE: #{@vstreams}"
   end
 
   def show

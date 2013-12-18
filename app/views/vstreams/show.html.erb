@@ -52,8 +52,6 @@
       <%= @vstream.tags %>
     </div>
       
-      
-
     <% unless current_user.nil? %> 
       <% if current_user.username == @vstream.user_id %>
 
@@ -66,7 +64,6 @@
 
       <% end %>
     <% end %>
-
 
     <% if !current_user.nil? && current_user.username == @vstream.user_id %>
       <%= link_to 'Edit', edit_user_vstream_path(current_user, @vstream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
