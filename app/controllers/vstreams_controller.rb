@@ -98,9 +98,9 @@ class VstreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = Faraday.get "#{CONF['API_URL']}/vstreams/" + params[:id] + "/data/_search"
+    res = Api.get "/vstreams/#{params[:id]}/data/_search"
     respond_to do |format|
-      format.json { render json: res.body, status: res.status }
+      format.json { render json: res['body'], status: res['status'] }
     end
   end
 
