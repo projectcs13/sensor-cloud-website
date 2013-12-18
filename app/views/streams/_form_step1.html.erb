@@ -22,7 +22,7 @@
 
   <div class="form-group">
     <%= f.label :private %><br>
-    <%= f.check_box :private, class: "form-control switch-private clearfix", checked: true  %>
+    <%= f.check_box :private, class: "form-control switch-private clearfix", checked: (@stream.private == true) %>
   </div>
 
   <div class="form-group">
