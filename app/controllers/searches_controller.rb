@@ -8,7 +8,7 @@ class SearchesController < ApplicationController
 
 	def update_user_ranking
 		res = Api.put(
-			"/streams/#{params[:json][:stream_id]}/_rank", 
+			"/streams/#{params[:json][:stream_id]}/_rank",
 			{ user_id: current_user.username, ranking: params[:json][:value] }
 		)
 		respond_to do |format|
@@ -46,7 +46,7 @@ class SearchesController < ApplicationController
 			@count_users = nil
 			@count_all = nil
 			@query = params['search']['query']
-	        render :action => 'show'        
+	        render :action => 'show'
 		else
 			@nb_results_per_page = 8
 			@page_number = params['search']['page'].to_i
@@ -57,23 +57,23 @@ class SearchesController < ApplicationController
 		    filters = Array.new
 		    filters.push({ "regexp" => { "unit" => { "value" => params['search']['filter_unit'] } } }) unless params['search']['filter_unit'].nil? or params['search']['filter_unit'].blank?
 		    filters.push({ "regexp" => { "active" => { "value" => params['search']['filter_active'] } } }) unless params['search']['filter_active'] == "any" or params['search']['filter_active'].blank?
-		    filters.push({ "terms" => { "tags" =>  tags } }) unless tags.nil? 
-		    filters.push({ "geo_distance" => { "distance" => params['search']['filter_distance'] + "km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] } } }) unless params['search']['filter_longitude'].nil? or params['search']['filter_longitude'].blank? 
+		    filters.push({ "terms" => { "tags" =>  tags } }) unless tags.nil?
+		    filters.push({ "geo_distance" => { "distance" => params['search']['filter_distance'] + "km" , "stream.location" => { "lat" => params['search']['filter_latitude'] , "lon" => params['search']['filter_longitude'] } } }) unless params['search']['filter_longitude'].nil? or params['search']['filter_longitude'].blank?
 			if filters.empty?
-				body = { "sort" => sort_by, "query" => 
-							    { "query_string" => 
-										{ "query" => params['search']['query'] } 
+				body = { "sort" => sort_by, "query" =>
+							    { "query_string" =>
+										{ "query" => params['search']['query'] }
 								  }
 								}
 			else
-				body = { "sort" => sort_by, "query" => 
-									{ "filtered" => 
-										{ "query" => 
-											{ "query_string" => 
-												{ "query" => 
-													params['search']['query'] 
-												} 
-											}, "filter" => 
+				body = { "sort" => sort_by, "query" =>
+									{ "filtered" =>
+										{ "query" =>
+											{ "query_string" =>
+												{ "query" =>
+													params['search']['query']
+												}
+											}, "filter" =>
 											{
 												"and" => filters
 											}
@@ -89,8 +89,25 @@ class SearchesController < ApplicationController
 			@filter_latitude = params['search']['filter_latitude']
 			@filter_distance = params['search']['filter_distance']
 			@filter_active = params['search']['filter_active']
+
+
+			@streams = []
+      		@streams_raw = res["body"]['streams']['hits']['hits']
+      		@streams_raw.each do |s|
+       		 	data = s['_source']
+        		data['id'] = s['_id']
+        		@streams.push data
+      		end
+
+
 			@vstreams = res["body"]['vstreams']['hits']['hits']
-			@streams = res["body"]['streams']['hits']['hits']
+			@streams = []
+      		@streams_raw = res["body"]['streams']['hits']['hits']
+      		@streams_raw.each do |s|
+       		 data = s['_source']
+       		 data['id'] = s['_id']
+       		 @streams.push data
+     		end
 			@users = res["body"]['users']['hits']['hits']
 			@count_vstreams = res["body"]['vstreams']['hits']['total']
 			@count_streams = res["body"]['streams']['hits']['total']
@@ -98,12 +115,12 @@ class SearchesController < ApplicationController
 			@count_all = @count_streams + @count_users + @count_vstreams
 			@query = params['search']['query']
 
-	      	if @page_number > 0   
+	      	if @page_number > 0
 	        	respond_to do |format|
 	          		format.js
 	        	end
 	      	else
-	        	render :action => 'show'        
+	        	render :action => 'show'
 	    	end
 		end
 	end

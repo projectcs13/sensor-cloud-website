@@ -1,0 +1,20 @@
+<div class="row main">
+  <% if @streams == [] then %>
+    <% if @user.username == params[:id] then %>
+      <h4> You currenlty have no streams</h4>
+    <% else %>
+      <h4> <%= params[:id]%> currently have no streams </h4>
+    <% end %>
+
+  <% else %>
+    <div class="col-md-4 left">
+      <div class="scroll-pane" id="scroll-pane1">
+        <%= render 'layouts/streams/content_list' %>
+      </div>
+    </div>
+
+    <div class="map col-md-8 right-side-content">
+      <%= render 'layouts/streams/content_map' %>
+    </div>
+  <% end %>
+<div>
