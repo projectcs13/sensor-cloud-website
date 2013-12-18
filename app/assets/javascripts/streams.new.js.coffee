@@ -175,7 +175,8 @@ window.newStreamForm = (form) ->
     sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
     sw.bootstrapSwitch 'setOnLabel', 'Push'
     sw.bootstrapSwitch 'setOffLabel', 'Poll'
-    sw.bootstrapSwitch 'setState', true
+    if sw.bootstrapSwitch('status') is false
+      do showPollingPanel
     sw.on 'switch-change', switchChanged
 
 

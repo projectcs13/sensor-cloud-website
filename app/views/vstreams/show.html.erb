@@ -52,9 +52,7 @@
       <%= @vstream.tags %>
     </div>
       
-      
-
-    <%if not current_user.nil? %> 
+    <% unless current_user.nil? %> 
       <% if current_user.username == @vstream.user_id %>
 
         <h4>Streams Involved: </h4>
@@ -67,8 +65,7 @@
       <% end %>
     <% end %>
 
-
-    <% if not current_user.nil? and current_user.username == @vstream.user_id %>
+    <% if !current_user.nil? && current_user.username == @vstream.user_id %>
       <%= link_to 'Edit', edit_user_vstream_path(current_user, @vstream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
       <%= link_to 'Delete', user_vstream_path(params[:user_id], @vstream.id), method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove btn btn-danger" %>
     <% end %>
