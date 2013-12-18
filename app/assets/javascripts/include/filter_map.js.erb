@@ -240,32 +240,26 @@ var searchres_length = 0;
 
                 var distanceWidget = new DistanceWidget(map);
                 distanceWidget.set("map", null);
-                var simplebool = false;
                 google.maps.event.addDomListener(controlUI, 'click', function() {
-                if(simplebool != true){
-                        simplebool = true;
-                        radiusChange(map);
-                        distanceWidget.set("map",map);
-                        distanceWidget.set("position", map.getCenter());
-                        displayInfo(distanceWidget);
-                }else{
-                        simplebool = false;
-                        distanceWidget.set("map", null);
-                        displayInfo(null);
-                }
+                  isChecked();
                 });
 
                 //controlUI.index = 1;
                   //map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlUI);
 
-              google.maps.event.addListener(distanceWidget, 'distance_changed', function() {
-                  if(simplebool == true)
+                google.maps.event.addListener(distanceWidget, 'distance_changed', function() {
+                  if(document.getElementById('filter_location').checked)
                     displayInfo(distanceWidget);
                 });
 
                 google.maps.event.addListener(distanceWidget, 'position_changed', function() {
-                  if(simplebool == true)
+                  if(document.getElementById('filter_location').checked)
                     displayInfo(distanceWidget);
+                });
+
+                google.maps.event.addListenerOnce(map, 'idle', function(){
+                // do something only the first time the map is loaded
+                  isChecked();
                 });
 
 				google.maps.event.addListener(map, 'zoom_changed', function() {
@@ -280,6 +274,18 @@ var searchres_length = 0;
 					distanceWidget.get('radiusWidget').set('distance', distance/3);
 					distanceWidget.get('radiusWidget').center_changed();
 				}
+
+        function isChecked() {
+          if (document.getElementById('filter_location').checked){
+          radiusChange(map);
+          distanceWidget.set("map",map);
+          distanceWidget.set("position", map.getCenter());
+          displayInfo(distanceWidget);
+          }else{
+          distanceWidget.set("map", null);
+          displayInfo(null);
+          }
+        }
       }
 
 function addmarkers() {
