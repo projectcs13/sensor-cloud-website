@@ -12,7 +12,7 @@
 
 <div>
   <ul class="list-group col-md-6 left">
-    <% if @vstreams == [] then %>
+    <% if @vstreams.empty? then %>
 
       <% unless current_user.nil? %> 
         <% if current_user.username == params[:user_id] %>
