@@ -111,19 +111,6 @@ class VstreamsController < ApplicationController
     end
   end
 
-  def post
-    cid = current_user.username
-    url = "#{CONF['API_URL']}/vstreams/"
-    send_data(:post, url, @vstream.attributes.to_json)
-  end
-
-  def put
-    cid = current_user.username
-    url = "#{CONF['API_URL']}/users/#{cid}/vstreams/#{@vstream.id}"
-    @vstream.attributes.delete 'id'
-    send_data(:put, url, @vstream.attributes.to_json)
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vstream
