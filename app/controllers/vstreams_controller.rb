@@ -1,7 +1,6 @@
 class VstreamsController < ApplicationController
 
   before_action :correct_user,   only: [:edit, :update, :destroy]
-  # before_action :get_user_id,    only: [:post, :put, :multipost, :deleteAll, :new_connection]
   before_action :set_vstream,     only: [:show, :edit, :update, :destroy]
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
 
@@ -9,7 +8,7 @@ class VstreamsController < ApplicationController
     cid = current_user.username
     res = Api.get "/users/#{params[:user_id]}/vstreams"
     @vstreams = res['body']['users']
-    @count= @vstreams.length
+    @count = @vstreams.length
   end
 
   def show
@@ -51,9 +50,7 @@ class VstreamsController < ApplicationController
 
   def destroy
     @user = current_user
-    #@stream.destroy(_user_id: current_user.username)
     @vstream.destroy
-	
 
     # TODO
     # The API is currently sending back the response before the database has
@@ -69,6 +66,7 @@ class VstreamsController < ApplicationController
   def destroyAll
     @user = current_user
     res = deleteAll
+
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
@@ -80,31 +78,24 @@ class VstreamsController < ApplicationController
     end
   end
 
-def create2
-  conn = Faraday.new(:url => "#{CONF['API_URL']}/vstreams/") do |faraday|
-    faraday.request  :url_encoded               # form-encode POST params
-    faraday.response :logger                    # log requests to STDOUT
-    faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
+  def create2
+    req_body = { "tag"              => params[:tags], 
+                 "user_id"          => params[:user_id], 
+                 "name"             => params[:name], 
+                 "description"      => params[:description],
+                 "streams_involved" => JSON.parse(params[:streams_involved]), 
+                 "timestampfrom"    => params[:starting_date],
+                 "function"         => JSON.parse(params[:function]) }
+
+    res = Api.post("/vstreams", req_body)
+
+    respond_to do |format|
+      json = res['body']
+      id = json["_id"]
+      user_id = json["user_id"]
+      format.html { redirect_to "/users/#{params[:user_id]}/vstreams/#{id}" }
+    end
   end
-
-
-  res = conn.post do |req|
-    req.url "#{CONF['API_URL']}/vstreams/"
-    req.headers['Content-Type'] = 'application/json'
-    req.body = '{"tags" : "'+params[:tags]+'", "user_id" : "'+params[:user_id]+'", "name" : "'+params[:name]+'", "description" :  "'+params[:description]+'", "streams_involved" : '+params[:streams_involved]+', "timestampfrom" : "'+params[:starting_date]+'", "function" : ' + params[:function] + '}'
-  end
-
-
-  respond_to do |format|
-    json = JSON.parse(res.body)
-    id = json["_id"]
-    user_id= json["user_id"]
-    format.html { redirect_to "/users/"+params[:user_id]+"/vstreams/#{id}" }
-    #render :action => 'show', :id => json["_id"]
-  end
-
-end
-
 
   def fetch_datapoints
     res = Faraday.get "#{CONF['API_URL']}/vstreams/" + params[:id] + "/data/_search"
