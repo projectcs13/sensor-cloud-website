@@ -1,6 +1,5 @@
-<%  if defined? @stream_page_number
-    p @stream_page_number.to_i
-    i = @stream_page_number.to_i
+<%  if defined? @page_number
+    i = @stream_page_number.to_i * @nb_results_per_page
     else
     i = 0
     end
