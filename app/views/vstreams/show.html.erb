@@ -54,7 +54,7 @@
       
       
 
-    <%if not current_user.nil? %> 
+    <% unless current_user.nil? %> 
       <% if current_user.username == @vstream.user_id %>
 
         <h4>Streams Involved: </h4>
