@@ -39,6 +39,7 @@ class SearchesController < ApplicationController
 			@filter_latitude = params['search']['filter_latitude']
 			@filter_distance = params['search']['filter_distance']
 			@filter_active = params['search']['filter_active']
+
 			@streams = []
 			@users = []
 			@count_streams = nil
@@ -89,18 +90,29 @@ class SearchesController < ApplicationController
 			@filter_distance = params['search']['filter_distance']
 			@filter_active = params['search']['filter_active']
 
-			@streams = []
-      @streams_raw = res["body"]['streams']['hits']['hits']
-      @streams_raw.each do |s|
-        data = s['_source']
-        data['id'] = s['_id']
-        @streams.push data
-      end
 
+			@streams = []
+      		@streams_raw = res["body"]['streams']['hits']['hits']
+      		@streams_raw.each do |s|
+       		 	data = s['_source']
+        		data['id'] = s['_id']
+        		@streams.push data
+      		end
+
+
+			@vstreams = res["body"]['vstreams']['hits']['hits']
+			@streams = []
+      		@streams_raw = res["body"]['streams']['hits']['hits']
+      		@streams_raw.each do |s|
+       		 data = s['_source']
+       		 data['id'] = s['_id']
+       		 @streams.push data
+     		end
 			@users = res["body"]['users']['hits']['hits']
+			@count_vstreams = res["body"]['vstreams']['hits']['total']
 			@count_streams = res["body"]['streams']['hits']['total']
 			@count_users = res["body"]['users']['hits']['total']
-			@count_all = @count_streams + @count_users
+			@count_all = @count_streams + @count_users + @count_vstreams
 			@query = params['search']['query']
 
 	      	if @page_number > 0

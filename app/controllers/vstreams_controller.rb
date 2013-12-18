@@ -27,7 +27,7 @@ class VstreamsController < ApplicationController
 
   def correctBooleanFields
 
-    @vstream.private = if @vstream.private == "0" then "false" else "true" end
+    # @vstream.private = if @vstream.private == "0" then "false" else "true" end
 
   end
 
@@ -40,22 +40,23 @@ class VstreamsController < ApplicationController
     correctBooleanFields
 
     respond_to do |format|
-    	res = put
-      logger.debug "attributes: #{@vstream.attributes}"
-    	res.on_complete do
-      	if res.status == 200
+      vstream_id = params[:id]
+      res = Api.put "/vstreams/#{vstream_id}", @vstream.attributes
+
+      res["response"].on_complete do
+        if res["status"] == 200 and @vstream.valid?
           # TODO
           # The API is currently sending back the response before the database has
           # been updated. The line below will be removed once this bug is fixed.
-					sleep(1.0)
+          sleep(1.0)
 
-        	format.html { redirect_to vstream_path(@vstream.id) }
-        	format.json { head :no_content }
-      	else
-        	format.html { render action: 'edit' }
-        	format.json { render json: @vstream.errors, status: :unprocessable_entity }
-      	end
-    	end
+          format.html { redirect_to user_vstream_path(current_user,vstream_id) }
+          format.json { head :no_content }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @vstream.errors, status: :unprocessable_entity }
+        end
+      end
     end
   end
 
@@ -124,10 +125,10 @@ end
   end
 
   def fetch_prediction
-    res = Faraday.get "#{CONF['API_URL']}/vstreams/" + params[:id] + "/_analyse"
-    logger.debug "RES: #{res.body}"
+    res = Api.get "/vstreams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    logger.debug "VS:"
     respond_to do |format|
-      format.json { render json: res.body, status: res.status }
+      format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
   end
 

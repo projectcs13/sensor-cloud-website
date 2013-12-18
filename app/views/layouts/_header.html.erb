@@ -16,18 +16,18 @@
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
     	<ul class="nav navbar-nav search-bar-header">
       	<li>
-
-				<% unless (params[:controller] == 'searches'||
-									 ((params[:controller] == 'static_pages') && (params[:action] == 'home'))) %>
-						<%= form_for(:search, url: searches_path, class: "navbar-from navbar-left") do |f| %>
-							<%= f.text_field :query, class: "form-control",
-							  	placeholder: "Search..." %>
-				</li>
-				<li>
-							<%= f.submit "Submit", class: "btn btn-info" %>
-						<% end %>
+					<% unless (params[:controller] == 'searches'||
+										 ((params[:controller] == 'static_pages') && (params[:action] == 'home'))) %>
+							<%= form_for(:search, url: searches_path) do |f| %>
+								<%= f.text_field :query, class: "searchbar form-control pull-right" %>
+								<%= f.hidden_field :sort_by, :value => "average" %>
+					</li>
+					<li>
+								<%= button_tag class: "btn btn-primary pull-left", style: "border-radius: 0px; margin-left: 0px;" do %>
+										<span class="glyphicon glyphicon-search"></span>
+								<% end %>
+							<% end %>
 					<% end %>
-
 				</li>
      	</ul>
 
@@ -36,6 +36,7 @@
 					<li><%= link_to "My Streams", "/users/#{current_user.username}/streams" %></li>
 					<li><%= link_to "My Virtual Streams", "/users/#{current_user.username}/vstreams" %></li>
 					<li><%= link_to "Following", "/users/#{current_user.username}/following" %></li>
+					<li><%= link_to "My Triggers", "/users/#{current_user.username}/triggers" %></li>
 				<% end %>
 			</ul>
 

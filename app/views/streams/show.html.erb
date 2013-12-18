@@ -36,7 +36,8 @@
 
 <div class="row">
   <div class="col-lg-8">
-    <h4>Type: <%#= @stream.stream_type %></h4>
+    <h4>Type: <%= @stream.type %></h4>
+    <h4>Unit: <%= @stream.unit %></h4>
   </div>
   <div class="col-lg-4">
     <h4>Location</h4>
@@ -57,7 +58,6 @@
       <span>
          Prediction output size:
         <%= select_tag :out, options_for_select([1, 10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
-        <%#= select(:out, :value, [["25", "25"], ["50", "50"], ["100", "100"], ["150", "150"], ["200", "200"]]) %>
       </span>
     <%end%>
 
@@ -77,16 +77,35 @@
         Min Value: <%= @stream.min_val %>
         Max Value: <%= @stream.max_val %>
         </small>
+
       </div>
-      <h4>Description: </h4>
-      <div class="stream-description well"><%= @stream.description %></div>
-      <h4>Tags: </h4>
-      <div class="stream-tags well">
-        <% tagslist = @stream.tags.split(/,/) %>
-        <% for tag in tagslist %>
+
+    <h4>Description: </h4>
+    <div class="stream-description well"><%= @stream.description %></div>
+    <h4>Tags: </h4>
+    <div class="stream-tags well">
+      <% tagslist = @stream.tags.split(/,/) %>
+      <% for tag in tagslist %>
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
-        <% end %>
+      <% end %>
+    </div>
+    <%= render 'triggers' if signed_in? and @user.username.downcase == @stream.user_id %>
+    <% if not @user.nil? and @user.username.downcase == @stream.user_id and @stream.polling == true %>
+      <h4>Parser: </h4>
+      <div class="stream-description well">
+        Path : <%= @stream.parser %> <br>
+        Data-Type : <%= @stream.data_type %> <br>
+        URI : <%= @stream.uri %> <br>
+        Polling Frequency : <%= @stream.polling_freq %> (sec) <br>
       </div>
+      <%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+      <%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+    <% end %>
+  </div>
+  <div class="col-md-4"> <!-- Right side -->
+    <div id="map-canvas"></div>
+    <div id="location" style="display: none;" value="<%= def_location %>"></div>
+
       <% if not @user.nil? and @user.username.downcase == @stream.user_id and @stream.polling == true %>
       	<h4>Parser: </h4>
       	<div class="stream-description well">
