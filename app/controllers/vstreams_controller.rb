@@ -22,15 +22,11 @@ class VstreamsController < ApplicationController
   def edit
   end
 
-  def correctBooleanFields
-  end
-
   def create
   end
 
   def update
     @vstream.assign_attributes(vstream_params)
-    correctBooleanFields
 
     respond_to do |format|
       vstream_id = params[:id]
