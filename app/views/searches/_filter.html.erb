@@ -22,8 +22,14 @@
                               {}, onchange: "this.form.submit();",
                               class: "form-control" %>
     </div>
-    <%= f.text_field :filter_longitude, value: @filter_longitude, id: "long"%>
-    <%= f.text_field :filter_latitude, value: @filter_latitude, id: "lati"%>
-    <%= f.text_field :filter_distance, value: @filter_distance, id: "radkm"%>
+    <%= f.hidden_field :filter_longitude, value: @filter_longitude, id: "long"%>
+    <%= f.hidden_field :filter_latitude, value: @filter_latitude, id: "lati"%>
+    <%= f.hidden_field :filter_distance, value: @filter_distance, id: "radkm"%>
   <label>Limit search to location on map</label>
-  <input type="checkbox" id="filter_location">
+  <%= 
+  if @filter_longitude.to_s.strip.length == 0
+    check_box_tag :filter_location,1,false,id:"filter_location"
+  else
+    check_box_tag :filter_location,1,true,id:"filter_location"
+  end
+  %>
