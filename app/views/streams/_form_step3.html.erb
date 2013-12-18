@@ -1,7 +1,7 @@
 <div class="step" id="step-3">
   <div class="form-group">
     <label>Mechanism for updating data values</label><br>
-    <%= f.check_box :polling, class: "form-control switch-polling clearfix" %>
+    <%= f.check_box :polling, class: "form-control switch-polling clearfix", checked: !@stream.polling %>
   </div>
 
   <div class="polling" style="display: none;">
