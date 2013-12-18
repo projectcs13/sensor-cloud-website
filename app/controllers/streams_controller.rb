@@ -27,6 +27,14 @@ class StreamsController < ApplicationController
     res = Api.get("/streams/#{@stream_id}")
     stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
+
+    @triggers = nil
+    if current_user.username == @stream_owner.username then
+      response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
+      @triggers = response['body']['triggers']
+    end
+    @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
+
     @prediction = {:in => "50", :out => "25"}
     @polling_history = nil
     if res["body"]["polling"] == true then
@@ -35,11 +43,12 @@ class StreamsController < ApplicationController
       sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
       @polling_history = sorted_history
     end
-    
   end
 
   def suggest
-    res = Api.get("/suggest/#{params[:model]}?size=10")
+    uri = ERB::Util.url_encode params[:model]
+
+    res = Api.get("/suggest/#{uri}?size=10")
     data = if res["status"] == 404 then {} else res["body"]["suggestions"] end
     render :json => data, :status => res["status"]
   end
@@ -169,6 +178,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     res = Api.get "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    logger.debug "S:"
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end

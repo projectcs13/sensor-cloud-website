@@ -1,3 +1,7 @@
+var map = null;
+var markers = [];
+var searchres_length = 0;
+
     function map_init() {
 
             function displayInfo(widget) {
@@ -9,7 +13,6 @@
                   latitude.value = widget.get('position').lat();
                   radkm.value = widget.get('distance');
                 }else {
-                  console.log("called!");
                         longitude.value = null;
                           latitude.value = null;
                           radkm.value = null;
@@ -18,7 +21,9 @@
 
             function RadiusWidget() {
                     var circle = new google.maps.Circle({
-                            strokeWeight: 2
+                            fillColor:"#CD0000",
+                            fillOpacity:0.3,
+                            strokeWeight: 0
                     });
 
                     this.set('distance', 50);
@@ -41,7 +46,6 @@
                     icon: "<%= asset_path 'arrows.png' %>",
                     size: new google.maps.Size(10,10)
                   });
-                  console.log(sizer);
                   sizer.bindTo('map', this);
                   sizer.bindTo('position', this, 'sizer_position');
 
@@ -129,17 +133,13 @@
                 DistanceWidget.prototype = new google.maps.MVCObject();
 
         var mapDiv = document.getElementById('map-canvas');
-        var map = new google.maps.Map(mapDiv, {
+        map = new google.maps.Map(mapDiv, {
           zoom: 8,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           disableDefaultUI: true
         });
 
                 var bounds = new google.maps.LatLngBounds();
-                var points = [];
-                var markers = [];
-                var searchres_length = 0;
-                var hl_marker = new google.maps.Marker({ icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png', map:map})
                 var base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
                 var not_highlighted = '|FF776B|000000'
                 var highlighted = '|FFFF00|000000'
@@ -147,15 +147,12 @@
                 $('#streams .search-result').each(function(i, elem) {
                         var location = $(elem).data('location');
                         searchres_length++
-                        console.log("THE LOCATION : "+location);
                         if(location != " ") {
                                 loc = location.split(",");
                                 lon = loc[0];
                                 lat = loc[1];
                                 pos = new google.maps.LatLng(lon,lat);
-                                var marker = new google.maps.Marker({id: $(elem).data('streamid'), icon: base_url+''+searchres_length+not_highlighted, position: pos, map:map, title:''+searchres_length, status:0});
-                                   console.log(lat);
-                                   console.log(lon);
+                                var marker = new google.maps.Marker({id: $(elem).data('streamid'), icon: base_url+''+searchres_length+not_highlighted, position: pos, map:map, title:''+searchres_length, status:0, animation: google.maps.Animation.DROP});
                                    markers.push(marker);
                                    bounds.extend(pos);
                         }
@@ -199,29 +196,32 @@
 				}
 				}
 
-                $( "#streams .search-result" ).click(function() {
-                          id = $(this).data('streamid')
-                          console.log(markers.length);
-                         hl(id);
-                });
+        $(document.body).on('click', "#streams .search-result", function() {
+            id = $(this).data('streamid')
+            hl(id);
+        });
 
-                function hl(streamid) {
-                	for(i in markers) {
-                		if(markers[i].id == streamid) {
-                			if(markers[i].status == 0) {
-                				markers[i].status = 1;
-                				markers[i].setIcon(base_url+markers[i].title+highlighted);
-                			}else {
-                				markers[i].status = 0;	
-                				markers[i].setIcon(base_url+markers[i].title+not_highlighted);
-                			}
-                			zoomToBounds();
-                		}
-                	}
-                }
+
+        function hl(streamid) {
+        	for(i in markers) {
+        		if(markers[i].id == streamid) {
+        			if(markers[i].status == 0) {
+        				markers[i].status = 1;
+        				markers[i].setIcon(base_url+markers[i].title+highlighted);
+                markers[i].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+        			}else {
+        				markers[i].status = 0;	
+        				markers[i].setIcon(base_url+markers[i].title+not_highlighted);
+                markers[i].setZIndex(google.maps.Marker.MAX_ZINDEX - 1);
+        			}
+        			zoomToBounds();
+        		}
+        	}
+        }
 
                 // Set CSS for the control border
-                var controlUI = document.createElement('div');
+                var controlUI = document.getElementById('filter_location');
+                /*var controlUI = document.createElement('div');
                 controlUI.style.backgroundColor = 'white';
                 controlUI.style.borderStyle = 'solid';
                 controlUI.style.borderWidth = '2px';
@@ -236,7 +236,7 @@
                 controlText.style.paddingLeft = '4px';
                 controlText.style.paddingRight = '4px';
                 controlText.innerHTML = 'Filter';
-                controlUI.appendChild(controlText);
+                controlUI.appendChild(controlText);*/
 
                 var distanceWidget = new DistanceWidget(map);
                 distanceWidget.set("map", null);
@@ -255,17 +255,15 @@
                 }
                 });
 
-                controlUI.index = 1;
-                  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlUI);
+                //controlUI.index = 1;
+                  //map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlUI);
 
               google.maps.event.addListener(distanceWidget, 'distance_changed', function() {
-                  console.log("distance_changed CALLED");
                   if(simplebool == true)
                     displayInfo(distanceWidget);
                 });
 
                 google.maps.event.addListener(distanceWidget, 'position_changed', function() {
-                  console.log("position_changed CALLED");
                   if(simplebool == true)
                     displayInfo(distanceWidget);
                 });
@@ -282,13 +280,23 @@
 					distanceWidget.get('radiusWidget').set('distance', distance/3);
 					distanceWidget.get('radiusWidget').center_changed();
 				}
-
-
-                //var marker = new google.maps.Marker({
-                //    draggable: false,
-                //    title: 'gen stream'
-                //  });
-
       }
 
-      //google.maps.event.addDomListener(window, 'load', init);
+function addmarkers() {
+  var base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
+  var not_highlighted = '|FF776B|000000'
+  if($('#streams .search-result').size() != 0) {
+    $('#streams .search-result').slice(searchres_length).each(function(i, elem) {
+      var location = $(elem).data('location');
+      searchres_length++
+      if(location != " ") {
+        loc = location.split(",");
+        lon = loc[0];
+        lat = loc[1];
+        pos = new google.maps.LatLng(lon,lat);
+        var marker = new google.maps.Marker({id: $(elem).data('streamid'), icon: base_url+''+searchres_length+not_highlighted, position: pos, map:map, title:''+searchres_length, status:0 , animation: google.maps.Animation.DROP});
+        markers.push(marker);
+      }
+    });
+  }
+}

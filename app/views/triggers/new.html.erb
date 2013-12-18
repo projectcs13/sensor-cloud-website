@@ -1,0 +1,30 @@
+<h1>New Trigger</h1>
+<div class="row">
+	<div class="col-md-6 col-md-offset-3 login-form">
+		<%= form_for(@trigger, :url => {:action => "create"}) do |f| %>
+			
+			<div class="form-group">
+				<%= f.label :function %>
+				<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than", "span" => "span"}, {}, { class: "form-control" } %>
+			</div>
+
+			<span id="input-fields"></span>
+
+			<%= f.label  :streams %>
+			<!--<label class="explanation">Pick the stream to use</label><br>-->
+			<%= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
+
+			<div class="form-group">
+    			<label>Trigger to</label><br>
+    			<div class="make-switch" data-on-label="URI" data-off-label="User">
+    				<input id="trigger_uri_enable" type="checkbox">
+				</div>
+  			</div>
+
+  			<div id="uri-field"></div>
+
+			<div class="form-button">
+			<%= f.submit "Submit", class: "btn btn-lg btn-primary pull right" %>
+		<% end %>
+	</div>
+</div>
