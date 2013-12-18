@@ -1,24 +1,5 @@
 <h1>Edit Stream</h1>
-<script type="text/javascript">
-              function getStreams() {
-                streams = $('.search-result');
-                arr = streams.filter(function(i) { return streams.eq(i).children().first().hasClass('selected'); });
-                results=[]; 
-                length = arr.length;
-                arr.each(function(i) { results.push(arr.eq(i).data('streamid')); });
-                jsonstr = JSON.stringify(results)
-                $('#streams_involved').val (JSON.stringify(results)); 
 
-                if( length == 1 ) {
-                  $('#function').empty().append($('<option></option>').val('["diff"]').html('Difference'));
-                } else {
-                  $('#function').empty().append($('<option></option>').val('["total", "1m"]').html('Sum'));
-                  $('#function').append($('<option></option>').val('["max", "1m"]').html('Max'));
-                  $('#function').append($('<option></option>').val('["min", "1m"]').html('Min'));
-                  $('#function').append($('<option></option>').val('["mean", "1m"]').html('Average'));
-                }
-              }
-    </script>
 <div class="row">
   <div class="col-md-6 col-md-offset-3 login-form">
     <%= form_for @vstream, url: user_vstream_path(current_user, @vstream), html: { method: :put } do |f| %>
