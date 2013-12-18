@@ -111,7 +111,9 @@ class StreamsController < ApplicationController
 
   def update
     @stream.assign_attributes stream_params
+    logger.debug "BEFORE CORRECTFEILDS: #{@stream.attributes}"
     correctModelFields
+    logger.debug "AFTER CORRECTFEILDS: #{@stream.attributes}"
 
     respond_to do |format|
       stream_id = params[:id]
@@ -132,6 +134,13 @@ class StreamsController < ApplicationController
         end
       end
     end
+  end
+
+  def edit
+    longitude = @stream.location['lon']
+    latitude = @stream.location['lat']
+    @stream.attributes = {:latitude => latitude}
+    @stream.attributes = {:longitude => longitude}
   end
 
   def destroy

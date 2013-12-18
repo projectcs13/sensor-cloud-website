@@ -210,10 +210,11 @@ $ ->
 
   $(document).bind "streams_edit", (e, obj) =>
     form = $ 'form'
+    loc = [$('#lat').val(), $('#lon').val()]
     window.newStreamForm form
     window.createMap
       dom: form
-      location: null
+      location: loc
       editable: true
 
 
