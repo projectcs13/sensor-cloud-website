@@ -13,25 +13,19 @@ class VstreamsController < ApplicationController
   end
 
   def show
-		@vstream_id = params[:id]
-		resp = Faraday.get "#{CONF['API_URL']}/vstreams/#{@vstream_id}"
-		vstream_owner_id = JSON.parse(resp.body)['user_id']
+		res = Api.get "/vstreams/#{params[:id]}"
+		vstream_owner_id = res['body']['user_id']
 		@vstream_owner = User.find_by(id: vstream_owner_id)
   end
 
 
   def edit
-
   end
 
   def correctBooleanFields
-
-    # @vstream.private = if @vstream.private == "0" then "false" else "true" end
-
   end
 
   def create
-    
   end
 
   def update
