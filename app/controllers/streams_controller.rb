@@ -29,7 +29,7 @@ class StreamsController < ApplicationController
 		@stream_owner = User.find_by(username: stream_owner_id)
 
     @triggers = nil
-    if current_user.username == @stream_owner.username then
+    if signed_in? and current_user.username == @stream_owner.username then
       response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
       @triggers = response['body']['triggers']
     end
