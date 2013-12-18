@@ -1,7 +1,3 @@
-<% if @type=="stream" %>
-	$('#scroll-pane1').append("<%=escape_javascript(render('searches/stream_results'))%>");
+$('#streams #scroll-pane1').append("<%=escape_javascript(render('searches/stream_results'))%>");
 	setupButtons();
-	map_init();
-<% else %>
-	$('#scroll-pane2').append("<%=escape_javascript(render('searches/user_results'))%>")
-<% end %>
+	addmarkers();

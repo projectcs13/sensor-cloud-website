@@ -1,8 +1,8 @@
-<%  if defined? @stream_page_number 
-    p @stream_page_number.to_i
-    i = @stream_page_number.to_i
+<%  if defined? @page_number 
+      p @page_number
+      i = @page_number * @nb_results_per_page
     else
-    i = 0
+      i = 0
     end
 %>
 <% @streams.each do |stream| %>
@@ -90,7 +90,7 @@
       <!-- Star display ends here -->
       <%= nr_rankings %>
       <!-- This line displays percentage -->
-      <%= percentage %>%
+      <%= percentage.to_i %>%
     </div>
     </div>
   </div>

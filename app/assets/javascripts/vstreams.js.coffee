@@ -22,7 +22,6 @@ $ ->
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
-      graph_object.fetch_prediction_data()
 
   $(document).bind "vstreams_new_vstream", (e, obj) => #js only loaded on "new_vstream" action
     $("#modal-window").html("<%= escape_javascript(render 'vstreams#new_vstream') %>");
