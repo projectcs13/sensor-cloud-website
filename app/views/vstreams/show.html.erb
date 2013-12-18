@@ -60,9 +60,9 @@
         <% end %>
 
 
-        <% if not @user.nil? and @user.username == @vstream.user_id %>
-        <%= link_to 'Edit', edit_vstream_path(@vstream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
-        <%= link_to 'Delete', @vstream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
+        <% if not current_user.nil? and current_user.username == @vstream.user_id %>
+        <%= link_to 'Edit', edit_user_vstream_path(current_user, @vstream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
+        <%= link_to 'Delete', user_vstream_path(params[:user_id], @vstream.id), method: :delete, data: { confirm: 'Are you sure?' }, class: "glyphicon glyphicon-remove btn btn-danger" %>
         <% end %>
     </div>
     
