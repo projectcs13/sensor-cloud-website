@@ -106,9 +106,8 @@ class VstreamsController < ApplicationController
 
   def fetch_prediction
     res = Api.get "/vstreams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
-    logger.debug "VS:"
     respond_to do |format|
-      format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
+      format.js { render "fetch_prediction", :locals => {:data => res["body"]} }
     end
   end
 
