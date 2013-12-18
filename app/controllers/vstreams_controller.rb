@@ -132,9 +132,8 @@ class VstreamsController < ApplicationController
 		end
 
     def correct_user
-      resp = Faraday.get "#{CONF['API_URL']}/vstreams/#{params[:id]}"
-      @stream_owner_id = JSON.parse(resp.body)['user_id']
-      # stream = Stream.find(_user_id: params[:id])
+      res = Api.get "/vstreams/#{params[:id]}"
+      @stream_owner_id = res['body']['user_id']
       @user = User.find_by_username(@stream_owner_id)
       redirect_to(root_url) unless current_user?(@user)
     end
