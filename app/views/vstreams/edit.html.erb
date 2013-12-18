@@ -1,61 +1,47 @@
 <h1>Edit Stream</h1>
-<script type="text/javascript">
-              function getStreams() {
-                streams = $('.search-result');
-                arr = streams.filter(function(i) { return streams.eq(i).children().first().hasClass('selected'); });
-                results=[]; 
-                length = arr.length;
-                arr.each(function(i) { results.push(arr.eq(i).data('streamid')); });
-                jsonstr = JSON.stringify(results)
-                $('#streams_involved').val (JSON.stringify(results)); 
 
-                if( length == 1 ) {
-                  $('#function').empty().append($('<option></option>').val('["diff"]').html('Difference'));
-                } else {
-                  $('#function').empty().append($('<option></option>').val('["total", "1m"]').html('Sum'));
-                  $('#function').append($('<option></option>').val('["max", "1m"]').html('Max'));
-                  $('#function').append($('<option></option>').val('["min", "1m"]').html('Min'));
-                  $('#function').append($('<option></option>').val('["mean", "1m"]').html('Average'));
-                }
-              }
-    </script>
 <div class="row">
   <div class="col-md-6 col-md-offset-3 login-form">
+
     <%= form_for @vstream, url: user_vstream_path(current_user, @vstream), html: { method: :put } do |f| %>
 
-		<div class="login-form" >
+			<div class="login-form" >
 
+				<div class="form-group" style="display:none;">
+					<label for="streams_involved">streams_involved</label>
+					<input type="text" name="streams_involved" id = "streams_involved"class="form-control" value=""/>
+				</div>
 
+				<div class="form-group">
+					<%= f.label :name, class: "left" %>
+				  <%= f.text_field :name, class: "form-control input clearfix" %>
+				</div>
 
-			<div class="form-group" style="display:none;">
-				<label for="streams_involved">streams_involved</label>
-				<input type="text" name="streams_involved" id = "streams_involved"class="form-control" value=""/>
-			</div>
-			<div class="form-group">
-				<%= f.label :name, class: "left" %>
-			    <%= f.text_field :name, class: "form-control input clearfix" %>
-			</div>
-			<div class="form-group ">
-				<%= f.label :description, class: "left" %>
-			    <%= f.text_field :description, class: "form-control input clearfix" %>
-			</div>
-			<div class="form-group ">
-				<%= f.label :tags, class: "left" %>
-			    <%= f.text_field :tags, class: "form-control input clearfix" %>
-			</div>
-			<div class="form-group " style="display:none;">
-				<%= f.label :starting_date, class: "left" %>
-			    <%= f.text_field :starting_date, class: "form-control input clearfix", id: "datepicker" %>
-			</div>
-			<div class="form-group" style="display:none;">
-				<%= f.label :function, class: "left" %>
-			    <%= f.text_field :function, class: "form-control input clearfix", id: "function" %>
+				<div class="form-group ">
+					<%= f.label :description, class: "left" %>
+				  <%= f.text_field :description, class: "form-control input clearfix" %>
+				</div>
+
+				<div class="form-group ">
+					<%= f.label :tags, class: "left" %>
+				  <%= f.text_field :tags, class: "form-control input clearfix" %>
+				</div>
+
+				<div class="form-group " style="display:none;">
+					<%= f.label :starting_date, class: "left" %>
+				  <%= f.text_field :starting_date, class: "form-control input clearfix", id: "datepicker" %>
+				</div>
+
+				<div class="form-group" style="display:none;">
+					<%= f.label :function, class: "left" %>
+				  <%= f.text_field :function, class: "form-control input clearfix", id: "function" %>
+				</div>
+
 			</div>
 
+	    <button type="submit" class="btn btn-primary btn-create">Edit stream</button>
 
-		</div>
-
-      	<button type="submit" class="btn btn-primary btn-create">Edit stream</button>
     <% end %>
+
   </div>
 </div>

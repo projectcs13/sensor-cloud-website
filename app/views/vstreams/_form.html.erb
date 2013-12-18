@@ -1,253 +1,104 @@
-<div class="row">
-  <div class="col-md-6 col-md-offset-3 login-form">
-    <%= form_for(@stream) do |f| %>
-      <% if @stream.errors.any? %>
-        <div id="error_explanation">
-  	      <div class="alert alert-danger">
-            The form contains <%= pluralize(@stream.errors.count, "error") %>.
-          </div>
+<% if not current_user.nil? %>
 
-          <ul>
-            <% @stream.errors.full_messages.each do |msg| %>
-              <li>* <%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
+  <button class="btn btn-primary btn-lg glyphicon glyphicon-plus" 
+    data-toggle="modal" data-target="#myModal" onclick="getStreams();">
+    Virtual Stream
+  </button>
 
-      <div>
-        <h4>Step 1</h4>
-        <strong><p>Tell us the basic information about your stream using the form below</p></strong>
+  <script type="text/javascript">
+    function getStreams() {
+      streams = $('.search-result');
+      arr = streams.filter(function(i) { return streams.eq(i).children().first().hasClass('selected'); });
+      results=[]; 
+      length = arr.length;
+      arr.each(function(i) { results.push(arr.eq(i).data('streamid')); });
+      jsonstr = JSON.stringify(results)
+      $('#streams_involved').val (JSON.stringify(results)); 
 
-        <div class="progress progress-striped active">
-          <div id="progress-bar" class="progress-bar progress-bar-success" style="background-color: #5cb85c; width: 0%"></div>
-        </div>
-
-        <hr>
-      </div>
-
-      <div class="steps">
-        <div class="step" id="step-1">
-          <div class="form-group">
-            <%= f.label :name %><br>
-            <%= f.text_field :name, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :description %><br>
-            <%= f.text_field :description, class: "form-control" %>
-    			</div>
-
-          <div class="form-group">
-            <%= f.label :type %><br>
-            <%= f.text_field :type, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :private %><br>
-            <div class="make-switch left" data-on-label="Yes" data-off-label="No">
-              <!-- <input type="checkbox" checked> -->
-              <%= f.check_box :private, class: "form-control" %>
-            </div>
-          </div>
-        </div>
-
-        <div class="step" id="step-2">
-          <!-- <div class="form-group">
-            <%#= f.label :model %><br>
-            <%#= f.text_field :model, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%#= f.label :manufacturer %><br>
-            <%#= f.text_field :manufacturer, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%#= f.label :uuid %><br>
-            <%#= f.text_field :uuid, class: "form-control" %>
-          </div>
-          -->
-          <div class="form-group">
-            <%= f.label :tags %><br>
-            <%= f.text_field :tags, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :accuracy %><br>
-            <%= f.text_field :accuracy, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :unit %><br>
-            <%= f.text_field :unit, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :min_val %><br>
-            <%= f.text_field :min_val, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :max_val %><br>
-            <%= f.text_field :max_val, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :latitude %><br>
-            <%= f.text_field :latitude, class: "form-control" %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :longitude %><br>
-            <%= f.text_field :longitude, class: "form-control" %>
-          </div>
-        </div>
-
-        <div class="step" id="step-3">
-          <!-- <p>Triggers ???</p> -->
-
-          <div class="form-group">
-            <label class="left">Mechanism for updating data values</label>
-            <div class="clearfix"></div>
-            <div class="make-switch left" id="update-switch" data-on-label="Push" data-off-label="Pull">
-              <!-- <input type="checkbox" checked> -->
-              <%= f.check_box :polling, class: "form-control", checked: true %>
-            </div>
-
-            <div class="clearfix"></div>
-          </div>
-
-          <div class="polling" style="display: none;">
-            <div class="form-group">
-              <%= f.label :uri %><br>
-              <%= f.text_field :uri, class: "form-control" %>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :polling_freq %><br>
-              <%= f.text_field :polling_freq, class: "form-control" %>
-            </div>
-          </div>
-        </div>
-      </div>
-
-			<br/>
-
-      <div class="form-button center">
-        <div id="btn-back" class="btn btn-primary">
-          <i class="glyphicon glyphicon-chevron-left"></i>
-          Back
-        </div>
-
-        <div id="btn-next" class="btn btn-primary">
-          Next
-          <i class="glyphicon glyphicon-chevron-right"></i>
-        </div>
-
-        <div id="btn-create" class="btn btn-primary">Create a stream</div>
-        <%= f.submit "Create", class: "btn btn-primary hidden", id: "submit" %>
-      </div>
-    <% end %>
-  </div>
-</div>
-
-<script type="text/javascript">
-  var TIME = 250;
-
-  var currentStep = 0;
-  var steps = $('.step');
-  steps.each(function(i, step) {
-    if (i != 0) $(step).css('display', 'none');
-  });
-  //steps.first().removeClass('hidden');
-
-  var btnBack   = $("#btn-back");
-  var btnNext   = $("#btn-next");
-  var btnCreate = $("#btn-create");
-  var btnSubmit = $("#submit");
-
-  var polling = $('.polling');
-
-  var progress = $('#progress-bar');
-  var ratio = progress.parent().width() / steps.length;
-  //ratio = ratio + ratio / 10;
-
-  var decreaseBar = function() {
-    w = progress.width();
-    progress.width(w - ratio);
-  };
-
-  var increaseBar = function() {
-    w = progress.width();
-    progress.width(w + ratio);
-  };
-
-  var back = function(event) {
-    event.preventDefault();
-
-    if (currentStep > 0) {
-      if (currentStep == steps.length-1) {
-        btnCreate.css('display', 'none');
-        btnNext.css('display', 'inline-block');
-        // btnNext.removeClass('btn-disabled').addClass('btn-primary');
-      }
-
-      steps.eq(currentStep).hide(TIME);
-      currentStep--;
-      steps.eq(currentStep).show(TIME);
-
-      decreaseBar();
-
-      if (currentStep == 0) {
-        btnBack.css('display', 'none');
+      if( length == 1 ) {
+        $('#function').empty().append($('<option></option>').val('["diff"]').html('Difference'));
+      } else {
+        $('#function').empty().append($('<option></option>').val('["total", "1m"]').html('Sum'));
+        $('#function').append($('<option></option>').val('["max", "1m"]').html('Max'));
+        $('#function').append($('<option></option>').val('["min", "1m"]').html('Min'));
+        $('#function').append($('<option></option>').val('["mean", "1m"]').html('Average'));
       }
     }
-  };
+  </script>
 
-  var next = function(event) {
-    event.preventDefault();
+<% end %>
 
-    if (currentStep < steps.length-1) {
-      btnBack.css('display', 'inline-block');
+<% if not current_user.nil? %>
 
-      steps.eq(currentStep).hide(TIME);
-      currentStep++;
-      steps.eq(currentStep).show(TIME);
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">Create Virtual Stream</h4>
+        </div>
+        <div class="modal-body">
 
-      increaseBar();
+          <form  action="/users/<%= current_user.username %>/vstreams/create2" id="newVstreamForm" method="post" onsubmit=" function() {
+              $.ajax( {
+                  type: 'POST',
+                  url: '/vstreams/create2',
+                  data: $('form').serialize(),
+                  success: function( response ) {
+                  Code to process the response
+                }
+              });
+              return false;
+            } ">
 
-      if (currentStep == steps.length-1) {
-        btnCreate.css('display', 'inline-block');
-        btnNext.css('display', 'none');
-      }
-    }
-  };
+            <div class="login-form" >
+              <div class="form-group" style="display:none;">
+                <label for="streams_involved">streams_involved</label>
+                <input type="text" name="streams_involved" id = "streams_involved"class="form-control" value=""/>
+              </div>
 
-  var create = function(event) {
-    event.preventDefault();
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control"/>
+              </div>
 
-    increaseBar();
-    setTimeout(function() {
-      btnSubmit.trigger('click');
-    }, 500);
+              <div class="form-group ">
+                <label for="description">Description</label>
+                <input type="text" name="description" class="form-control" />
+              </div>
 
-    // $(window).animate(function() {
-    //   increaseBar();
-    //   btnSubmit.trigger('submit');
-    // }, 400);
-  }
+              <div class="form-group ">
+                <label for="tags">Tags</label>
+                <input type="text" name="tags" class="form-control" />
+              </div>
 
-  var switchChanged = function(event) {
-    event.preventDefault();
-    polling.toggle(500);
-  };
+              <div class="form-group ">
+                <label for="starting_date">Starting Date</label>
+                <input type="text" name="starting_date" class="form-control" id="datepicker" readonly="readonly"/>
+              </div>
 
+              <div class="form-group">
+                <label for="function">Function</label>
+                <select class="form-control" name="function" id="function" >
+                </select>
+              </div>
 
+            </div>
+          </form>
 
-  btnBack.on('click', back).hide();
-  btnNext.on('click', next);
-  btnCreate.on('click', create).hide();
+          <script>
+            $(function() {
+              $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-ddT00:00:00.000" });
+            });
+          </script>
 
-  $("#update-switch").on('switch-change', switchChanged);
-</script>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary" form="newVstreamForm"/>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+<% end %>
