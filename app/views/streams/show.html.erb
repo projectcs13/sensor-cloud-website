@@ -103,27 +103,6 @@
     <% end %>
   </div>
   <div class="col-md-4"> <!-- Right side -->
-    <div id="map-canvas"></div>
-    <div id="location" style="display: none;" value="<%= def_location %>"></div>
-
-      <% if not @user.nil? and @user.username.downcase == @stream.user_id and @stream.polling == true %>
-      	<h4>Parser: </h4>
-      	<div class="stream-description well">
-      	Path : <%= @stream.parser %> <br>
-     	 	Data-Type : <%= @stream.data_type %> <br>
-     	 	URI : <%= @stream.uri %> <br>
-     	 	Polling Frequency : <%= @stream.polling_freq %> (sec) <br>
-     	  </div>
-      <% end %>
-      <% if not @user.nil? and @user.username.downcase == @stream.user_id %>
-
-
-      	<%= link_to 'Edit', edit_stream_path(@stream), class: "glyphicon glyphicon-pencil btn btn-primary" %>
-      	<%= link_to 'Delete', @stream, confirm: 'Are you sure?', method: :delete, class: "glyphicon glyphicon-remove btn btn-danger" %>
-	     <% end %>
-    <%# end %>
-  </div>
-  <div class="col-md-4"> <!-- Right side -->
     <div class="row" style="height:300px;">
     <div id="map-canvas">
     </div>

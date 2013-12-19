@@ -6,7 +6,6 @@
 	<th>Functions</th>
 	<th>Input</th>
 	<th>Streams</th>
-	<th>Output Id</th>
 	<th>Delete</th>
 	<% @triggers.each do |t| %>
 		<tr>
@@ -15,8 +14,7 @@
 			<% t['streams'].each do |s| %>
 				<td><%= @stream_names[s] %>;</td>
 			<% end %>
-			<td><%= t['output_id'] %></td>
-			<td><%= link_to "Delete", {controller: "triggers", action: "destroy", query: t}, {method: :delete, class:"btn btn-danger"} %></td>
+			<td><%= link_to "Delete", {controller: "triggers", action: "destroy", query: t.to_json}, {method: :delete, class:"btn btn-danger"} %></td>
 		</tr>
 	<% end %>
 </table>
