@@ -1,6 +1,6 @@
 <% unless current_user.nil? %>
 
-  <button class="btn btn-primary btn-lg glyphicon glyphicon-plus" 
+  <button class="btn btn-primary btn-lg glyphicon glyphicon-plus"
     data-toggle="modal" data-target="#myModal" onclick="getStreams();">
     Virtual Stream
   </button>
@@ -9,11 +9,11 @@
     function getStreams() {
       streams = $('.search-result');
       arr = streams.filter(function(i) { return streams.eq(i).children().first().hasClass('selected'); });
-      results=[]; 
+      results=[];
       length = arr.length;
       arr.each(function(i) { results.push(arr.eq(i).data('streamid')); });
       jsonstr = JSON.stringify(results)
-      $('#streams_involved').val (JSON.stringify(results)); 
+      $('#streams_involved').val (JSON.stringify(results));
 
       if( length == 1 ) {
         $('#function').empty().append($('<option></option>').val('["diff"]').html('Difference'));
@@ -91,7 +91,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <input type="submit" class="btn btn-primary" form="newVstreamForm"/>
+          <input type="submit" class="btn btn-primary" form="newVstreamForm" value="Save changes"/>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
