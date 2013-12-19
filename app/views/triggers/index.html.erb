@@ -1,22 +1,22 @@
 <h1 class="title">My Triggers</h1>
 <div class="corner">
-	<%= link_to "Add a trigger", triggers_new_path, class:"btn btn-primary pull-right" %>
+        <%= link_to "Add a trigger", triggers_new_path, class:"btn btn-primary pull-right" %>
 </div>
 <table class="table">
-	<th>Functions</th>
-	<th>Input</th>
-	<th>Streams</th>
-	<th>Output Id</th>
-	<th>Delete</th>
-	<% @triggers.each do |t| %>
-		<tr>
-			<td><%= @functions[t['function']] %></td>
-			<td><%= t['input'] %></td>
-			<% t['streams'].each do |s| %>
-				<td><%= @stream_names[s] %>;</td>
-			<% end %>
-			<td><%= t['output_id'] %></td>
-			<td><%= link_to "Delete", {controller: "triggers", action: "destroy", query: t}, {method: :delete, class:"btn btn-danger"} %></td>
-		</tr>
-	<% end %>
+        <th>Functions</th>
+        <th>Input</th>
+        <th>Streams</th>
+        <th>Output Id</th>
+        <th>Delete</th>
+        <% @triggers.each do |t| %>
+                <tr>
+                        <td><%= @functions[t['function']] %></td>
+                        <td><%= t['input'] %></td>
+                        <% t['streams'].each do |s| %>
+                                <td><%= @stream_names[s] %>;</td>
+                        <% end %>
+                        <td><%= t['output_id'] %></td>
+                        <td><%= link_to "Delete", {controller: "triggers", action: "destroy", query: t}, {method: :delete, class:"btn btn-danger"} %></td>
+                </tr>
+        <% end %>
 </table>
