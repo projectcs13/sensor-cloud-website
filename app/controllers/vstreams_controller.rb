@@ -83,7 +83,7 @@ class VstreamsController < ApplicationController
   end
 
   def create2
-    req_body = { "tag"              => params[:tags], 
+    req_body = { "tags"             => params[:tags], 
                  "user_id"          => params[:user_id], 
                  "name"             => params[:name], 
                  "description"      => params[:description],

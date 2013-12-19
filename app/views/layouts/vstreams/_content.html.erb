@@ -1,0 +1,20 @@
+<div class="row main">
+  <% if @vstreams.empty? then %>
+    <% unless current_user.nil? %> 
+      <% if current_user.username == params[:user_id] %>
+        <h4> You currenlty have no streams</h4>
+      <% else %>
+        <h4> <%= params[:user_id]%> currently have no streams </h4>
+      <% end %>
+    <% end %>
+
+  <% else %>
+    <div class="col-md-4 left">
+      <div class="scroll-pane" id="scroll-pane1">
+        <%= render 'layouts/vstreams/content_list' %>
+      </div>
+    </div>
+
+  <% end %>
+<div>
+
