@@ -12,10 +12,17 @@
           <% @notifications.each do |notification| %>
             <li class="list-group-item">
                 <% if notification.has_key?("trigger") then %>
-                  Alert from trigger: <br>
-                  <%= notification["trigger"]["timestamp"] %> <br>
-                  Value : <%= notification["trigger"]["value"] %> <br>
-                  Stream: <%= link_to notification["trigger"]["stream_id"] , "/streams/#{notification["trigger"]["stream_id"]}" %>
+                  <% if notification["trigger"]["type"] == "stream" then %>
+                    Alert from trigger on stream: <br>
+                    <%= notification["trigger"]["timestamp"] %> <br>
+                    Value : <%= notification["trigger"]["value"] %> <br>
+                    Stream: <%= link_to notification["trigger"]["stream_id"] , "/streams/#{notification["trigger"]["stream_id"]}" %>
+                  <% else %>
+                    Alert from trigger on virtual stream: <br>
+                    <%= notification["trigger"]["timestamp"] %> <br>
+                    Value : <%= notification["trigger"]["value"] %> <br>
+                    Stream: <%= link_to notification["trigger"]["stream_id"] , "/users/#{@user.username}/vstreams/#{notification["trigger"]["stream_id"]}" %>
+                  <% end %>
                 <% else %>
                   Alert from polling system: <br>
                   <%= notification["polling"]["timestamp"] %> <br>
