@@ -1,7 +1,7 @@
 <div class="row main">
   <% if @streams == [] then %>
     <% if @user.username == params[:id] then %>
-      <h4> You currenlty have no streams</h4>
+      <h4> You currently have no streams</h4>
     <% else %>
       <h4> <%= params[:id]%> currently have no streams </h4>
     <% end %>
