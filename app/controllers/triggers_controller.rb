@@ -27,7 +27,15 @@ class TriggersController < ApplicationController
 			else
 				trigger_params['input'] = trigger_params['input'].to_f
 			end
+
+			if trigger_params.has_key?('streams')
+				trigger_params['vstreams'] = ""
+			else
+				trigger_params['streams'] = ""
+			end
+
 			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
+			logger.debug "*** res: #{res} ***"
 			respond_to do |format|
 				format.html { redirect_to triggers_path }
 			end
@@ -42,6 +50,15 @@ class TriggersController < ApplicationController
 		@username = current_user.username
 		res = Api.get("/users/#{@username}/triggers")
 		@triggers = res['body']['triggers']
+		logger.debug "*** @triggers: #{@triggers} ***"
+
+		@triggers.each do |e|
+			if e['streams'].empty?
+				e['streams'] = ""
+			else
+				e['vstreams'] = ""
+			end
+		end
 
 		res = Api.get("/users/#{@username}/streams")
 		@streams = res['body']['streams']
@@ -57,6 +74,7 @@ class TriggersController < ApplicationController
 	def destroy
 		@username = current_user.username
 		@trigger = params[:query]
+		logger.debug "*** @trigger: #{@trigger} ***"
 		if @trigger[:input].kind_of?(String)
 			@trigger[:input] = @trigger[:input].to_f
 		else
