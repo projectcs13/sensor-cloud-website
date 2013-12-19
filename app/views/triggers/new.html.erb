@@ -1,44 +1,30 @@
 <h1>New Trigger</h1>
-<div class="col-md-6 col-md-offset-3 login-form">
-<%= form_for(@trigger, :url => {:action => "create"}) do |f| %>
-	
+<div class="row">
+        <div class="col-md-6 col-md-offset-3 login-form">
+                <%= form_for(@trigger, :url => {:action => "create"}) do |f| %>
+                        
+                        <div class="form-group">
+                                <%= f.label :function %>
+                                <%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than", "span" => "span"}, {}, { class: "form-control" } %>
+                        </div>
 
-	<%= f.label :function %>
-	<%= f.select :function, {"greater than" => "greater_than", "less than" => "less_than", "span" => "span"} %>
+                        <span id="input-fields"></span>
 
-	<%#= f.label :input %>
-	<%#= f.text_field :input %>
+                        <%= f.label :streams %>
+                        <!--<label class="explanation">Pick the stream to use</label><br>-->
+                        <%= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
 
-	<span id="input-fields"></span>
+                        <div class="form-group">
+                            <label>Trigger to</label><br>
+                            <div class="make-switch" data-on-label="URI" data-off-label="User">
+                                    <input id="trigger_uri_enable" type="checkbox">
+                                </div>
+                          </div>
 
-	<%= f.label  :streams, class: "left" %>
-	<label class="explanation">Pick the stream to use</label><br>
-	<%= f.select :streams, @stream_ids, {}, { :class => 'form-control input clearfix' } %>
-	<br>
+                          <div id="uri-field"></div>
 
-	<%= f.submit "Submit", {:class => "btn btn-primary btn-create right"} %>
-<% end %>
-<div></div>
-
-<script>
-	$( "#trigger_function" )
-		.change(function () {
-			var selectedOption = "";
-			var inputFields = "";
-			$("#trigger_function option:selected").each(function(){
-				selectedOption = $( this ).text();
-			});
-			if (selectedOption == "span") {
-				inputFields = "<label for='trigger_min'>Min</label> \
-											 <input id='trigger_min' name='trigger[min]' type='text'> \
-											 <label for='trigger_max'>Max</label> \
-											 <input id='trigger_max' name='trigger[max]' type='text'>";
-			}
-			else {
-				inputFields = "<label for='trigger_input'>Input</label> \
-											 <input id='trigger_input' name='trigger[input]' type='text'>";
-			}
-			$("#input-fields").html(inputFields);
-		})
-		.change();
-</script>
+                        <div class="form-button">
+                        <%= f.submit "Submit", class: "btn btn-lg btn-primary pull right" %>
+                <% end %>
+        </div>
+</div>
