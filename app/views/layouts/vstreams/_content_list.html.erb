@@ -1,0 +1,36 @@
+<%  if defined? @page_number
+    i = @page_number.to_i * @nb_results_per_page
+    else
+    i = 0
+    end
+%>
+<% @vstreams.each do |vstream| %>
+  <% i = i+1 %>
+  <% vstream_id = vstream['id'] %>
+  <% vstream_url = "/vstreams/#{vstream_id}" %>
+  <% vstream_name = vstream['name'] %>
+  <% vstream_desciption = vstream['description'] %>
+  <% vstream_last_updated = vstream['last_updated'] %>
+  
+  <% if not vstream_last_updated.nil?  %>
+    <% vstream_last_updated = distance_of_time_in_words(Time.iso8601(vstream_last_updated), Time.now, include_seconds: true) %>
+  <% else %>
+    <% vstream_last_updated = "long time" %>
+  <% end %>
+
+  <div class="panel panel-default search-result">
+    <div class="panel-heading">
+      <%=i%>
+      <%=link_to(vstream_name, user_vstream_path(params[:user_id], vstream['id'])) %>
+
+    </div>
+    <div class="panel-body">
+      <span class="vstream-description"><%= vstream_desciption %></span>
+      <div class="search-result-footer">
+        <span class="last-update pull-right">Last updated <%= vstream_last_updated %> ago</span>
+      
+      </div>
+    </div>
+  </div>
+<% end %>
+
