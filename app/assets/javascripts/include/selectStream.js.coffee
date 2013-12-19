@@ -1,7 +1,7 @@
 
 window.selectStream = (event) ->
   multiGraph = window.multiGraph
-  graphData = window.graphData
+  window.graphData = window.window.graphData
   stream_id = this.dataset.streamid
   iteration = this.dataset.iteration
   isSelected = $(this).children().hasClass("selected")
@@ -12,10 +12,10 @@ window.selectStream = (event) ->
   if isSelected
     $(this).children().removeClass("selected")
     panelHeader.children().remove("span")
-    graphData = graphData.filter (el) -> 
+    window.window.graphData = window.graphData.filter (el) -> 
       return el.stream_id.toString() != stream_id
     $("#multiline-graph svg").remove()
-    d3.select("#multiline-graph").datum(graphData).call(multiGraph)
+    d3.select("#multiline-graph").datum(window.graphData).call(multiGraph)
   else
     $(this).children().addClass("selected")
     # ajax call
@@ -23,13 +23,13 @@ window.selectStream = (event) ->
 
     res.done (result) ->
       result['stream_id'] = stream_id
-      graphData.push result
+      window.graphData.push result
       if result['data'].length == 0
         panelHeader.append(noDataSpan)
       else
         panelHeader.append(selectedSpan)
       $("#multiline-graph svg").remove()
-      d3.select("#multiline-graph").datum(graphData).call(multiGraph)
+      d3.select("#multiline-graph").datum(window.graphData).call(multiGraph)
     res.fail (e, data) ->
       console.log e
 
@@ -44,10 +44,10 @@ window.selectVStream = (event) ->
   if isSelected
     $(this).children().removeClass("selected")
     panelHeader.children().remove("span")
-    graphData = graphData.filter (el) -> 
+    window.graphData = window.graphData.filter (el) -> 
       return el.stream_id.toString() != stream_id
     $("#multiline-graph svg").remove()
-    d3.select("#multiline-graph").datum(graphData).call(multiGraph)
+    d3.select("#multiline-graph").datum(window.graphData).call(multiGraph)
   else
     $(this).children().addClass("selected")
     # ajax call
@@ -55,12 +55,12 @@ window.selectVStream = (event) ->
 
     res.done (result) ->
       result['stream_id'] = stream_id
-      graphData.push result
+      window.graphData.push result
       if result['data'].length == 0
         panelHeader.append(noDataSpan)
       else
         panelHeader.append(selectedSpan)
       $("#multiline-graph svg").remove()
-      d3.select("#multiline-graph").datum(graphData).call(multiGraph)
+      d3.select("#multiline-graph").datum(window.graphData).call(multiGraph)
     res.fail (e, data) ->
       console.log e

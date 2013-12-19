@@ -8,12 +8,13 @@
 //= require 'include/timeChart.js'
 //= require 'include/client.js'
 //= require 'include/stream_graph_multiline'
-//= require 'include/scrolling'
 //= require 'include/filter_map'
 //= require 'include/selectStream'
+
 $ ->
+
   $(document).bind "vstreams_index", (e, obj) =>
-     #setup map and graph containers
+    #setup map and graph containers
     #height still statically set since height() needs to render page to calculate correctly
     contentWidth = $(".right-side-content").width()
     $('#map-canvas').width(contentWidth).height(500)
@@ -42,8 +43,6 @@ $ ->
             console.log result, thing
 
     setupButtons()
-    init_scrolling()
-    map_init($(".scroll-pane").children(), $(".search-result"), $("#map-canvas"), null, null, null)
 
   $(document).bind "vstreams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
@@ -56,10 +55,6 @@ $ ->
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
-
-    $("#live-update-btn").on 'switch-change', (e, data) ->
-      value = data.value
-      toggle value
 
   $(document).bind "vstreams_new_vstream", (e, obj) => #js only loaded on "new_vstream" action
     $("#modal-window").html("<%= escape_javascript(render 'vstreams#new_vstream') %>");

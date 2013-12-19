@@ -3,7 +3,11 @@ var markers = [];
 var searchres_length = 0;
 
     function map_init(streamdom, dombutton, mapdom, latdom, londom, raddom) {
-
+            streamdom = streamdom;
+            mapdom = mapdom;
+            latdom = latdom;
+            londom = londom;
+            raddom = raddom;
             function displayInfo(widget) {
                     if(widget != null) {
                   londom[0].value = widget.get('position').lng();
@@ -166,54 +170,9 @@ var searchres_length = 0;
                 map.setZoom(2);
                 map.setCenter(new google.maps.LatLng(21, 20));
         }
-                function zoomToBounds()
-				{
-				var empty = true;
-				/*Create a new Bounds object*/
-				bounds = new google.maps.LatLngBounds();
+        
 
-				/*Iterate through all our points and build our new GLatLngBounds object*/
-				for (var i in markers) {
-				if (markers[i].status != 0){ 
-					bounds.extend(new google.maps.LatLng(markers[i].getPosition().lat(),markers[i].getPosition().lng()));
-					empty = false;
-				}
-				}
-				/*Calculate the Position and Zoom of the Map*/
-				if(!empty) {
-					if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
-					var extendPoint1 = new google.maps.LatLng(bounds.getNorthEast().lat() + 0.01, bounds.getNorthEast().lng() + 0.01);
-					var extendPoint2 = new google.maps.LatLng(bounds.getNorthEast().lat() - 0.01, bounds.getNorthEast().lng() - 0.01);
-					bounds.extend(extendPoint1);
-					bounds.extend(extendPoint2);
-					}
-					map.panToBounds(bounds);
-					map.fitBounds(bounds);
-				}
-				}
-
-        dombutton.on('click', function() {
-            id = $(this).data('streamid')
-            hl(id);
-        });
-
-
-        function hl(streamid) {
-        	for(i in markers) {
-        		if(markers[i].id == streamid) {
-        			if(markers[i].status == 0) {
-        				markers[i].status = 1;
-        				markers[i].setIcon(base_url+markers[i].title+highlighted);
-                markers[i].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
-        			}else {
-        				markers[i].status = 0;	
-        				markers[i].setIcon(base_url+markers[i].title+not_highlighted);
-                markers[i].setZIndex(google.maps.Marker.MAX_ZINDEX - 1);
-        			}
-        			zoomToBounds();
-        		}
-        	}
-        }
+       addmarkers(streamdom,dombutton);
 
                 // Set CSS for the control border
                 var controlUI = document.getElementById('filter_location');
@@ -284,7 +243,7 @@ var searchres_length = 0;
         }
       }
 
-function addmarkers() {
+function addmarkers(streamdom, dombutton) {
   var base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
   var not_highlighted = '|FF776B|000000'
   if(streamdom.size() != 0) {
@@ -300,5 +259,59 @@ function addmarkers() {
         markers.push(marker);
       }
     });
+  }
+  dombutton.off('click', addListener);
+  dombutton.on('click', addListener);
+}
+
+
+function zoomToBounds() {
+var empty = true;
+/*Create a new Bounds object*/
+bounds = new google.maps.LatLngBounds();
+
+/*Iterate through all our points and build our new GLatLngBounds object*/
+for (var i in markers) {
+if (markers[i].status != 0){ 
+bounds.extend(new google.maps.LatLng(markers[i].getPosition().lat(),markers[i].getPosition().lng()));
+empty = false;
+}
+}
+/*Calculate the Position and Zoom of the Map*/
+if(!empty) {
+if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
+var extendPoint1 = new google.maps.LatLng(bounds.getNorthEast().lat() + 0.01, bounds.getNorthEast().lng() + 0.01);
+var extendPoint2 = new google.maps.LatLng(bounds.getNorthEast().lat() - 0.01, bounds.getNorthEast().lng() - 0.01);
+bounds.extend(extendPoint1);
+bounds.extend(extendPoint2);
+}
+map.panToBounds(bounds);
+map.fitBounds(bounds);
+}
+}
+
+function addListener(event) {
+        id = $(this).data('streamid')
+            hl(id);
+}
+
+function hl(streamid) {
+  var base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
+  var not_highlighted = '|FF776B|000000'
+  var highlighted = '|FFFF00|000000'
+  for(i in markers) {
+    if(markers[i].id == streamid) {
+      if(markers[i].status == 0) {
+        markers[i].status = 1;
+        markers[i].setIcon(base_url+markers[i].title+highlighted);
+        markers[i].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+        console.log(base_url+markers[i].title+highlighted);
+      }else {
+        markers[i].status = 0;  
+        markers[i].setIcon(base_url+markers[i].title+not_highlighted);
+        markers[i].setZIndex(google.maps.Marker.MAX_ZINDEX - 1);
+      }
+      zoomToBounds();
+    }
   }
 }

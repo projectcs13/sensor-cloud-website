@@ -15,12 +15,11 @@ function init_scrolling() {
       var data = $('#search-bar').serializeArray();
           data.push({name: 'search[page]', value: page_number});
       var res = $.post('/get_more_info', data);
-          res.done(function() {
+          res.complete(function() {
             console.log("response!");
             waiting = true;
             page_number = page_number + 1;
           });
    }
-   console.log(waiting);
   });
 }

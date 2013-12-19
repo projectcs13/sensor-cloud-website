@@ -8,7 +8,6 @@
 //= require 'include/timeChart.js'
 //= require 'include/client.js'
 //= require 'include/stream_graph_multiline'
-//= require 'include/scrolling'
 //= require 'include/filter_map'
 //= require 'include/selectStream'
 
@@ -43,7 +42,6 @@ $ ->
             console.log result, thing
 
     setupButtons()
-    init_scrolling()
     map_init($(".scroll-pane").children(), $(".search-result"), $("#map-canvas"), null, null, null)
 
   $(document).bind "streams_new", (e, obj) =>
