@@ -26,6 +26,10 @@ class VstreamsController < ApplicationController
 
   def update
     @vstream.assign_attributes(vstream_params)
+    @vstream.attributes.delete 'streams_involved'
+    @vstream.attributes.delete 'starting_date'
+    @vstream.attributes.delete 'function'
+
 
     respond_to do |format|
       vstream_id = params[:id]
