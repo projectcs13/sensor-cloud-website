@@ -13,7 +13,7 @@
   <% vstream_last_updated = vstream['last_updated'] %>
   
   <% if not vstream_last_updated.nil?  %>
-    <% vstream_last_updated = distance_of_time_in_words(Date.iso8601(vstream_last_updated), Time.now, include_seconds: true) %>
+    <% vstream_last_updated = distance_of_time_in_words(Time.iso8601(vstream_last_updated), Time.now, include_seconds: true) %>
   <% else %>
     <% vstream_last_updated = "long time" %>
   <% end %>
