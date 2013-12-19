@@ -29,6 +29,7 @@ class VstreamsController < ApplicationController
     @vstream.attributes.delete 'streams_involved'
     @vstream.attributes.delete 'starting_date'
     @vstream.attributes.delete 'function'
+    @vstream.attributes.delete 'id'
 
 
     respond_to do |format|
