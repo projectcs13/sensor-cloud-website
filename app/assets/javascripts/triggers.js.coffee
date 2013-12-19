@@ -35,17 +35,7 @@ $ ->
 		$("#uri-field").html uriField
 	).change()
 
-	$("#trigger_stream_enable").change(->
-		triggerOn = "";
-		if $(this).prop('checked')
-			triggerOn = """
-					<label for="trigger_streams">Streams</label>
-					<select class="form-control" id="trigger_streams" name="trigger[streams]"><option value="85r_hMK_Q4mWayewfDHCUw">kassadin's stream #1</option></select>
-					"""
-		else
-			triggerOn = """
-					<label for="trigger_vstreams">Virtual streams</label>
-					<select class="form-control" id="trigger_vstreams" name="trigger[vstreams]"><option value="V8UkuMQITUGfDgyzkvVorw">qweqwe</option></select>
-					"""
-		$("#trigger-on").html triggerOn
-	).change()
+	$("#trigger_stream_enable").on "switch-change", ->
+		$(".select").toggle()
+		elem = $("#trigger_selected_resource")
+		elem.val if elem.val() is "vstream" then "stream" else "vstream"

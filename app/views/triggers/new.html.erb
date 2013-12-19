@@ -12,21 +12,22 @@
 
 			<div class="form-group">
   			<label>Trigger on</label><br>
-  			<div class="make-switch" data-on-label="Stream" data-off-label="Vstream">
-  				<input id="trigger_stream_enable" type="checkbox">
+  			<div class="make-switch" id="trigger_stream_enable" data-on-label="Stream" data-off-label="Vstream">
+  				<input type="checkbox">
 				</div>
   		</div>
 
-  		<div class="form-group" id="trigger-on">
-  		</div>
-
-			<div>
-				<%#= f.label  :streams %>
-				<%#= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
-
-				<%#= f.label  :vstreams, "Virtual streams" %>
-				<%#= f.select :vstreams, @vstream_ids, {}, { class: "form-control" } %>
+			<div class="form-group select" style="display: none;">
+				<%= f.label  :streams %>
+				<%= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
 			</div>
+
+			<div class="form-group select">
+				<%= f.label  :vstreams, "Virtual streams" %>
+				<%= f.select :vstreams, @vstream_ids, {}, { class: "form-control" } %>
+			</div>
+
+			<%= f.hidden_field :selected_resource, :value => "vstream" %>
 
 			<div class="form-group">
   			<label>Trigger to</label><br>

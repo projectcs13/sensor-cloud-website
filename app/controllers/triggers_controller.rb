@@ -36,14 +36,24 @@ class TriggersController < ApplicationController
 				trigger_params['input'] = trigger_params['input'].to_f
 			end
 
-			if trigger_params.has_key?('streams')
+			if trigger_params['selected_resource'] == "stream"
 				trigger_params['vstreams'] = ""
 			else
 				trigger_params['streams'] = ""
 			end
 
+			trigger_params.delete('selected_resource')
+
+			#if trigger_params.has_key?('streams')
+			#	trigger_params['vstreams'] = ""
+			#else
+			#	trigger_params['streams'] = ""
+			#end
+
+			logger.debug "*** create_trigger: #{trigger_params} ***"
+
 			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
-			logger.debug "*** res: #{res} ***"
+
 			respond_to do |format|
 				format.html { redirect_to triggers_path }
 			end
@@ -88,7 +98,7 @@ class TriggersController < ApplicationController
 
 		@username = current_user.username
 		@trigger = params[:query]
-		if @trigger.has_key?("streams")
+		if !@trigger["streams"].empty?
 			@trigger['vstreams'] = ""
 		else
 			@trigger['streams'] = ""
