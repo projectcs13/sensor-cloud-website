@@ -85,8 +85,14 @@ class TriggersController < ApplicationController
 	end
 
 	def destroy
+
 		@username = current_user.username
 		@trigger = params[:query]
+		if @trigger.has_key?("streams")
+			@trigger['vstreams'] = ""
+		else
+			@trigger['streams'] = ""
+		end
 		logger.debug "*** @trigger: #{@trigger} ***"
 		if @trigger[:input].kind_of?(String)
 			@trigger[:input] = @trigger[:input].to_f
