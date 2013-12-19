@@ -1,8 +1,8 @@
 <div class="row main">
   <% if @vstreams.empty? then %>
-    <% unless current_user.nil? %> 
+    <% unless current_user.nil? %>
       <% if current_user.username == params[:user_id] %>
-        <h4> You currenlty have no streams</h4>
+        <h4> You currently have no streams</h4>
       <% else %>
         <h4> <%= params[:user_id]%> currently have no streams </h4>
       <% end %>
