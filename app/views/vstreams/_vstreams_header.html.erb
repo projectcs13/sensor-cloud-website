@@ -1,0 +1,11 @@
+<div>
+  <% unless current_user.nil? %>
+    <% if current_user.username == params[:user_id] %>
+      <h1 class="title">My Virtual Streams</h1>
+    <% else %>
+      <h1 class="title"><%= params[:user_id]%>'s Virtual Streams</h1>
+    <% end %>
+  <% end %>
+
+  <div class="clearfix"></div>
+</div>

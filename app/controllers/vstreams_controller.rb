@@ -26,6 +26,11 @@ class VstreamsController < ApplicationController
 
   def update
     @vstream.assign_attributes(vstream_params)
+    @vstream.attributes.delete 'streams_involved'
+    @vstream.attributes.delete 'starting_date'
+    @vstream.attributes.delete 'function'
+    @vstream.attributes.delete 'id'
+
 
     respond_to do |format|
       vstream_id = params[:id]
@@ -79,7 +84,7 @@ class VstreamsController < ApplicationController
   end
 
   def create2
-    req_body = { "tag"              => params[:tags], 
+    req_body = { "tags"             => params[:tags], 
                  "user_id"          => params[:user_id], 
                  "name"             => params[:name], 
                  "description"      => params[:description],

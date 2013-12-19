@@ -155,12 +155,13 @@ window.newStreamForm = (form) ->
   explain = (event) ->
     exp = $(this).siblings '.explanation'
     exp = $(this).parent().siblings '.explanation' unless exp.text()
+
     if exp.css('display') is 'none'
       explanations.hide TIME
       exp.show TIME
 
 
-  keyup = (event) ->
+  inputChanged = (event) ->
     do event.preventDefault
     analyzeRequiredField $(this)
 
@@ -175,8 +176,10 @@ window.newStreamForm = (form) ->
     sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
     sw.bootstrapSwitch 'setOnLabel', 'Push'
     sw.bootstrapSwitch 'setOffLabel', 'Poll'
+
     if sw.bootstrapSwitch('status') is false
       do showPollingPanel
+
     sw.on 'switch-change', switchChanged
 
 
@@ -189,7 +192,11 @@ window.newStreamForm = (form) ->
   do btnCreate.hide
 
   form.find('.input').on 'focus', explain
-  form.find('.input-name').on('keyup', keyup).trigger 'keyup'
+  form.find('.input-name')
+    .on('keyup', inputChanged)
+    .on('input', inputChanged)
+
+  analyzeRequiredField form.find('.input-name')
 
   btnBack.on    'click', back
   btnNext.on    'click', next
@@ -200,5 +207,5 @@ window.newStreamForm = (form) ->
   do setInputFocus
   do initBootstrapSwitches
 
-  steps.each (i, step) ->
+  steps.each (i) ->
     steps.eq(i).css 'display', 'none' if i isnt 0

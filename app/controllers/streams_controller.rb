@@ -29,7 +29,7 @@ class StreamsController < ApplicationController
 		@stream_owner = User.find_by(username: stream_owner_id)
 
     @triggers = nil
-    if current_user.username == @stream_owner.username then
+    if signed_in? and current_user.username == @stream_owner.username then
       response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
       @triggers = response['body']['triggers']
     end
@@ -211,9 +211,13 @@ class StreamsController < ApplicationController
 		# Before filters
 
     def correct_user
-      stream = Stream.find(params[:id], :_user_id => current_user.username)
-      user = User.find_by_username(stream.user_id)
-      redirect_to(root_url) unless current_user?(user)
+      if current_user.nil?
+        redirect_to("/streams/#{params[:id]}")
+      else
+        stream = Stream.find(params[:id], :_user_id => current_user.username)
+        user = User.find_by_username(stream.user_id)
+        redirect_to("/streams/#{params[:id]}") unless current_user?(user)
+      end
     end
 
     def get_current_user

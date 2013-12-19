@@ -23,6 +23,10 @@ $ ->
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
 
+    $("#live-update-btn").on 'switch-change', (e, data) ->
+      value = data.value
+      toggle value
+
   $(document).bind "vstreams_new_vstream", (e, obj) => #js only loaded on "new_vstream" action
     $("#modal-window").html("<%= escape_javascript(render 'vstreams#new_vstream') %>");
 

@@ -1,15 +1,16 @@
 class User < ActiveRecord::Base
+
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-	VAILD_USERNAME_REGEX = /\A[a-z0-9_-]+\Z/
-	validates :username,  presence: true, format: { with: VAILD_USERNAME_REGEX }, length: { maximum:50 }, uniqueness: { case_sensitive: false }
-  	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+	VAILD_USERNAME_REGEX = /\A[a-zA-Z0-9_-]+\Z/
+  validates :username,  presence: true, format: { with: VAILD_USERNAME_REGEX }, length: { maximum:50 }, uniqueness: { case_sensitive: false }
+  validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
 	has_secure_password
-	validates :password, length: { minimum: 6 }
-	validates :description, length: { maximum:500 }
+  validates :password, length: { minimum: 6 }
+  validates :description, length: { maximum:500 }
 
 	has_many :streams
 
-	before_save { self.email = email.downcase }
+	before_save :downcase_attributes
 	before_create :create_remember_token
 
 	def User.new_remember_token
@@ -32,18 +33,21 @@ class User < ActiveRecord::Base
 	end
 
 	def follow!(stream_id)
-		res = Api.put(
-			"/users/#{self.username}/_subscribe", {stream_id: "#{stream_id}"}
-		)
+		Api.put "/users/#{self.username}/_subscribe", { stream_id: "#{stream_id}" }
 	end
 
 	def unfollow!(stream_id)
-		res = Api.put(
-			"/users/#{self.username}/_unsubscribe", {stream_id: "#{stream_id}"}
-		)
+		Api.put "/users/#{self.username}/_unsubscribe", { stream_id: "#{stream_id}" }
 	end
 
+
 	private
+
+		def downcase_attributes
+			self.username = self.username.downcase
+			self.email = self.email.downcase
+		end
+
 		def create_remember_token
 			self.remember_token = User.encrypt(User.new_remember_token)
 		end
