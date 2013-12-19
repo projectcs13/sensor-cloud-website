@@ -8,6 +8,14 @@ class TriggersController < ApplicationController
 		@streams = res['body']['streams']
 		@stream_ids = {}
 		@streams.each { |e| @stream_ids[e['name']] = e['id'] }
+
+		res = Api.get("/users/#{@username}/vstreams")
+
+		logger.debug "*** res (vstreams): #{res} ***"
+
+		@vstreams = res['body']['vstreams']
+		@vstream_ids = {}
+		@vstreams.each { |e| @vstream_ids[e['name']] = e['id'] }
 	end
 
 	def create
@@ -64,6 +72,11 @@ class TriggersController < ApplicationController
 		@streams = res['body']['streams']
 		@stream_names = {}
 		@streams.each { |e| @stream_names[e['id']] = e['name'] }
+
+		res = Api.get("/users/#{@username}/vstreams")
+		@vstreams = res['body']['vstreams']
+		@vstream_names = {}
+		@vstreams.each { |e| @vstream_names[e['id']] = e['name'] }
 		
 		@functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
 	end

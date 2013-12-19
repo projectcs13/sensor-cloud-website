@@ -10,9 +10,13 @@
 
 			<span id="input-fields"></span>
 
-			<%= f.label  :streams %>
-			<!--<label class="explanation">Pick the stream to use</label><br>-->
-			<%= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
+			<div class="form-group">
+				<%#= f.label  :streams %>
+				<%#= f.select :streams, @stream_ids, {}, { class: "form-control" } %>
+
+				<%= f.label  :vstreams %>
+				<%= f.select :vstreams, @vstream_ids, {}, { class: "form-control" } %>
+			</div>
 
 			<div class="form-group">
     			<label>Trigger to</label><br>

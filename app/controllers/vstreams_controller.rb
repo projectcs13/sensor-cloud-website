@@ -7,7 +7,7 @@ class VstreamsController < ApplicationController
   def index
     cid = current_user.username
     res = Api.get "/users/#{params[:user_id]}/vstreams"
-    @vstreams = res['body']['users']
+    @vstreams = res['body']['vstreams']
     @count = @vstreams.length
   end
 
