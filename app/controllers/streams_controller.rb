@@ -25,12 +25,14 @@ class StreamsController < ApplicationController
   def show
 		@stream_id = params[:id]
     res = Api.get("/streams/#{@stream_id}")
-    stream_owner_id = res["body"]["user_id"]
-		@stream_owner = User.find_by(username: stream_owner_id)
-
+    logger.debug "#{res}"
+    stream_owner_id = res['body']['user_id']
+		@stream_owner = User.find_by(username: "hewlettPackard")
+    logger.debug "#{@stream_owner} - #{current_user} - #{@stream.attributes}" 
+    logger.debug "#{stream_owner_id}"
     @triggers = nil
     if signed_in? and current_user.username == @stream_owner.username then
-      response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
+      response = Api.get("/users/#{@stream_owner.username.downcase}/streams/#{@stream_id}/triggers")
       @triggers = response['body']['triggers']
     end
     @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}

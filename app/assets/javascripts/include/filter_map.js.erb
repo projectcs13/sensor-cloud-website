@@ -2,20 +2,17 @@ var map = null;
 var markers = [];
 var searchres_length = 0;
 
-    function map_init() {
+    function map_init(streamdom, dombutton, mapdom, latdom, londom, raddom) {
 
             function displayInfo(widget) {
-                  var longitude = document.getElementById('long');
-                  var latitude = document.getElementById('lati');
-                  var radkm = document.getElementById('radkm');
                     if(widget != null) {
-                  longitude.value = widget.get('position').lng();
-                  latitude.value = widget.get('position').lat();
-                  radkm.value = widget.get('distance');
+                  londom[0].value = widget.get('position').lng();
+                  latdom[0].value = widget.get('position').lat();
+                  raddom[0].value = widget.get('distance');
                 }else {
-                        longitude.value = null;
-                          latitude.value = null;
-                          radkm.value = null;
+                        londom.val("");
+                        latdom.val("");
+                        raddom.val("");
                         }
                 }
 
@@ -132,8 +129,7 @@ var searchres_length = 0;
                 }
                 DistanceWidget.prototype = new google.maps.MVCObject();
 
-        var mapDiv = document.getElementById('map-canvas');
-        map = new google.maps.Map(mapDiv, {
+        map = new google.maps.Map(mapdom[0], {
           zoom: 8,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           disableDefaultUI: true
@@ -143,8 +139,8 @@ var searchres_length = 0;
                 var base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
                 var not_highlighted = '|FF776B|000000'
                 var highlighted = '|FFFF00|000000'
-                if($('#streams .search-result').size() != 0) {
-                $('#streams .search-result').each(function(i, elem) {
+                if(streamdom.size() != 0) {
+                streamdom.each(function(i, elem) {
                         var location = $(elem).data('location');
                         searchres_length++
                         if(location != " ") {
@@ -196,7 +192,7 @@ var searchres_length = 0;
 				}
 				}
 
-        $(document.body).on('click', "#streams .search-result", function() {
+        dombutton.on('click', function() {
             id = $(this).data('streamid')
             hl(id);
         });
@@ -291,8 +287,8 @@ var searchres_length = 0;
 function addmarkers() {
   var base_url = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
   var not_highlighted = '|FF776B|000000'
-  if($('#streams .search-result').size() != 0) {
-    $('#streams .search-result').slice(searchres_length).each(function(i, elem) {
+  if(streamdom.size() != 0) {
+    streamdom.slice(searchres_length).each(function(i, elem) {
       var location = $(elem).data('location');
       searchres_length++
       if(location != " ") {
