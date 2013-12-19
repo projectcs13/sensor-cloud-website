@@ -211,9 +211,13 @@ class StreamsController < ApplicationController
 		# Before filters
 
     def correct_user
-      stream = Stream.find(params[:id], :_user_id => current_user.username)
-      user = User.find_by_username(stream.user_id)
-      redirect_to(root_url) unless current_user?(user)
+      if current_user.nil?
+        redirect_to("/streams/#{params[:id]}")
+      else
+        stream = Stream.find(params[:id], :_user_id => current_user.username)
+        user = User.find_by_username(stream.user_id)
+        redirect_to("/streams/#{params[:id]}") unless current_user?(user)
+      end
     end
 
     def get_current_user
