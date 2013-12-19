@@ -13,13 +13,17 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.find_by_username(params[:id])
-		res = Api.get("/users/#{@user.username}/streams")
-		@streams = res["body"]["streams"]
-		@nb_streams = @streams.length
-		res2 = Api.get("/users/#{@user.username}")
-		@notifications = res2["body"]["notifications"]
-		sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
-		@notifications = sorted
+		if @user == nil
+			redirect_to notfound_path
+		else	
+			res = Api.get("/users/#{@user.username}/streams")
+			@streams = res["body"]["streams"]
+			@nb_streams = @streams.length
+			res2 = Api.get("/users/#{@user.username}")
+			@notifications = res2["body"]["notifications"]
+			sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
+			@notifications = sorted
+		end
 	end
 
 	def following
