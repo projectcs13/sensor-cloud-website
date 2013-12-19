@@ -1,5 +1,6 @@
 var socket = null;
 var url = window.location.href.split("/");
+var stream_type = url[url.length- 2];
 var stream_id = url[url.length - 1];
 
 function toggle(value) {
@@ -19,7 +20,7 @@ function connect() {
         });
     }
     console.log(stream_id);
-        socket = connect('<%= CONF['WEB_SOCKET_URL'] %>/streams.' + stream_id);
+        socket = connect('<%= CONF['WEB_SOCKET_URL'] %>/' + stream_type + '.' + stream_id);
         socket.on('message', function(data) {
             //console.log(data);
             graph_object.add_single_datapoint(data);
