@@ -34,3 +34,8 @@ $ ->
 				</div>"""
 		$("#uri-field").html uriField
 	).change()
+
+	$("#trigger_stream_enable").on "switch-change", ->
+		$(".select").toggle()
+		elem = $("#trigger_selected_resource")
+		elem.val if elem.val() is "vstream" then "stream" else "vstream"

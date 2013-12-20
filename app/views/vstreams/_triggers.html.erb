@@ -1,0 +1,19 @@
+<% unless @triggers.nil? %>
+	<h4>Triggers:</h4>
+	<div class="stream-tags well">
+		<table class="table">
+			<th>Functions</th>
+			<th>Input</th>
+			<th>Output Id</th>
+			<th>Delete</th>
+			<% @triggers.each do |t| %>
+				<tr>
+					<td><%= @functions[t['function']] %></td>
+					<td><%= t['input'] %></td>
+					<td><%= t['output_id'] %></td>
+					<td><%= link_to "Delete", {controller: "triggers", action: "destroy", query: t}, {method: :delete, class:"btn btn-danger"} %></td>
+				</tr>
+			<% end %>
+		</table>
+	</div>
+<% end %>

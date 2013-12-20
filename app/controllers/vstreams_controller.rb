@@ -7,14 +7,21 @@ class VstreamsController < ApplicationController
   def index
     cid = current_user.username
     res = Api.get "/users/#{params[:user_id]}/vstreams"
-    @vstreams = res['body']['users']
+    @vstreams = res['body']['vstreams']
     @count = @vstreams.length
   end
 
   def show
 		res = Api.get "/vstreams/#{params[:id]}"
 		vstream_owner_id = res['body']['user_id']
-		@vstream_owner = User.find_by(id: vstream_owner_id)
+		@vstream_owner = User.find_by(username: vstream_owner_id)
+    @triggers = nil
+    cid = current_user.username
+    if cid == @vstream_owner.username then
+      response = Api.get("/users/#{@vstream_owner.username}/vstreams/#{params[:id]}/triggers")
+      @triggers = response['body']['triggers']
+    end
+    @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
   end
 
 

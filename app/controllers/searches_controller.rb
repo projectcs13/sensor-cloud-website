@@ -90,24 +90,16 @@ class SearchesController < ApplicationController
 			@filter_distance = params['search']['filter_distance']
 			@filter_active = params['search']['filter_active']
 
-
 			@streams = []
-      		@streams_raw = res["body"]['streams']['hits']['hits']
-      		@streams_raw.each do |s|
-       		 	data = s['_source']
-        		data['id'] = s['_id']
-        		@streams.push data
-      		end
-
+  		@streams_raw = res["body"]['streams']['hits']['hits']
+  		@streams_raw.each do |s|
+   		 	data = s['_source']
+    		data['id'] = s['_id']
+    		@streams.push data
+  		end
 
 			@vstreams = res["body"]['vstreams']['hits']['hits']
-			@streams = []
-      		@streams_raw = res["body"]['streams']['hits']['hits']
-      		@streams_raw.each do |s|
-       		 data = s['_source']
-       		 data['id'] = s['_id']
-       		 @streams.push data
-     		end
+
 			@users = res["body"]['users']['hits']['hits']
 			@count_vstreams = res["body"]['vstreams']['hits']['total']
 			@count_streams = res["body"]['streams']['hits']['total']

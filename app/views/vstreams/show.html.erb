@@ -51,7 +51,8 @@
     <div class="stream-description well">
       <%= @vstream.tags %>
     </div>
-      
+    
+    <%= render 'triggers' if signed_in? and current_user.username.downcase == @vstream.user_id %>
     <% unless current_user.nil? %> 
       <% if current_user.username == @vstream.user_id %>
 
