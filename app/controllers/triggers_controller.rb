@@ -28,9 +28,9 @@ class TriggersController < ApplicationController
 				trigger_params['max'] = trigger_params['max'].to_f
 				input = [trigger_params['min'], trigger_params['max']]
 				if trigger_params['uri'].nil? 
-					trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams'] }
+					trigger_params = {'function' => 'span', 'input' => input, 'selected_resource' => trigger_params['selected_resource'], 'streams' => trigger_params['streams'], 'vstreams' => trigger_params['vstreams'] }
 				else
-					trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams'], 'uri' => trigger_params['uri'] }
+					trigger_params = {'function' => 'span', 'input' => input, 'selected_resource' => trigger_params['selected_resource'], 'streams' => trigger_params['streams'], 'vstreams' => trigger_params['vstreams'], 'uri' => trigger_params['uri'] }
 				end
 			else
 				trigger_params['input'] = trigger_params['input'].to_f
