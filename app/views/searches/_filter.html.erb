@@ -1,0 +1,35 @@
+
+  <%= f.text_field :filter_unit, :placeholder => "Unit", value: @filter_unit , class: "form-control" %>
+  <%= f.text_field :filter_tag, :placeholder => "Tags", value: @filter_tag , class: "form-control"%>
+  <div class="form-group"><label>Active: </label>
+  <%= f.select :filter_active,
+  	options_for_select([
+              ["Any","any"],
+              ["On", "true"],
+  						["Off", "false"]
+  						], params['search']['filter_active']),
+  							{},
+  							class: "form-control"
+  						%></div>
+   
+    <div class="form-group">
+      <label class="inline">Sort by:</label>
+      <%= f.select "sort_by", options_for_select(
+                                [['User ranking', "average"],
+                                 ['Name', "name"],
+                                 ["None", "none"]], 
+                              params['search']['sort_by']),
+                              {}, onchange: "this.form.submit();",
+                              class: "form-control" %>
+    </div>
+    <%= f.hidden_field :filter_longitude, value: @filter_longitude, id: "long"%>
+    <%= f.hidden_field :filter_latitude, value: @filter_latitude, id: "lati"%>
+    <%= f.hidden_field :filter_distance, value: @filter_distance, id: "radkm"%>
+  <label>Limit search to location on map</label>
+  <%= 
+  if @filter_longitude.to_s.strip.length == 0
+    check_box_tag :filter_location,1,false,id:"filter_location"
+  else
+    check_box_tag :filter_location,1,true,id:"filter_location"
+  end
+  %>

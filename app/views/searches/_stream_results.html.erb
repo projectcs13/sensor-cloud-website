@@ -1,8 +1,8 @@
-<%  if defined? @stream_page_number 
-    p @stream_page_number.to_i
-    i = @stream_page_number.to_i
+<%  if defined? @page_number 
+      p @page_number
+      i = @page_number * @nb_results_per_page
     else
-    i = 0
+      i = 0
     end
 %>
 <% @streams.each do |stream| %>
@@ -13,8 +13,12 @@
   <% stream_desciption = stream['_source']['description'] %>
   <% stream_last_updated = stream['_source']['last_updated'] %>
   <% stream_subscribers = stream['_source']['subscribers'] %>
+  <% logger.debug(stream['_source']['location'].length) %>
   <% stream_location = 
-    if stream['_source']['location'].nil? then " " 
+
+    if stream['_source']['location'].to_s.strip.length == 0 then 
+      logger.debug("YOLO")
+      " " 
     elsif stream['_source']['location'].is_a?(String) then
           stream['_source']['location']
     elsif stream['_source']['location'].is_a?(Array) then
@@ -23,7 +27,9 @@
         stream['_source']['location']['lat'].to_s+","+stream['_source']['location']['lon'].to_s
     end
   %>
-  <% stream_last_updated = distance_of_time_in_words(Date.iso8601(stream_last_updated), Time.now, include_seconds: true) %>
+  <% logger.debug "-------> #{stream_last_updated}" %>
+  <% stream_last_updated = distance_of_time_in_words(Time.iso8601(stream_last_updated), Time.now, include_seconds: true) %>
+  <% logger.debug "+++++++> #{stream_last_updated}" %>
   <% scale = 5%>
   <% starcount = 0%>
   <% part = (100/scale)%>

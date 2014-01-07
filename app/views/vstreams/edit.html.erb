@@ -1,0 +1,47 @@
+<h1>Edit Stream</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3 login-form">
+
+    <%= form_for @vstream, url: user_vstream_path(current_user, @vstream), html: { method: :put } do |f| %>
+
+			<div class="login-form" >
+
+				<div class="form-group" style="display:none;">
+					<%= f.label :streams_involved, class: "left" %>
+				  	<%= f.text_field :streams_involved, class: "form-control input clearfix" %>
+				</div>
+
+				<div class="form-group">
+					<%= f.label :name, class: "left" %>
+				  	<%= f.text_field :name, class: "form-control input clearfix" %>
+				</div>
+
+				<div class="form-group ">
+					<%= f.label :description, class: "left" %>
+				  	<%= f.text_field :description, class: "form-control input clearfix" %>
+				</div>
+
+				<div class="form-group ">
+					<%= f.label :tags, class: "left" %>
+				  	<%= f.text_field :tags, class: "form-control input clearfix" %>
+				</div>
+
+				<div class="form-group " style="display:none;">
+					<%= f.label :starting_date, class: "left" %>
+				  	<%= f.text_field :starting_date, class: "form-control input clearfix", id: "datepicker" %>
+				</div>
+
+				<div class="form-group" style="display:none;">
+					<%= f.label :function, class: "left" %>
+				  	<%= f.text_field :function, class: "form-control input clearfix", id: "function" %>
+				</div>
+
+			</div>
+
+	    <button type="submit" class="btn btn-primary btn-create">Edit stream</button>
+
+    <% end %>
+
+  </div>
+</div>

@@ -27,6 +27,14 @@ class StreamsController < ApplicationController
     res = Api.get("/streams/#{@stream_id}")
     stream_owner_id = res["body"]["user_id"]
 		@stream_owner = User.find_by(username: stream_owner_id)
+
+    @triggers = nil
+    if signed_in? and current_user.username == @stream_owner.username then
+      response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
+      @triggers = response['body']['triggers']
+    end
+    @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
+
     @prediction = {:in => "50", :out => "25"}
     @polling_history = nil
     if res["body"]["polling"] == true then
@@ -35,11 +43,12 @@ class StreamsController < ApplicationController
       sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
       @polling_history = sorted_history
     end
-    
   end
 
   def suggest
-    res = Api.get("/suggest/#{params[:model]}?size=10")
+    uri = ERB::Util.url_encode params[:model]
+
+    res = Api.get("/suggest/#{uri}?size=10")
     data = if res["status"] == 404 then {} else res["body"]["suggestions"] end
     render :json => data, :status => res["status"]
   end
@@ -102,7 +111,9 @@ class StreamsController < ApplicationController
 
   def update
     @stream.assign_attributes stream_params
+    logger.debug "BEFORE CORRECTFEILDS: #{@stream.attributes}"
     correctModelFields
+    logger.debug "AFTER CORRECTFEILDS: #{@stream.attributes}"
 
     respond_to do |format|
       stream_id = params[:id]
@@ -123,6 +134,13 @@ class StreamsController < ApplicationController
         end
       end
     end
+  end
+
+  def edit
+    longitude = @stream.location['lon']
+    latitude = @stream.location['lat']
+    @stream.attributes = {:latitude => latitude}
+    @stream.attributes = {:longitude => longitude}
   end
 
   def destroy
@@ -169,6 +187,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     res = Api.get "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    logger.debug "S:"
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
@@ -192,9 +211,13 @@ class StreamsController < ApplicationController
 		# Before filters
 
     def correct_user
-      stream = Stream.find(params[:id], :_user_id => current_user.username)
-      user = User.find_by_username(stream.user_id)
-      redirect_to(root_url) unless current_user?(user)
+      if current_user.nil?
+        redirect_to("/streams/#{params[:id]}")
+      else
+        stream = Stream.find(params[:id], :_user_id => current_user.username)
+        user = User.find_by_username(stream.user_id)
+        redirect_to("/streams/#{params[:id]}") unless current_user?(user)
+      end
     end
 
     def get_current_user

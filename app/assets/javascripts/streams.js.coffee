@@ -11,14 +11,10 @@
 $ ->
 
   $(document).bind "streams_index", (e, obj) =>
-    showDetails = (event) ->
-      el = $(this)
-      el.find('.details').toggle(500)
-      el.find('.show-details')
-        .toggleClass('glyphicon-chevron-up')
-        .toggleClass('glyphicon-chevron-down')
-
-    $('body').on 'click', '.list-group-item', showDetails
+    window.createMap
+      dom: $('#map-canvas').parent()
+      location: null
+      editable: false
 
   $(document).bind "streams_new", (e, obj) =>
     form = $ 'form'
@@ -185,7 +181,6 @@ $ ->
           location: null
           editable: true
 
-
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
     graphWidth = $("#graph-canvas").width()
@@ -197,7 +192,7 @@ $ ->
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
-     
+
 
     loc = document.getElementById('location').getAttribute('value').split ","
     console.log loc[0]
@@ -215,11 +210,16 @@ $ ->
 
   $(document).bind "streams_edit", (e, obj) =>
     form = $ 'form'
+    loc = [$('#lat').val(), $('#lon').val()]
     window.newStreamForm form
     window.createMap
       dom: form
-      location: null
+      location: loc
       editable: true
 
-  action = "streams_" + $("body").data("action")
-  $.event.trigger action
+
+  body = $('body')
+  cont = body.data('controller')
+  meth = body.data('action')
+  event = "#{cont}_#{meth}"
+  $.event.trigger event

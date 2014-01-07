@@ -1,0 +1,100 @@
+<% unless current_user.nil? %>
+
+  <button class="btn btn-primary btn-lg glyphicon glyphicon-plus"
+    data-toggle="modal" data-target="#myModal" onclick="getStreams();">
+    Virtual Stream
+  </button>
+
+  <script type="text/javascript">
+    function getStreams() {
+      streams = $('.search-result');
+      arr = streams.filter(function(i) { return streams.eq(i).children().first().hasClass('selected'); });
+      results=[];
+      length = arr.length;
+      arr.each(function(i) { results.push(arr.eq(i).data('streamid')); });
+      jsonstr = JSON.stringify(results)
+      $('#streams_involved').val (JSON.stringify(results));
+
+      if( length == 1 ) {
+        $('#function').empty().append($('<option></option>').val('["diff"]').html('Difference'));
+      } else {
+        $('#function').empty().append($('<option></option>').val('["total", "1m"]').html('Sum'));
+        $('#function').append($('<option></option>').val('["max", "1m"]').html('Max'));
+        $('#function').append($('<option></option>').val('["min", "1m"]').html('Min'));
+        $('#function').append($('<option></option>').val('["mean", "1m"]').html('Average'));
+      }
+    }
+  </script>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">Create Virtual Stream</h4>
+        </div>
+        <div class="modal-body">
+
+          <form  action="/users/<%= current_user.username %>/vstreams/create2" id="newVstreamForm" method="post" onsubmit=" function() {
+              $.ajax( {
+                  type: 'POST',
+                  url: '/vstreams/create2',
+                  data: $('form').serialize(),
+                  success: function( response ) {
+                  Code to process the response
+                }
+              });
+              return false;
+            } ">
+
+            <div class="login-form" >
+              <div class="form-group" style="display:none;">
+                <label for="streams_involved">streams_involved</label>
+                <input type="text" name="streams_involved" id = "streams_involved"class="form-control" value=""/>
+              </div>
+
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control"/>
+              </div>
+
+              <div class="form-group ">
+                <label for="description">Description</label>
+                <input type="text" name="description" class="form-control" />
+              </div>
+
+              <div class="form-group ">
+                <label for="tags">Tags</label>
+                <input type="text" name="tags" class="form-control" />
+              </div>
+
+              <div class="form-group ">
+                <label for="starting_date">Starting Date</label>
+                <input type="text" name="starting_date" class="form-control" id="datepicker" readonly="readonly"/>
+              </div>
+
+              <div class="form-group">
+                <label for="function">Function</label>
+                <select class="form-control" name="function" id="function" >
+                </select>
+              </div>
+
+            </div>
+          </form>
+
+          <script>
+            $(function() {
+              $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-ddT00:00:00.000" });
+            });
+          </script>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary" form="newVstreamForm" value="Save changes"/>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+<% end %>

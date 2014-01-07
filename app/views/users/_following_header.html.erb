@@ -1,0 +1,7 @@
+<div class="row">
+  <% if @user.username == params[:id] %>
+    <h1 class="title">Following</h1>
+  <% else %>
+    <h1 class="title"><%= params[:id]%>'s Following</h1>
+  <% end %>
+</div>

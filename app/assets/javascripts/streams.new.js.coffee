@@ -40,6 +40,7 @@ window.newStreamForm = (form) ->
     stepLabel.text "Step #{currentStep+1} / #{steps.length}"
     stepDescription.text descriptions[ currentStep ]
 
+
   decreaseBar = -> moveBar false
   increaseBar = -> moveBar true
 
@@ -49,9 +50,11 @@ window.newStreamForm = (form) ->
     ratio *= -1 if not increase
     progress.width(w + ratio)
 
+
   setInputFocus = -> steps.eq(currentStep).find('.input').first().focus()
 
   showPollingPanel = -> polling.toggle TIME * 2
+
 
   goBack = -> moveToNextStep false
   goNext = -> moveToNextStep true
@@ -62,6 +65,34 @@ window.newStreamForm = (form) ->
     steps.eq(currentStep).show TIME
 
 
+  hideBackButton = -> btnBack.css 'display', 'none'
+  showBackButton = -> btnBack.css 'display', 'inline-block'
+
+  showCreateButton = ->
+    btnCreate.css 'display', 'inline-block'
+    btnNext.css 'display', 'none'
+
+  showNextButton = ->
+    btnCreate.css 'display', 'none'
+    btnNext.css 'display', 'inline-block'
+
+
+  analyzeRequiredField = (input) ->
+    if input.val().length is 0
+      btnNext.addClass 'disabled'
+
+    else if input.val().length > 0
+      form.find('#error_explanation').hide()
+      btnNext.removeClass 'disabled'
+
+
+  post = (url, data) ->
+    $.ajax
+      type: "post",
+      dataType: "json",
+      url: url,
+      data: data
+
   #
   # Event Handlers
   #
@@ -71,22 +102,22 @@ window.newStreamForm = (form) ->
 
     if currentStep > 0
       if currentStep is steps.length-1
-        btnCreate.css 'display', 'none'
-        btnNext.css 'display', 'inline-block'
+        do showNextButton
 
       do goBack
       do decreaseBar
       do updateStepInformation
       do setInputFocus
 
-      btnBack.css 'display', 'none' if currentStep is 0
+      do hideBackButton if currentStep is 0
 
 
   next = (event) ->
     do event.preventDefault
+    analyzeRequiredField $('.input-name')
 
     if currentStep < steps.length-1
-      btnBack.css 'display', 'inline-block'
+      do showBackButton
 
       do goNext
       do increaseBar
@@ -94,14 +125,13 @@ window.newStreamForm = (form) ->
       do setInputFocus
 
       if currentStep is steps.length-1
-        btnCreate.css 'display', 'inline-block'
-        btnNext.css 'display', 'none'
+        do showCreateButton
 
 
   create = (event) ->
     do event.preventDefault
-
     do increaseBar
+
     setTimeout ->
       form.trigger 'submit'
     , TIME * 2
@@ -109,15 +139,11 @@ window.newStreamForm = (form) ->
 
   preview = (event) ->
     do event.preventDefault
-    $.ajax
-      type: "post",
-      dataType: "json",
-      url: "/preview/",
-      data: { uri: textUri.val() }
-    .done (data) ->
-      console.log data
-      console.log areaPreview
-      areaPreview.val JSON.stringify data, undefined, 2
+
+    p = post "/preview", { uri: textUri.val() }
+    p.done (data) ->
+      json = JSON.stringify data, undefined, 2
+      areaPreview.val json
 
 
   switchChanged = (event) ->
@@ -129,18 +155,15 @@ window.newStreamForm = (form) ->
   explain = (event) ->
     exp = $(this).siblings '.explanation'
     exp = $(this).parent().siblings '.explanation' unless exp.text()
+
     if exp.css('display') is 'none'
       explanations.hide TIME
       exp.show TIME
 
 
-  keyup = (event) ->
-    inputName = $(this)
-    if inputName.val().length is 0
-      btnNext.addClass 'disabled'
-    else if inputName.val().length > 0
-      form.find('#error_explanation').hide()
-      btnNext.removeClass 'disabled'
+  inputChanged = (event) ->
+    do event.preventDefault
+    analyzeRequiredField $(this)
 
 
   initBootstrapSwitches = ->
@@ -153,26 +176,36 @@ window.newStreamForm = (form) ->
     sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
     sw.bootstrapSwitch 'setOnLabel', 'Push'
     sw.bootstrapSwitch 'setOffLabel', 'Poll'
-    sw.bootstrapSwitch 'setState', true
+
+    if sw.bootstrapSwitch('status') is false
+      do showPollingPanel
+
     sw.on 'switch-change', switchChanged
+
 
   #
   # Initialization
   #
 
-  form.find('.input-name').on 'keyup', keyup
-  form.find('.input').on 'focus', explain
+  btnNext.addClass 'disabled'
+  do btnBack.hide
+  do btnCreate.hide
 
-  btnNext.on 'click', next
+  form.find('.input').on 'focus', explain
+  form.find('.input-name')
+    .on('keyup', inputChanged)
+    .on('input', inputChanged)
+
+  analyzeRequiredField form.find('.input-name')
+
+  btnBack.on    'click', back
+  btnNext.on    'click', next
+  btnCreate.on  'click', create
   btnPreview.on 'click', preview
-  btnBack.on('click', back).hide()
-  btnCreate.on('click', create).hide()
 
   do updateStepInformation
   do setInputFocus
   do initBootstrapSwitches
 
-  steps.each (i, step) ->
+  steps.each (i) ->
     steps.eq(i).css 'display', 'none' if i isnt 0
-
-  btnNext.addClass 'disabled'

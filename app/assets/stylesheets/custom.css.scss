@@ -41,7 +41,7 @@ background: url('new-york-city.jpg') no-repeat center center;
 }
 
 section {
-  overflow: auto;
+  overflow: hidden;
 }
 
 textarea {
@@ -251,7 +251,7 @@ input {
 .right { float: right; }
 
 .margin {
-  padding: 0 15%;
+  padding: 0px 15% 10px 15%;
   margin: 0 auto;
 }
 
@@ -599,4 +599,8 @@ input.search-query {
 
 .searchbar::-webkit-input-placeholder {
   font-style: italic;
+}
+
+.map {
+  height: 500px;
 }

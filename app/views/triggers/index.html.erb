@@ -1,0 +1,32 @@
+<h1 class="title">My Triggers</h1>
+<div class="corner">
+        <%= link_to "Add a trigger", triggers_new_path, class:"btn btn-primary pull-right" %>
+</div>
+<table class="table">
+	<th>Functions</th>
+	<th>Input</th>
+	<th>Streams</th>
+	<th>Type</th>
+	<th>Output Id</th>
+	<th>Delete</th>
+	<% @triggers.each do |t| %>
+		<tr>
+			<td><%= @functions[t['function']] %></td>
+			<td><%= t['input'] %></td>
+
+			<% if t['type'] == "stream" %>
+				<% t['streams'].each do |s| %>
+					<td><%= @stream_names[s] %>;</td>
+				<% end %>
+			<% else %>
+				<% t['vstreams'].each do |s| %>
+					<td><%= @vstream_names[s] %>;</td>
+				<% end %>
+			<% end %>
+
+			<td><%= t['type'] %></td>
+			<td><%= t['output_id'] %></td>
+			<td><%= link_to "Delete", {controller: "triggers", action: "destroy", query: t}, {method: :delete, class:"btn btn-danger"} %></td>
+		</tr>
+	<% end %>
+</table>

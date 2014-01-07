@@ -1,0 +1,90 @@
+<%  if defined? @page_number
+    i = @page_number.to_i * @nb_results_per_page
+    else
+    i = 0
+    end
+%>
+<% @streams.each do |stream| %>
+  <% i = i+1 %>
+  <% stream_id = stream['id'] %>
+  <% stream_url = "/streams/#{stream_id}" %>
+  <% stream_name = stream['name'] %>
+  <% stream_desciption = stream['description'] %>
+  <% stream_last_updated = stream['last_updated'] %>
+  <% stream_subscribers = stream['subscribers'] %>
+  <% stream_location =
+    if stream['location'].nil? then " "
+    elsif stream['location'].is_a?(String) then
+          stream['location']
+    elsif stream['location'].is_a?(Array) then
+        stream['location'][0].to_s+","+stream['location'][1].to_s
+    else
+        stream['location']['lat'].to_s+","+stream['location']['lon'].to_s
+    end
+  %>
+  <% stream_last_updated = distance_of_time_in_words(Time.iso8601(stream_last_updated), Time.now , include_seconds: true) %>
+  <% scale = 5%>
+  <% starcount = 0%>
+  <% part = (100/scale)%>
+  <% empty_stars = scale%>
+  <% percentage = stream['user_ranking']['average']%>
+  <% ranking = (stream['user_ranking']['average']/(100/scale))%>
+  <% nr_rankings = stream['user_ranking']['nr_rankings'] %>
+
+  <div class="panel panel-default search-result" data-location="<%= stream_location %>" data-streamid="<%= stream_id %>" data-iteration="<%=i%>">
+    <div class="panel-heading">
+      <%=i%>
+      <%=link_to(stream_name, stream_url) %>
+
+    </div>
+    <div class="panel-body">
+      <span class="stream-description"><%= stream_desciption %></span>
+      <div class="search-result-footer">
+        <span class="last-update pull-right">Last updated <%= stream_last_updated %> ago</span>
+      <!-- display stars -->
+        <% for stars in (ranking.to_i).times %>
+          <%starcount += 1%>
+          <%empty_stars -= 1%>
+            <%if stars == 0%>
+              <%if ranking <= 1.5 and ranking >= 0.5%>
+                <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio"
+                       class="star required" checked="checked"  value = "<%=starcount * part%>"/>
+              <%else%>
+                <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio"
+                       class="star required"  value = "<%=starcount * part%>"/>
+              <%end%>
+            <%elsif starcount < (ranking-1) %>
+              <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio"
+                     class="star" value = "<%=starcount * part%>"/>
+            <%else%>
+              <%if ranking % 1 <= 0.5 %>
+                <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio" class="star" checked="checked" value = "<%=starcount * part%>"/>
+              <%else%>
+                <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio" class="star" value = "<%=starcount * part%>"/>
+              <%end%>
+            <%end%>
+            <%end%>
+           <%if ranking > 0.1%>
+            <%if ranking % 1 > 0.5 %>
+              <%empty_stars -= 1%>
+              <%starcount += 1%>
+              <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio"
+                     class="star" checked="checked" value = "<%=starcount * part%>"/>
+            <% end %>
+          <%end%>
+          <% for stars in (empty_stars).times %>
+            <%starcount += 1%>
+            <%if starcount <= 1%>
+              <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio" class="star required" value = "<%=starcount * part%>"/>
+            <%else%>
+              <input id = "<%= stream_id %>" name="star<%= stream_id %>" type="radio" class="star" value = "<%=starcount * part%>"/>
+            <%end%>
+          <%end%>
+      <!-- Star display ends here -->
+      <%= nr_rankings %>
+      <!-- This line displays percentage -->
+      <%= percentage %>%
+    </div>
+    </div>
+  </div>
+<% end %>
