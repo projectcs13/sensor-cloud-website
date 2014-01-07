@@ -1,6 +1,6 @@
 <div class="row title-row">
   <div class="col-lg-8">
-		<h2 class="text-left"><%= @vstream.name %></h2>
+		<h2 class="text-left"><%= @vstream.name %> <a href="/users/<%= @vstream.user_id %>" > <small><%= @vstream.user_id %></small> </a></h2>
   </div>
 </div>
 
@@ -35,13 +35,6 @@
       </div>
     </div>
 
-    <h4>Owner: </h4>
-    <div class="stream-description well">
-      <a href="/users/<%= @vstream.user_id %>" >
-        <%= @vstream.user_id %>
-      </a>
-    </div>
-
     <h4>Description: </h4>
     <div class="stream-description well">
       <%= @vstream.description %>
@@ -51,7 +44,8 @@
     <div class="stream-description well">
       <%= @vstream.tags %>
     </div>
-      
+    
+    <%= render 'triggers' if signed_in? and current_user.username.downcase == @vstream.user_id %>
     <% unless current_user.nil? %> 
       <% if current_user.username == @vstream.user_id %>
 

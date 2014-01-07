@@ -2,7 +2,7 @@ class Trigger
 	include ActiveModel::Model
 	include ActiveModel::Validations
 
-	attr_accessor :function, :input, :min, :max, :streams, :uri
+	attr_accessor :function, :input, :min, :max, :streams, :vstreams, :uri, :selected_resource
 	validates 					:input, :numericality => true, 								:allow_nil => true
 	validates 					:min, 	:numericality => true, 								:allow_nil => true
 	validates 					:max, 	:numericality => true, 								:allow_nil => true

@@ -8,6 +8,14 @@ class TriggersController < ApplicationController
 		@streams = res['body']['streams']
 		@stream_ids = {}
 		@streams.each { |e| @stream_ids[e['name']] = e['id'] }
+
+		res = Api.get("/users/#{@username}/vstreams")
+
+		logger.debug "*** res (vstreams): #{res} ***"
+
+		@vstreams = res['body']['vstreams']
+		@vstream_ids = {}
+		@vstreams.each { |e| @vstream_ids[e['name']] = e['id'] }
 	end
 
 	def create
@@ -20,14 +28,32 @@ class TriggersController < ApplicationController
 				trigger_params['max'] = trigger_params['max'].to_f
 				input = [trigger_params['min'], trigger_params['max']]
 				if trigger_params['uri'].nil? 
-					trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams'] }
+					trigger_params = {'function' => 'span', 'input' => input, 'selected_resource' => trigger_params['selected_resource'], 'streams' => trigger_params['streams'], 'vstreams' => trigger_params['vstreams'] }
 				else
-					trigger_params = {'function' => 'span', 'input' => input, 'streams' => trigger_params['streams'], 'uri' => trigger_params['uri'] }
+					trigger_params = {'function' => 'span', 'input' => input, 'selected_resource' => trigger_params['selected_resource'], 'streams' => trigger_params['streams'], 'vstreams' => trigger_params['vstreams'], 'uri' => trigger_params['uri'] }
 				end
 			else
 				trigger_params['input'] = trigger_params['input'].to_f
 			end
+
+			if trigger_params['selected_resource'] == "stream"
+				trigger_params['vstreams'] = ""
+			else
+				trigger_params['streams'] = ""
+			end
+
+			trigger_params.delete('selected_resource')
+
+			#if trigger_params.has_key?('streams')
+			#	trigger_params['vstreams'] = ""
+			#else
+			#	trigger_params['streams'] = ""
+			#end
+
+			logger.debug "*** create_trigger: #{trigger_params} ***"
+
 			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
+
 			respond_to do |format|
 				format.html { redirect_to triggers_path }
 			end
@@ -42,11 +68,25 @@ class TriggersController < ApplicationController
 		@username = current_user.username
 		res = Api.get("/users/#{@username}/triggers")
 		@triggers = res['body']['triggers']
+		logger.debug "*** @triggers: #{@triggers} ***"
+
+		@triggers.each do |e|
+			if e['streams'].empty?
+				e['streams'] = ""
+			else
+				e['vstreams'] = ""
+			end
+		end
 
 		res = Api.get("/users/#{@username}/streams")
 		@streams = res['body']['streams']
 		@stream_names = {}
 		@streams.each { |e| @stream_names[e['id']] = e['name'] }
+
+		res = Api.get("/users/#{@username}/vstreams")
+		@vstreams = res['body']['vstreams']
+		@vstream_names = {}
+		@vstreams.each { |e| @vstream_names[e['id']] = e['name'] }
 		
 		@functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
 	end
@@ -55,8 +95,15 @@ class TriggersController < ApplicationController
 	end
 
 	def destroy
+
 		@username = current_user.username
 		@trigger = params[:query]
+		if !@trigger["streams"].empty?
+			@trigger['vstreams'] = ""
+		else
+			@trigger['streams'] = ""
+		end
+		logger.debug "*** @trigger: #{@trigger} ***"
 		if @trigger[:input].kind_of?(String)
 			@trigger[:input] = @trigger[:input].to_f
 		else

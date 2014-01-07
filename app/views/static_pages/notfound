@@ -1,0 +1,5 @@
+<% provide(:title, 'User Not Found') %>
+<div class="col-md-4 col-md-offset-4">
+	<h1 class="title">User Not Found</h1>
+	<div class="clearfix"></div>
+</div>
