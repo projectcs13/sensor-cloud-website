@@ -112,7 +112,6 @@ $ ->
 
 
     listStreams = (json) ->
-      console.log "json"
       for stream in json.streams_suggest
         dom = $(render stream)
         streams.append dom

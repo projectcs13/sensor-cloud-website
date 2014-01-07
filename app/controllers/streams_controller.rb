@@ -23,16 +23,14 @@ class StreamsController < ApplicationController
   end
 
   def show
-		@stream_id = params[:id]
+    @stream_id = params[:id]
     res = Api.get("/streams/#{@stream_id}")
-    logger.debug "#{res}"
-    stream_owner_id = res['body']['user_id']
-		@stream_owner = User.find_by(username: "hewlettPackard")
-    logger.debug "#{@stream_owner} - #{current_user} - #{@stream.attributes}" 
-    logger.debug "#{stream_owner_id}"
+    stream_owner_id = res["body"]["user_id"]
+    @stream_owner = User.find_by(username: stream_owner_id)
+
     @triggers = nil
     if signed_in? and current_user.username == @stream_owner.username then
-      response = Api.get("/users/#{@stream_owner.username.downcase}/streams/#{@stream_id}/triggers")
+      response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
       @triggers = response['body']['triggers']
     end
     @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
@@ -92,22 +90,22 @@ class StreamsController < ApplicationController
             @stream.id = res["body"]["_id"]
             # TODO
             # The API is currently sending back the response before the database has
-    				# been updated. The line below will be removed once this bug is fixed.
-          	sleep(1.0)
-    				format.html { redirect_to stream_path(@stream.id) }
-          	format.json { render json: {"id" => @stream.id}, status: res.status }
+            # been updated. The line below will be removed once this bug is fixed.
+            sleep(1.0)
+            format.html { redirect_to stream_path(@stream.id) }
+            format.json { render json: {"id" => @stream.id}, status: res.status }
           else
             format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
             format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
           end
         end
-    	else
-      	format.html {
+      else
+        format.html {
           session[:stream] = @stream
           redirect_to new_stream_path
         }
-      	format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
-    	end
+        format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -210,7 +208,7 @@ class StreamsController < ApplicationController
       params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser, :resource_type, :uuid)
     end
 
-		# Before filters
+    # Before filters
 
     def correct_user
       if current_user.nil?
@@ -234,11 +232,11 @@ class StreamsController < ApplicationController
       @stream = Stream.find(params[:id])
     end
 
-		def signed_in_user
-			unless signed_in?
-				store_location
-				flash[:warning] = "Please sign in"
-				redirect_to signin_url
-			end
-		end
+    def signed_in_user
+      unless signed_in?
+        store_location
+        flash[:warning] = "Please sign in"
+        redirect_to signin_url
+      end
+    end
 end
