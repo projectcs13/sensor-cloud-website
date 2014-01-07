@@ -1,6 +1,6 @@
 <div class="row title-row">
   <div class="col-lg-8">
-		<h2 class="text-left"><%= @vstream.name %></h2>
+		<h2 class="text-left"><%= @vstream.name %> <a href="/users/<%= @vstream.user_id %>" > <small><%= @vstream.user_id %></small> </a></h2>
   </div>
 </div>
 
@@ -33,13 +33,6 @@
       <div class="make-switch switch-mini" id="live-update-btn">
         <input id="live-update-checkbox" type="checkbox" />
       </div>
-    </div>
-
-    <h4>Owner: </h4>
-    <div class="stream-description well">
-      <a href="/users/<%= @vstream.user_id %>" >
-        <%= @vstream.user_id %>
-      </a>
     </div>
 
     <h4>Description: </h4>
