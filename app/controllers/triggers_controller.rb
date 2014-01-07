@@ -98,7 +98,7 @@ class TriggersController < ApplicationController
 
 		@username = current_user.username
 		@trigger = params[:query]
-		if !@trigger["streams"].empty?
+		if @trigger.has_key?("streams") && !@trigger["streams"].empty?
 			@trigger['vstreams'] = ""
 		else
 			@trigger['streams'] = ""
