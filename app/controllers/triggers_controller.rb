@@ -98,7 +98,7 @@ class TriggersController < ApplicationController
 
 		@username = current_user.username
 		@trigger = params[:query]
-		if !@trigger["streams"].empty?
+		if @trigger.has_key?("streams") && !@trigger["streams"].empty?
 			@trigger['vstreams'] = ""
 		else
 			@trigger['streams'] = ""
@@ -111,9 +111,10 @@ class TriggersController < ApplicationController
 		end
 		@trigger[:uri] = @trigger[:output_id] if @trigger[:output_type] == "uri"
 		res = Api.post("/users/#{@username}/triggers/remove", @trigger)
+
 		respond_to do |format|
-			format.html { redirect_to triggers_path }
-			format.json { render json: {"deleted" => "ok"}, status: res.status }
+		  format.html { redirect_to :back }
+		  format.json { head :no_content }
 		end
 	end
 end

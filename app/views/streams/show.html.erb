@@ -11,7 +11,7 @@
 
 <div class="row title-row">
   <div class="col-lg-8">
-		<h2 class="text-left"><%= @stream.name %> <small><%= @stream.user_id %></small></h2>
+		<h2 class="text-left"><%= @stream.name %> <a href="/users/<%= @stream.user_id %>" > <small><%= @stream.user_id %> </small></a></h2>
 		<%= render 'follow_form' if signed_in? %>
 	</div>
 
