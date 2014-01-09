@@ -50,6 +50,11 @@ function timeChart() {
       // Convert data to standard representation greedily;
       // this is needed for nondeterministic accessors.
 
+      data.data = data.data.map(function(d){
+        d.timestamp = parseDate(d.timestamp);
+        return d;
+      });
+      console.log data.data
       // Calculate the scales
       var x_domain;
       var y_domain;

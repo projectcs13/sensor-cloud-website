@@ -21,6 +21,8 @@ $ ->
   window.setupButtons = ->
     $('#streams .search-result').off "click", selectStream
     $('#streams .search-result').on "click", selectStream
+    $('#vstreams .search-result').off "click", selectVStream
+    $('#vstreams .search-result').on "click", selectVStream
        
     $('input.star').rating()
     $('.star-rating').on 'click', ->

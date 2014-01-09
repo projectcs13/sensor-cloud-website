@@ -5,7 +5,7 @@
 #<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
 //= require 'include/vstreams_graph.js'
 //= require 'include/streams_map.js'
-//= require 'include/timeChart.js'
+//= require 'include/stream_graph.js'
 //= require 'include/client.js'
 //= require 'include/stream_graph_multiline'
 //= require 'include/filter_map'
@@ -47,9 +47,39 @@ $ ->
   $(document).bind "vstreams_show", (e, obj) => #js only loaded on "show" action
     # Set up graph element
     graphWidth = $("#graph-canvas").width()
-    window.graph_object = new stream_graph(graphWidth)
-    graph_object.init()
+    newGraph = streamGraph().width(graphWidth).height(300)
+    url = window.location.href.split("/")
+    stream_id = url[url.length - 1]
+    DATA_URL = "/vsdatapoints/"+stream_id
+    P_DATA_URL = "/vsprediction/"+stream_id
+    res = $.get DATA_URL
+    graphData = {'data':[], 'pdata':[]}
+    res.done (result) ->
+      console.log(result)
+      graphData['data'] = result.data
+      d3.select("#graph-canvas").data([graphData]).call(newGraph)
 
+    window.draw_prediction_data = (p_data) ->
+      graphData['pdata'] = p_data.predictions
+      # give all the prediction-data timestamps
+      # this should be done in the back-end in the future
+      last_time_stamp = graphData['data'][0].timestamp
+      last_time_stamp2 = graphData['data'][1].timestamp
+      time_difference = last_time_stamp-last_time_stamp2
+      for d in graphData['pdata']
+        tempTime = new Date(last_time_stamp.getTime() + time_difference)
+        d['timestamp'] = tempTime
+        last_time_stamp = tempTime
+      console.log time_difference
+      console.log last_time_stamp
+      console.log graphData
+      newGraph.update()
+
+    window.add_single_datapoint = (datapoint) ->
+      datapoint = JSON.parse(datapoint)
+      graphData.data.unshift(datapoint)
+      graphData.data.pop()
+      newGraph.update()
     # Set up buttons
     $("#prediction-description").hide()
 
