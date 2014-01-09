@@ -16,8 +16,8 @@ class VstreamsController < ApplicationController
 		vstream_owner_id = res['body']['user_id']
 		@vstream_owner = User.find_by(username: vstream_owner_id)
     @triggers = nil
-    cid = current_user.username
-    if cid == @vstream_owner.username then
+    
+    if signed_in? and current_user.username == @vstream_owner.username then
       response = Api.get("/users/#{@vstream_owner.username}/vstreams/#{params[:id]}/triggers")
       @triggers = response['body']['triggers']
     end
