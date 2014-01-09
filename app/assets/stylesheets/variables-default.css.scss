@@ -188,13 +188,13 @@ $dropdown-caret-color:           #000 !default;
 // Used for a bird's eye view of components dependent on the z-axis
 // Try to avoid customizing these :)
 
-$zindex-navbar:            1000 !default;
-$zindex-dropdown:          1000 !default;
-$zindex-popover:           1010 !default;
-$zindex-tooltip:           1030 !default;
-$zindex-navbar-fixed:      1030 !default;
-$zindex-modal-background:  1040 !default;
-$zindex-modal:             1050 !default;
+$zindex-navbar:            10 !default;
+$zindex-dropdown:          10 !default;
+$zindex-popover:           11 !default;
+$zindex-tooltip:           13 !default;
+$zindex-navbar-fixed:      13 !default;
+$zindex-modal-background:  14 !default;
+$zindex-modal:             15 !default;
 
 // Media queries breakpoints
 // --------------------------------------------------
