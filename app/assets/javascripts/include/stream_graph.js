@@ -4,7 +4,7 @@ function streamGraph () {
     margin2 = {top: 40, right: 20, bottom: 20, left: 50},
     width = 800,
     height = 500,
-    height2 = 250,
+    height2 = 150,
     xScale = d3.time.scale(),
     yScale = d3.scale.linear(),
     xScale2 = d3.time.scale(),
