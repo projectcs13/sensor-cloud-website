@@ -1,5 +1,5 @@
 def full_title(page_title)
-  base_title = "Sensor Cloud App"
+  base_title = "IoT-Framework"
   if page_title.empty?
     base_title
   else

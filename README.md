@@ -1,6 +1,6 @@
-# Welcome to Sensor Cloud
+# Welcome to IoT-Framework
 
-Sensor Cloud is a computation engine for sensor stream data.
+IoT-Framework is a computation engine for sensor stream data.
 
 ## Requirements
 
@@ -35,7 +35,7 @@ and read the 'Important' section and follow the instructions.
 
         bundle exec rake db:migrate
 
-3. If you are running the Sensor Cloud API locally, then you should modify the API_URL variable declared in the config/config.yml file:
+3. If you are running the IoT-Framework API locally, then you should modify the API_URL variable declared in the config/config.yml file:
 
         API_URL: "<Put your base URL here>:<put your port here>" 
 
@@ -93,4 +93,4 @@ You can take a look at the wiki [here] (https://github.com/projectcs13/sensor-cl
 
 ## Licence
 
-Sensor Cloud is released under the [Apache License] (http://opensource.org/licenses/Apache-2.0).
+IoT-Framework is released under the [Apache License] (http://opensource.org/licenses/Apache-2.0).
