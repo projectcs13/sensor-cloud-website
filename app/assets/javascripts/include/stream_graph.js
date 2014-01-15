@@ -235,12 +235,15 @@ function streamGraph () {
         yScale.domain(brush.empty() ? yScale2.domain() : [ extent[0][1], extent[1][1] ]);
         var translation = xScale2(data.data[0].timestamp);
         var brushWidth = d3.select("rect.extent").attr("width");
+        var transw = width;
         //console.log(translation);
         if(brushWidth != 0 ){
+          var transw  = brushWidth/width;
           var tempscale = width/brushWidth;
           var tempi = (translation-width)+margin.left+margin.right;
           var testtrans = tempi*tempscale;
           translation = testtrans-(margin.left+margin.right);
+          console.log(tempi);
         }
         chart.setAxises();
         xScale.domain(brush.empty() ? xScale2.domain() : [ extent[0][0], extent[1][0] ]);
@@ -261,7 +264,7 @@ function streamGraph () {
         streams
           .datum(data.data)
           .attr("d", line)
-          .attr("transform", "translate(" + (translation-width+margin.left+margin.right) + ")")
+          .attr("transform", "translate(" + (translation-transw+margin.left+margin.right) + ")")
           .transition() // start a transition to bring the new value into view
           .ease("linear")
           .duration(500) // for this demo we want a continual slide so set this to the same as the setInterval amount below
