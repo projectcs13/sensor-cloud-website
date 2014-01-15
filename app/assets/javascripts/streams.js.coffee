@@ -209,6 +209,7 @@ $ ->
           editable: true
 
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
+    parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse
     # Set up graph element
     graphWidth = $("#graph-canvas").width()
     newGraph = streamGraph().width(graphWidth).height(300)
@@ -229,13 +230,17 @@ $ ->
       last_time_stamp = graphData['data'][0].timestamp
       last_time_stamp2 = graphData['data'][1].timestamp
       time_difference = last_time_stamp-last_time_stamp2
+      prediction_origin = graphData['data'][0]
+      prediction_origin['hi95'] = prediction_origin.value
+      prediction_origin['lo95'] = prediction_origin.value
+      prediction_origin['hi80'] = prediction_origin.value
+      prediction_origin['lo80'] = prediction_origin.value
       for d in graphData['pdata']
         tempTime = new Date(last_time_stamp.getTime() + time_difference)
         d['timestamp'] = tempTime
         last_time_stamp = tempTime
-      console.log time_difference
-      console.log last_time_stamp
-      console.log graphData
+      graphData['pdata'].unshift(prediction_origin)
+      console.log['pdata']
       newGraph.update()
 
     window.add_single_datapoint = (datapoint) ->

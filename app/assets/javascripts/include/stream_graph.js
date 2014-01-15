@@ -20,6 +20,7 @@ function streamGraph () {
     yValue = function(d) { return d.value; },
     line = d3.svg.line().x(X).y(Y),
     line2 = d3.svg.line().x(X2).y(Y2),
+    pline = d3.svg.line().x(X).y(Y),
     p_area_95 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo95)}).y1(function(d){return yScale(d.hi95)}),
     p_area_80 = d3.svg.area().x(X).y0(function(d){return yScale(d.lo80)}).y1(function(d){return yScale(d.hi80)}),
     p_area_952 = d3.svg.area().x(X2).y0(function(d){return yScale2(d.lo95)}).y1(function(d){return yScale2(d.hi95)}),
@@ -33,6 +34,12 @@ function streamGraph () {
           if(typeof d.timestamp == "string")
             d.timestamp = parseDate(d.timestamp);
           return d;
+        });
+        //sort the data
+        data.data = data.data.sort(function(a, b) {
+            a = a.timestamp;
+            b = b.timestamp;
+            return a>b ? -1 : a<b ? 1 : 0;
         });
       }
       chart.checkData();
@@ -58,10 +65,17 @@ function streamGraph () {
       x_domain = [Math.min(data_x_domain[0], pred_x_domain[0]), 
                   Math.max(data_x_domain[1], pred_x_domain[1])];
       y_domain = [Math.min(data_y_domain[0], pred_y_min), Math.max(data_y_domain[1], pred_y_max)];
-
+      var ypadding = (y_domain[1] - y_domain[0])*0.1;
+      if(ypadding == 0){ ypadding = 0.5; }
+      y_domain[0] -= ypadding;
+      y_domain[1] += ypadding;
       }else{
       x_domain = data_x_domain;
       y_domain = data_y_domain;
+      var ypadding = (y_domain[1] - y_domain[0])*0.1;
+      if(ypadding == 0){ ypadding = 0.5; }
+      y_domain[0] -= ypadding;
+      y_domain[1] += ypadding;
       }
       xScale.domain(x_domain).range([0, width - margin.left - margin.right]);
       yScale.domain(y_domain).range([height - margin.top - margin.bottom, 0]);
@@ -96,11 +110,13 @@ function streamGraph () {
           focus.append("g").attr("class", "x axis");
           focus.append("g").attr("class", "y axis");
           focus.append("g").attr("class", "lines");
+          focus.append("g").attr("class", "datapoints");
+          focus.select(".lines").append("path").attr("class", "area prediction-95");
+          focus.select(".lines").append("path").attr("class", "area prediction-80");
+          focus.select(".lines").append("path").attr("class", "prediction-line");
           focus.select(".lines")
                .append("path")
                .attr("class", "stream-line");
-          focus.select(".lines").append("path").attr("class", "area prediction-95");
-          focus.select(".lines").append("path").attr("class", "area prediction-80");
 
       var context = svgEnter.append("g").attr("transform", "translate(" + margin.left + "," + height + ")");
           context
@@ -125,14 +141,11 @@ function streamGraph () {
       // Update the inner dimensions.
 
       focus.select(".lines").attr("clip-path", "url(#clip)");
+      focus.select(".datapoints").attr("clip-path", "url(#clip)");
       var streams = focus.select(".stream-line").datum(data.data);
       //var lines = focus.select(".lines").selectAll(".stream-line").data([data.data]).attr("d", line);
-      streams
-        //.enter()
-        //.append("path")
-        //.attr("class", "stream-line")
-        //.datum(function(d){ console.log("test3"); console.log(d); return d;})
-        .attr("d", line);
+      streams.attr("d", line);
+
 
       var streams2 = context.select(".lines").selectAll(".stream-line").data([data]);
       var lines2 = streams2.datum(function(d){return d.data;}).attr("d", line2);
@@ -149,6 +162,9 @@ function streamGraph () {
       focus.select(".area.prediction-95")
               .datum(data.pdata)
               .attr("d", p_area_95);
+      focus.select(".prediction-line")
+              .datum(data.pdata)
+              .attr("d", pline);
       // Update area for prediction with 80% confidence interval
       focus.select(".area.prediction-80")
               .datum(data.pdata)
@@ -174,29 +190,85 @@ function streamGraph () {
           .attr("transform", "translate(0," + (yScale2.range()[0]) + ")")
           .call(xAxis2);
 
+      chart.add_datapoints = function() {
+        var datapoints = focus.select(".datapoints").selectAll("circle")
+                        .data(data.data, function(d){return d.timestamp;});
+
+      // Update existing data-points
+      datapoints
+          .transition() // start a transition to bring the new value into view
+          .ease("linear")
+          .duration(500)
+          .attr("cx", function(d) {return X(d)})
+          .attr("cy", function(d) {return Y(d)});
+
+      // Add datapoints that don't exist
+      datapoints
+          .enter()
+          .append("circle")
+          .attr("cx", function(d) {return X(d)})
+          .attr("cy", function(d) {return Y(d)})
+          .attr("r", 3)
+          .on("mouseover", function(){
+            d3.select(this).transition().attr("r", 6);
+          })
+          .on("mouseout", function(){
+            d3.select(this).transition().attr("r", 3);
+          })
+          //.attr("class", "datapoint")
+          .append("title")
+          .text( function(d) {return d.value})
+
+      // Remove datapoints that don't exist
+      datapoints
+        .exit()
+        .remove();
+
+      }
+      chart.add_datapoints();
+
+
       chart.update = function(_){
         chart.checkData();
+        var extent = brush.extent();
+        xScale.domain(brush.empty() ? xScale2.domain() : [ extent[0][0], extent[1][0] ]);
+        yScale.domain(brush.empty() ? yScale2.domain() : [ extent[0][1], extent[1][1] ]);
+        var translation = xScale2(data.data[0].timestamp);
+        var brushWidth = d3.select("rect.extent").attr("width");
+        //console.log(translation);
+        if(brushWidth != 0 ){
+          var tempscale = width/brushWidth;
+          var tempi = (translation-width)+margin.left+margin.right;
+          var testtrans = tempi*tempscale;
+          translation = testtrans-(margin.left+margin.right);
+        }
         chart.setAxises();
+        xScale.domain(brush.empty() ? xScale2.domain() : [ extent[0][0], extent[1][0] ]);
+        yScale.domain(brush.empty() ? yScale2.domain() : [ extent[0][1], extent[1][1] ]);
         focus.select(".x.axis").transition() // start a transition to bring the new value into view
           .ease("linear")
-          .duration(1000).call(xAxis);
+          .duration(500).call(xAxis);
         focus.select(".y.axis").transition() // start a transition to bring the new value into view
           .ease("linear")
-          .duration(1000).call(yAxis);
+          .duration(500).call(yAxis);
         context.select(".x.axis").transition() // start a transition to bring the new value into view
           .ease("linear")
-          .duration(1000).call(xAxis2);
+          .duration(500).call(xAxis2);
         context.select(".y.axis").transition() // start a transition to bring the new value into view
           .ease("linear")
-          .duration(1000).call(yAxis2)
+          .duration(500).call(yAxis2);
+        
         streams
           .datum(data.data)
           .attr("d", line)
-          .attr("transform", "translate(" + xScale(data.data[data.data.length-2].timestamp) + ")")
+          .attr("transform", "translate(" + (translation-width+margin.left+margin.right) + ")")
           .transition() // start a transition to bring the new value into view
           .ease("linear")
           .duration(500) // for this demo we want a continual slide so set this to the same as the setInterval amount below
-          .attr("transform", "translate(0)");
+          .attr("transform", "translate(" + xScale(data.data[0].timestamp)-width+margin.left+margin.right + ")");
+
+        console.log("trans: " + (xScale(data.data[0].timestamp)-width+margin.left+margin.right));
+        //console.log(xScale(data.data[1].timestamp)-width+margin.left+margin.right);
         //Update predictions
         focus.select(".area.prediction-95")
               .datum(data.pdata)
@@ -205,6 +277,9 @@ function streamGraph () {
         focus.select(".area.prediction-80")
               .datum(data.pdata)
               .attr("d", p_area_80);
+        focus.select(".prediction-line")
+              .datum(data.pdata)
+              .attr("d", pline);
         context.select(".area.prediction-95")
               .datum(data.pdata)
               .attr("d", p_area_952);
@@ -213,6 +288,7 @@ function streamGraph () {
               .datum(data.pdata)
               .attr("d", p_area_802);
         context.select(".stream-line").datum(data.data).attr("d", line2);
+        chart.add_datapoints();
 
       };
 
@@ -225,6 +301,10 @@ function streamGraph () {
         streams.attr("d", line);
         focus.select(".area.prediction-80").datum(data.pdata).attr("d", p_area_80);
         focus.select(".area.prediction-95").datum(data.pdata).attr("d", p_area_95);
+        focus.select(".prediction-line").datum(data.pdata).attr("d", pline);
+        focus.select(".datapoints").selectAll("circle")
+          .attr("cx", function(d) {return X(d)})
+          .attr("cy", function(d) {return Y(d)});
       }
     });
   }
