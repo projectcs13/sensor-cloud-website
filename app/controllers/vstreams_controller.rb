@@ -95,11 +95,16 @@ class VstreamsController < ApplicationController
                  "user_id"          => params[:user_id], 
                  "name"             => params[:name], 
                  "description"      => params[:description],
+                 "expression"       => params[:expression],
                  "streams_involved" => JSON.parse(params[:streams_involved]), 
                  "timestampfrom"    => params[:starting_date],
-                 "function"         => JSON.parse(params[:function]) }
+                 "function"         => JSON.parse(params[:function]) },
+                 
 
-    res = Api.post("/vstreams", req_body)
+    logger.debug("LOGGING THE BODY")
+    logger.debug("#{req_body[0]}")
+    
+    res = Api.post("/vstreams", req_body[0])
 
     respond_to do |format|
       json = res['body']
