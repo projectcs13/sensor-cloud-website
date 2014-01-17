@@ -87,6 +87,7 @@ p {
 #logo {
   float: left;
   margin-right: 10px;
+  font-family: 'logo-font';
   font-size: 1.7em;
   color: white;
   /*text-transform: uppercase;*/
@@ -251,7 +252,7 @@ input {
 .right { float: right; }
 
 .margin {
-  padding: 0px 15% 10px 15%;
+  padding: 5px 15% 5px 15%;
   margin: 0 auto;
 }
 
@@ -430,7 +431,7 @@ input.search-query {
 
 .search-bar-header {
 	position: relative;
-	top: 10px;
+	top: 8px;
 	.btn {
 		margin-left: 10px;
 	}

@@ -18,7 +18,7 @@ function streamGraphMultiLine () {
   var  parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse,
     xValue = function(d) { return parseDate(d.timestamp); },
     yValue = function(d) { return d.value; },
-    line = d3.svg.line().x(X).y(Y).interpolate("monotone"),
+    line = d3.svg.line().x(X).y(Y),
     line2 = d3.svg.line().x(function(d) {return xScale2(parseDate(d.timestamp)); }).y(function(d) { return yScale2(d.value); }),
     real_data = function(d) { return d.data; },
     datasets = [];

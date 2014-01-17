@@ -23,7 +23,7 @@ function connect() {
         socket = connect('<%= CONF['WEB_SOCKET_URL'] %>/' + stream_type + '.' + stream_id);
         socket.on('message', function(data) {
             //console.log(data);
-            graph_object.add_single_datapoint(data);
+            add_single_datapoint(data);
         });
     }else {
         socket.socket.reconnect();

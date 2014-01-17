@@ -5,9 +5,9 @@
 #<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyABRtdICt5P5VLp9uHsFVC_ArfcyLp17BM&sensor=true" %>
 //= require 'include/streams_graph.js'
 //= require 'include/streams_map.js'
-//= require 'include/timeChart.js'
 //= require 'include/client.js'
-//= require 'include/stream_graph_multiline'
+//= require 'include/stream_graph.js'
+//= require 'include/stream_graph_multiline.js'
 //= require 'include/filter_map'
 //= require 'include/selectStream'
 
@@ -209,16 +209,65 @@ $ ->
           editable: true
 
   $(document).bind "streams_show", (e, obj) => #js only loaded on "show" action
+    parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%L").parse
     # Set up graph element
     graphWidth = $("#graph-canvas").width()
-    window.graph_object = new stream_graph(graphWidth)
-    graph_object.init()
+    newGraph = streamGraph().width(graphWidth).height(300)
+    url = window.location.href.split("/")
+    stream_id = url[url.length - 1]
+    DATA_URL = "/datapoints/"+stream_id
+    P_DATA_URL = "/prediction/"+stream_id
+    res = $.get DATA_URL
+    graphData = {'data':[], 'pdata':[]}
+    res.done (result) ->
+      graphData['data'] = result.data
+      d3.select("#graph-canvas").data([graphData]).call(newGraph)
 
+    window.draw_prediction_data = (p_data) ->
+      graphData['pdata'] = p_data.predictions
+      # give all the prediction-data timestamps
+      # this should be done in the back-end in the future
+      last_time_stamp = graphData['data'][0].timestamp
+      last_time_stamp2 = graphData['data'][1].timestamp
+      time_difference = last_time_stamp-last_time_stamp2
+      prediction_origin = graphData['data'][0]
+      prediction_origin['hi95'] = prediction_origin.value
+      prediction_origin['lo95'] = prediction_origin.value
+      prediction_origin['hi80'] = prediction_origin.value
+      prediction_origin['lo80'] = prediction_origin.value
+      for d in graphData['pdata']
+        tempTime = new Date(last_time_stamp.getTime() + time_difference)
+        d['timestamp'] = tempTime
+        last_time_stamp = tempTime
+      graphData['pdata'].unshift(prediction_origin)
+      console.log['pdata']
+      newGraph.update()
+
+    window.add_single_datapoint = (datapoint) ->
+      datapoint = JSON.parse(datapoint)
+      graphData.data.unshift(datapoint)
+      graphData.data.pop()
+      newGraph.update()
     # Set up buttons
     $("#prediction-description").hide()
 
     $("#prediction-btn").on 'click', ->
       $("#prediction-description").show()
+
+    $('input.star').rating()
+    $('.star-rating').on 'click', ->
+      obj =
+        json:
+          stream_id: $(this).attr('id')
+          value: parseFloat($(this).children('a').text())
+      res = $.ajax
+        url: '/userranking'
+        type: 'PUT'
+        data: JSON.stringify obj
+        contentType: "application/json",
+        dataType: "json",
+        success: (result, thing) ->
+          console.log result, thing
 
 
     loc = document.getElementById('location').getAttribute('value').split ","

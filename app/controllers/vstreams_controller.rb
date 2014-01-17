@@ -16,8 +16,8 @@ class VstreamsController < ApplicationController
 		vstream_owner_id = res['body']['user_id']
 		@vstream_owner = User.find_by(username: vstream_owner_id)
     @triggers = nil
-    cid = current_user.username
-    if cid == @vstream_owner.username then
+    
+    if signed_in? and current_user.username == @vstream_owner.username then
       response = Api.get("/users/#{@vstream_owner.username}/vstreams/#{params[:id]}/triggers")
       @triggers = response['body']['triggers']
     end
@@ -37,10 +37,16 @@ class VstreamsController < ApplicationController
     @vstream.attributes.delete 'starting_date'
     @vstream.attributes.delete 'function'
     @vstream.attributes.delete 'id'
+    @vstream.attributes.delete 'creation_date'
+    @vstream.attributes.delete 'history_size'
+    @vstream.attributes.delete 'last_updated'
+    @vstream.attributes.delete 'timestampfrom'
+
 
 
     respond_to do |format|
       vstream_id = params[:id]
+      logger.debug "these are the parameters #{@vstream.attributes}"
       res = Api.put "/vstreams/#{vstream_id}", @vstream.attributes
 
       res["response"].on_complete do
