@@ -29,7 +29,7 @@ and read the 'Important' section and follow the instructions.
 
 1. Install the gems needed:
 
-        bundle install
+        bundle install --without production
 
 2. Migrate the database:
 
