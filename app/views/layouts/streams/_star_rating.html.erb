@@ -1,0 +1,71 @@
+<!-- The star rating system begins here -->
+
+<% stream_id = stream['id'] %>
+<% scale = 5 %>
+<% starcount = 0 %>
+<% part = (100 / scale) %>
+<% empty_stars = scale %>
+<% percentage = stream['user_ranking']['average'] %>
+<% ranking = (stream['user_ranking']['average'] / part) %>
+<% nr_rankings = stream['user_ranking']['nr_rankings'] %>
+
+<% for stars in (ranking.to_i).times %>
+
+  <% starcount += 1 %>
+  <% empty_stars -= 1 %>
+
+  <% if stars == 0 %>
+    <%if ranking >= 0.5 and ranking <= 1.5 %>
+      <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+             type="radio" class="star required" checked="checked"
+             value = "<%= starcount * part %>"/>
+    <%else%>
+      <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+             type="radio" class="star required"  
+             value = "<%= starcount * part %>"/>
+    <%end%>
+
+  <% elsif starcount < (ranking - 1) %>
+    <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+           type="radio" class="star" 
+           value = "<%= starcount * part %>"/>
+  <%else%>
+    <%if ranking % 1 <= 0.5 %>
+      <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+             type="radio" class="star" checked="checked" 
+             value = "<%= starcount * part %>"/>
+    <%else%>
+      <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+             type="radio" class="star" 
+             value="<%= starcount * part %>"/>
+    <%end%>
+  <%end%>
+<%end%>
+
+<% if ranking > 0.1 %>
+  <% if ranking % 1 > 0.5 %>
+    <% empty_stars -= 1 %>
+    <% starcount += 1 %>
+    <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+           type="radio" class="star" checked="checked" 
+           value="<%= starcount * part %>"/>
+  <% end %>
+<% end %>
+
+<% for stars in (empty_stars).times %>
+  <% starcount += 1 %>
+  <% if starcount <= 1 %>
+    <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+           type="radio" class="star required" 
+           value="<%= starcount * part %>"/>
+  <% else %>
+    <input id = "<%= stream_id %>" name="star<%= stream_id %>" 
+           type="radio" class="star" 
+           value = "<%= starcount * part %>"/>
+  <% end %>
+<% end %>
+
+<%= nr_rankings %>
+<%= percentage %>%
+
+<!-- The star rating system end here -->
