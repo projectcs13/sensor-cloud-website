@@ -43,6 +43,8 @@ class StreamsController < ApplicationController
       sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
       @polling_history = sorted_history
     end
+
+    @count_history = Api.get("/streams/#{params[:id]}/data/_count")["body"]["count"]
   end
 
   def suggest
