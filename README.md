@@ -1,6 +1,8 @@
 # Welcome to IoT-Framework
 
-IoT-Framework is a computation engine for sensor stream data.
+IoT-Framework is a computation engine for sensor stream data. 
+
+Note: This repository contains only the website for the IoT-Framework. In order to use it, you need to download and start the API hosted at https://github.com/projectcs13/sensor-cloud
 
 ## Requirements
 
@@ -34,12 +36,14 @@ and read the 'Important' section and follow the instructions.
 2. Migrate the database:
 
         bundle exec rake db:migrate
+        
+3. Download and start the IoT-Framework API hosted here: https://github.com/projectcs13/sensor-cloud
 
-3. If you are running the IoT-Framework API locally, then you should modify the API_URL variable declared in the config/config.yml file:
+4. Modify the API_URL variable declared in the config/config.yml file to reflect the hostname/port of the API (by default the API uses port 8000):
 
         API_URL: "<Put your base URL here>:<put your port here>" 
 
-4. Start the Rails server:
+5. Start the Rails server:
 
         rails s
 
