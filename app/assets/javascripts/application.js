@@ -24,3 +24,5 @@
 //= require frontpage
 //= require streams.new
 //= require map
+//= require gsigninbutton
+//= require signin

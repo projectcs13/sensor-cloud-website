@@ -1,18 +1,21 @@
 SensorCloud::Application.routes.draw do
 
-
   resources :users do
     member do
       get 'edit/edit_profile' => 'users#profile'
       get 'streams' => 'streams#index'
-      # get 'following' => 'users#following', as: :following
       get 'following' => 'users#following'
       get 'triggers' => 'triggers#index'
     end
+
+    collection do
+      post '/auth/google' => :auth_google
+    end
   end
+
   resources :users do
     resources :vstreams
-  end  
+  end
 
   resources :streams do
     collection do

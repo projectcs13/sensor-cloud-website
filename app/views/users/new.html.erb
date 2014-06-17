@@ -48,9 +48,20 @@
 
 			<br/>
 			<div class="form-button">
-				 Already an account? <%= link_to "Sign in!", signin_path %>
+				Already an account? <%= link_to "Sign in!", signin_path %>
 				<%= f.submit "Sign up", class: "btn btn-lg btn-primary pull right" %>
+				<span id="g-btn">
+					<span
+						class="g-signin"
+						data-callback="signinCallback"
+						data-clientid="995342763478-fh8bd2u58n1tl98nmec5jrd76dkbeksq.apps.googleusercontent.com"
+						data-cookiepolicy="single_host_origin"
+						data-requestvisibleactions="http://schemas.google.com/AddActivity"
+						data-scope="https://www.googleapis.com/auth/plus.login"></span>
+				</span>
 			</div>
 		<% end %>
 	</div>
 </div>
+
+
