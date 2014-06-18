@@ -60,7 +60,7 @@ class UsersController < ApplicationController
             #     redirect_to signin_url
             # end
         else
-            # res = send_openidc_request params
+            res = send_openidc_request params
 
             # Create new user based on the response
             logger.debug "RES:"
@@ -81,7 +81,12 @@ class UsersController < ApplicationController
     end
 
     def send_openidc_request(params)
-        Api.post("/auth/openid", params)
+        req = {}
+        req[:access_token] = params[:access_token]
+        req[:id_token] = params[:id_token]
+
+        logger.debug req.to_json
+        Api.post("/users/_auth", req)
     end
 
     def new
