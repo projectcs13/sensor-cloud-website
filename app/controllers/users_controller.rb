@@ -82,11 +82,16 @@ class UsersController < ApplicationController
 
     def send_openidc_request(params)
         req = {}
-        req[:access_token] = params[:access_token]
-        req[:id_token] = params[:id_token]
 
-        logger.debug req.to_json
-        Api.post("/users/_auth", req)
+        # req[:access_token] = params[:access_token]
+        # req[:id_token] = params[:id_token]
+        # req[:code] = params[:code]
+        logger.debug "params"
+        logger.debug params
+        # logger.debug "req"
+        # logger.debug req
+        # Api.post("/users/_auth", req)
+        Api.post("/users/_auth", params)
     end
 
     def new
