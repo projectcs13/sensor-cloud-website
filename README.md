@@ -4,6 +4,11 @@ IoT-Framework is a computation engine for sensor stream data.
 
 Note: This repository contains only the website for the IoT-Framework. In order to use it, you need to download and start the API hosted at https://github.com/projectcs13/sensor-cloud
 
+## Demo
+
+You can check out a demo of the IoT-Framework here: [IoT-Framework
+demo](https://vimeo.com/98966770). 
+
 ## Requirements
 
 * Linux
