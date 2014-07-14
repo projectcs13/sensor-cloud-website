@@ -8,9 +8,9 @@ SensorCloud::Application.routes.draw do
       get 'triggers' => 'triggers#index'
     end
 
-    collection do
-      post '/auth/google' => :auth_google
-    end
+    # collection do
+    #   post '/auth/google' => :auth_google
+    # end
   end
 
   resources :users do
@@ -62,9 +62,11 @@ SensorCloud::Application.routes.draw do
   put '/userranking'    => 'searches#update_user_ranking'
   post '/get_more_info' => 'searches#create'
 
-  get '/signup'     => 'users#new'
-  get '/signin'     => 'sessions#new'
-  delete '/signout' => 'sessions#destroy'
+  get    '/signup'      => 'users#new'
+  get    '/signin'      => 'sessions#new'
+  post   '/signin/auth' => 'sessions#auth_openid_connect'
+  # post   '/signin/auth' => 'sessions#auth_openid_connect'
+  delete '/signout'     => 'sessions#destroy'
 
   get '/terms'    => 'static_pages#terms'
   get '/privacy'  => 'static_pages#privacy'
