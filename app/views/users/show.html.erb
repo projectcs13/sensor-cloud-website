@@ -10,7 +10,7 @@
         <!-- TODO Change this and make it dynamic!!! -->
         <% if current_user != nil and @user.username == current_user.username %>
           <% @notifications.each do |notification| %>
-          
+
             <li class="list-group-item">
                 <% if notification.has_key?("trigger") then %>
                   <% if notification["trigger"]["type"] == "stream" then %>
@@ -46,7 +46,7 @@
           <small>(<%= @user.username %>)</small>
         </h2>
 
-        <h5><%= @user.email %></h5>
+        <h5><%= @user.email unless @user.email.end_with? "@openid.ericsson" %></h5>
       </div>
     </div>
 
