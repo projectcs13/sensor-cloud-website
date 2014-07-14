@@ -1,73 +1,58 @@
-$ ->
-    # window.signinCallback = (authResult) ->
-    #     if authResult['status']['signed_in']
-    #         # Update the app to reflect a signed in user
-    #         # Hide the sign-in button now that the user is authorized, for example:
-    #         document.getElementById('g-btn').setAttribute('style', 'display: none')
-    #         $.post '/users/auth/google/', authResult
-    #     else
-    #         # Update the app to reflect a signed out user
-    #         # Possible error values:
-    #         #   "user_signed_out" - User is signed-out
-    #         #   "access_denied" - User denied access to your app
-    #         #   "immediate_failed" - Could not automatically log in the user
-    #         console.log('Sign-in state: ' + authResult['error'])
+window.signinCallback = (authResult) ->
+    gapi.client.load 'plus','v1', ->
+        $('#authResult').html('Auth Result:<br/>')
+        for field in authResult
+            $('#authResult').append(' ' + field + ': ' + authResult[field] + '<br/>')
 
-    #     console.log(authResult);
-    window.signinCallback = (authResult) ->
-        # if authResult['code']
-        if authResult['status']['signed_in']
-
-            # Hide the sign-in button now that the user is authorized, for example:
-            # $('#signinButton').attr('style', 'display: none')
-            document.getElementById('g-btn').setAttribute('style', 'display: none')
-            console.log authResult['code']
-
-            # TESTING
-            url = "https://www.googleapis.com/plus/v1/people/me"
-            $.get url, (data) ->
-                console.log data
-
-
-
-            # Send the code to the server
-            res = $.post '/users/auth/google/', authResult
-            res.done (result) ->
-                console.log(result)
-                if result['profile'] and result['people']
-                    console.log 'Hello #{result["profile"]["displayName"]}. You successfully made a server side call to people.get and people.list'
-                else
-                    console.log 'Failed to make a server-side call. Check your configuration and console.'
-            # $.ajax
-            #     type: 'POST'
-            #     url: '/users/auth/google/'
-            #     contentType: 'application/octet-stream; charset=utf-8'
-            #     processData: false
-            #     data: authResult['code']
-            #     success: (result) ->
-            #         # Handle or verify the server response if necessary.
-
-            #         # Prints the list of people that the user has allowed the app to know to the console.
-            #         console.log(result)
-            #         if result['profile'] and result['people']
-            #             console.log 'Hello #{result["profile"]["displayName"]}. You successfully made a server side call to people.get and people.list'
-            #         else
-            #             console.log 'Failed to make a server-side call. Check your configuration and console.'
-
+        if authResult['access_token']
+            $('#authOps').show('slow')
+            $('#gConnect').hide()
+            helper.profile()
+            helper.people()
         else if authResult['error']
-        # There was an error.
-        # Possible error codes:
-        #   "access_denied" - User denied access to your app
-        #   "immediate_failed" - Could not automatially log in the user
+            # There was an error, which means the user is not signed in.
+            # As an example, you can handle by writing to the console:
             console.log('There was an error: ' + authResult['error'])
+            $('#authResult').append('Logged out')
+            $('#authOps').hide('slow')
+            $('#gConnect').show()
+
+        console.log('authResult', authResult)
 
 
+# window.signinCallback = (authResult) ->
+#     # if authResult['code']
+#     console.log "signinCallback"
+#     console.log authResult
+#     # console.log authResult['status']
 
-    params = {
-        'clientid' : '995342763478-fh8bd2u58n1tl98nmec5jrd76dkbeksq.apps.googleusercontent.com'
-        'cookiepolicy' : 'single_host_origin'
-        'callback' : window.signinCallback
-        'requestvisibleactions' : 'http://schemas.google.com/AddActivity http://schemas.google.com/CommentActivity'
-    }
+#     res = $.post '/users/auth/google/', authResult
+#     res.done (res) ->
+#         console.log("signinCallback done")
+#         console.log(res)
+#         # if not error
+#         authorize res
 
-    # gapi.signin.render "g-btn", params
+
+authorize = (html) ->
+    iframe = do createIframe html
+    # redirect iframe, token_url
+    # dom = $(html)
+    # $(iframe).html dom
+
+
+redirect = (iframe, location)->
+    iframe.src = location
+
+
+createIframe = (html) ->
+    iframe = document.createElement 'iframe'
+    # iframe.src = 'data:text/html;charset=utf-8,' + encodeURI html
+    $(iframe).html html
+    document.body.appendChild iframe
+    console.log 'iframe.contentWindow =', iframe.contentWindow
+    iframe
+
+    # # Possible error codes:
+    # #   "access_denied" - User denied access to your app
+    # #   "immediate_failed" - Could not automatially log in the user
