@@ -109,10 +109,7 @@ class SessionsController < ApplicationController
 
 	def create_openid_state
 		# Create a string for verification
-		if !session[:state]
-			session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join
-		end
-
+		session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join unless session[:state]
 		@state = session[:state]
 	end
 
@@ -136,6 +133,7 @@ class SessionsController < ApplicationController
 
 	def store_on_remote_db(user)
 		data = user.attributes.slice("username", "email", "password", "firstname", "lastname", "description", "private")
+		data.send "access_token", session[:token]
 		Api.post "/users", data
 	end
 end
