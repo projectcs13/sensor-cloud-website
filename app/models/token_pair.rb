@@ -13,6 +13,10 @@ class TokenPair
     @issued_at = object.issued_at
   end
 
+  def access_token
+    @access_token
+  end
+
   def to_hash
     {
       :refresh_token => @refresh_token,
