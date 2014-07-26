@@ -1,5 +1,34 @@
-unless SensorCloud.rake?
+def download(remoteusers)
+	remoteusers.each do |user|
+		fields = ['id', 'notifications', 'rankings', 'subscriptions', 'triggers', 'admin']
+		fields.each { |attr| user.delete attr }
 
+		## TODO Fix this security issue
+		user['password'] = "password" if user['password'] == ""
+		user['password_confirmation'] = user['password']
+		## END TODO
+
+		# if user['email'] != "107908217220817548513@openid.ericsson"
+		# 	newuser = User.create user
+		newuser = User.create user
+  	if newuser.save
+  		puts "Saved user\n#{newuser.attributes}"
+  	else
+  		puts "Not saved with username #{newuser.username}"
+  	end
+	end
+end
+
+
+def delete_old(remoteusers)
+	User.all.each do |user|
+		matches = remoteusers.select { |ru| user.username == ru['username'] }
+		user.destroy if matches.length == 0
+	end
+end
+
+
+unless SensorCloud.rake?
 	# Frontend unique identifier
 	user = User.find_by_username "107908217220817548513"
 	refresh_token = if user then user.refresh_token else nil end
@@ -17,34 +46,17 @@ unless SensorCloud.rake?
 
 		puts "\nCopy and type here the Refresh Token"
 		REFRESH_TOKEN = gets.chomp
-	end
 
-	# Once we have the token, the whole list users will be downloaded
-	# Then, we will store locally the token forever
+		# Once we have the token, the whole list users will be downloaded
+		# Then, we will store locally the token forever
+	end
 
 	# Get all users
 	# res = Api.get "/users/?admin=true", REFRESH_TOKEN, "refresh_token"
 	res = Api.get_frontend "/users/?admin=true"
-	users = res["body"]["users"]
-	unless users.nil?
-		users.each do |user|
-			fields = ['id', 'notifications', 'rankings', 'subscriptions', 'triggers', 'admin']
-			fields.each { |attr| user.delete attr }
-
-			## TODO Fix this security issue
-			user['password'] = "password" if user['password'] == ""
-			user['password_confirmation'] = user['password']
-			## END TODO
-
-			# if user['email'] != "107908217220817548513@openid.ericsson"
-			# 	newuser = User.create user
-			newuser = User.create user
-	  	if newuser.save
-	  		puts "Saved user\n#{newuser.attributes}"
-	  	else
-	  		puts "Not saved with username #{newuser.username}"
-	  	end
-		end
+	remoteusers = res["body"]["users"]
+	unless remoteusers.nil?
+		download remoteusers
+		delete_old remoteusers
   end
-
 end
