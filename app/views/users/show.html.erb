@@ -46,7 +46,7 @@
           <small>(<%= @user.username %>)</small>
         </h2>
 
-        <h5><%= @user.email unless @user.email.end_with? "@openid.ericsson" %></h5>
+        <h5><%= @user.email unless signed_in_openid? %></h5>
       </div>
     </div>
 
