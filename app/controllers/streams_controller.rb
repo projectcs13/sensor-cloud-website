@@ -7,7 +7,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
-    res = Api.get("/users/#{params[:id]}/streams")
+    res = Api.get "/users/#{params[:id]}/streams", access_token
     @streams = res["body"]["streams"]
   end
 
