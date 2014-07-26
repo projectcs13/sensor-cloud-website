@@ -24,13 +24,14 @@ class StreamsController < ApplicationController
 
   def show
     @stream_id = params[:id]
-    res = Api.get("/streams/#{@stream_id}")
+    res = Api.get "/streams/#{@stream_id}", access_token
     stream_owner_id = res["body"]["user_id"]
     @stream_owner = User.find_by(username: stream_owner_id)
 
     @triggers = nil
     if signed_in? and current_user.username == @stream_owner.username then
-      response = Api.get("/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers")
+      triggers = "/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers"
+      response = Api.get triggers, access_token
       @triggers = response['body']['triggers']
     end
     @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
@@ -38,25 +39,26 @@ class StreamsController < ApplicationController
     @prediction = {:in => "50", :out => "25"}
     @polling_history = nil
     if res["body"]["polling"] == true then
-      res2 = Api.get("/streams/#{@stream_id}/pollinghistory")
+      res2 = Api.get "/streams/#{@stream_id}/pollinghistory", access_token
       @polling_history = res2["body"]["history"]
       sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
       @polling_history = sorted_history
     end
 
-    @count_history = Api.get("/streams/#{params[:id]}/data/_count")["body"]["count"]
+    res = Api.get "/streams/#{params[:id]}/data/_count", access_token
+    @count_history = res["body"]["count"]
   end
 
   def suggest
     uri = ERB::Util.url_encode params[:model]
 
-    res = Api.get("/suggest/#{uri}?size=10")
+    res = Api.get "/suggest/#{uri}?size=10", access_token
     data = if res["status"] == 404 then {} else res["body"]["suggestions"] end
     render :json => data, :status => res["status"]
   end
 
   def fetchResource
-    res = Api.get("/resources/#{params[:id]}")
+    res = Api.get "/resources/#{params[:id]}", access_token
     render :json => res["body"], :status => res["status"]
   end
 
@@ -85,7 +87,7 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
       if @stream.valid?
-        res = Api.post "/users/#{@user.username}/streams", @stream.attributes
+        res = Api.post "/users/#{@user.username}/streams", @stream.attributes, access_token
         res["response"].on_complete do
           if res["status"] == 200
 
@@ -119,7 +121,7 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
       stream_id = params[:id]
-      res = Api.put "/streams/#{stream_id}", @stream.attributes
+      res = Api.put "/streams/#{stream_id}", @stream.attributes, access_token
 
       res["response"].on_complete do
         if res["status"] == 200 and @stream.valid?
@@ -163,7 +165,7 @@ class StreamsController < ApplicationController
 
   def destroyAll
     @user = current_user
-    res = Api.delete("/users/#{@user.username}/streams/", nil)
+    res = Api.delete "/users/#{@user.username}/streams/", nil, access_token
 
     # TODO
     # The API is currently sending back the response before the database has
@@ -179,7 +181,7 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = Api.get("/streams/#{params[:id]}/data/_search")
+    res = Api.get "/streams/#{params[:id]}/data/_search", access_token
     respond_to do |format|
       format.json { render json: res["body"], status: res["status"] }
     end
@@ -188,7 +190,8 @@ class StreamsController < ApplicationController
 
 
   def fetch_prediction
-    res = Api.get "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    prediction = "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    res = Api.get prediction, access_token
     logger.debug "S:"
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
@@ -196,7 +199,7 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapreview
-    res = Api.get("#{params[:uri]}")
+    res = Api.get "#{params[:uri]}", access_token
     respond_to do |format|
       format.json { render json: res["body"], status: res["status"] }
     end
