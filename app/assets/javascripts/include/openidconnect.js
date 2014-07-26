@@ -22,6 +22,7 @@ var helper = (function() {
         helper.connectServer();
         // After we load the Google+ API, render the profile data from Google+.
         // gapi.client.load('plus','v1',this.renderProfile);
+        gapi.auth.signOut();
       } else if (authResult['error']) {
         // There was an error, which means the user is not signed in.
         // As an example, you can troubleshoot by writing to the console:
@@ -45,7 +46,8 @@ var helper = (function() {
 
       $.ajax({
         type: 'POST',
-        url: window.location.href + '/auth?state=' + state,
+        // url: window.location.href + '/auth?state=' + state,
+        url: window.location.origin + '/auth/in?state=' + state,
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(res) {
           if (res.url) {
