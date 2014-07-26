@@ -5,16 +5,13 @@ class StaticPagesController < ApplicationController
 
 		sort = { "user_ranking.average" => "desc" }
 		query = { match_all: {} }
-    # logger.debug "ACCESS_TOKEN: #{ACCESS_TOKEN}"
-		res = Api.post "/_search?from=0&size=10", {sort: sort, query: query}
+		res = Api.post_frontend "/_search?from=0&size=10", {sort: sort, query: query}
 		@streams = res["body"]["streams"]["hits"]["hits"]
 
 		q = "stream_id="
-		@streams.each do |stream|
-			q = q + "," + "#{stream['_id']}"
-		end
+		@streams.each do |stream| q = q + "," + "#{stream['_id']}" end
 
-		res = Api.get "/_history?#{q}&size=1"
+		res = Api.get_frontend "/_history?#{q}&size=1"
 
 		@values_ = res["body"]["history"]
 
@@ -49,4 +46,5 @@ class StaticPagesController < ApplicationController
 
   def terms
   end
+
 end
