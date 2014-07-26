@@ -8,45 +8,35 @@ module Api
 			res["body"]
 		end
 
-		def append_param(url, token, tokentype)
-			char = if url.include? "?" then "&" else "?" end
-			url + "#{char}#{tokentype}=" + token
-		end
-
-		def _get(url, token, tokentype)
-			url = append_param url, token, tokentype
+		def get(url)
+			url = append_param url, session[:token], "access_token"
 			res = connect.get url
 			parse_JSON_response res
 		end
 
-		def get(url)
-			_get url, REFRESH_TOKEN, "refresh_token"
+		def get_frontend(url)
+			url = append_param url, REFRESH_TOKEN, "refresh_token"
+			res = connect.get url
+			parse_JSON_response res
 		end
 
 		def post(url, body)
-			_post(url, body, REFRESH_TOKEN)
+			res = make :post, url, body, session[:token]
+			parse_JSON_response res
 		end
 
-		def _post(url, body, token)
-			res = make :post, url, body, token
+		def post_frontend(url, body)
+			res = make :post, url, body, REFRESH_TOKEN
 			parse_JSON_response res
 		end
 
 		def put(url, body)
-			_put(url, body, REFRESH_TOKEN)
-		end
-
-		def _put(url, body, token)
-			res = make :put, url, body, token
+			res = make :put, url, body, session[:token]
 		  parse_JSON_response res
 		end
 
 		def delete(url, body)
-			_delete(url, body, REFRESH_TOKEN)
-		end
-
-		def _delete(url, body, token)
-			res = make :delete, url, body, token
+			res = make :delete, url, body, session[:token]
 			parse_JSON_response res
 		end
 
@@ -72,6 +62,11 @@ module Api
 				resp = res.to_hash
 				resp[:body] = JSON.parse resp[:body]
 				resp.stringify_keys!
+			end
+
+			def append_param(url, token, tokentype)
+				char = if url.include? "?" then "&" else "?" end
+				url + "#{char}#{tokentype}=" + token
 			end
 
 	end

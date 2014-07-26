@@ -33,6 +33,7 @@ class SessionsController < ApplicationController
 				render json: {"error" => "The client state does not match the server state."}, status: 401
 			else
 				fetch_access_token if not session[:token]
+				# fetch_access_token
 				json = fetch_user_info
 				user = load_from_db json
 
@@ -43,11 +44,16 @@ class SessionsController < ApplicationController
 
 				sign_in user
 				logger.debug "user signed in"
+				logger.debug "Signed_in? #{signed_in?}"
 				render json: {"url" => "/users/#{user.username}/streams"}, status: 200
 			end
 		end
 	end
 
+	def auth_openid_disconnect
+		revoke_access_token
+		render json: {"success" => "true"}, status: 200
+	end
 
 	private
 		def fetch_access_token
@@ -100,14 +106,15 @@ class SessionsController < ApplicationController
 
 			# Send the revocation request and return the result.
 			revokePath = 'https://accounts.google.com/o/oauth2/revoke?token=' + token
-			uri = URI.parse(revokePath)
-			request = Net::HTTP.new(uri.host, uri.port)
+			uri = URI.parse revokePath
+			request = Net::HTTP.new uri.host, uri.port
 			request.use_ssl = true
-			request.get(uri.request_uri)
+			request.get uri.request_uri
 		end
 	end
 
 	def create_openid_state
+		revoke_access_token
 		# Create a string for verification
 		session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join unless session[:state]
 		@state = session[:state]
@@ -132,8 +139,11 @@ class SessionsController < ApplicationController
 	end
 
 	def store_on_remote_db(user)
-		data = user.attributes.slice("username", "email", "password", "firstname", "lastname", "description", "private")
-		data.send "access_token", session[:token]
+		# data = user.attributes.slice("username", "email", "password", "firstname", "lastname", "description", "private")
+		data = {}
+		attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
+		attrs.each do |attr| data[attr] = user.send(attr) end
+		data["access_token"] = session[:token].to_hash[:access_token]
 		Api.post "/users", data
 	end
 end

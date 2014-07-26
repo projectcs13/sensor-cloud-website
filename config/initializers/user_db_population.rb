@@ -24,7 +24,7 @@ unless SensorCloud.rake?
 
 	# Get all users
 	# res = Api.get "/users/?admin=true", REFRESH_TOKEN, "refresh_token"
-	res = Api.get "/users/?admin=true"
+	res = Api.get_frontend "/users/?admin=true"
 	users = res["body"]["users"]
 	unless users.nil?
 		users.each do |user|
