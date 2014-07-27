@@ -54,7 +54,7 @@ class Api
 			res = connect.send method do |req|
 			  req.url url
 			  req.headers['Content-Type'] = 'application/json'
-			  req.headers['Access-Token'] = token
+			  req.headers['access_token'] = token
 			  req.body = body.to_json
 			end
 		end
@@ -66,8 +66,8 @@ class Api
 		end
 
 		def self.append_param(url, token, tokentype)
-			char = if url.include? "?" then "&" else "?" end
-			url + "#{char}#{tokentype}=" + token
+			c = if url.include? "?" then "&" else "?" end
+			url + "#{c}#{tokentype}=#{token}"
 		end
 
 	# end

@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
 		user = User.find_by(email: params[:session][:email].downcase)
 		if user && user.authenticate(params[:session][:password])
 			sign_in user
+			gen_token_pair user
 			redirect_back_or user
 		else
 			flash.now[:danger] = 'Invalid email/password combination'
@@ -77,6 +78,8 @@ class SessionsController < ApplicationController
 			token_pair = TokenPair.new
 			token_pair.update_token!($client.authorization)
 			session[:token] = token_pair
+			logger.debug "token_pair.to_hash"
+			logger.debug token_pair.to_hash
 		end
 
 	def fetch_user_info
@@ -118,6 +121,15 @@ class SessionsController < ApplicationController
 		# Create a string for verification
 		session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join unless session[:state]
 		@state = session[:state]
+	end
+
+	def gen_token_pair(user)
+		token_pair = TokenPair.new
+		token_pair.access_token  = user.access_token
+		token_pair.refresh_token = user.refresh_token
+		token_pair.expires_in    = 3599
+		token_pair.issued_at     = Time.now
+		session[:token] = token_pair
 	end
 
 	def store_user(json)
