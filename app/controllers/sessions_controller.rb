@@ -52,6 +52,7 @@ class SessionsController < ApplicationController
 	end
 
 	def auth_openid_disconnect
+		sign_out
 		revoke_access_token
 		render json: {"success" => "true"}, status: 200
 	end
@@ -156,6 +157,6 @@ class SessionsController < ApplicationController
 		attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
 		attrs.each do |attr| data[attr] = user.send(attr) end
 		data["access_token"] = session[:token].to_hash[:access_token]
-		Api.post "/users", data
+		Api.post "/users", data, ""
 	end
 end
