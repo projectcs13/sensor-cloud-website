@@ -7,24 +7,22 @@ class SearchesController < ApplicationController
 	end
 
 	def update_user_ranking
-		res = Api.put(
-			"/streams/#{params[:json][:stream_id]}/_rank",
-			{ user_id: current_user.username, ranking: params[:json][:value] }
-		)
+		body = { user_id: current_user.username, ranking: params[:json][:value] }
+		res = Api.put "/streams/#{params[:json][:stream_id]}/_rank", body, openid_metadata
 		respond_to do |format|
 			format.json { render json: res["body"], status: res["status"] }
 		end
 	end
 
 	def fetch_graph_data
-		res = Api.get("/_history?stream_id=#{params[:stream_id]}")
+		res = Api.get "/_history?stream_id=#{params[:stream_id]}", openid_metadata
 		respond_to do |format|
 			format.json { render json: res["body"], status: 200 }
 		end
 	end
 
 	def fetch_autocomplete
-		res = Api.get("/suggest/_search?query=#{params[:term]}")
+		res = Api.get "/suggest/_search?query=#{params[:term]}", openid_metadata
 		respond_to do |format|
 			format.json { render json: res["body"]["suggestions"], status: 200 }
 		end
@@ -82,7 +80,7 @@ class SearchesController < ApplicationController
 								}
 			end
 			logger.debug(body)
-			res = Api.post(url, body)
+			res = Api.post url, body, openid_metadata
 			@filter_unit = params['search']['filter_unit']
 			@filter_tag = params['search']['filter_tag']
 			@filter_longitude = params['search']['filter_longitude']
