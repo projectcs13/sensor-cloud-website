@@ -8,8 +8,6 @@ def download(remoteusers)
 		user['password_confirmation'] = user['password']
 		## END TODO
 
-		# if user['email'] != "107908217220817548513@openid.ericsson"
-		# 	newuser = User.create user
 		newuser = User.create user
   	if newuser.save
   		puts "Saved user\n#{newuser.attributes}"
@@ -27,36 +25,57 @@ def delete_old(remoteusers)
 	end
 end
 
+def authenticate
+	# Frontend performs API's Authentication
+	puts "There is not any refresh_token available locally to perform authenticated API calls."
+	puts "Authenticating..."
+
+	token_url = Api.authenticate
+	puts "Open the next url with the browser:"
+	puts token_url
+
+	puts "\nCopy and type here the Access Token"
+	access_token = gets.chomp
+
+	puts "\nCopy and type here the Refresh Token"
+	refresh_token = gets.chomp
+
+	{ :refresh_token => refresh_token, :access_token => access_token }
+end
 
 unless SensorCloud.rake?
-	# Frontend unique identifier
-	user = User.find_by_username "107908217220817548513"
+	FRONTEND_USERNAME = "107908217220817548513"		# Frontend unique identifier
+
+	user = User.find_by_username FRONTEND_USERNAME
 	refresh_token = if user then user.refresh_token else nil end
+	access_token  = if user then user.access_token  else nil end
 
-	if refresh_token
-		REFRESH_TOKEN = refresh_token 	# Convert the var into a public constant
-	else
-		# Frontend performs API's Authentication
-		puts "There is not any refresh_token available locally to perform authenticated API calls."
-		puts "Authenticating..."
-
-		token_url = Api.authenticate
-		puts "Open the next url with the browser:"
-		puts token_url
-
-		puts "\nCopy and type here the Refresh Token"
-		REFRESH_TOKEN = gets.chomp
-
-		# Once we have the token, the whole list users will be downloaded
-		# Then, we will store locally the token forever
+	unless (access_token and refresh_token)
+		tokens = authenticate
+		access_token  = tokens[:access_token]
+		refresh_token = tokens[:refresh_token]
 	end
 
 	# Get all users
-	# res = Api.get "/users/?admin=true", REFRESH_TOKEN, "refresh_token"
-	res = Api.get_frontend "/users/?admin=true"
-	remoteusers = res["body"]["users"]
-	unless remoteusers.nil?
-		download remoteusers
-		delete_old remoteusers
+	res = Api.get "/users/?admin=true", access_token
+	if res["status"] != 200		                         # If the access token is old, renew it
+		res = Api.renew_access_token refresh_token
+		access_token = res["body"]["access_token"]
+		if user.update_attributes access_token: access_token then user.save end
+		res = Api.get "/users/?admin=true", access_token
+		if res["status"] != 200											     # If response is not ok yet, there are no remote users
+			tokens = authenticate                          # Then, authenticate on the backend
+			access_token  = tokens[:access_token]
+			refresh_token = tokens[:refresh_token]
+		end
+	end
+
+	ACCESS_TOKEN = access_token   # Convert the var into a public constant
+
+	remote_users = res["body"]["users"]								 # Sync local DB with remote
+	unless remote_users.nil?
+		download remote_users
+		delete_old remote_users
   end
+
 end
