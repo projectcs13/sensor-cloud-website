@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 	before_action :admin_user,     only: :destroy
 
 	def index
-		@users = User.paginate(page: params[:page])
+		@users = User.where(:private => false).paginate(page: params[:page])
 	end
 
 	def edit
@@ -17,10 +17,10 @@ class UsersController < ApplicationController
 		if @user == nil
 			redirect_to notfound_path
 		else
-			res = Api.get "/users/#{@user.username}/streams", access_token
+			res = Api.get "/users/#{@user.username}/streams", openid_metadata
 			@streams = res["body"]["streams"]
 			@nb_streams = @streams.length
-			res2 = Api.get "/users/#{@user.username}", access_token
+			res2 = Api.get "/users/#{@user.username}", openid_metadata
 			@notifications = res2["body"]["notifications"]
 			sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
 			@notifications = sorted
@@ -31,11 +31,11 @@ class UsersController < ApplicationController
 		@title = "Following"
 		@user = User.find_by_username(params[:id])
 		cid = current_user.username
-		res = Api.get "/users/#{cid}", access_token
+		res = Api.get "/users/#{cid}", openid_metadata
 		@subscriptions = res["body"]["subscriptions"]
 		@stream_ids = @subscriptions.map { |e| e["stream_id"] }
 		@streams = @stream_ids.map do |sid|
-			res = Api.get "/streams/#{sid}", access_token
+			res = Api.get "/streams/#{sid}", openid_metadata
 			res["body"]
 		end
 	end
@@ -54,21 +54,38 @@ end
 		if @user.save
 			sign_in @user
 			userdata = params[:user].slice(:username, :email, :password, :firstname, :lastname, :description, :private)
-			res = Api.post "/users", userdata, access_token
+			res = Api.post "/users", userdata, ""
+			# @user.send("access_token=", acc_token)
+			@user.access_token = res["body"]["access_token"]
+			gen_token_pair @user
+
+			# session[:token].access_token = res["body"]["access_token"]
 			flash[:success] = "Welcome to the Sample App!"
 			redirect_to @user
+
+			# if res.status == 200
+			# 	flash[:success] = "Welcome to the Sample App!"
+			# 	access_token = res["body"]["access_token"]
+			# 	Api.retrieve_token_info access_token
+			# 	redirect_to @user
+			# else
+			# 	render 'new'
+			# end
 		else
 			render 'new'
 		end
 	end
 
 	def update
+		# if signed_in_openid?
+
+		# end
 		params[:user][:private] = !(params[:user][:private].to_i).zero?
 		if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
 			@user.save
 			userdata = params[:user].slice(:email, :password, :firstname, :lastname, :description, :private)
-			res = Api.put "/users/#{@user.username}", userdata, access_token
+			res = Api.put "/users/#{@user.username}", userdata, openid_metadata
 			redirect_to @user
 		else
 			render 'edit'
