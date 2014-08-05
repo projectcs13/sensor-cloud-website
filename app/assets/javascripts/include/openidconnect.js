@@ -46,7 +46,6 @@ var helper = (function() {
 
       $.ajax({
         type: 'POST',
-        // url: window.location.href + '/auth?state=' + state,
         url: window.location.origin + '/auth/in?state=' + state,
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(res) {
@@ -60,32 +59,7 @@ var helper = (function() {
         processData: false,
         data: this.authResult.code
       });
-    },
-
-    // /**
-    //  * Retrieves and renders the authenticated user's Google+ profile.
-    //  */
-    // renderProfile: function() {
-    //   var request = gapi.client.plus.people.get( {'userId' : 'me'} );
-    //   request.execute( function(profile) {
-    //       $('#profile').empty();
-    //       if (profile.error) {
-    //         $('#profile').append(profile.error);
-    //         return;
-    //       }
-    //       $('#profile').append(
-    //           $('<p><img src=\"' + profile.image.url + '\"></p>'));
-    //       $('#profile').append(
-    //           $('<p>Hello ' + profile.displayName + '!<br />Tagline: ' +
-    //           profile.tagline + '<br />About: ' + profile.aboutMe + '</p>'));
-    //       if (profile.cover && profile.coverPhoto) {
-    //         $('#profile').append(
-    //             $('<p><img src=\"' + profile.cover.coverPhoto.url + '\"></p>'));
-    //       }
-    //     });
-    //   $('#authOps').show('slow');
-    //   $('#gConnect').hide();
-    // }
+    }
 
   };
 
