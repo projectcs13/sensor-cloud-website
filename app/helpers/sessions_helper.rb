@@ -1,14 +1,23 @@
 module SessionsHelper
 
-	def access_token
+	def openid_metadata
 		session[:token].access_token
+	end
+
+	def gen_token_pair(user)
+		token_pair = TokenPair.new
+		token_pair.access_token  = user.access_token
+		# token_pair.refresh_token = user.refresh_token
+		token_pair.expires_in    = 3600
+		token_pair.issued_at     = Time.now
+		session[:token] = token_pair
 	end
 
 	def sign_in(user)
 		remember_token = User.new_remember_token
 		cookies.permanent[:remember_token] = remember_token
 		user.update_attribute("remember_token", User.encrypt(remember_token))
-		self.current_user = user
+		@current_user = user
 	end
 
 	def signed_in?
