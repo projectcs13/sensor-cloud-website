@@ -3,15 +3,15 @@ class StaticPagesController < ApplicationController
   def home
   	@home_page = true
 
-		sort = { "user_ranking.average" => "desc" }
-		query = { match_all: {} }
-		res = Api.post_frontend "/_search?from=0&size=10", {sort: sort, query: query}
-		@streams = res["body"]["streams"]["hits"]["hits"]
+    sort = { "user_ranking.average" => "desc" }
+    query = { match_all: {} }
+    res = Api.post "/_search?from=0&size=10", {sort: sort, query: query}, ACCESS_TOKEN
+    @streams = res["body"]["streams"]["hits"]["hits"]
 
-		q = "stream_id="
-		@streams.each do |stream| q = q + "," + "#{stream['_id']}" end
+    q = "stream_id="
+    @streams.each do |stream| q = q + "," + "#{stream['_id']}" end
 
-		res = Api.get_frontend "/_history?#{q}&size=1"
+		res = Api.get "/_history?#{q}&size=1", ACCESS_TOKEN
 
 		@values_ = res["body"]["history"]
 
