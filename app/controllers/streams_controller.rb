@@ -7,7 +7,7 @@ class StreamsController < ApplicationController
   before_action :signed_in_user,   only: [:index, :edit, :update, :destroy]
 
   def index
-    res = Api.get "/users/#{params[:id]}/streams", access_token
+    res = Api.get "/users/#{params[:id]}/streams", openid_metadata
     @streams = res["body"]["streams"]
   end
 
@@ -24,14 +24,18 @@ class StreamsController < ApplicationController
 
   def show
     @stream_id = params[:id]
-    res = Api.get "/streams/#{@stream_id}", access_token
+    res = Api.get "/streams/#{@stream_id}", openid_metadata
+    @stream = Stream.new
+    res["body"].each do |k, v|
+      @stream.send("#{k}=", v)
+    end
     stream_owner_id = res["body"]["user_id"]
     @stream_owner = User.find_by(username: stream_owner_id)
 
     @triggers = nil
     if signed_in? and current_user.username == @stream_owner.username then
       triggers = "/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers"
-      response = Api.get triggers, access_token
+      response = Api.get triggers, openid_metadata
       @triggers = response['body']['triggers']
     end
     @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
@@ -39,26 +43,26 @@ class StreamsController < ApplicationController
     @prediction = {:in => "50", :out => "25"}
     @polling_history = nil
     if res["body"]["polling"] == true then
-      res2 = Api.get "/streams/#{@stream_id}/pollinghistory", access_token
+      res2 = Api.get "/streams/#{@stream_id}/pollinghistory", openid_metadata
       @polling_history = res2["body"]["history"]
       sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
       @polling_history = sorted_history
     end
 
-    res = Api.get "/streams/#{params[:id]}/data/_count", access_token
+    res = Api.get "/streams/#{params[:id]}/data/_count", openid_metadata
     @count_history = res["body"]["count"]
   end
 
   def suggest
     uri = ERB::Util.url_encode params[:model]
 
-    res = Api.get "/suggest/#{uri}?size=10", access_token
+    res = Api.get "/suggest/#{uri}?size=10", openid_metadata
     data = if res["status"] == 404 then {} else res["body"]["suggestions"] end
     render :json => data, :status => res["status"]
   end
 
   def fetchResource
-    res = Api.get "/resources/#{params[:id]}", access_token
+    res = Api.get "/resources/#{params[:id]}", openid_metadata
     render :json => res["body"], :status => res["status"]
   end
 
@@ -87,7 +91,7 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
       if @stream.valid?
-        res = Api.post "/users/#{@user.username}/streams", @stream.attributes, access_token
+        res = Api.post "/users/#{@user.username}/streams", @stream.attributes, openid_metadata
         res["response"].on_complete do
           if res["status"] == 200
 
@@ -121,7 +125,7 @@ class StreamsController < ApplicationController
 
     respond_to do |format|
       stream_id = params[:id]
-      res = Api.put "/streams/#{stream_id}", @stream.attributes, access_token
+      res = Api.put "/streams/#{stream_id}", @stream.attributes, openid_metadata
 
       res["response"].on_complete do
         if res["status"] == 200 and @stream.valid?
@@ -165,7 +169,7 @@ class StreamsController < ApplicationController
 
   def destroyAll
     @user = current_user
-    res = Api.delete "/users/#{@user.username}/streams/", nil, access_token
+    res = Api.delete "/users/#{@user.username}/streams/", nil, openid_metadata
 
     # TODO
     # The API is currently sending back the response before the database has
@@ -181,7 +185,7 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = Api.get "/streams/#{params[:id]}/data/_search", access_token
+    res = Api.get "/streams/#{params[:id]}/data/_search", openid_metadata
     respond_to do |format|
       format.json { render json: res["body"], status: res["status"] }
     end
@@ -191,7 +195,7 @@ class StreamsController < ApplicationController
 
   def fetch_prediction
     prediction = "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
-    res = Api.get prediction, access_token
+    res = Api.get prediction, openid_metadata
     logger.debug "S:"
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
@@ -199,7 +203,7 @@ class StreamsController < ApplicationController
   end
 
   def fetch_datapreview
-    res = Api.get "#{params[:uri]}", access_token
+    res = Api.get "#{params[:uri]}", openid_metadata
     respond_to do |format|
       format.json { render json: res["body"], status: res["status"] }
     end
