@@ -6,19 +6,19 @@ class VstreamsController < ApplicationController
 
   def index
     cid = current_user.username
-    res = Api.get "/users/#{params[:user_id]}/vstreams"
+    res = Api.get "/users/#{params[:user_id]}/vstreams", openid_metadata
     @vstreams = res['body']['vstreams']
     @count = @vstreams.length
   end
 
   def show
-		res = Api.get "/vstreams/#{params[:id]}"
+		res = Api.get "/users/#{params[:user_id]}/vstreams/#{params[:id]}", openid_metadata
 		vstream_owner_id = res['body']['user_id']
 		@vstream_owner = User.find_by(username: vstream_owner_id)
     @triggers = nil
-    
+
     if signed_in? and current_user.username == @vstream_owner.username then
-      response = Api.get("/users/#{@vstream_owner.username}/vstreams/#{params[:id]}/triggers")
+      response = Api.get "/users/#{@vstream_owner.username}/vstreams/#{params[:id]}/triggers", openid_metadata
       @triggers = response['body']['triggers']
     end
     @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
@@ -47,7 +47,7 @@ class VstreamsController < ApplicationController
     respond_to do |format|
       vstream_id = params[:id]
       logger.debug "these are the parameters #{@vstream.attributes}"
-      res = Api.put "/vstreams/#{vstream_id}", @vstream.attributes
+      res = Api.put "/vstreams/#{vstream_id}", @vstream.attributes, openid_metadata
 
       res["response"].on_complete do
         if res["status"] == 200 and @vstream.valid?
@@ -97,15 +97,15 @@ class VstreamsController < ApplicationController
   end
 
   def create2
-    req_body = { "tags"             => params[:tags], 
-                 "user_id"          => params[:user_id], 
-                 "name"             => params[:name], 
+    req_body = { "tags"             => params[:tags],
+                 "user_id"          => params[:user_id],
+                 "name"             => params[:name],
                  "description"      => params[:description],
-                 "streams_involved" => JSON.parse(params[:streams_involved]), 
+                 "streams_involved" => JSON.parse(params[:streams_involved]),
                  "timestampfrom"    => params[:starting_date],
                  "function"         => JSON.parse(params[:function]) }
 
-    res = Api.post("/vstreams", req_body)
+    res = Api.post "/vstreams", req_body, openid_metadata
 
     respond_to do |format|
       json = res['body']
@@ -116,14 +116,14 @@ class VstreamsController < ApplicationController
   end
 
   def fetch_datapoints
-    res = Api.get "/vstreams/#{params[:id]}/data/_search"
+    res = Api.get "/vstreams/#{params[:id]}/data/_search", openid_metadata
     respond_to do |format|
       format.json { render json: res['body'], status: res['status'] }
     end
   end
 
   def fetch_prediction
-    res = Api.get "/vstreams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
+    res = Api.get "/vstreams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}", openid_metadata
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
@@ -150,7 +150,7 @@ class VstreamsController < ApplicationController
 		end
 
     def correct_user
-      res = Api.get "/vstreams/#{params[:id]}"
+      res = Api.get "/vstreams/#{params[:id]}", openid_metadata
       @stream_owner_id = res['body']['user_id']
       @user = User.find_by_username(@stream_owner_id)
       redirect_to(root_url) unless current_user?(@user)
