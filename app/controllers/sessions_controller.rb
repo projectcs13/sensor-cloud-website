@@ -44,14 +44,13 @@ class SessionsController < ApplicationController
 				end
 
 				sign_in user
-				logger.debug "user signed in"
-				logger.debug "Signed_in? #{signed_in?}"
 				render json: {"url" => "/users/#{user.username}/streams"}, status: 200
 			end
 		end
 	end
 
 	def auth_openid_disconnect
+		# access_token = Api.renew_access_token "l9kvXPzMLEek0ynvi9f_AA3EnkxiJ6mJa3j2A99L0c4"
 		sign_out
 		revoke_access_token
 		render json: {"success" => "true"}, status: 200
@@ -77,7 +76,7 @@ class SessionsController < ApplicationController
 
 			# Serialize and store the token in the user's session.
 			token_pair = TokenPair.new
-			token_pair.update_token!($client.authorization)
+			token_pair.update_token! $client.authorization
 			session[:token] = token_pair
 			logger.debug "token_pair.to_hash"
 			logger.debug token_pair.to_hash
@@ -124,39 +123,30 @@ class SessionsController < ApplicationController
 		@state = session[:state]
 	end
 
-	def gen_token_pair(user)
-		token_pair = TokenPair.new
-		token_pair.access_token  = user.access_token
-		token_pair.refresh_token = user.refresh_token
-		token_pair.expires_in    = 3599
-		token_pair.issued_at     = Time.now
-		session[:token] = token_pair
-	end
-
-	def store_user(json)
+	def store_user json
 		user = User.new
-		user.email = json["id"] + "@openid.ericsson"
-		user.username = json["id"]
-		user.firstname = json["name"]["givenName"]
-		user.lastname = json["name"]["familyName"]
+		user.email       = json["id"] + "@openid.ericsson"
+		user.username    = json["id"]
+		user.firstname   = json["name"]["givenName"]
+		user.lastname    = json["name"]["familyName"]
 		user.description = ""
-		user.password = "pa55w0rd"
-		user.private = false
+		user.password    = "pa55w0rd"
+		user.private     = false
 		user.save
 		user
 	end
 
-	def load_from_db(json)
+	def load_from_db json
 		user_email = json["id"] + "@openid.ericsson"
 		User.find_by_email user_email
 	end
 
-	def store_on_remote_db(user)
+	def store_on_remote_db user
 		# data = user.attributes.slice("username", "email", "password", "firstname", "lastname", "description", "private")
 		data = {}
 		attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
 		attrs.each do |attr| data[attr] = user.send(attr) end
-		data["access_token"] = session[:token].to_hash[:access_token]
+		data["access_token"] = openid_metadata
 		Api.post "/users", data, ""
 	end
 end
