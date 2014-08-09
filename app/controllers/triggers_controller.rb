@@ -5,11 +5,13 @@ class TriggersController < ApplicationController
 		@username = current_user.username
 
 		res = Api.get "/users/#{@username}/streams", openid_metadata
+		check_new_token res
 		@streams = res['body']['streams']
 		@stream_ids = {}
 		@streams.each { |e| @stream_ids[e['name']] = e['id'] }
 
 		res = Api.get "/users/#{@username}/vstreams", openid_metadata
+		check_new_token res
 
 		logger.debug "*** res (vstreams): #{res} ***"
 
@@ -53,6 +55,7 @@ class TriggersController < ApplicationController
 			logger.debug "*** create_trigger: #{trigger_params} ***"
 
 			res = Api.post "/users/#{@username}/triggers/add", trigger_params, openid_metadata
+			check_new_token res
 
 			respond_to do |format|
 				format.html { redirect_to triggers_path }
@@ -70,6 +73,7 @@ class TriggersController < ApplicationController
 		logger.debug params
 		user_id = params["id"]
 		res = Api.get "/users/#{user_id}/triggers", openid_metadata
+		check_new_token res
 		if res['status'] == 200
 			@triggers = res['body']['triggers']
 			logger.debug "*** @triggers: #{@triggers} ***"
@@ -83,11 +87,13 @@ class TriggersController < ApplicationController
 			end
 
 			res = Api.get "/users/#{user_id}/streams", openid_metadata
+			check_new_token res
 			@streams = res['body']['streams']
 			@stream_names = {}
 			@streams.each { |e| @stream_names[e['id']] = e['name'] }
 
 			res = Api.get "/users/#{user_id}/vstreams", openid_metadata
+			check_new_token res
 			@vstreams = res['body']['vstreams']
 			@vstream_names = {}
 			@vstreams.each { |e| @vstream_names[e['id']] = e['name'] }
@@ -116,7 +122,7 @@ class TriggersController < ApplicationController
 		end
 		@trigger[:uri] = @trigger[:output_id] if @trigger[:output_type] == "uri"
 		res = Api.post "/users/#{@username}/triggers/remove", @trigger, openid_metadata
-
+		check_new_token res
 		respond_to do |format|
 		  format.html { redirect_to :back }
 		  format.json { head :no_content }

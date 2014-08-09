@@ -7,18 +7,21 @@ class VstreamsController < ApplicationController
   def index
     cid = current_user.username
     res = Api.get "/users/#{params[:user_id]}/vstreams", openid_metadata
+    check_new_token res
     @vstreams = res['body']['vstreams']
     @count = @vstreams.length
   end
 
   def show
 		res = Api.get "/users/#{params[:user_id]}/vstreams/#{params[:id]}", openid_metadata
+    check_new_token res
 		vstream_owner_id = res['body']['user_id']
 		@vstream_owner = User.find_by(username: vstream_owner_id)
     @triggers = nil
 
     if signed_in? and current_user.username == @vstream_owner.username then
       response = Api.get "/users/#{@vstream_owner.username}/vstreams/#{params[:id]}/triggers", openid_metadata
+      check_new_token response
       @triggers = response['body']['triggers']
     end
     @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
@@ -48,7 +51,7 @@ class VstreamsController < ApplicationController
       vstream_id = params[:id]
       logger.debug "these are the parameters #{@vstream.attributes}"
       res = Api.put "/vstreams/#{vstream_id}", @vstream.attributes, openid_metadata
-
+      check_new_token res
       res["response"].on_complete do
         if res["status"] == 200 and @vstream.valid?
           # TODO
@@ -106,6 +109,7 @@ class VstreamsController < ApplicationController
                  "function"         => JSON.parse(params[:function]) }
 
     res = Api.post "/vstreams", req_body, openid_metadata
+    check_new_token res
 
     respond_to do |format|
       json = res['body']
@@ -117,6 +121,7 @@ class VstreamsController < ApplicationController
 
   def fetch_datapoints
     res = Api.get "/vstreams/#{params[:id]}/data/_search", openid_metadata
+    check_new_token res
     respond_to do |format|
       format.json { render json: res['body'], status: res['status'] }
     end
@@ -124,6 +129,7 @@ class VstreamsController < ApplicationController
 
   def fetch_prediction
     res = Api.get "/vstreams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}", openid_metadata
+    check_new_token res
     respond_to do |format|
       format.js { render "fetch_prediction", :locals => {:data => res["body"].to_json} }
     end
@@ -151,6 +157,7 @@ class VstreamsController < ApplicationController
 
     def correct_user
       res = Api.get "/vstreams/#{params[:id]}", openid_metadata
+      check_new_token res
       @stream_owner_id = res['body']['user_id']
       @user = User.find_by_username(@stream_owner_id)
       redirect_to(root_url) unless current_user?(@user)

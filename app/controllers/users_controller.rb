@@ -18,9 +18,14 @@ class UsersController < ApplicationController
 			redirect_to notfound_path
 		else
 			res = Api.get "/users/#{@user.username}/streams", openid_metadata
+			check_new_token res
+
 			@streams = res["body"]["streams"]
 			@nb_streams = @streams.length
+
 			res2 = Api.get "/users/#{@user.username}", openid_metadata
+			check_new_token res2
+
 			@notifications = res2["body"]["notifications"]
 			sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
 			@notifications = sorted
@@ -32,10 +37,12 @@ class UsersController < ApplicationController
 		@user = User.find_by_username(params[:id])
 		cid = current_user.username
 		res = Api.get "/users/#{cid}", openid_metadata
+		check_new_token res
 		@subscriptions = res["body"]["subscriptions"]
 		@stream_ids = @subscriptions.map { |e| e["stream_id"] }
 		@streams = @stream_ids.map do |sid|
 			res = Api.get "/streams/#{sid}", openid_metadata
+			check_new_token res
 			res["body"]
 		end
 	end
@@ -54,32 +61,23 @@ end
 		if @user.save
 			sign_in @user
 			userdata = params[:user].slice(:username, :email, :password, :firstname, :lastname, :description, :private)
-			res = Api.post "/users", userdata, ""
-			# @user.send("access_token=", acc_token)
+			res = Api.post "/users", userdata, {}
+			check_new_token res
+
+			# Store security tokens locally
 			@user.access_token = res["body"]["access_token"]
+			@user.refresh_token = res["body"]["refresh_token"]
+			@user.update_attributes access_token: @user.access_token, refresh_token: @user.refresh_token
 			gen_token_pair @user
 
-			# session[:token].access_token = res["body"]["access_token"]
 			flash[:success] = "Welcome to the Sample App!"
 			redirect_to @user
-
-			# if res.status == 200
-			# 	flash[:success] = "Welcome to the Sample App!"
-			# 	access_token = res["body"]["access_token"]
-			# 	Api.retrieve_token_info access_token
-			# 	redirect_to @user
-			# else
-			# 	render 'new'
-			# end
 		else
 			render 'new'
 		end
 	end
 
 	def update
-		# if signed_in_openid?
-
-		# end
 		params[:user][:private] = !(params[:user][:private].to_i).zero?
 		if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
@@ -122,4 +120,5 @@ end
 		def admin_user
 			redirect_to(root_url) unless current_user.admin?
 		end
+
 end
