@@ -1,4 +1,4 @@
-def download(remoteusers)
+def save_remote remoteusers
 	remoteusers.each do |user|
 		fields = ['id', 'notifications', 'rankings', 'subscriptions', 'triggers', 'admin']
 		fields.each { |attr| user.delete attr }
@@ -18,14 +18,14 @@ def download(remoteusers)
 end
 
 
-def delete_old(remoteusers)
+def delete_old remoteusers
 	User.all.each do |user|
 		matches = remoteusers.select { |ru| user.username == ru['username'] }
 		user.destroy if matches.length == 0
 	end
 end
 
-def authenticate
+def authenticate username
 	# Frontend performs API's Authentication
 	puts "There is not any refresh_token available locally to perform authenticated API calls."
 	puts "Authenticating..."
@@ -40,42 +40,42 @@ def authenticate
 	puts "\nCopy and type here the Refresh Token"
 	refresh_token = gets.chomp
 
-	{ :refresh_token => refresh_token, :access_token => access_token }
+	{ refresh_token: refresh_token, access_token: access_token, username: username }
 end
 
+
 unless SensorCloud.rake?
-	FRONTEND_USERNAME = "107908217220817548513"		# Frontend unique identifier
+	# TODO Grab this ID from a config file
+	frontend_username = "107908217220817548513"		# Frontend unique identifier
 
-	user = User.find_by_username FRONTEND_USERNAME
-	refresh_token = if user then user.refresh_token else nil end
-	access_token  = if user then user.access_token  else nil end
-
-	unless (access_token and refresh_token)
-		tokens = authenticate
-		access_token  = tokens[:access_token]
-		refresh_token = tokens[:refresh_token]
+	user = User.find_by_username frontend_username
+	unless user
+		token = authenticate frontend_username
+	else
+		token = {
+      :username      => user.username,
+      :access_token  => user.access_token,
+      :refresh_token => user.refresh_token
+    }
 	end
 
 	# Get all users
-	res = Api.get "/users/?admin=true", access_token
-	if res["status"] != 200		                         # If the access token is old, renew it
-		res = Api.renew_access_token refresh_token
-		access_token = res["body"]["access_token"]
-		if user.update_attributes access_token: access_token then user.save end
-		res = Api.get "/users/?admin=true", access_token
-		if res["status"] != 200											     # If response is not ok yet, there are no remote users
-			tokens = authenticate                          # Then, authenticate on the backend
-			access_token  = tokens[:access_token]
-			refresh_token = tokens[:refresh_token]
-		end
+	res = Api.get "/users/?admin=true", token
+	new_access_token = res["body"]["new_access_token"]
+
+	if new_access_token                                # If there's a new access token, keep it
+	  token[:access_token] = new_access_token
+		user.save if user.update_attributes access_token: new_access_token
 	end
 
-	ACCESS_TOKEN = access_token   # Convert the var into a public constant
-
-	remote_users = res["body"]["users"]								 # Sync local DB with remote
-	unless remote_users.nil?
-		download remote_users
-		delete_old remote_users
+	# Sync local DB with remote data
+	users = res["body"]["users"]
+	unless users.nil?
+		save_remote users
+		delete_old users
   end
+
+	# Finally, make the token global to be used in other controllers (i.e. "static_pages_controller.rb")
+	FRONTEND_TOKEN = token
 
 end
