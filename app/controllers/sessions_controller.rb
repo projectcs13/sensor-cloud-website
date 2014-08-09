@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
 				logger.debug "state does not match"
 				render json: {"error" => "The client state does not match the server state."}, status: 401
 			else
-				fetch_access_token if not session[:token]
+				fetch_access_token(params[:refresh_token]) if not session[:token]
 				# fetch_access_token
 				json = fetch_user_info
 				user = load_from_db json
@@ -57,7 +57,7 @@ class SessionsController < ApplicationController
 	end
 
 	private
-		def fetch_access_token
+		def fetch_access_token refresh_token
 			# Upgrade the code into a token object.
 			$authorization.code = request.body.read
 			$authorization.fetch_access_token!
@@ -77,9 +77,8 @@ class SessionsController < ApplicationController
 			# Serialize and store the token in the user's session.
 			token_pair = TokenPair.new
 			token_pair.update_token! $client.authorization
+			token_pair.refresh_token = refresh_token
 			session[:token] = token_pair
-			logger.debug "token_pair.to_hash"
-			logger.debug token_pair.to_hash
 		end
 
 	def fetch_user_info
@@ -146,7 +145,8 @@ class SessionsController < ApplicationController
 		data = {}
 		attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
 		attrs.each do |attr| data[attr] = user.send(attr) end
-		data["access_token"] = openid_metadata
-		Api.post "/users", data, ""
+		data["access_token"]  = session[:token].access_token
+		data["refresh_token"] = session[:token].refresh_token
+		Api.post "/users", data, {}
 	end
 end
