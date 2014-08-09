@@ -42,22 +42,21 @@ var helper = (function() {
      *   https://developers.google.com/+/web/signin/server-side-flow
      */
     connectServer: function() {
-      state = $('#state').val();
+      state   = $('#state').val();
+      refresh = this.authResult['code'];
 
       $.ajax({
         type: 'POST',
-        url: window.location.origin + '/auth/in?state=' + state,
+        url: window.location.origin + '/auth/in?state=' + state + '&refresh_token=' + refresh,
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(res) {
           if (res.url) {
             window.location.href = res.url;
           }
         },
-        error: function(res) {
-          console.log(res);
-        },
+        error: console.log,
         processData: false,
-        data: this.authResult.code
+        data: this.authResult['code']
       });
     }
 
