@@ -67,6 +67,14 @@
       </span>
     <%end%>
 
+    <%= form_tag url_for(controller: "streams", action: "fetch_semantics"), remote: true, method: 'get' do %>
+    <%= submit_tag "Export", class: "btn btn-primary", id: "semantics-btn"%>
+	<span>
+         Output format:
+        <%= select_tag :type, options_for_select(["ns3", "xml", "json-ld"]) %>
+      </span>
+    <%end%>
+
       <div id="prediction-description" class="pull-right">
         <span class="label prediction-80">80% Confidence interval</span>
         <span class="label prediction-95">95% Confidence interval</span>

@@ -18,6 +18,17 @@ module Api
 			resp.stringify_keys!
 		end
 
+		def semantics_get(url)
+			res = connect.get(url)
+			resp = res.to_hash
+			#render :text => resp[:body]
+			#send_data(resp[:body], :type => 'text/html', :filename => "export.txt",:status=>'200 OK')
+			#send_data resp[:body]
+			File.open("/home/iakovosk/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
+			#send_file '/home/iakovosk/semantics_output.txt'
+			resp.stringify_keys!
+		end
+
 		def post(url, body)
 			res = connect.post do |req|
 			  req.url url

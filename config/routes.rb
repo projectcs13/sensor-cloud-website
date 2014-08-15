@@ -51,6 +51,7 @@ SensorCloud::Application.routes.draw do
   get '/suggest/:model' => 'streams#suggest', model: /.*/
   get '/datapoints/:id' => 'streams#fetch_datapoints'
   get '/prediction/:id' => 'streams#fetch_prediction'
+  get '/semantics/:id' => 'streams#fetch_semantics'
   post '/preview'   => 'streams#fetch_datapreview'
 
   get '/filter'         => 'searches#filter'
