@@ -1,18 +1,19 @@
 SensorCloud::Application.routes.draw do
 
+  root 'static_pages#home'
 
   resources :users do
     member do
       get 'edit/edit_profile' => 'users#profile'
       get 'streams' => 'streams#index'
-      # get 'following' => 'users#following', as: :following
       get 'following' => 'users#following'
       get 'triggers' => 'triggers#index'
     end
   end
+
   resources :users do
     resources :vstreams
-  end  
+  end
 
   resources :streams do
     collection do
@@ -20,6 +21,7 @@ SensorCloud::Application.routes.draw do
       get '/new_from_resource' => :new_from_resource
       delete '/'               => :destroyAll
     end
+
     member do
       get 'predict' => :fetch_prediction
     end
@@ -30,19 +32,15 @@ SensorCloud::Application.routes.draw do
 	resources :sessions, only: [:new, :create, :destroy]
   resources :contacts, only: [:new, :create]
 
-  get '/triggers' => 'triggers#index'
+
+  get '/triggers'           => 'triggers#index'
   delete '/triggers/remove' => 'triggers#destroy'
-  get '/triggers/new' => 'triggers#new'
-  post '/triggers/create' => 'triggers#create'
-
-
-  root  'static_pages#home'
-
+  get '/triggers/new'       => 'triggers#new'
+  post '/triggers/create'   => 'triggers#create'
 
   get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
   get '/vsprediction/:id' => 'vstreams#fetch_prediction'
   post '/users/:user_id/vstreams/create2' => 'vstreams#create2'
-
 
   post '/relationships/unfollow' => 'relationships#destroy'
   post '/relationships/follow'   => 'relationships#create'
@@ -51,7 +49,7 @@ SensorCloud::Application.routes.draw do
   get '/suggest/:model' => 'streams#suggest', model: /.*/
   get '/datapoints/:id' => 'streams#fetch_datapoints'
   get '/prediction/:id' => 'streams#fetch_prediction'
-  post '/preview'   => 'streams#fetch_datapreview'
+  post '/preview'       => 'streams#fetch_datapreview'
 
   get '/filter'         => 'searches#filter'
   get '/autocomplete'   => 'searches#fetch_autocomplete'
@@ -59,9 +57,12 @@ SensorCloud::Application.routes.draw do
   put '/userranking'    => 'searches#update_user_ranking'
   post '/get_more_info' => 'searches#create'
 
-  get '/signup'     => 'users#new'
-  get '/signin'     => 'sessions#new'
-  delete '/signout' => 'sessions#destroy'
+  get    '/signup'   => 'users#new'
+  get    '/signin'   => 'sessions#new'
+  post   '/auth/in'  => 'sessions#auth_openid_connect'
+  get    '/auth/out' => 'sessions#auth_openid_disconnect'
+  delete '/auth/out' => 'sessions#auth_openid_disconnect'
+  delete '/signout'  => 'sessions#destroy'
 
   get '/terms'    => 'static_pages#terms'
   get '/privacy'  => 'static_pages#privacy'
