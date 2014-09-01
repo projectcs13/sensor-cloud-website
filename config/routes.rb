@@ -32,14 +32,13 @@ SensorCloud::Application.routes.draw do
 	resources :sessions, only: [:new, :create, :destroy]
   resources :contacts, only: [:new, :create]
 
-
   get '/triggers'           => 'triggers#index'
   delete '/triggers/remove' => 'triggers#destroy'
   get '/triggers/new'       => 'triggers#new'
   post '/triggers/create'   => 'triggers#create'
 
-  get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
-  get '/vsprediction/:id' => 'vstreams#fetch_prediction'
+  post '/preview'       => 'streams#fetch_datapreview'
+
   post '/users/:user_id/vstreams/create2' => 'vstreams#create2'
 
   post '/relationships/unfollow' => 'relationships#destroy'
@@ -49,7 +48,10 @@ SensorCloud::Application.routes.draw do
   get '/suggest/:model' => 'streams#suggest', model: /.*/
   get '/datapoints/:id' => 'streams#fetch_datapoints'
   get '/prediction/:id' => 'streams#fetch_prediction'
-  post '/preview'       => 'streams#fetch_datapreview'
+  get '/semantics/:id'  => 'streams#fetch_semantics'
+
+  get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
+  get '/vsprediction/:id' => 'vstreams#fetch_prediction'
 
   get '/filter'         => 'searches#filter'
   get '/autocomplete'   => 'searches#fetch_autocomplete'

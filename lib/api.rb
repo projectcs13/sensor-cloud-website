@@ -6,6 +6,13 @@ class Api
     connect.post("/users/_auth/").body
   end
 
+  def semantics_get url
+    res = connect.get url
+    resp = res.to_hash
+    File.open("/home/iakovosk/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
+    resp.stringify_keys!
+  end
+
   def self.get url, token
     make :get, url, nil, token
   end
@@ -73,5 +80,4 @@ class Api
       resp[:body] = JSON.parse resp[:body]
       resp.stringify_keys!
     end
-
 end

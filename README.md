@@ -1,8 +1,6 @@
-# Welcome to IoT-Framework
+# IoT-Framework GUI
 
-IoT-Framework is a computation engine for sensor stream data. 
-
-Note: This repository contains only the website for the IoT-Framework. In order to use it, you need to download and start the API hosted at https://github.com/projectcs13/sensor-cloud
+The IoT-Framework is a computation engine for the Internet of Things (IoT). It was developed jointly by Ericsson Research, the Swedish Institute of Computer Science (SICS) and Uppsala University in the scope of Project CS 2013. This repository contains the website (or GUI) for the IoT-Framework. In order to use it, you will also need the [IoT-Framework-engine](https://github.com/EricssonResearch/iot-framework-engine)
 
 ## Demo
 

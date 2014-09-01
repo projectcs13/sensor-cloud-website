@@ -212,6 +212,16 @@ class StreamsController < ApplicationController
     end
   end
 
+
+  def fetch_semantics
+    if "#{params[:type]}"=="ns3"
+	res = Api.semantics_get "http://localhost:5000/datapoints/#{params[:id]}"
+    else
+	res = Api.semantics_get "http://localhost:5000/datapoints/#{params[:id]}?format=#{params[:type]}"
+    end
+  end
+
+
   def fetch_datapreview
     res = Api.get "#{params[:uri]}", openid_metadata
     check_new_token res
