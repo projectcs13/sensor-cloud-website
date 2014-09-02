@@ -10,6 +10,8 @@ class StreamsController < ApplicationController
     res = Api.get "/users/#{params[:id]}/streams", openid_metadata
     check_new_token res
     @streams = res["body"]["streams"]
+    logger.debug "STREAMS: #{@streams}"
+    @streams
   end
 
   def new
@@ -87,7 +89,7 @@ class StreamsController < ApplicationController
     end
 
     ['accuracy', 'min_val', 'max_val', 'polling_freq'].each do |method|
-      if @stream.send(method) == "" then @stream.send(method, nil) end
+      if @stream.send(method) == "" then @stream.send("#{method}=", nil) end
       if method == 'polling_freq'   then @stream.polling_freq = @stream.polling_freq.to_i end
     end
   end
