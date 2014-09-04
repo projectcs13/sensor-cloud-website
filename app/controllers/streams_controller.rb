@@ -163,9 +163,8 @@ class StreamsController < ApplicationController
 
   def destroy
     @user = current_user
-    #@stream.destroy(_user_id: current_user.username)
-    @stream.destroy
-
+    res = Api.delete "/streams/#{params[:id]}", nil, openid_metadata
+    check_new_token res
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
@@ -247,7 +246,7 @@ class StreamsController < ApplicationController
         redirect_to("/streams/#{params[:id]}")
       else
         stream = Stream.find(params[:id], :_user_id => current_user.username)
-        user = User.find_by_username(stream.user_id)
+        user = User.find_by_username(current_user.username)
         redirect_to("/streams/#{params[:id]}") unless current_user?(user)
       end
     end
