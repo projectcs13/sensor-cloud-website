@@ -66,14 +66,15 @@ SensorCloud::Application.routes.draw do
   delete '/auth/out' => 'sessions#auth_openid_disconnect'
   delete '/signout'  => 'sessions#destroy'
 
-  get '/terms'    => 'static_pages#terms'
-  get '/privacy'  => 'static_pages#privacy'
-  get '/security' => 'static_pages#security'
-  get '/api'      => 'static_pages#api'
-  get '/faq'      => 'static_pages#faq'
-  get '/manual'   => 'static_pages#manual'
-  get '/help'     => 'static_pages#help'
-  get '/about'    => 'static_pages#about'
+  get '/terms'              => 'static_pages#terms'
+  get '/privacy'            => 'static_pages#privacy'
+  get '/security'           => 'static_pages#security'
+  get '/api'                => 'static_pages#api'
+  get '/faq'                => 'static_pages#faq'
+  get '/manual'             => 'static_pages#manual'
+  get '/help'               => 'static_pages#help'
+  get '/about'              => 'static_pages#about'
+  get '/not_allowed_access' => 'static_pages#not_allowed_access'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
