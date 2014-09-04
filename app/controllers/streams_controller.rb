@@ -33,35 +33,36 @@ class StreamsController < ApplicationController
       flash[:warning] = "Not authorized access to private resources."
       redirect_to "/not_allowed_access"
     else
-    @stream = Stream.new
-    res["body"].each do |k, v|
-      @stream.send("#{k}=", v)
-    end
-    stream_owner_id = res["body"]["user_id"]
-    @stream_owner = User.find_by(username: stream_owner_id)
+      @stream = Stream.new
+      res["body"].each do |k, v|
+        @stream.send("#{k}=", v)
+      end
+      stream_owner_id = res["body"]["user_id"]
+      @stream_owner = User.find_by(username: stream_owner_id)
 
-    @triggers = nil
-    if signed_in? and current_user.username == @stream_owner.username then
-      triggers = "/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers"
-      response = Api.get triggers, openid_metadata
-      check_new_token response
-      @triggers = response['body']['triggers']
-    end
-    @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
+      @triggers = nil
+      if signed_in? and current_user.username == @stream_owner.username then
+        triggers = "/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers"
+        response = Api.get triggers, openid_metadata
+        check_new_token response
+        @triggers = response['body']['triggers']
+      end
+      @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
 
-    @prediction = {:in => "50", :out => "25"}
-    @polling_history = nil
-    if res["body"]["polling"] == true then
-      res2 = Api.get "/streams/#{@stream_id}/pollinghistory", openid_metadata
-      check_new_token res2
-      @polling_history = res2["body"]["history"]
-      sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
-      @polling_history = sorted_history
-    end
+      @prediction = {:in => "50", :out => "25"}
+      @polling_history = nil
+      if res["body"]["polling"] == true then
+        res2 = Api.get "/streams/#{@stream_id}/pollinghistory", openid_metadata
+        check_new_token res2
+        @polling_history = res2["body"]["history"]
+        sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
+        @polling_history = sorted_history
+      end
 
-    res = Api.get "/streams/#{params[:id]}/data/_count", openid_metadata
-    check_new_token res
-    @count_history = res["body"]["count"]
+      res = Api.get "/streams/#{params[:id]}/data/_count", openid_metadata
+      check_new_token res
+      @count_history = res["body"]["count"]
+    end
   end
 
   def suggest

@@ -30,7 +30,7 @@ class UsersController < ApplicationController
 				check_new_token res2
 
 				@notifications = res2["body"]["notifications"]
-				sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
+				sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse if @notifications
 				@notifications = sorted
 			end
 		end
