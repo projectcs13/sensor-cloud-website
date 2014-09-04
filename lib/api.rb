@@ -2,11 +2,13 @@ require 'json'
 
 class Api
 
+  @STATUS_AUTHENTICATION_FAIL = 498
+
   def self.authenticate
     connect.post("/users/_auth/").body
   end
 
-  def semantics_get url
+  def self.semantics_get url
     res = connect.get url
     resp = res.to_hash
     File.open("/home/iakovosk/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
@@ -26,17 +28,15 @@ class Api
   end
 
   def self.delete url, body, token
-    make :delete, url, body, tokendata["access_token"] = session[:token].access_token
+    make :delete, url, body, token
   end
 
   private
     def self.make method, url, body, token
-      # puts "token"
-      # puts token["access_token"]
       res = request method, url, body, token[:access_token]
 
       parsed = parse_JSON_response res
-      if parsed['status'] == 498   # Token not valid
+      if parsed['status'] == @STATUS_AUTHENTICATION_FAIL
         new_access_token = renew_access_token token
 
         res = request method, url, body, new_access_token
