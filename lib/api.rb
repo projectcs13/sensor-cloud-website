@@ -3,6 +3,7 @@ require 'json'
 class Api
 
   @STATUS_AUTHENTICATION_FAIL = 498
+  @STATUS_AUTHORIZATION_FAIL  = 401
 
   def self.authenticate
     connect.post("/users/_auth/").body
@@ -11,7 +12,7 @@ class Api
   def self.semantics_get url
     res = connect.get url
     resp = res.to_hash
-    File.open("/home/iakovosk/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
+    File.open("#{Dir.pwd}/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
     resp.stringify_keys!
   end
 
