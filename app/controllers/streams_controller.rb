@@ -29,6 +29,10 @@ class StreamsController < ApplicationController
     @stream_id = params[:id]
     res = Api.get "/streams/#{@stream_id}", openid_metadata
     check_new_token res
+    if res["status"] == 401
+      flash[:warning] = "Not authorized access to private resources."
+      redirect_to "/not_allowed_access"
+    else
     @stream = Stream.new
     res["body"].each do |k, v|
       @stream.send("#{k}=", v)

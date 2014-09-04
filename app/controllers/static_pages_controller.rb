@@ -29,6 +29,9 @@ class StaticPagesController < ApplicationController
 		end
   end
 
+  def not_allowed_access
+  end
+
   def help
   end
 
