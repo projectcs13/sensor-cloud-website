@@ -4,12 +4,14 @@ class TriggersController < ApplicationController
 		@trigger = Trigger.new
 		@username = current_user.username
 
-		res = Api.get("/users/#{@username}/streams")
+		res = Api.get "/users/#{@username}/streams", openid_metadata
+		check_new_token res
 		@streams = res['body']['streams']
 		@stream_ids = {}
 		@streams.each { |e| @stream_ids[e['name']] = e['id'] }
 
-		res = Api.get("/users/#{@username}/vstreams")
+		res = Api.get "/users/#{@username}/vstreams", openid_metadata
+		check_new_token res
 
 		logger.debug "*** res (vstreams): #{res} ***"
 
@@ -27,7 +29,7 @@ class TriggersController < ApplicationController
 				trigger_params['min'] = trigger_params['min'].to_f
 				trigger_params['max'] = trigger_params['max'].to_f
 				input = [trigger_params['min'], trigger_params['max']]
-				if trigger_params['uri'].nil? 
+				if trigger_params['uri'].nil?
 					trigger_params = {'function' => 'span', 'input' => input, 'selected_resource' => trigger_params['selected_resource'], 'streams' => trigger_params['streams'], 'vstreams' => trigger_params['vstreams'] }
 				else
 					trigger_params = {'function' => 'span', 'input' => input, 'selected_resource' => trigger_params['selected_resource'], 'streams' => trigger_params['streams'], 'vstreams' => trigger_params['vstreams'], 'uri' => trigger_params['uri'] }
@@ -52,7 +54,8 @@ class TriggersController < ApplicationController
 
 			logger.debug "*** create_trigger: #{trigger_params} ***"
 
-			res = Api.post("/users/#{@username}/triggers/add", trigger_params)
+			res = Api.post "/users/#{@username}/triggers/add", trigger_params, openid_metadata
+			check_new_token res
 
 			respond_to do |format|
 				format.html { redirect_to triggers_path }
@@ -65,30 +68,38 @@ class TriggersController < ApplicationController
 	end
 
 	def index
-		@username = current_user.username
-		res = Api.get("/users/#{@username}/triggers")
-		@triggers = res['body']['triggers']
-		logger.debug "*** @triggers: #{@triggers} ***"
+		# @username = current_user.username
+		# res = Api.get "/users/#{@username}/triggers", openid_metadata
+		logger.debug params
+		user_id = params["id"]
+		res = Api.get "/users/#{user_id}/triggers", openid_metadata
+		check_new_token res
+		if res['status'] == 200
+			@triggers = res['body']['triggers']
+			logger.debug "*** @triggers: #{@triggers} ***"
 
-		@triggers.each do |e|
-			if e['streams'].empty?
-				e['streams'] = ""
-			else
-				e['vstreams'] = ""
+			@triggers.each do |e|
+				if e['streams'].empty?
+					e['streams'] = ""
+				else
+					e['vstreams'] = ""
+				end
 			end
+
+			res = Api.get "/users/#{user_id}/streams", openid_metadata
+			check_new_token res
+			@streams = res['body']['streams']
+			@stream_names = {}
+			@streams.each { |e| @stream_names[e['id']] = e['name'] }
+
+			res = Api.get "/users/#{user_id}/vstreams", openid_metadata
+			check_new_token res
+			@vstreams = res['body']['vstreams']
+			@vstream_names = {}
+			@vstreams.each { |e| @vstream_names[e['id']] = e['name'] }
+
+			@functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
 		end
-
-		res = Api.get("/users/#{@username}/streams")
-		@streams = res['body']['streams']
-		@stream_names = {}
-		@streams.each { |e| @stream_names[e['id']] = e['name'] }
-
-		res = Api.get("/users/#{@username}/vstreams")
-		@vstreams = res['body']['vstreams']
-		@vstream_names = {}
-		@vstreams.each { |e| @vstream_names[e['id']] = e['name'] }
-		
-		@functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
 	end
 
 	def show
@@ -110,8 +121,8 @@ class TriggersController < ApplicationController
 			@trigger[:input].map! { |e| e.to_f }
 		end
 		@trigger[:uri] = @trigger[:output_id] if @trigger[:output_type] == "uri"
-		res = Api.post("/users/#{@username}/triggers/remove", @trigger)
-
+		res = Api.post "/users/#{@username}/triggers/remove", @trigger, openid_metadata
+		check_new_token res
 		respond_to do |format|
 		  format.html { redirect_to :back }
 		  format.json { head :no_content }
