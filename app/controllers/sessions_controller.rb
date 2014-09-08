@@ -33,11 +33,15 @@ class SessionsController < ApplicationController
 				logger.debug "state does not match"
 				render json: {"error" => "The client state does not match the server state."}, status: 401
 			else
+				sign_out
+
 				fetch_openid_tokens if not session[:token]
 				json = fetch_user_info
 				user = load_from_db json
 
-				if not user
+				if user
+					renew_access_token user
+				else
 					user = store_user json
 					store_on_remote_db user
 				end
@@ -55,6 +59,13 @@ class SessionsController < ApplicationController
 	end
 
 	private
+		def renew_access_token user
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
+			user.save
+			Api.renew_token user.access_token, user.refresh_token
+		end
+
 		def fetch_openid_tokens
 			# Upgrade the code into a token object.
 			$authorization.code = request.body.read
@@ -71,7 +82,6 @@ class SessionsController < ApplicationController
 			# Serialize and store the token in the user's session.
 			token_pair = TokenPair.new
 			token_pair.update_token! $client.authorization
-			token_pair.refresh_token = $client.authorization.refresh_token
 			session[:token] = token_pair
 			puts "token_pair.to_hash"
 			puts token_pair.to_hash
@@ -120,13 +130,15 @@ class SessionsController < ApplicationController
 
 		def store_user json
 			user = User.new
-			user.email       = json["id"] + "@openid.ericsson"
-			user.username    = json["id"]
-			user.firstname   = json["name"]["givenName"]
-			user.lastname    = json["name"]["familyName"]
-			user.description = ""
-			user.password    = "pa55w0rd"
-			user.private     = false
+			user.email         = json["id"] + "@openid.ericsson"
+			user.username      = json["id"]
+			user.firstname     = json["name"]["givenName"]
+			user.lastname      = json["name"]["familyName"]
+			user.description   = ""
+			user.password      = "pa55w0rd"
+			user.private       = false
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
 			user.save
 			user
 		end
@@ -137,7 +149,6 @@ class SessionsController < ApplicationController
 		end
 
 		def store_on_remote_db user
-			# data = user.attributes.slice("username", "email", "password", "firstname", "lastname", "description", "private")
 			data = {}
 			attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
 			attrs.each do |attr| data[attr] = user.send(attr) end

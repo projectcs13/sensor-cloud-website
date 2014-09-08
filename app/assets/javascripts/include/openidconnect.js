@@ -31,7 +31,8 @@ var helper = (function() {
         $('#authOps').hide('slow');
         $('#gConnect').show();
       }
-      console.log('authResult', authResult);
+      console.log('authResult');
+      console.log(authResult);
     },
 
     /**
@@ -47,7 +48,7 @@ var helper = (function() {
 
       $.ajax({
         type: 'POST',
-        url: window.location.origin + '/auth/in?state=' + state + '&refresh_token=' + refresh,
+        url: window.location.origin + '/auth/in?state=' + state,
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(res) {
           if (res.url) {

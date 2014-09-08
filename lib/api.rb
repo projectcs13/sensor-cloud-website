@@ -9,6 +9,15 @@ class Api
     connect.post("/users/_auth/").body
   end
 
+  def self.renew_token acc_token, ref_token
+    res = connect.post do |req|
+        req.url "/users/_renew_both_tokens"
+        req.headers["Access-Token"]  = acc_token
+        req.headers["Refresh-Token"] = ref_token
+      end
+    parse_JSON_response res
+  end
+
   def self.semantics_get url
     res = connect.get url
     resp = res.to_hash
