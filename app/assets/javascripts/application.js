@@ -24,3 +24,4 @@
 //= require frontpage
 //= require streams.new
 //= require map
+//= require 'include/openidconnect'
