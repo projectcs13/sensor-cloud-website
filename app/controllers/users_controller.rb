@@ -19,16 +19,20 @@ class UsersController < ApplicationController
 		else
 			res = Api.get "/users/#{@user.username}/streams", openid_metadata
 			check_new_token res
+			if res["status"] == 401
+				flash[:warning] = "Not authorized access to private resources."
+				redirect_to "/not_allowed_access"
+			else
+				@streams = res["body"]["streams"]
+				@nb_streams = @streams.length if @streams
 
-			@streams = res["body"]["streams"]
-			@nb_streams = @streams.length
+				res2 = Api.get "/users/#{@user.username}", openid_metadata
+				check_new_token res2
 
-			res2 = Api.get "/users/#{@user.username}", openid_metadata
-			check_new_token res2
-
-			@notifications = res2["body"]["notifications"]
-			sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse
-			@notifications = sorted
+				@notifications = res2["body"]["notifications"]
+				sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse if @notifications
+				@notifications = sorted
+			end
 		end
 	end
 
@@ -38,12 +42,17 @@ class UsersController < ApplicationController
 		cid = current_user.username
 		res = Api.get "/users/#{cid}", openid_metadata
 		check_new_token res
-		@subscriptions = res["body"]["subscriptions"]
-		@stream_ids = @subscriptions.map { |e| e["stream_id"] }
-		@streams = @stream_ids.map do |sid|
-			res = Api.get "/streams/#{sid}", openid_metadata
-			check_new_token res
-			res["body"]
+		if res["status"] == 401
+			flash[:warning] = "Not authorized access to private resources."
+			redirect_to "/not_allowed_access"
+		else
+			@subscriptions = res["body"]["subscriptions"]
+			@stream_ids = @subscriptions.map { |e| e["stream_id"] }
+			@streams = @stream_ids.map do |sid|
+				res = Api.get "/streams/#{sid}", openid_metadata
+				check_new_token res
+				res["body"]
+			end
 		end
 	end
 
