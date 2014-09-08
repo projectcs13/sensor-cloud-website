@@ -2,14 +2,26 @@ require 'json'
 
 class Api
 
+  @STATUS_AUTHENTICATION_FAIL = 498
+  @STATUS_AUTHORIZATION_FAIL  = 401
+
   def self.authenticate
     connect.post("/users/_auth/").body
   end
 
-  def semantics_get url
+  def self.renew_token acc_token, ref_token
+    res = connect.post do |req|
+        req.url "/users/_renew_both_tokens"
+        req.headers["Access-Token"]  = acc_token
+        req.headers["Refresh-Token"] = ref_token
+      end
+    parse_JSON_response res
+  end
+
+  def self.semantics_get url
     res = connect.get url
     resp = res.to_hash
-    File.open("/home/iakovosk/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
+    File.open("#{Dir.pwd}/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
     resp.stringify_keys!
   end
 
@@ -26,17 +38,15 @@ class Api
   end
 
   def self.delete url, body, token
-    make :delete, url, body, tokendata["access_token"] = session[:token].access_token
+    make :delete, url, body, token
   end
 
   private
     def self.make method, url, body, token
-      # puts "token"
-      # puts token["access_token"]
       res = request method, url, body, token[:access_token]
 
       parsed = parse_JSON_response res
-      if parsed['status'] == 498   # Token not valid
+      if parsed['status'] == @STATUS_AUTHENTICATION_FAIL
         new_access_token = renew_access_token token
 
         res = request method, url, body, new_access_token
