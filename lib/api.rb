@@ -77,7 +77,7 @@ class Api
 
     def self.renew_access_token token
       res = connect.post do |req|
-        req.url "http://localhost:8000/users/_renewtoken"
+        req.url "/users/_renewtoken"
         req.headers["Refresh-Token"] = token[:refresh_token]
         req.headers["Username"]      = token[:username]
       end
