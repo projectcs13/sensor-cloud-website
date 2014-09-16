@@ -15,7 +15,6 @@ module SessionsHelper
 	def check_new_token res
 		if res["new_access_token"]
 			current_user.access_token = res["new_access_token"]
-			# current_user.update_attributes access_token: current_user.access_token
 			current_user.save
  			gen_token_pair current_user
  		end
