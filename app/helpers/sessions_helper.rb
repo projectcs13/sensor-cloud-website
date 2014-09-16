@@ -13,9 +13,10 @@ module SessionsHelper
 	end
 
 	def check_new_token res
-		if res["body"]["new_access_token"]
-			current_user.access_token  = res["body"]["new_access_token"]
-			current_user.update_attributes access_token: current_user.access_token
+		if res["new_access_token"]
+			current_user.access_token = res["new_access_token"]
+			# current_user.update_attributes access_token: current_user.access_token
+			current_user.save
  			gen_token_pair current_user
  		end
 	end
@@ -24,8 +25,8 @@ module SessionsHelper
 		token_pair = TokenPair.new
 		token_pair.access_token  = user.access_token
 		token_pair.refresh_token = user.refresh_token
-		# token_pair.expires_in    = 3600
-		# token_pair.issued_at     = Time.now
+		token_pair.expires_in    = 3600
+		token_pair.issued_at     = Time.now
 		session[:token] = token_pair
 	end
 
