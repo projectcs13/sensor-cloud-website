@@ -59,7 +59,6 @@ SensorCloud::Application.routes.draw do
   put '/userranking'    => 'searches#update_user_ranking'
   post '/get_more_info' => 'searches#create'
 
-  get    '/signup'   => 'users#new'
   get    '/signin'   => 'sessions#new'
   post   '/auth/in'  => 'sessions#auth_openid_connect'
   get    '/auth/out' => 'sessions#auth_openid_disconnect'
