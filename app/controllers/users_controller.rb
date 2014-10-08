@@ -56,14 +56,6 @@ class UsersController < ApplicationController
 		end
 	end
 
-	def new
-		@user = User.new
-		attributes = ["username", "firstname", "lastname", "description", "password", "email", "private"]
-		attributes.each do |attr|
-		@user.send("#{attr}=", nil)
-	end
-end
-
 	def create
 		@user = User.new(user_params)
 		params[:user][:private] = !(params[:user][:private].to_i).zero?
