@@ -108,26 +108,24 @@
     <h4>Examples of API calls: </h4>
     <div class="stream-description well">
       <% base_link = "#{CONF['API_URL']}/users/#{@stream.user_id}/streams/#{@stream.id}" %>
-      <ul>
-        <div>
-          <h5><strong>Stream link</strong></h5>
-          <i>
-            curl -XGET <a href="<%= base_link %>"><%= base_link %></a> \ <br>
-            -H "Access-Token: <%= current_user.access_token %>"
-          </i>
-        </div>
-        <br>
-        <div>
-          <h5><strong>POST new data points to this stream</strong></h5>
-          <i>
-          <% data_link = "#{base_link}/data" %>
-          curl -XPOST <a href="<%= data_link %>"><%= data_link %></a> \ <br>
-            -H "Content-Type: application/json" \ <br>
-            -H "Access-Token: <%= current_user.access_token %>" \ <br>
-            -d '{ "value" : "9" }'
-          </i>
-        </div>
-      </ul>
+      <div>
+        <h5><strong>Stream link</strong></h5>
+        <i>
+          curl -XGET <a href="<%= base_link %>"><%= base_link %></a> \ <br>
+          -H "Access-Token: <%= current_user.access_token %>"
+        </i>
+      </div>
+      <br>
+      <div>
+        <h5><strong>POST new data points to this stream</strong></h5>
+        <i>
+        <% data_link = "#{base_link}/data" %>
+        curl -XPOST <a href="<%= data_link %>"><%= data_link %></a> \ <br>
+          -H "Content-Type: application/json" \ <br>
+          -H "Access-Token: <%= current_user.access_token %>" \ <br>
+          -d '{ "value" : "9" }'
+        </i>
+      </div>
     </div>
 
     <%= render 'triggers' if signed_in? and @user.username.downcase == @stream.user_id %>
