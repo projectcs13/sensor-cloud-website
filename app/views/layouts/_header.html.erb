@@ -36,7 +36,7 @@
 					<li><%= link_to "My Streams", "/users/#{current_user.username}/streams" %></li>
 					<!--<li>--><%#= link_to "My Virtual Streams", "/users/#{current_user.username}/vstreams" %><!--</li>-->
 					<li><%= link_to "Following", "/users/#{current_user.username}/following" %></li>
-					<li><%= link_to "My Triggers", "/users/#{current_user.username}/triggers" %></li>
+					<!--li--><%#= link_to "My Triggers", "/users/#{current_user.username}/triggers" %><!--/li-->
 				<% end %>
 			</ul>
 
@@ -45,7 +45,7 @@
 					<li>
 						<%= link_to user_path(current_user), id: "username" do %>
 							<%= gravatar_for(current_user, {size: 32}) %>
-							<%= current_user.username %>
+							<%= current_user.firstname %>
 						<% end %>
 					</li>
 				<% end %>

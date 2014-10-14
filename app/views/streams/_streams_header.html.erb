@@ -7,7 +7,7 @@
 
   <%if @user.username == params[:id] %>
     <div class="corner">
-      <%= link_to 'Delete All Streams', streams_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger right glyphicon glyphicon-remove" %>
+      <%#= link_to 'Delete All Streams', streams_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger right glyphicon glyphicon-remove" %>
       <div class="btn-group right">
         <%= link_to 'New Stream', new_stream_path, class: "btn btn-primary glyphicon glyphicon-plus" %>
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">

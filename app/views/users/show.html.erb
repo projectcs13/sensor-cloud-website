@@ -43,7 +43,6 @@
       <div class="col-lg-6">
         <h2 class="actual-name">
           <%= @user.firstname %> <%= @user.lastname %>
-          <small>(<%= @user.username %>)</small>
         </h2>
 
         <h5><%= @user.email unless signed_in_openid? %></h5>
@@ -52,10 +51,28 @@
 
     <div class="row">
       <div class="col-lg-9">
-        <div class="user-profile-lengthfix panel panel-default">
+        <div class="user-profile-lengthfix panel panel-default" style="margin-top: 10px; height: 200px;">
           <div class="panel-heading">Description</div>
             <div class="panel-body">
               <%= @user.description %>
+            </div>
+        </div>
+
+        <div class="user-profile-lengthfix panel panel-default user-alerts">
+          <div class="panel-heading">Examples of API calls</div>
+            <div class="panel-body">
+            <ul>
+              <% baselink = "/users/#{@user.username}" %>
+              <li style="list-style: none; margin-right:5px;">
+                <strong style="margin-right:5px;">Profile</strong>
+                <a href="<%= baselink %>"><%= baselink %></a>
+              </li>
+              <li style="list-style: none;">
+                <strong style="margin-right:5px;">Streams</strong>
+                <% streams_link = baselink + "/streams" %>
+                <a href="<%= streams_link %>"><%= streams_link %></a>
+              </li>
+            </ul>
             </div>
         </div>
       </div>
