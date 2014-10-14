@@ -10,7 +10,7 @@ window.newStreamForm = (form) ->
   descriptions = [
     "First, tell us the basic information which might describe your stream"
     "Now, please fill in the fields below with the technical details of your new stream"
-    "Finally, we need you to set up the format and the communication mechanism"
+    # "Finally, we need you to set up the format and the communication mechanism"
   ]
 
   stepLabel       = form.find ".step-label"
@@ -22,12 +22,12 @@ window.newStreamForm = (form) ->
   btnBack   = form.find ".btn-back"
   btnNext   = form.find ".btn-next"
   btnCreate = form.find ".btn-create"
-  btnPreview = form.find ".btn-preview"
+  # btnPreview = form.find ".btn-preview"
 
-  textUri = form.find "#stream_uri"
-  areaPreview = form.find "#preview-area"
+  # textUri = form.find "#stream_uri"
+  # areaPreview = form.find "#preview-area"
 
-  polling = form.find ".polling"
+  # polling = form.find ".polling"
   progress = form.find ".progress-bar"
 
   explanations = form.find '.explanation'
@@ -53,7 +53,7 @@ window.newStreamForm = (form) ->
 
   setInputFocus = -> steps.eq(currentStep).find('.input').first().focus()
 
-  showPollingPanel = -> polling.toggle TIME * 2
+  # showPollingPanel = -> polling.toggle TIME * 2
 
 
   goBack = -> moveToNextStep false
@@ -88,9 +88,9 @@ window.newStreamForm = (form) ->
 
   post = (url, data) ->
     $.ajax
-      type: "post",
-      dataType: "json",
-      url: url,
+      type: "post"
+      dataType: "json"
+      url: url
       data: data
 
   #
@@ -137,19 +137,19 @@ window.newStreamForm = (form) ->
     , TIME * 2
 
 
-  preview = (event) ->
-    do event.preventDefault
+  # preview = (event) ->
+  #   do event.preventDefault
 
-    p = post "/preview", { uri: textUri.val() }
-    p.done (data) ->
-      json = JSON.stringify data, undefined, 2
-      areaPreview.val json
+  #   p = post "/preview", { uri: textUri.val() }
+  #   p.done (data) ->
+  #     json = JSON.stringify data, undefined, 2
+  #     areaPreview.val json
 
 
-  switchChanged = (event) ->
-    do event.preventDefault
-    do showPollingPanel
-    do setInputFocus
+  # switchChanged = (event) ->
+  #   do event.preventDefault
+  #   do showPollingPanel
+  #   do setInputFocus
 
 
   explain = (event) ->
@@ -173,14 +173,14 @@ window.newStreamForm = (form) ->
     sw.bootstrapSwitch 'setOnLabel', 'Yes'
     sw.bootstrapSwitch 'setOffLabel', 'No'
 
-    sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
-    sw.bootstrapSwitch 'setOnLabel', 'Push'
-    sw.bootstrapSwitch 'setOffLabel', 'Poll'
+    # sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
+    # sw.bootstrapSwitch 'setOnLabel', 'Push'
+    # sw.bootstrapSwitch 'setOffLabel', 'Poll'
 
-    if sw.bootstrapSwitch('status') is false
-      do showPollingPanel
+    # if sw.bootstrapSwitch('status') is false
+    #   do showPollingPanel
 
-    sw.on 'switch-change', switchChanged
+    # sw.on 'switch-change', switchChanged
 
 
   #
@@ -201,7 +201,7 @@ window.newStreamForm = (form) ->
   btnBack.on    'click', back
   btnNext.on    'click', next
   btnCreate.on  'click', create
-  btnPreview.on 'click', preview
+  # btnPreview.on 'click', preview
 
   do updateStepInformation
   do setInputFocus
