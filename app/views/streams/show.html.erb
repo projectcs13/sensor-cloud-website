@@ -11,7 +11,7 @@
 
 <div class="row title-row">
   <div class="col-lg-8">
-		<h2 class="text-left"><%= @stream.name %> <a href="/users/<%= @stream.user_id %>" > <small><%= @stream.user_id %> </small></a></h2>
+		<h2 class="text-left"><%= @stream.name %></h2>
 		<%= render 'follow_form' if signed_in? %>
 	</div>
 
@@ -79,11 +79,11 @@
         <span class="label prediction-80">80% Confidence interval</span>
         <span class="label prediction-95">95% Confidence interval</span>
       </div>
-        <div class="pull-right">Live update:
+        <!-- <div class="pull-right">Live update:
           <div class="make-switch switch-mini" id="live-update-btn">
             <input id="live-update-checkbox" type="checkbox">
           </div>
-        </div>
+        </div> -->
       <div><small>
         Last update: <%= @stream.last_updated %>
         History: <%= @count_history %>
@@ -96,6 +96,7 @@
 
     <h4>Description: </h4>
     <div class="stream-description well"><%= @stream.description %></div>
+
     <h4>Tags: </h4>
     <div class="stream-tags well">
       <% tagslist = @stream.tags.split(/,/) %>
@@ -103,6 +104,32 @@
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
       <% end %>
     </div>
+
+    <h4>Examples of API calls: </h4>
+    <div class="stream-description well">
+      <% baselink = "/users/#{@stream.user_id}/#{@stream.id}" %>
+      <ul>
+        <div>
+          <h5><strong>Stream link</strong></h5>
+          <i>
+            curl -XGET <a href="<%= baselink %>"><%= baselink %></a> \ <br>
+            -H "Access-Token: <%= current_user.access_token %>"
+          </i>
+        </div>
+        <br>
+        <div>
+          <h5><strong>POST new data points to this stream</strong></h5>
+          <i>
+          <% datalink = "#{baselink}/data" %>
+          curl -XPOST <a href="<%= datalink %>"><%= datalink %></a> \ <br>
+            -H "Content-Type: application/json" \ <br>
+            -H "Access-Token: <%= current_user.access_token %>" \ <br>
+            -d '{ "value" : "9" }'
+          </i>
+        </div>
+      </ul>
+    </div>
+
     <%= render 'triggers' if signed_in? and @user.username.downcase == @stream.user_id %>
     <% if not @user.nil? and @user.username.downcase == @stream.user_id %>
       <% if @stream.polling == true %>
