@@ -68,7 +68,9 @@
     <%end%>
 
     <%= form_tag url_for(controller: "streams", action: "fetch_semantics"), remote: true, method: 'get' do %>
-    <%= submit_tag "Export", class: "btn btn-primary", id: "semantics-btn"%>
+    <%#= submit_tag "Export", class: "btn btn-primary", id: "semantics-btn"%>
+    <%#= link_to "Export", "/data/#{@semantics_file}", class: "btn btn-primary", id: "semantics-btn" %>
+    <%= link_to "Export", "/public/data/semantics_output.txt", class: "btn btn-primary", id: "semantics-btn" %>
 	<span>
          Output format:
         <%= select_tag :type, options_for_select(["ns3", "xml", "json-ld"]) %>

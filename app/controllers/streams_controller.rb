@@ -206,8 +206,6 @@ class StreamsController < ApplicationController
     end
   end
 
-
-
   def fetch_prediction
     prediction = "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
     res = Api.get prediction, openid_metadata
@@ -218,15 +216,23 @@ class StreamsController < ApplicationController
     end
   end
 
-
   def fetch_semantics
-    if "#{params[:type]}"=="ns3"
-	res = Api.semantics_get "http://localhost:5000/datapoints/#{params[:id]}"
+    res = if "#{params[:type]}" == "ns3"
+	    Api.semantics_get "/datapoints/#{params[:id]}"
     else
-	res = Api.semantics_get "http://localhost:5000/datapoints/#{params[:id]}?format=#{params[:type]}"
+	    Api.semantics_get "/datapoints/#{params[:id]}?format=#{params[:type]}"
+    end
+    puts "RES, #{res}"
+    sleep 0.5
+    File.open("#{Dir.pwd}/public/semantics_output.txt", 'w') do |f|
+      f.write(res["body"]);
+      f.close
     end
   end
 
+  def download
+    send_file "#{Dir.pwd}/public/semantics_output.txt"
+  end
 
   def fetch_datapreview
     res = Api.get "#{params[:uri]}", openid_metadata

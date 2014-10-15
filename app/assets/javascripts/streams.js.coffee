@@ -25,7 +25,7 @@ $ ->
     window.setupButtons = ->
       $('.search-result').off "click", selectStream
       $('.search-result').on "click", selectStream
-         
+
       $('input.star').rating()
       $('.star-rating').on 'click', ->
         obj =
@@ -283,6 +283,10 @@ $ ->
     $("#live-update-btn").on 'switch-change', (e, data) ->
       value = data.value
       toggle value
+
+    $('#semantics-btn').on 'click', (event) ->
+      $('#semantics-btn').parent('form').trigger 'submit'
+
 
   $(document).bind "streams_edit", (e, obj) =>
     form = $ 'form'

@@ -36,4 +36,6 @@ SensorCloud::Application.configure do
   password:             '',
   authentication:       'plain',
   enable_starttls_auto: true  }
+
+  config.serve_static_assets = true
 end
