@@ -19,9 +19,7 @@ class Api
   end
 
   def self.semantics_get url
-    res = connect.get url
-    resp = res.to_hash
-    File.open("#{Dir.pwd}/semantics_output.txt", 'w') {|f| f.write(resp[:body]) }
+    resp = semantic_connect.get(url).to_hash
     resp.stringify_keys!
   end
 
@@ -67,8 +65,16 @@ class Api
       end
     end
 
+    def self.semantic_connect
+      _connect CONF['SEMANTIC_URL']
+    end
+
     def self.connect
-      conn = Faraday.new(:url => "#{CONF['API_URL']}") do |faraday|
+      _connect CONF['API_URL']
+    end
+
+    def self._connect url
+      conn = Faraday.new(:url => url) do |faraday|
         faraday.request  :url_encoded               # form-encode POST params
         faraday.response :logger                    # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP

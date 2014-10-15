@@ -1,15 +1,19 @@
 development:
   API_URL: "http://localhost:8000"
+  SEMANTIC_URL: "http://cps.cf.ericsson.net:5000/citypulse"
   WEB_SOCKET_URL: "http://localhost:8080"
 
 test:
   API_URL: "http://localhost:8000"
+  SEMANTIC_URL: "http://cps.cf.ericsson.net:5000/citypulse"
   WEB_SOCKET_URL: "http://localhost:8080"
 
 localhost:
   API_URL: "http://localhost:8000"
+  SEMANTIC_URL: "http://cps.cf.ericsson.net:5000/citypulse"
   WEB_SOCKET_URL: "http://localhost:8080"
 
 production:
   API_URL: "http://localhost:8000"
+  SEMANTIC_URL: "http://cps.cf.ericsson.net:5000/citypulse"
   WEB_SOCKET_URL: "http://localhost:8080"
