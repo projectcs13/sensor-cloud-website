@@ -25,8 +25,8 @@ class User < ActiveRecord::Base
 		Digest::SHA1.hexdigest(token.to_s)
 	end
 
-	def following?(stream_id)
-		res = Api.get("/users/#{self.username}")
+	def following?(stream_id, openid_metadata)
+		res = Api.get "/users/#{self.username}", openid_metadata
 		unless (res['body']["subscriptions"]).empty?
 			res['body']["subscriptions"].include?({"stream_id"=>"#{stream_id}"})
 		end
