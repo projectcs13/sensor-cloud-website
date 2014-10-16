@@ -43,20 +43,22 @@
 			<ul class="nav navbar-nav right">
 				<% if signed_in? %>
 					<li>
-						<%= link_to user_path(current_user), id: "username" do %>
-							<%= gravatar_for(current_user, {size: 32}) %>
-							<%= current_user.firstname %>
-						<% end %>
+
 					</li>
 				<% end %>
 
 				<% if signed_in? %>
 					<li id="fat-menu" class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							Account <b class="caret"></b>
+						<a href="#" style="padding-left: 0;" class="dropdown-toggle right" data-toggle="dropdown">
+							<b class="caret"></b>
 						</a>
+
+				   	<%= link_to user_path(current_user), id: "username", class: "right" do %>
+							<%= gravatar_for(current_user, {size: 32}) %>
+							<%= current_user.firstname %>
+						<% end %>
+
 						<ul class="dropdown-menu">
-							<li><%= link_to "Profile", current_user %></li>
 							<li><%= link_to "Settings", edit_user_path(current_user) %></li>
 							<li class="divider"></li>
 							<li>
