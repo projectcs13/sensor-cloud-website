@@ -107,6 +107,7 @@
       <% end %>
     </div>
 
+    <% if current_user != nil and current_user.username == @stream.user_id %>
     <h4>Examples of API calls: </h4>
     <div class="stream-description well">
       <% base_link = "#{CONF['API_URL']}/users/#{@stream.user_id}/streams/#{@stream.id}" %>
@@ -129,6 +130,7 @@
         </i>
       </div>
     </div>
+    <% end %>
 
     <%= render 'triggers' if signed_in? and @user.username.downcase == @stream.user_id %>
     <% if not @user.nil? and @user.username.downcase == @stream.user_id %>
