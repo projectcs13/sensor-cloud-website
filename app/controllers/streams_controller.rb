@@ -217,14 +217,15 @@ class StreamsController < ApplicationController
   end
 
   def fetch_semantics
-    res = if "#{params[:type]}" == "ns3"
+    file_type = params[:type]
+    res = if "#{file_type}" == "ns3"
 	    Api.semantics_get "/datapoints/#{params[:id]}"
     else
-	    Api.semantics_get "/datapoints/#{params[:id]}?format=#{params[:type]}"
+	    Api.semantics_get "/datapoints/#{params[:id]}?format=#{file_type}"
     end
     puts "RES, #{res}"
     sleep 0.5
-    File.open("#{Dir.pwd}/public/semantics_output.txt", 'w') do |f|
+    File.open("#{Dir.pwd}/public/semantics_output.#{file_type}", 'w') do |f|
       f.write(res["body"]);
       f.close
     end
