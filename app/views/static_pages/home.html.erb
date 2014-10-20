@@ -1,48 +1,16 @@
 <div class="banner">
 	<div class="row search-bar">
 		<div class="col-md-4 col-md-offset-4">
-			<div class="col-md-11" style="padding-right: 0px;">
-
-				<%= form_for(:search, url: searches_path) do |f| %>
+			<%= form_for(:search, url: searches_path) do |f| %>
+				<div class="col-md-11" style="padding-right: 0px;">
 					<%= f.text_field :query, class: "searchbar form-control input-lg pull-right", placeholder: "e.g. Temperature in Uppsala" %>
 					<%= f.hidden_field :sort_by, :value => "average" %>
-
-			</div>
-			<div class="col-md-1" style="padding-left: 0px;">
-
-					<%= f.submit "Search", class: "btn btn-lg btn-primary pull-left", style: "border-radius: 0px;" %>
-				<% end %>
-
-			</div>
-
-		</div>
-	</div>
-</div>
-
-<div id="wrapper">
-	<div id="carousel">
-		<ul>
-			<% @streams.each do |stream| %>
-			<li>
-				<div>
-				<span class="glyphicon glyphicon-search"></span>
-    		<h4>
-					<% stream_id = stream['_id'] %>
-					<% url = "/streams/#{stream_id}" %>
-					<%= link_to(stream['_source']['name'], url) %>
-				</h4>
-				<p style="font-size: 14px;">
-					<%= stream['_source']['description'] %>
-				</p>
 				</div>
-			</li>
+				<div class="col-md-1" style="padding-left: 0px;">
+					<%= f.submit "Search", class: "btn btn-lg btn-primary pull-left", style: "border-radius: 0px;" %>
+				</div>
 			<% end %>
-		</ul>
-		<div class="clearfix"></div>
-		<a id="prev" class="prev" href="#">&lt;</a>
-		<a id="next" class="next" href="#">&gt;</a>
-		<br/>
-		<div id="pager" class="pager"></div>
+		</div>
 	</div>
 </div>
 
