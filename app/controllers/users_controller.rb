@@ -47,11 +47,15 @@ class UsersController < ApplicationController
 			redirect_to "/not_allowed_access"
 		else
 			@subscriptions = res["body"]["subscriptions"]
-			@stream_ids = @subscriptions.map { |e| e["stream_id"] }
-			@streams = @stream_ids.map do |sid|
-				res = Api.get "/streams/#{sid}", openid_metadata
-				check_new_token res
-				res["body"]
+			unless @subscriptions
+				@streams = []
+			else
+				@stream_ids = @subscriptions.map { |e| e["stream_id"] }
+				@streams = @stream_ids.map do |sid|
+					res = Api.get "/streams/#{sid}", openid_metadata
+					check_new_token res
+					res["body"]
+				end
 			end
 		end
 	end
