@@ -110,11 +110,11 @@
     <% if current_user != nil and current_user.username == @stream.user_id %>
     <h4>Examples of API calls: </h4>
     <div class="stream-description well">
-      <% base_link = "#{CONF['API_URL']}/users/#{@stream.user_id}/streams/#{@stream.id}" %>
       <div>
         <h5><strong>Stream link</strong></h5>
         <i>
-          curl -XGET <a href="<%= base_link %>"><%= base_link %></a> \ <br>
+          <% stream_link = "#{CONF['API_URL']}/users/#{@stream.user_id}/streams/#{@stream.id}" %>
+          curl -XGET <a href="<%= stream_link %>"><%= stream_link %></a> \ <br>
           -H "Access-Token: <%= current_user.access_token %>"
         </i>
       </div>
@@ -122,7 +122,7 @@
       <div>
         <h5><strong>POST new data points to this stream</strong></h5>
         <i>
-        <% data_link = "#{base_link}/data" %>
+        <% data_link = "#{CONF['API_URL']}/streams/#{@stream.id}/data" %>
         curl -XPOST <a href="<%= data_link %>"><%= data_link %></a> \ <br>
           -H "Content-Type: application/json" \ <br>
           -H "Access-Token: <%= current_user.access_token %>" \ <br>
