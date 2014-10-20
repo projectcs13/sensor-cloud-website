@@ -1,10 +1,9 @@
 class User < ActiveRecord::Base
 
-	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-	VAILD_USERNAME_REGEX = /\A[a-zA-Z0-9_-]+\Z/
-  validates :username,  presence: true, format: { with: VAILD_USERNAME_REGEX }, length: { maximum:50 }, uniqueness: { case_sensitive: false }
-  validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
-	has_secure_password
+	# VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+	# VAILD_USERNAME_REGEX = /\A[a-zA-Z0-9_-]+\Z/
+  # validates :username,  presence: true, format: { with: VAILD_USERNAME_REGEX }, length: { maximum:50 }, uniqueness: { case_sensitive: false }
+  # validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
   # validates :password, length: { minimum: 6 }
   validates :description, length: { maximum:500 }
 
@@ -16,10 +15,6 @@ class User < ActiveRecord::Base
 	def User.new_remember_token
 		SecureRandom.urlsafe_base64
 	end
-
-	def to_param
-    username
-  end
 
 	def User.encrypt(token)
 		Digest::SHA1.hexdigest(token.to_s)
@@ -49,6 +44,8 @@ class User < ActiveRecord::Base
 		end
 
 		def create_remember_token
-			self.remember_token = User.encrypt(User.new_remember_token)
+			logger.debug "create_remember_token"
+			# self.remember_token = User.encrypt(User.new_remember_token)
+			logger.debug self.remember_token
 		end
 end

@@ -1,12 +1,7 @@
 def save_remote remoteusers
 	remoteusers.each do |user|
-		fields = ['id', 'notifications', 'rankings', 'subscriptions', 'triggers', 'admin']
+		fields = ['id', 'notifications', 'rankings', 'subscriptions', 'triggers', 'admin', 'password']
 		fields.each { |attr| user.delete attr }
-
-		## TODO Fix this security issue
-		user['password'] = "password" if user['password'] == ""
-		user['password_confirmation'] = user['password']
-		## END TODO
 
 		newuser = User.create user
   	if newuser.save

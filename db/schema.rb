@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140723173602) do
+ActiveRecord::Schema.define(version: 20141020074005) do
 
   create_table "relationships", force: true do |t|
     t.integer  "follower_id"
@@ -29,9 +29,8 @@ ActiveRecord::Schema.define(version: 20140723173602) do
     t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "password_digest"
     t.string   "remember_token"
-    t.boolean  "admin",           default: false
+    t.boolean  "admin",          default: false
     t.string   "firstname"
     t.string   "lastname"
     t.string   "description"

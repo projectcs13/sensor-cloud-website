@@ -6,19 +6,10 @@ class SessionsController < ApplicationController
 	end
 
 	def create
-		user = User.find_by(email: params[:session][:email].downcase)
-		if user && user.authenticate(params[:session][:password])
-			sign_in user
-			gen_token_pair user
-			redirect_back_or user
-		else
-			flash.now[:danger] = 'Invalid email/password combination'
-			render 'new'
-		end
 	end
 
 	def destroy
-		revoke_access_token if signed_in_openid?
+		revoke_access_token
 		sign_out
 		redirect_to root_url
 	end
@@ -43,10 +34,12 @@ class SessionsController < ApplicationController
 					renew_access_token user
 				else
 					user = store_user json
-					store_on_remote_db user
+					# store_on_remote_db user
 				end
 
+				logger.debug "before sign in"
 				sign_in user
+				logger.debug "after sign in"
 				render json: {"url" => "/users/#{user.username}/streams"}, status: 200
 			end
 		end
@@ -135,7 +128,6 @@ class SessionsController < ApplicationController
 			user.firstname     = json["name"]["givenName"]
 			user.lastname      = json["name"]["familyName"]
 			user.description   = ""
-			user.password      = "pa55w0rd"
 			user.private       = false
 			user.access_token  = session[:token].access_token
 			user.refresh_token = session[:token].refresh_token
@@ -150,10 +142,11 @@ class SessionsController < ApplicationController
 
 		def store_on_remote_db user
 			data = {}
-			attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
+			attrs = ["username", "email", "firstname", "lastname", "description", "private"]
 			attrs.each do |attr| data[attr] = user.send(attr) end
 			data["access_token"]  = session[:token].access_token
 			data["refresh_token"] = session[:token].refresh_token
-			Api.post "/users", data, {}
+			res = Api.post "/users", data, {}
+			puts res
 		end
 end
