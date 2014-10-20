@@ -60,9 +60,6 @@ SensorCloud::Application.routes.draw do
   post '/get_more_info' => 'searches#create'
 
   get    '/signin'   => 'sessions#new'
-  post   '/auth/in'  => 'sessions#auth_openid_connect'
-  get    '/auth/out' => 'sessions#auth_openid_disconnect'
-  delete '/auth/out' => 'sessions#auth_openid_disconnect'
   delete '/signout'  => 'sessions#destroy'
 
   get '/terms'              => 'static_pages#terms'

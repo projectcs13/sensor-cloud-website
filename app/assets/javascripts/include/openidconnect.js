@@ -47,7 +47,7 @@ var helper = (function() {
 
       $.ajax({
         type: 'POST',
-        url: window.location.origin + '/auth/in?state=' + state,
+        url: window.location.origin + '/sessions?state=' + state,
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(res) {
           if (res.url) {
