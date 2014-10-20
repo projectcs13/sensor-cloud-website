@@ -22,7 +22,6 @@ var helper = (function() {
         helper.connectServer();
         // After we load the Google+ API, render the profile data from Google+.
         // gapi.client.load('plus','v1',this.renderProfile);
-        gapi.auth.signOut();
       } else if (authResult['error']) {
         // There was an error, which means the user is not signed in.
         // As an example, you can troubleshoot by writing to the console:

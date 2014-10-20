@@ -61,7 +61,7 @@ class UsersController < ApplicationController
 		params[:user][:private] = !(params[:user][:private].to_i).zero?
 		if @user.save
 			sign_in @user
-			userdata = params[:user].slice(:username, :email, :password, :firstname, :lastname, :description, :private)
+			userdata = params[:user].slice(:username, :email, :firstname, :lastname, :description, :private)
 			res = Api.post "/users", userdata, {}
 			check_new_token res
 
@@ -83,7 +83,7 @@ class UsersController < ApplicationController
 		if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
 			@user.save
-			userdata = params[:user].slice(:email, :password, :firstname, :lastname, :description, :private)
+			userdata = params[:user].slice(:email, :firstname, :lastname, :description, :private)
 			res = Api.put "/users/#{@user.username}", userdata, openid_metadata
 			redirect_to @user
 		else
@@ -101,7 +101,7 @@ class UsersController < ApplicationController
 
 	private
 		def user_params
-			params.require(:user).permit(:username, :email, :password, :password_confirmation, :firstname, :lastname, :description, :private)
+			params.require(:user).permit(:username, :email, :firstname, :lastname, :description, :private)
 		end
 
 		# Before filters
