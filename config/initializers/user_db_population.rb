@@ -66,11 +66,8 @@ unless SensorCloud.rake?
 	# Sync local DB with remote data
 	users = res["body"]["users"]
 	unless users.nil?
+		# delete_old users
 		save_remote users
-		delete_old users
   end
-
-	# Finally, make the token global to be used in other controllers (i.e. "static_pages_controller.rb")
-	FRONTEND_TOKEN = token
 
 end
