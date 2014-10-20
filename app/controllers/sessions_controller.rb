@@ -1,20 +1,11 @@
 class SessionsController < ApplicationController
 
-	before_action :create_openid_state, only: [:new]
+	before_action :gen_openid_state, only: [:new]
 
 	def new
 	end
 
 	def create
-	end
-
-	def destroy
-		revoke_access_token
-		sign_out
-		redirect_to root_url
-	end
-
-	def auth_openid_connect
 		if current_user
 			logger.debug "current_user"
 			render json: {"url" => "/users/#{current_user.username}/streams"}, status: 200
@@ -34,7 +25,7 @@ class SessionsController < ApplicationController
 					renew_access_token user
 				else
 					user = store_user json
-					# store_on_remote_db user
+					store_on_remote_db user
 				end
 
 				logger.debug "before sign in"
@@ -45,10 +36,10 @@ class SessionsController < ApplicationController
 		end
 	end
 
-	def auth_openid_disconnect
+	def destroy
 		sign_out
 		revoke_access_token
-		render json: {"success" => "true"}, status: 200
+		redirect_to root_url
 	end
 
 	private
@@ -82,8 +73,8 @@ class SessionsController < ApplicationController
 
 		def fetch_user_info
 			# Authorize the client and construct a Google+ service.
-			$client.authorization.update_token!(session[:token].to_hash)
-			plus = $client.discovered_api('plus', 'v1')
+			$client.authorization.update_token! session[:token].to_hash
+			plus = $client.discovered_api 'plus', 'v1'
 
 			# Get the list of people as JSON and return it.
 			response = $client.execute!(plus.people.get,
@@ -114,30 +105,30 @@ class SessionsController < ApplicationController
 			end
 		end
 
-		def create_openid_state
+		def gen_openid_state
 			revoke_access_token
 			# Create a string for verification
 			session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join unless session[:state]
 			@state = session[:state]
 		end
 
+		def load_from_db json
+			User.find_by_username json["id"]
+		end
+
 		def store_user json
 			user = User.new
-			user.email         = json["id"] + "@openid.ericsson"
+			user.email         = json["emails"][0]["value"]
 			user.username      = json["id"]
 			user.firstname     = json["name"]["givenName"]
 			user.lastname      = json["name"]["familyName"]
-			user.description   = ""
+			user.image_url     = json["image"]["url"]
+			user.description   = "#{json["occupation"]} \n#{json["skills"]}"
 			user.private       = false
 			user.access_token  = session[:token].access_token
 			user.refresh_token = session[:token].refresh_token
 			user.save
 			user
-		end
-
-		def load_from_db json
-			user_email = json["id"] + "@openid.ericsson"
-			User.find_by_email user_email
 		end
 
 		def store_on_remote_db user
@@ -148,5 +139,6 @@ class SessionsController < ApplicationController
 			data["refresh_token"] = session[:token].refresh_token
 			res = Api.post "/users", data, {}
 			puts res
+			res
 		end
 end

@@ -18,6 +18,8 @@ class StreamsController < ApplicationController
     if session[:stream]
       @stream = session[:stream]
       session[:stream] = nil
+    else
+      @stream.private = true
     end
   end
 
@@ -134,9 +136,7 @@ class StreamsController < ApplicationController
 
   def update
     @stream.assign_attributes stream_params
-    logger.debug "BEFORE CORRECTFEILDS: #{@stream.attributes}"
     correctModelFields
-    logger.debug "AFTER CORRECTFEILDS: #{@stream.attributes}"
 
     respond_to do |format|
       stream_id = params[:id]
@@ -181,23 +181,6 @@ class StreamsController < ApplicationController
     end
   end
 
-  def destroyAll
-    @user = current_user
-    res = Api.delete "/users/#{@user.username}/streams/", nil, openid_metadata
-    check_new_token res
-    # TODO
-    # The API is currently sending back the response before the database has
-    # been updated. The line below will be removed once this bug is fixed.
-    sleep(1.0)
-
-    respond_to do |format|
-      res["response"].on_complete do
-        format.html { redirect_to "/users/#{@user.username}/streams" }
-        format.json { head :no_content }
-      end
-    end
-  end
-
   def fetch_datapoints
     res = Api.get "/streams/#{params[:id]}/data/_search", openid_metadata
     check_new_token res
@@ -235,23 +218,11 @@ class StreamsController < ApplicationController
     send_file "#{Dir.pwd}/public/semantics_output.txt"
   end
 
-  def fetch_datapreview
-    res = Api.get "#{params[:uri]}", openid_metadata
-    check_new_token res
-    respond_to do |format|
-      format.json { render json: res["body"], status: res["status"] }
-    end
-  end
-
   private
-    # Aux Functions
-
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
       params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser, :resource_type, :uuid)
     end
-
-    # Before filters
 
     def correct_user
       if current_user.nil?
