@@ -6,28 +6,24 @@ window.newStreamForm = (form) ->
   #
 
   TIME = 250
+  MAX_ERRORS = 3
 
   descriptions = [
     "First, tell us the basic information which might describe your stream"
-    "Now, please fill in the fields below with the technical details of your new stream"
-    # "Finally, we need you to set up the format and the communication mechanism"
+    "Now, please fill in the fields below with technical details of your stream"
   ]
 
   stepLabel       = form.find ".step-label"
   stepDescription = form.find ".step-description"
 
+  numErrors   = MAX_ERRORS
   currentStep = 0
   steps = form.find '.step'
 
   btnBack   = form.find ".btn-back"
   btnNext   = form.find ".btn-next"
   btnCreate = form.find ".btn-create"
-  # btnPreview = form.find ".btn-preview"
 
-  # textUri = form.find "#stream_uri"
-  # areaPreview = form.find "#preview-area"
-
-  # polling = form.find ".polling"
   progress = form.find ".progress-bar"
 
   explanations = form.find '.explanation'
@@ -53,9 +49,6 @@ window.newStreamForm = (form) ->
 
   setInputFocus = -> steps.eq(currentStep).find('.input').first().focus()
 
-  # showPollingPanel = -> polling.toggle TIME * 2
-
-
   goBack = -> moveToNextStep false
   goNext = -> moveToNextStep true
 
@@ -76,13 +69,10 @@ window.newStreamForm = (form) ->
     btnCreate.css 'display', 'none'
     btnNext.css 'display', 'inline-block'
 
-
   analyzeRequiredField = (input) ->
     if input.val().length is 0
       btnNext.addClass 'disabled'
-
     else if input.val().length > 0
-      form.find('#error_explanation').hide()
       btnNext.removeClass 'disabled'
 
 
@@ -137,21 +127,6 @@ window.newStreamForm = (form) ->
     , TIME * 2
 
 
-  # preview = (event) ->
-  #   do event.preventDefault
-
-  #   p = post "/preview", { uri: textUri.val() }
-  #   p.done (data) ->
-  #     json = JSON.stringify data, undefined, 2
-  #     areaPreview.val json
-
-
-  # switchChanged = (event) ->
-  #   do event.preventDefault
-  #   do showPollingPanel
-  #   do setInputFocus
-
-
   explain = (event) ->
     exp = $(this).siblings '.explanation'
     exp = $(this).parent().siblings '.explanation' unless exp.text()
@@ -161,9 +136,38 @@ window.newStreamForm = (form) ->
       exp.show TIME
 
 
-  inputChanged = (event) ->
+  checkRequiredField = (event) ->
     do event.preventDefault
     analyzeRequiredField $(this)
+
+  sanitizeField = (valid, err) ->
+    if valid
+      err.hide TIME
+      numErrors -= 1 if numErrors > 0
+    else
+      err.show TIME
+      btnCreate.addClass 'disabled'
+      numErrors += 1 if numErrors < MAX_ERRORS
+
+  sanitizeMinMaxValues = ->
+    validMinMaxValues = $('#min_val').val() <= $('#max_val').val()
+    if validMinMaxValues
+      btnCreate.removeClass 'disabled'
+      $('.form-error').hide TIME
+    else if numErrors is 0
+      btnCreate.addClass 'disabled'
+      $('.form-error').show TIME
+
+  checkNumberField = (event) ->
+    do event.preventDefault
+    input = $(this)
+    value = parseFloat input.val()
+    err   = input.siblings('.key-number').children('.key-label')
+    err   = input.parent().siblings('.key-number').children('.key-label') unless err.text()
+
+    validFloatNumber = typeof value is "number" and not isNaN value
+    sanitizeField validFloatNumber, err
+    do sanitizeMinMaxValues
 
 
   initBootstrapSwitches = ->
@@ -173,35 +177,29 @@ window.newStreamForm = (form) ->
     sw.bootstrapSwitch 'setOnLabel', 'Yes'
     sw.bootstrapSwitch 'setOffLabel', 'No'
 
-    # sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
-    # sw.bootstrapSwitch 'setOnLabel', 'Push'
-    # sw.bootstrapSwitch 'setOffLabel', 'Poll'
-
-    # if sw.bootstrapSwitch('status') is false
-    #   do showPollingPanel
-
-    # sw.on 'switch-change', switchChanged
-
 
   #
   # Initialization
   #
 
   btnNext.addClass 'disabled'
+  btnCreate.addClass 'disabled'
   do btnBack.hide
   do btnCreate.hide
 
   form.find('.input').on 'focus', explain
   form.find('.input-name')
-    .on('keyup', inputChanged)
-    .on('input', inputChanged)
+    .on('keyup', checkRequiredField)
+    .on('input', checkRequiredField)
 
   analyzeRequiredField form.find('.input-name')
+
+  ['#min_val', '#max_val', '#accuracy'].forEach (elem) ->
+    $(elem).on 'focusout', checkNumberField
 
   btnBack.on    'click', back
   btnNext.on    'click', next
   btnCreate.on  'click', create
-  # btnPreview.on 'click', preview
 
   do updateStepInformation
   do setInputFocus
