@@ -12,32 +12,23 @@
   </div>
 
   <div class="form-group">
-    <div class="key-number left">
-      <%= f.label :min_val %>
-      <label class="small key-label">(integer/decimal number)</label>
-    </div>
+    <%= f.label "Min Val (only numbers)", class: "left" %>
     <label class="explanation">The minimum value expected to measure</label>
-    <%= f.text_field :min_val, id: "min_val", class: "form-control input clearfix", placeholder: "i.e: -30" %>
+    <%= f.text_field :min_val, id: "min_val", class: "form-control input clearfix", placeholder: "e.g: -30" %>
   </div>
 
   <div class="form-group">
-    <div class="key-number left">
-      <%= f.label :max_val %>
-      <label class="small key-label">(integer/decimal number)</label>
-    </div>
+    <%= f.label "Max Val (only numbers)", class: "left" %>
     <label class="explanation">Specify the maximum value expected to measure</label>
-    <%= f.text_field :max_val, id: "max_val", class: "form-control input clearfix", placeholder: "i.e: 40" %>
+    <%= f.text_field :max_val, id: "max_val", class: "form-control input clearfix", placeholder: "e.g: 40" %>
   </div>
 
   <div class="form-group">
-    <div class="key-number left">
-      <%= f.label :accuracy %>
-      <label class="small key-label">(integer/decimal number)</label>
-    </div>
-    <label class="explanation">Also, please remark the accuracy of the device with a decimal number</label>
+    <%= f.label "Accuracy (only numbers)", class: "left" %>
+    <label class="explanation">Also, please remark the accuracy of the device</label>
     <div class="input-group clearfix">
       <span class="input-group-addon" style="padding: 9px 12px; width: 1em;">±</span>
-      <%= f.text_field :accuracy, id: "accuracy", class: "form-control input", placeholder: "i.e: 0.5" %>
+      <%= f.text_field :accuracy, id: "accuracy", class: "form-control input", placeholder: "e.g: 0.5" %>
     </div>
   </div>
 </div>
