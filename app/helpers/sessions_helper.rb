@@ -2,10 +2,14 @@ module SessionsHelper
 
 	def openid_metadata
 		{
-			:access_token  => session[:token].access_token,
-			:refresh_token => session[:token].refresh_token,
-			:username      => current_user.username
+				:access_token  => session[:token].access_token,
+				:refresh_token => session[:token].refresh_token,
+				:username      => current_user.username
 		}
+	end
+
+	def openid_frontend_metadata
+		FRONTEND_TOKEN
 	end
 
 	def check_new_token res
