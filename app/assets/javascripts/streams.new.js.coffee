@@ -23,7 +23,7 @@ window.newStreamForm = (form) ->
   btnCreate = form.find ".btn-create"
 
   progress = form.find ".progress-bar"
-
+  errorMsg = form.find '.form-error'
   explanations = form.find '.explanation'
 
   numericInputs = ['#min_val', '#max_val', '#accuracy']
@@ -120,11 +120,17 @@ window.newStreamForm = (form) ->
 
   create = (event) ->
     do event.preventDefault
-    do increaseBar
+    valid = do sanitizeNumericFields
 
-    setTimeout ->
-      form.trigger 'submit'
-    , TIME * 2
+    if not valid
+      errorMsg.show TIME
+    else
+      errorMsg.hide TIME
+      do increaseBar
+      setTimeout ->
+        form.trigger 'submit'
+      , TIME * 2
+
 
 
   explain = (event) ->
@@ -143,12 +149,19 @@ window.newStreamForm = (form) ->
 
   checkNumericField = (event) ->
     key = event.key
-    validNumber  = "0" <= key <= "9"
-    validCtrlOp  = event.ctrlKey and "/a|c|v|x".match key
-    validSpecial = "/,|.|-|".match key or key is "Tab"
+    console.log event
+    do event.preventDefault if "a" <= key <= "z"
 
-    valid = validNumber or validCtrlOp or validSpecial
-    do event.preventDefault unless valid
+
+  sanitizeNumericFields = ->
+    numericInputs.forEach (elem) ->
+      $elem = $(elem)
+      value = parseFloat $elem.val()
+      $elem.val value if value
+
+    min = form.find('#min_val').val()
+    max = form.find('#max_val').val()
+    min < max
 
 
   initBootstrapSwitches = ->
@@ -183,5 +196,4 @@ window.newStreamForm = (form) ->
   do setInputFocus
   do initBootstrapSwitches
 
-  steps.each (i) ->
-    steps.eq(i).css 'display', 'none' if i isnt 0
+  steps.each (i) -> steps.eq(i).css 'display', 'none' if i isnt 0
