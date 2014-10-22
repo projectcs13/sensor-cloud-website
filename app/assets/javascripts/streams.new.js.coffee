@@ -6,7 +6,6 @@ window.newStreamForm = (form) ->
   #
 
   TIME = 250
-  MAX_ERRORS = 3
 
   descriptions = [
     "First, tell us the basic information which might describe your stream"
@@ -16,7 +15,6 @@ window.newStreamForm = (form) ->
   stepLabel       = form.find ".step-label"
   stepDescription = form.find ".step-description"
 
-  numErrors   = MAX_ERRORS
   currentStep = 0
   steps = form.find '.step'
 
@@ -27,6 +25,8 @@ window.newStreamForm = (form) ->
   progress = form.find ".progress-bar"
 
   explanations = form.find '.explanation'
+
+  numericInputs = ['#min_val', '#max_val', '#accuracy']
 
   #
   # Auxiliary Functions
@@ -140,34 +140,15 @@ window.newStreamForm = (form) ->
     do event.preventDefault
     analyzeRequiredField $(this)
 
-  sanitizeField = (valid, err) ->
-    if valid
-      err.hide TIME
-      numErrors -= 1 if numErrors > 0
-    else
-      err.show TIME
-      btnCreate.addClass 'disabled'
-      numErrors += 1 if numErrors < MAX_ERRORS
 
-  sanitizeMinMaxValues = ->
-    validMinMaxValues = $('#min_val').val() <= $('#max_val').val()
-    if validMinMaxValues
-      btnCreate.removeClass 'disabled'
-      $('.form-error').hide TIME
-    else if numErrors is 0
-      btnCreate.addClass 'disabled'
-      $('.form-error').show TIME
+  checkNumericField = (event) ->
+    key = event.key
+    validNumber  = "0" <= key <= "9"
+    validCtrlOp  = event.ctrlKey and "/a|c|v|x".match key
+    validSpecial = "/,|.|-|".match key or key is "Tab"
 
-  checkNumberField = (event) ->
-    do event.preventDefault
-    input = $(this)
-    value = parseFloat input.val()
-    err   = input.siblings('.key-number').children('.key-label')
-    err   = input.parent().siblings('.key-number').children('.key-label') unless err.text()
-
-    validFloatNumber = typeof value is "number" and not isNaN value
-    sanitizeField validFloatNumber, err
-    do sanitizeMinMaxValues
+    valid = validNumber or validCtrlOp or validSpecial
+    do event.preventDefault unless valid
 
 
   initBootstrapSwitches = ->
@@ -183,7 +164,6 @@ window.newStreamForm = (form) ->
   #
 
   btnNext.addClass 'disabled'
-  btnCreate.addClass 'disabled'
   do btnBack.hide
   do btnCreate.hide
 
@@ -193,9 +173,7 @@ window.newStreamForm = (form) ->
     .on('input', checkRequiredField)
 
   analyzeRequiredField form.find('.input-name')
-
-  ['#min_val', '#max_val', '#accuracy'].forEach (elem) ->
-    $(elem).on 'focusout', checkNumberField
+  numericInputs.forEach (elem) -> $(elem).on 'keypress', checkNumericField
 
   btnBack.on    'click', back
   btnNext.on    'click', next
