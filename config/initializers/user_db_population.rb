@@ -54,6 +54,9 @@ unless SensorCloud.rake?
     }
 	end
 
+	# Finally, make the token global to be used in other controllers (i.e. "static_pages_controller.rb")
+	FRONTEND_TOKEN = token
+
 	# Get all users
 	res = Api.get "/users/?admin=true", token
 	new_access_token = res["body"]["new_access_token"]
@@ -66,8 +69,8 @@ unless SensorCloud.rake?
 	# Sync local DB with remote data
 	users = res["body"]["users"]
 	unless users.nil?
-		# delete_old users
 		save_remote users
+		delete_old users
   end
 
 end

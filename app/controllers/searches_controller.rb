@@ -16,7 +16,7 @@ class SearchesController < ApplicationController
 	end
 
 	def fetch_graph_data
-		res = Api.get "/_history?stream_id=#{params[:stream_id]}", openid_metadata
+		res = Api.get "/_history?stream_id=#{params[:stream_id]}", openid_frontend_metadata
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"], status: 200 }
@@ -24,7 +24,7 @@ class SearchesController < ApplicationController
 	end
 
 	def fetch_autocomplete
-		res = Api.get "/suggest/_search?query=#{params[:term]}", openid_metadata
+		res = Api.get "/suggest/_search?query=#{params[:term]}", openid_frontend_metadata
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"]["suggestions"], status: 200 }
@@ -83,7 +83,7 @@ class SearchesController < ApplicationController
 								}
 			end
 			logger.debug(body)
-			res = Api.post url, body, openid_metadata
+			res = Api.post url, body, openid_frontend_metadata
 			check_new_token res
 			@filter_unit = params['search']['filter_unit']
 			@filter_tag = params['search']['filter_tag']
