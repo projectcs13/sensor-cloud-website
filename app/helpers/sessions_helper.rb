@@ -2,9 +2,9 @@ module SessionsHelper
 
 	def openid_metadata
 		{
-				:access_token  => session[:token].access_token,
-				:refresh_token => session[:token].refresh_token,
-				:username      => current_user.username
+			:access_token  => session[:token].access_token,
+			:refresh_token => session[:token].refresh_token,
+			:username      => current_user.username
 		}
 	end
 
