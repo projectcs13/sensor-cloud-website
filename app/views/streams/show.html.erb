@@ -53,20 +53,20 @@
 <div class="row">
   <div class="col-lg-8"> <!-- Left side -->
     <div class="stream-graph graph-canvas" id="graph-canvas"></div>
-
-    <%= form_tag url_for(controller: "streams", action: "fetch_prediction"), remote: true, method: 'get' do %>
-    <%= submit_tag "Fetch Prediction", class: "btn btn-primary", id: "prediction-btn"%>
+<!--
+    <%#= form_tag url_for(controller: "streams", action: "fetch_prediction"), remote: true, method: 'get' do %>
+    <%#= submit_tag "Fetch Prediction", class: "btn btn-primary", id: "prediction-btn"%>
       <span>
          Prediction history size:
-        <%= select_tag :in, options_for_select([10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
+        <%#= select_tag :in, options_for_select([10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
       </span>
 
       <span>
          Prediction output size:
-        <%= select_tag :out, options_for_select([1, 10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
+        <%#= select_tag :out, options_for_select([1, 10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
       </span>
-    <%end%>
-
+    <%#end%>
+ -->
     <%= form_tag url_for(controller: "streams", action: "fetch_semantics"), remote: true, method: 'get' do %>
     <%#= submit_tag "Export", class: "btn btn-primary", id: "semantics-btn"%>
     <%#= link_to "Export", "/data/#{@semantics_file}", class: "btn btn-primary", id: "semantics-btn" %>
