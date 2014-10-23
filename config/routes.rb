@@ -11,9 +11,9 @@ SensorCloud::Application.routes.draw do
     end
   end
 
-  resources :users do
-    resources :vstreams
-  end
+  # resources :users do
+  #   resources :vstreams
+  # end
 
   resources :streams do
     collection do
@@ -50,8 +50,8 @@ SensorCloud::Application.routes.draw do
   get '/prediction/:id' => 'streams#fetch_prediction'
   get '/semantics/:id'  => 'streams#fetch_semantics'
 
-  get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
-  get '/vsprediction/:id' => 'vstreams#fetch_prediction'
+  # get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
+  # get '/vsprediction/:id' => 'vstreams#fetch_prediction'
 
   get '/filter'         => 'searches#filter'
   get '/autocomplete'   => 'searches#fetch_autocomplete'
