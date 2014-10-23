@@ -1,5 +1,7 @@
 class StreamsController < ApplicationController
 
+  @@STATUS_REQUESTS_LIMIT_FAIL = 429
+
   before_action :correct_user,     only: [:edit, :update, :destroy]
   before_action :get_current_user, only: [:index, :get_streams, :show, :new, :edit, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
   before_action :new_stream,       only: [:new, :new_from_resource]
@@ -9,9 +11,14 @@ class StreamsController < ApplicationController
   def index
     res = Api.get "/users/#{params[:id]}/streams", openid_metadata
     check_new_token res
-    @streams = res["body"]["streams"]
-    logger.debug "STREAMS: #{@streams}"
-    @streams
+    if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+      flash[:warning] = res["body"]["error"]
+      redirect_to "/not_allowed_access"
+    else
+      @streams = res["body"]["streams"]
+      logger.debug "STREAMS: #{@streams}"
+      @streams
+    end
   end
 
   def new
@@ -34,6 +41,11 @@ class StreamsController < ApplicationController
     if res["status"] == 401
       flash[:warning] = "Not authorized access to private resources."
       redirect_to "/not_allowed_access"
+
+    elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+      flash[:warning] = res["body"]["error"]
+      redirect_to "/not_allowed_access"
+
     else
       @stream = Stream.new
       res["body"].each do |k, v|
@@ -47,6 +59,10 @@ class StreamsController < ApplicationController
         triggers = "/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers"
         response = Api.get triggers, openid_metadata
         check_new_token response
+        if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+          flash[:warning] = res["body"]["error"]
+          redirect_to "/not_allowed_access"
+        end
         @triggers = response['body']['triggers']
       end
       @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
@@ -56,6 +72,10 @@ class StreamsController < ApplicationController
       if res["body"]["polling"] == true then
         res2 = Api.get "/streams/#{@stream_id}/pollinghistory", openid_metadata
         check_new_token res2
+        if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+          flash[:warning] = res["body"]["error"]
+          redirect_to "/not_allowed_access"
+        end
         @polling_history = res2["body"]["history"]
         sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
         @polling_history = sorted_history
@@ -111,7 +131,6 @@ class StreamsController < ApplicationController
         res["response"].on_complete do
           check_new_token res
           if res["status"] == 200
-
             @stream.id = res["body"]["_id"]
             # TODO
             # The API is currently sending back the response before the database has
@@ -119,6 +138,11 @@ class StreamsController < ApplicationController
             sleep(1.0)
             format.html { redirect_to stream_path(@stream.id) }
             format.json { render json: {"id" => @stream.id}, status: res.status }
+
+          elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+            flash[:warning] = res["body"]["error"]
+            redirect_to "/not_allowed_access"
+
           else
             format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
             format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
@@ -151,6 +175,11 @@ class StreamsController < ApplicationController
 
           format.html { redirect_to stream_path(stream_id) }
           format.json { head :no_content }
+
+        elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+          flash[:warning] = res["body"]["error"]
+          redirect_to "/not_allowed_access"
+
         else
           format.html { render action: 'edit' }
           format.json { render json: @stream.errors, status: :unprocessable_entity }
@@ -170,6 +199,10 @@ class StreamsController < ApplicationController
     @user = current_user
     res = Api.delete "/streams/#{params[:id]}", nil, openid_metadata
     check_new_token res
+    if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+      flash[:warning] = res["body"]["error"]
+      redirect_to "/not_allowed_access"
+    end
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
