@@ -2,15 +2,34 @@
 <h1>Sign in</h1>
 <div class="row">
 	<div class="col-md-6 col-md-offset-3 login-form">
-			<div id="gConnect">
-				Sign in using Google's Open ID Connect button
+		<style>
+			.tos {
+				width: 100%;
+				height: 300px;
+				padding: 5px;
+				margin-bottom: 20px;
+				overflow: auto;
+			}
+
+			.signin-btn {
+		    margin-top: -5px;
+			  margin-left: 25px;
+   			float: left;
+			}
+		</style>
+		<%= render 'tos' %>
+
+		<div id="gConnect">
+			<p class="left">Sign in using Google's Open ID Connect button</p>
+			<div class="signin-btn">
 		    <button class="g-signin"
-		        data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email"
-		        data-clientId="995342763478-fh8bd2u58n1tl98nmec5jrd76dkbeksq.apps.googleusercontent.com"
-		        data-callback="signinCallback"
-		        data-accesstype="offline"
-		        data-cookiepolicy="single_host_origin">
+	        data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email"
+	        data-clientId="995342763478-fh8bd2u58n1tl98nmec5jrd76dkbeksq.apps.googleusercontent.com"
+	        data-callback="signinCallback"
+	        data-accesstype="offline"
+	        data-cookiepolicy="single_host_origin">
 		    </button>
-		  </div>
+			</div>
+	  </div>
 	</div>
 </div>
