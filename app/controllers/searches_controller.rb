@@ -106,16 +106,16 @@ class SearchesController < ApplicationController
 	    		@streams.push data
 	  		end
 
-				@vstreams = res["body"]['vstreams']['hits']['hits']
+				# @vstreams = res["body"]['vstreams']['hits']['hits']
 
 				@users = res["body"]['users']['hits']['hits']
-				@count_vstreams = res["body"]['vstreams']['hits']['total']
+				# @count_vstreams = res["body"]['vstreams']['hits']['total']
 
 				logger.debug res["body"]['streams']
 
 				@count_streams = res["body"]['streams']['hits']['total']
 				@count_users = res["body"]['users']['hits']['total']
-				@count_all = @count_streams + @count_users + @count_vstreams
+				# @count_all = @count_streams + @count_users + @count_vstreams
 				@query = params['search']['query']
 
 	      if @page_number > 0
