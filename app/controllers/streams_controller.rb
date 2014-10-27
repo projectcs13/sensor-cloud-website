@@ -189,10 +189,11 @@ class StreamsController < ApplicationController
   end
 
   def edit
-    longitude = @stream.location['lon']
-    latitude = @stream.location['lat']
-    @stream.attributes = {:latitude => latitude}
-    @stream.attributes = {:longitude => longitude}
+    logger.debug "location"
+    # longitude = @json["location"]["lon"]
+    # latitude = @json["location"]["lat"]
+    # @stream.attributes = {:latitude => latitude}
+    # @stream.attributes = {:longitude => longitude}
   end
 
   def destroy
@@ -276,7 +277,18 @@ class StreamsController < ApplicationController
     end
 
     def set_stream
-      @stream = Stream.find(params[:id])
+      logger.debug "set_stream"
+      res = Api.get "/users/#{current_user.username}/streams/#{params[:id]}", openid_metadata
+      @stream = Stream.new
+      res["body"].each do |k, v|
+        if k == "location"
+          @stream.send "longitude=", res["body"]["location"]["lon"]
+          @stream.send "latitude=", res["body"]["location"]["lat"]
+        else
+          @stream.send("#{k}=", v)
+        end
+      end
+      logger.debug @stream
     end
 
     def signed_in_user
