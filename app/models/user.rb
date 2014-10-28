@@ -44,8 +44,8 @@ class User < ActiveRecord::Base
 		end
 
 		def create_remember_token
-			logger.debug "create_remember_token"
+			# logger.debug "create_remember_token"
 			# self.remember_token = User.encrypt(User.new_remember_token)
-			logger.debug self.remember_token
+			# logger.debug self.remember_token
 		end
 end

@@ -1,13 +1,6 @@
 module SessionsHelper
 
 	def openid_metadata
-		# {
-		# 	:access_token  => session[:token].access_token,
-		# 	:refresh_token => session[:token].refresh_token,
-		# 	:username      => current_user.username
-		# }
-		logger.debug "current_user"
-		logger.debug current_user
 		{
 			:access_token  => current_user.access_token,
 			:refresh_token => current_user.refresh_token,
@@ -56,7 +49,7 @@ module SessionsHelper
 		logger.debug "remember_token"
 		cookies.permanent[:remember_token] = remember_token
 		user.update_attribute("remember_token", User.encrypt(remember_token))
-		logger.debug user.remember_token
+		# user.update_attributes(:remember_token => User.encrypt(remember_token), :access_token => user)
 		@current_user = user
 	end
 
