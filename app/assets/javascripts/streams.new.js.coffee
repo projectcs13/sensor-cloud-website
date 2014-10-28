@@ -154,14 +154,13 @@ window.newStreamForm = (form) ->
 
 
   sanitizeNumericFields = ->
-    numericInputs.forEach (elem) ->
+    values = numericInputs.map (elem) ->
       $elem = $(elem)
       value = parseFloat $elem.val()
-      $elem.val value if value
+      $elem.val value unless isNaN value
+      value
 
-    min = form.find('#min_val').val()
-    max = form.find('#max_val').val()
-    min < max
+    values[0] < values[1]  # min < max
 
 
   initBootstrapSwitches = ->
