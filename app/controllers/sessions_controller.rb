@@ -20,12 +20,15 @@ class SessionsController < ApplicationController
 				fetch_openid_tokens if not session[:token]
 				user = fetch_user_info
 
+				logger.debug "user"
+				logger.debug user
+
 				if remote_users_exists? user
 					renew_access_token user
 				else
-					ok? = store_remotely user
-					ok? = store_locally user if ok?
-					unless ok?
+					ok = store_remotely user
+					user = if ok then store_locally user else load_from_db user end
+					unless user
 						logger.debug "ERROR"
 						# redirect_to root_url
 						redirect_to root_path
@@ -99,8 +102,8 @@ class SessionsController < ApplicationController
 
 		def remote_users_exists? user
 			logger.debug "remote_users_exists?"
-			res = Api.get "/users/#{user.username}", openid_frontend_metadata
-			check_new_token_frontend res
+			res = Api.get "/users/#{user.username}", session[:token].to_hash
+			# check_new_token_frontend res
 			logger.debug res
 			res["status"] == 200
 		end
@@ -140,22 +143,45 @@ class SessionsController < ApplicationController
 			@state = session[:state]
 		end
 
+		def load_from_db user
+			User.find_by_username user.username
+		end
+
 		def store_locally user
-			user.save
+			# logger.debug "store locally"
+			# dbu = User.find_by_username user.username
+			# if dbu
+			# 	# dbu.access_token = user.access_token
+			# 	# dbu.refresh_token = user.refresh_token
+			# 	# dbu.save!
+			# 	logger.debug "dbu"
+			# 	dbu
+			# else
+			# 	logger.debug "user"
+			# 	user.save!
+			# 	user
+			# end
+			user.save!
+			true
+		rescue ActiveRecord::RecordNotSaved
+			logger.debug "not saved"
+			false
+		rescue ActiveRecord::RecordNotUnique
+			logger.debug "not unique"
+			false
 		end
 
 		def store_remotely user
-			# data = {}
-			# attrs = ["username", "email", "firstname", "lastname", "description", "private"]
-			# attrs.each do |attr| data[attr] = json.send(attr) end
-			# data["access_token"]  = session[:token].access_token
-			# data["refresh_token"] = session[:token].refresh_token
-			# res = Api.post "/users", data, {}
 			logger.debug "store_remotely"
-			logger.debug user.attributes
-			res = Api.post "/users", user.attributes, {}
+			data = {}
+			attrs = ["username", "email", "firstname", "lastname", "description", "private", "image_url", "access_token", "refresh_token"]
+			attrs.each do |attr| data[attr] = user.send(attr) end
+			puts data
+			res = Api.post "/users", data, {}
+			# res = Api.post "/users", user.attributes, {}
 			logger.debug "User created remotely"
-			logger.debug res
-			res["status"] == 200
+			ok = res["status"] == 200
+			puts "OK: #{ok}"
+			ok
 		end
 end

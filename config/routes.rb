@@ -29,7 +29,7 @@ SensorCloud::Application.routes.draw do
 
   # resources :vstreams
   resources :searches
-	resources :sessions, only: [:new, :create, :destroy]
+	resources :sessions, only: [:create]
   resources :contacts, only: [:new, :create]
 
   get '/triggers'           => 'triggers#index'
