@@ -27,7 +27,8 @@ class SessionsController < ApplicationController
 					renew_access_token user
 				else
 					ok = store_remotely user
-					user = if ok then store_locally user else load_from_db user end
+					# user = if ok then store_locally user else load_from_db user end
+					user = store_locally user
 					unless user
 						logger.debug "ERROR"
 						# redirect_to root_url
@@ -162,13 +163,13 @@ class SessionsController < ApplicationController
 			# 	user
 			# end
 			user.save!
-			true
+			user
 		rescue ActiveRecord::RecordNotSaved
 			logger.debug "not saved"
-			false
+			load_from_db user
 		rescue ActiveRecord::RecordNotUnique
 			logger.debug "not unique"
-			false
+			load_from_db user
 		end
 
 		def store_remotely user
