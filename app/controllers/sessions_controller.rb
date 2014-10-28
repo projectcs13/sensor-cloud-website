@@ -18,14 +18,18 @@ class SessionsController < ApplicationController
 				sign_out
 
 				fetch_openid_tokens if not session[:token]
-				json = fetch_user_info
-				user = load_from_db json
+				user = fetch_user_info
 
-				if user
+				if remote_users_exists? user
 					renew_access_token user
 				else
-					user = store_user json
-					store_on_remote_db user
+					ok? = store_remotely user
+					ok? = store_locally user if ok?
+					unless ok?
+						logger.debug "ERROR"
+						# redirect_to root_url
+						redirect_to root_path
+					end
 				end
 
 				logger.debug "before sign in"
@@ -43,12 +47,6 @@ class SessionsController < ApplicationController
 	end
 
 	private
-		def renew_access_token user
-			user.access_token  = session[:token].access_token
-			user.refresh_token = session[:token].refresh_token
-			user.save
-			Api.renew_token user.access_token, user.refresh_token
-		end
 
 		def fetch_openid_tokens
 			# Upgrade the code into a token object.
@@ -81,7 +79,37 @@ class SessionsController < ApplicationController
 					:collection => 'visible',
 					:userId => 'me')
 
-			JSON.parse response.body
+			json = JSON.parse response.body
+			build_sanitize_user json
+		end
+
+		def build_sanitize_user json
+			user = User.new
+			user.email         = json["emails"][0]["value"]
+			user.username      = json["id"]
+			user.firstname     = json["name"]["givenName"]
+			user.lastname      = json["name"]["familyName"]
+			user.image_url     = json["image"]["url"]
+			user.description   = "#{json["occupation"]} \n#{json["skills"]}"
+			user.private       = false
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
+			user
+		end
+
+		def remote_users_exists? user
+			logger.debug "remote_users_exists?"
+			res = Api.get "/users/#{user.username}", openid_frontend_metadata
+			check_new_token_frontend res
+			logger.debug res
+			res["status"] == 200
+		end
+
+		def renew_access_token user
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
+			user.save
+			Api.renew_token user.access_token, user.refresh_token
 		end
 
 		# Disconnect the user by revoking the stored token and removing session objects.
@@ -112,33 +140,22 @@ class SessionsController < ApplicationController
 			@state = session[:state]
 		end
 
-		def load_from_db json
-			User.find_by_username json["id"]
-		end
-
-		def store_user json
-			user = User.new
-			user.email         = json["emails"][0]["value"]
-			user.username      = json["id"]
-			user.firstname     = json["name"]["givenName"]
-			user.lastname      = json["name"]["familyName"]
-			user.image_url     = json["image"]["url"]
-			user.description   = "#{json["occupation"]} \n#{json["skills"]}"
-			user.private       = false
-			user.access_token  = session[:token].access_token
-			user.refresh_token = session[:token].refresh_token
+		def store_locally user
 			user.save
-			user
 		end
 
-		def store_on_remote_db user
-			data = {}
-			attrs = ["username", "email", "firstname", "lastname", "description", "private"]
-			attrs.each do |attr| data[attr] = user.send(attr) end
-			data["access_token"]  = session[:token].access_token
-			data["refresh_token"] = session[:token].refresh_token
-			res = Api.post "/users", data, {}
-			puts res
-			res
+		def store_remotely user
+			# data = {}
+			# attrs = ["username", "email", "firstname", "lastname", "description", "private"]
+			# attrs.each do |attr| data[attr] = json.send(attr) end
+			# data["access_token"]  = session[:token].access_token
+			# data["refresh_token"] = session[:token].refresh_token
+			# res = Api.post "/users", data, {}
+			logger.debug "store_remotely"
+			logger.debug user.attributes
+			res = Api.post "/users", user.attributes, {}
+			logger.debug "User created remotely"
+			logger.debug res
+			res["status"] == 200
 		end
 end

@@ -1,9 +1,16 @@
 module SessionsHelper
 
 	def openid_metadata
+		# {
+		# 	:access_token  => session[:token].access_token,
+		# 	:refresh_token => session[:token].refresh_token,
+		# 	:username      => current_user.username
+		# }
+		logger.debug "current_user"
+		logger.debug current_user
 		{
-			:access_token  => session[:token].access_token,
-			:refresh_token => session[:token].refresh_token,
+			:access_token  => current_user.access_token,
+			:refresh_token => current_user.refresh_token,
 			:username      => current_user.username
 		}
 	end
@@ -13,10 +20,24 @@ module SessionsHelper
 	end
 
 	def check_new_token res
+		if current_user then check_new_token_normal res else check_new_token_frontend res	end
+	end
+
+	def check_new_token_normal res
+		logger.debug "check_new_token"
 		if res["new_access_token"]
 			current_user.access_token = res["new_access_token"]
 			current_user.save
  			gen_token_pair current_user
+ 		end
+	end
+
+	def check_new_token_frontend res
+		logger.debug "check_new_token_frontend"
+		if res["new_access_token"]
+			frontend = User.find_by_username FRONTEND_TOKEN['username']
+			frontend.access_token = res["new_access_token"]
+			frontend.save
  		end
 	end
 
