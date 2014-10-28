@@ -2,6 +2,8 @@ class SearchesController < ApplicationController
 
 	@@STATUS_REQUESTS_LIMIT_FAIL = 429
 
+	before_action :get_credentials, only: [:update_user_ranking, :fetgh_graph_data, :fetch_autocomplete, :create]
+
 	def show
 	end
 
@@ -10,7 +12,7 @@ class SearchesController < ApplicationController
 
 	def update_user_ranking
 		body = { user_id: current_user.username, ranking: params[:json][:value] }
-		res = Api.put "/streams/#{params[:json][:stream_id]}/_rank", body, openid_metadata
+		res = Api.put "/streams/#{params[:json][:stream_id]}/_rank", body, @credentials
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"], status: res["status"] }
@@ -18,7 +20,7 @@ class SearchesController < ApplicationController
 	end
 
 	def fetch_graph_data
-		res = Api.get "/_history?stream_id=#{params[:stream_id]}", openid_frontend_metadata
+		res = Api.get "/_history?stream_id=#{params[:stream_id]}", @credentials
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"], status: 200 }
@@ -26,7 +28,7 @@ class SearchesController < ApplicationController
 	end
 
 	def fetch_autocomplete
-		res = Api.get "/suggest/_search?query=#{params[:term]}", openid_frontend_metadata
+		res = Api.get "/suggest/_search?query=#{params[:term]}", @credentials
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"]["suggestions"], status: 200 }
@@ -84,8 +86,7 @@ class SearchesController < ApplicationController
 									}
 								}
 			end
-			logger.debug body
-			res = Api.post url, body, openid_frontend_metadata
+			res = Api.post url, body, @credentials
 			check_new_token res
 			if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
 				flash[:warning] = "Not authorized access to private resources."
@@ -126,4 +127,9 @@ class SearchesController < ApplicationController
 	    end
 		end
 	end
+
+	private
+		def get_credentials
+			@credentials = if current_user then openid_metadata else openid_frontend_metadata end
+		end
 end

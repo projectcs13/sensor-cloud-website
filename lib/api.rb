@@ -41,6 +41,8 @@ class Api
 
   private
     def self.make method, url, body, token
+      puts "token"
+      puts token
       res = request method, url, body, token[:access_token]
 
       parsed = parse_JSON_response res
