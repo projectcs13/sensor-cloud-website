@@ -144,8 +144,11 @@ class SessionsController < ApplicationController
 			@state = session[:state]
 		end
 
-		def load_from_db user
-			User.find_by_username user.username
+		def replace_old user
+			old = User.find_by_username user.username
+			old.delete
+			user.save!
+			user
 		end
 
 		def store_locally user
@@ -166,10 +169,10 @@ class SessionsController < ApplicationController
 			user
 		rescue ActiveRecord::RecordNotSaved
 			logger.debug "not saved"
-			load_from_db user
+			replace_old user
 		rescue ActiveRecord::RecordNotUnique
 			logger.debug "not unique"
-			load_from_db user
+			replace_old user
 		end
 
 		def store_remotely user

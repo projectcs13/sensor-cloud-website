@@ -1,16 +1,10 @@
 class User < ActiveRecord::Base
 
-	# VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-	# VAILD_USERNAME_REGEX = /\A[a-zA-Z0-9_-]+\Z/
-  # validates :username,  presence: true, format: { with: VAILD_USERNAME_REGEX }, length: { maximum:50 }, uniqueness: { case_sensitive: false }
-  # validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
-  # validates :password, length: { minimum: 6 }
   validates :description, length: { maximum:500 }
 
 	has_many :streams
 
 	before_save :downcase_attributes
-	before_create :create_remember_token
 
 	def User.new_remember_token
 		SecureRandom.urlsafe_base64
@@ -43,9 +37,4 @@ class User < ActiveRecord::Base
 			self.email = self.email.downcase
 		end
 
-		def create_remember_token
-			# logger.debug "create_remember_token"
-			# self.remember_token = User.encrypt(User.new_remember_token)
-			# logger.debug self.remember_token
-		end
 end
