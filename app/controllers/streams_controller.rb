@@ -234,22 +234,15 @@ class StreamsController < ApplicationController
   end
 
   def fetch_semantics
-    file_type = params[:type]
-    res = if "#{file_type}" == "ns3"
-	    Api.semantics_get "/datapoints/#{params[:id]}"
-    else
-	    Api.semantics_get "/datapoints/#{params[:id]}?format=#{file_type}"
-    end
-    puts "RES, #{res}"
-    sleep 0.5
-    File.open("#{Dir.pwd}/public/semantics_output.#{file_type}", 'w') do |f|
-      f.write(res["body"]);
-      f.close
-    end
-  end
+    streamid = params[:id]
+    filetype = params[:type]
 
-  def download
-    send_file "#{Dir.pwd}/public/semantics_output.txt"
+    fmt = if filetype == "ns3" then "" else "?format=#{filetype}" end
+    url = "/datapoints/#{streamid}#{fmt}"
+    res = Api.semantics_get url
+
+    filename = "semantics_output.#{filetype}"
+    send_data res["body"], :filename => filename, :disposition => 'attachment'
   end
 
   private
@@ -278,7 +271,7 @@ class StreamsController < ApplicationController
 
     def set_stream
       logger.debug "set_stream"
-      res = Api.get "/users/#{current_user.username}/streams/#{params[:id]}", openid_metadata
+      res = Api.get "/streams/#{params[:id]}", openid_metadata
       @stream = Stream.new
       res["body"].each do |k, v|
         if k == "location"

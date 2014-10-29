@@ -72,8 +72,6 @@ SensorCloud::Application.routes.draw do
   get '/about'              => 'static_pages#about'
   get '/not_allowed_access' => 'static_pages#not_allowed_access'
 
-  get '/public/data/:file' => 'streams#download'
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
