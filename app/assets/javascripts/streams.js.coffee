@@ -284,9 +284,6 @@ $ ->
       value = data.value
       toggle value
 
-    $('#semantics-btn').on 'click', (event) ->
-      $('#semantics-btn').parent('form').trigger 'submit'
-
 
   $(document).bind "streams_edit", (e, obj) =>
     form = $ 'form'
