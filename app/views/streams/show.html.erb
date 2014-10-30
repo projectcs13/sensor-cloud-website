@@ -111,7 +111,7 @@
       <div>
         <h5><strong>Stream link</strong></h5>
         <i>
-          <% stream_link = "#{CONF['API_URL']}/users/#{@stream.user_id}/streams/#{@stream.id}" %>
+          <% stream_link = "#{CONF['API_URL']}/streams/#{@stream.id}" %>
           curl -XGET <a href="<%= stream_link %>"><%= stream_link %></a> \ <br>
           -H "Access-Token: <%= current_user.access_token %>"
         </i>
