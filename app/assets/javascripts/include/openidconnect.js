@@ -78,6 +78,30 @@ $(document).ready(function() {
           'YOUR_CLIENT_SECRET with your client secret in the project sources.'
     );
   }
+
+  var initSignIn = function() {
+    var po = document.createElement('script');
+    po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://plus.google.com/js/client:plusone.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(po, s);
+  };
+
+
+  var handler = function() {
+    TIME = 500;
+    checked = $(this)[0].checked;
+
+    if (checked) {
+      initSignIn();
+      $('#gConnect').show(TIME);
+    } else {
+      $('#gConnect').hide(TIME);
+    }
+  };
+
+  $('#tos-agree').on('change', handler);
+
 });
 
 /**
@@ -89,3 +113,4 @@ $(document).ready(function() {
 window.signinCallback = function(authResult) {
   helper.onSignInCallback(authResult);
 }
+
