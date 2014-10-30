@@ -112,8 +112,11 @@ class SessionsController < ApplicationController
 		def renew_access_token user
 			user.access_token  = session[:token].access_token
 			user.refresh_token = session[:token].refresh_token
-			user.save
 			Api.renew_token user.access_token, user.refresh_token
+			user.save!
+		rescue ActiveRecord::StatementInvalid
+			logger.debug "statement invalid"
+			replace_old user
 		end
 
 		# Disconnect the user by revoking the stored token and removing session objects.
@@ -146,7 +149,7 @@ class SessionsController < ApplicationController
 
 		def replace_old user
 			old = User.find_by_username user.username
-			old.delete
+			old.delete if old
 			user.save!
 			user
 		end
@@ -167,6 +170,9 @@ class SessionsController < ApplicationController
 			# end
 			user.save!
 			user
+		rescue ActiveRecord::StatementInvalid
+			logger.debug "statement invalid"
+			replace_old user
 		rescue ActiveRecord::RecordNotSaved
 			logger.debug "not saved"
 			replace_old user
