@@ -1,29 +1,11 @@
 class SessionsController < ApplicationController
 
-	before_action :create_openid_state, only: [:new]
+	before_action :gen_openid_state, only: [:new]
 
 	def new
 	end
 
 	def create
-		user = User.find_by(email: params[:session][:email].downcase)
-		if user && user.authenticate(params[:session][:password])
-			sign_in user
-			gen_token_pair user
-			redirect_back_or user
-		else
-			flash.now[:danger] = 'Invalid email/password combination'
-			render 'new'
-		end
-	end
-
-	def destroy
-		revoke_access_token if signed_in_openid?
-		sign_out
-		redirect_to root_url
-	end
-
-	def auth_openid_connect
 		if current_user
 			logger.debug "current_user"
 			render json: {"url" => "/users/#{current_user.username}/streams"}, status: 200
@@ -36,35 +18,39 @@ class SessionsController < ApplicationController
 				sign_out
 
 				fetch_openid_tokens if not session[:token]
-				json = fetch_user_info
-				user = load_from_db json
+				user = fetch_user_info
 
-				if user
+				logger.debug "user"
+				logger.debug user
+
+				if remote_users_exists? user
 					renew_access_token user
 				else
-					user = store_user json
-					store_on_remote_db user
+					ok = store_remotely user
+					# user = if ok then store_locally user else load_from_db user end
+					user = store_locally user
+					unless user
+						logger.debug "ERROR"
+						# redirect_to root_url
+						redirect_to root_path
+					end
 				end
 
+				logger.debug "before sign in"
 				sign_in user
+				logger.debug "after sign in"
 				render json: {"url" => "/users/#{user.username}/streams"}, status: 200
 			end
 		end
 	end
 
-	def auth_openid_disconnect
+	def destroy
 		sign_out
 		revoke_access_token
-		render json: {"success" => "true"}, status: 200
+		redirect_to root_url
 	end
 
 	private
-		def renew_access_token user
-			user.access_token  = session[:token].access_token
-			user.refresh_token = session[:token].refresh_token
-			user.save
-			Api.renew_token user.access_token, user.refresh_token
-		end
 
 		def fetch_openid_tokens
 			# Upgrade the code into a token object.
@@ -89,15 +75,48 @@ class SessionsController < ApplicationController
 
 		def fetch_user_info
 			# Authorize the client and construct a Google+ service.
-			$client.authorization.update_token!(session[:token].to_hash)
-			plus = $client.discovered_api('plus', 'v1')
+			$client.authorization.update_token! session[:token].to_hash
+			plus = $client.discovered_api 'plus', 'v1'
 
 			# Get the list of people as JSON and return it.
 			response = $client.execute!(plus.people.get,
 					:collection => 'visible',
 					:userId => 'me')
 
-			JSON.parse response.body
+			json = JSON.parse response.body
+			build_sanitize_user json
+		end
+
+		def build_sanitize_user json
+			user = User.new
+			user.email         = json["emails"][0]["value"]
+			user.username      = json["id"]
+			user.firstname     = json["name"]["givenName"]
+			user.lastname      = json["name"]["familyName"]
+			user.image_url     = json["image"]["url"]
+			user.description   = "#{json["occupation"]} \n#{json["skills"]}"
+			user.private       = false
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
+			user
+		end
+
+		def remote_users_exists? user
+			logger.debug "remote_users_exists?"
+			res = Api.get "/users/#{user.username}", session[:token].to_hash
+			# check_new_token_frontend res
+			logger.debug res
+			res["status"] == 200
+		end
+
+		def renew_access_token user
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
+			Api.renew_token user.access_token, user.refresh_token
+			user.save!
+		rescue ActiveRecord::StatementInvalid
+			logger.debug "statement invalid"
+			replace_old user
 		end
 
 		# Disconnect the user by revoking the stored token and removing session objects.
@@ -121,39 +140,58 @@ class SessionsController < ApplicationController
 			end
 		end
 
-		def create_openid_state
+		def gen_openid_state
 			revoke_access_token
 			# Create a string for verification
 			session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join unless session[:state]
 			@state = session[:state]
 		end
 
-		def store_user json
-			user = User.new
-			user.email         = json["id"] + "@openid.ericsson"
-			user.username      = json["id"]
-			user.firstname     = json["name"]["givenName"]
-			user.lastname      = json["name"]["familyName"]
-			user.description   = ""
-			user.password      = "pa55w0rd"
-			user.private       = false
-			user.access_token  = session[:token].access_token
-			user.refresh_token = session[:token].refresh_token
-			user.save
+		def replace_old user
+			old = User.find_by_username user.username
+			old.delete if old
+			user.save!
 			user
 		end
 
-		def load_from_db json
-			user_email = json["id"] + "@openid.ericsson"
-			User.find_by_email user_email
+		def store_locally user
+			# logger.debug "store locally"
+			# dbu = User.find_by_username user.username
+			# if dbu
+			# 	# dbu.access_token = user.access_token
+			# 	# dbu.refresh_token = user.refresh_token
+			# 	# dbu.save!
+			# 	logger.debug "dbu"
+			# 	dbu
+			# else
+			# 	logger.debug "user"
+			# 	user.save!
+			# 	user
+			# end
+			user.save!
+			user
+		rescue ActiveRecord::StatementInvalid
+			logger.debug "statement invalid"
+			replace_old user
+		rescue ActiveRecord::RecordNotSaved
+			logger.debug "not saved"
+			replace_old user
+		rescue ActiveRecord::RecordNotUnique
+			logger.debug "not unique"
+			replace_old user
 		end
 
-		def store_on_remote_db user
+		def store_remotely user
+			logger.debug "store_remotely"
 			data = {}
-			attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
+			attrs = ["username", "email", "firstname", "lastname", "description", "private", "image_url", "access_token", "refresh_token"]
 			attrs.each do |attr| data[attr] = user.send(attr) end
-			data["access_token"]  = session[:token].access_token
-			data["refresh_token"] = session[:token].refresh_token
-			Api.post "/users", data, {}
+			puts data
+			res = Api.post "/users", data, {}
+			# res = Api.post "/users", user.attributes, {}
+			logger.debug "User created remotely"
+			ok = res["status"] == 200
+			puts "OK: #{ok}"
+			ok
 		end
 end

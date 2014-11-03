@@ -1,5 +1,9 @@
 class SearchesController < ApplicationController
 
+	@@STATUS_REQUESTS_LIMIT_FAIL = 429
+
+	before_action :get_credentials, only: [:update_user_ranking, :fetgh_graph_data, :fetch_autocomplete, :create]
+
 	def show
 	end
 
@@ -8,7 +12,7 @@ class SearchesController < ApplicationController
 
 	def update_user_ranking
 		body = { user_id: current_user.username, ranking: params[:json][:value] }
-		res = Api.put "/streams/#{params[:json][:stream_id]}/_rank", body, openid_metadata
+		res = Api.put "/streams/#{params[:json][:stream_id]}/_rank", body, @credentials
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"], status: res["status"] }
@@ -16,7 +20,7 @@ class SearchesController < ApplicationController
 	end
 
 	def fetch_graph_data
-		res = Api.get "/_history?stream_id=#{params[:stream_id]}", openid_metadata
+		res = Api.get "/_history?stream_id=#{params[:stream_id]}", @credentials
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"], status: 200 }
@@ -24,7 +28,7 @@ class SearchesController < ApplicationController
 	end
 
 	def fetch_autocomplete
-		res = Api.get "/suggest/_search?query=#{params[:term]}", openid_metadata
+		res = Api.get "/suggest/_search?query=#{params[:term]}", @credentials
 		check_new_token res
 		respond_to do |format|
 			format.json { render json: res["body"]["suggestions"], status: 200 }
@@ -82,40 +86,50 @@ class SearchesController < ApplicationController
 									}
 								}
 			end
-			logger.debug(body)
-			res = Api.post url, body, openid_metadata
+			res = Api.post url, body, @credentials
 			check_new_token res
-			@filter_unit = params['search']['filter_unit']
-			@filter_tag = params['search']['filter_tag']
-			@filter_longitude = params['search']['filter_longitude']
-			@filter_latitude = params['search']['filter_latitude']
-			@filter_distance = params['search']['filter_distance']
-			@filter_active = params['search']['filter_active']
+			if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+				flash[:warning] = "Not authorized access to private resources."
+				redirect_to "/not_allowed_access"
+			else
+				@filter_unit = params['search']['filter_unit']
+				@filter_tag = params['search']['filter_tag']
+				@filter_longitude = params['search']['filter_longitude']
+				@filter_latitude = params['search']['filter_latitude']
+				@filter_distance = params['search']['filter_distance']
+				@filter_active = params['search']['filter_active']
 
-			@streams = []
-  		@streams_raw = res["body"]['streams']['hits']['hits']
-  		@streams_raw.each do |s|
-   		 	data = s['_source']
-    		data['id'] = s['_id']
-    		@streams.push data
-  		end
+				@streams = []
+	  		@streams_raw = res["body"]['streams']['hits']['hits']
+	  		@streams_raw.each do |s|
+	   		 	data = s['_source']
+	    		data['id'] = s['_id']
+	    		@streams.push data
+	  		end
 
-			@vstreams = res["body"]['vstreams']['hits']['hits']
+				# @vstreams = res["body"]['vstreams']['hits']['hits']
 
-			@users = res["body"]['users']['hits']['hits']
-			@count_vstreams = res["body"]['vstreams']['hits']['total']
-			@count_streams = res["body"]['streams']['hits']['total']
-			@count_users = res["body"]['users']['hits']['total']
-			@count_all = @count_streams + @count_users + @count_vstreams
-			@query = params['search']['query']
+				@users = res["body"]['users']['hits']['hits']
+				# @count_vstreams = res["body"]['vstreams']['hits']['total']
 
-	      	if @page_number > 0
-	        	respond_to do |format|
-	          		format.js
-	        	end
-	      	else
-	        	render :action => 'show'
+				logger.debug res["body"]['streams']
+
+				@count_streams = res["body"]['streams']['hits']['total']
+				@count_users = res["body"]['users']['hits']['total']
+				# @count_all = @count_streams + @count_users + @count_vstreams
+				@query = params['search']['query']
+
+	      if @page_number > 0
+	        respond_to { |format| format.js }
+	      else
+	       	render :action => 'show'
 	    	end
+	    end
 		end
 	end
+
+	private
+		def get_credentials
+			@credentials = if current_user then openid_metadata else openid_frontend_metadata end
+		end
 end

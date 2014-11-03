@@ -11,7 +11,7 @@
 
 <div class="row title-row">
   <div class="col-lg-8">
-		<h2 class="text-left"><%= @stream.name %> <a href="/users/<%= @stream.user_id %>" > <small><%= @stream.user_id %> </small></a></h2>
+		<h2 class="text-left"><%= @stream.name %></h2>
 		<%= render 'follow_form' if signed_in? %>
 	</div>
 
@@ -53,25 +53,25 @@
 <div class="row">
   <div class="col-lg-8"> <!-- Left side -->
     <div class="stream-graph graph-canvas" id="graph-canvas"></div>
-
-    <%= form_tag url_for(controller: "streams", action: "fetch_prediction"), remote: true, method: 'get' do %>
-    <%= submit_tag "Fetch Prediction", class: "btn btn-primary", id: "prediction-btn"%>
+<!--
+    <%#= form_tag url_for(controller: "streams", action: "fetch_prediction"), remote: true, method: 'get' do %>
+    <%#= submit_tag "Fetch Prediction", class: "btn btn-primary", id: "prediction-btn"%>
       <span>
          Prediction history size:
-        <%= select_tag :in, options_for_select([10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
+        <%#= select_tag :in, options_for_select([10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
       </span>
 
       <span>
          Prediction output size:
-        <%= select_tag :out, options_for_select([1, 10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
+        <%#= select_tag :out, options_for_select([1, 10, 25, 50, 100, 150, 200, 300, 400, 500]) %>
       </span>
-    <%end%>
-
-    <%= form_tag url_for(controller: "streams", action: "fetch_semantics"), remote: true, method: 'get' do %>
+    <%#end%>
+ -->
+    <%= form_tag url_for(controller: "streams", action: "fetch_semantics"), method: 'get' do %>
     <%= submit_tag "Export", class: "btn btn-primary", id: "semantics-btn"%>
 	<span>
          Output format:
-        <%= select_tag :type, options_for_select(["ns3", "xml", "json-ld"]) %>
+        <%= select_tag :type, options_for_select(["n3", "xml", "json-ld"]) %>
       </span>
     <%end%>
 
@@ -79,11 +79,11 @@
         <span class="label prediction-80">80% Confidence interval</span>
         <span class="label prediction-95">95% Confidence interval</span>
       </div>
-        <div class="pull-right">Live update:
+        <!-- <div class="pull-right">Live update:
           <div class="make-switch switch-mini" id="live-update-btn">
             <input id="live-update-checkbox" type="checkbox">
           </div>
-        </div>
+        </div> -->
       <div><small>
         Last update: <%= @stream.last_updated %>
         History: <%= @count_history %>
@@ -96,6 +96,7 @@
 
     <h4>Description: </h4>
     <div class="stream-description well"><%= @stream.description %></div>
+
     <h4>Tags: </h4>
     <div class="stream-tags well">
       <% tagslist = @stream.tags.split(/,/) %>
@@ -103,6 +104,32 @@
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
       <% end %>
     </div>
+
+    <% if current_user != nil and current_user.username == @stream.user_id %>
+    <h4>Examples of API calls: </h4>
+    <div class="stream-description well">
+      <div>
+        <h5><strong>Stream link</strong></h5>
+        <i>
+          <% stream_link = "#{CONF['API_URL']}/streams/#{@stream.id}" %>
+          curl -XGET <a href="<%= stream_link %>"><%= stream_link %></a> \ <br>
+          -H "Access-Token: <%= current_user.access_token %>"
+        </i>
+      </div>
+      <br>
+      <div>
+        <h5><strong>POST new data points to this stream</strong></h5>
+        <i>
+        <% data_link = "#{CONF['API_URL']}/streams/#{@stream.id}/data" %>
+        curl -XPOST <a href="<%= data_link %>"><%= data_link %></a> \ <br>
+          -H "Content-Type: application/json" \ <br>
+          -H "Access-Token: <%= current_user.access_token %>" \ <br>
+          -d '{ "value" : "9" }'
+        </i>
+      </div>
+    </div>
+    <% end %>
+
     <%= render 'triggers' if signed_in? and @user.username.downcase == @stream.user_id %>
     <% if not @user.nil? and @user.username.downcase == @stream.user_id %>
       <% if @stream.polling == true %>

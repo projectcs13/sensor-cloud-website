@@ -1,10 +1,12 @@
 <h2><%= t('.contact_us') %></h2>
 <div class="col-md-6 col-md-offset-3 login-form">
+<p>The email will be forwarded to <a href="mailto:iot-framework-support@ericsson.com">iot-framework-support@ericsson.com</a></p>
+
 <%= simple_form_for @contact, :url => contacts_path do |f| %>
-	<%= f.input :name, :label => t('.name'), input_html: { class:'form-control'}, wrapper_html: { class: 'form-group' } %>
-	<%= f.input :email, :label => t('.email'), input_html: { class:'form-control'} , wrapper_html: { class: 'form-group' } %>
-	<%= f.input :subject, :label => t('.subject'), input_html: { class:'form-control'}, wrapper_html: { class: 'form-group' } %>
-	<%= f.input :message, :as => :text, :label => t('.message'), input_html: { class:'form-control'}, wrapper_html: { class: 'form-group' }%>
+	<%= f.input :email, :label => t('Email'), input_html: { class:'form-control'} , wrapper_html: { class: 'form-group' } %>
+	<%= f.input :name, :label => t('Name'), input_html: { class:'form-control'}, wrapper_html: { class: 'form-group' } %>
+	<%= f.input :subject, :label => t('Subject'), input_html: { class:'form-control'}, wrapper_html: { class: 'form-group' } %>
+	<%= f.input :message, :as => :text, :label => t('Message'), input_html: { class:'form-control', style: 'height: 200px;'}, wrapper_html: { class: 'form-group' }%>
 	<div class="form-group">
 		<div class="form-button text-center">
 			<%= f.button :submit, :value => 'Submit', class: "btn btn-lg btn-primary pull-left"  %>

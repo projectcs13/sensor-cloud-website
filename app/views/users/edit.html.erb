@@ -35,20 +35,8 @@
 				<%= f.text_field :email, class: "form-control" %>
 			</div>
 
-			<div class="form-group">
-				<%= f.label :password %>
-				<%= f.password_field :password, class: "form-control" %>
-			</div>
-
-			<div class="form-group">
-				<%= f.label :password_confirmation, "Confirmation" %>
-				<%= f.password_field :password_confirmation, class: "form-control" %>
-			</div>	
-
-
 			<div class="form-button">
-			<%= f.submit "Save changes", class: "btn btn-lg btn-primary pull right", 
-																		 id: "account-user-submit-button" %>
+			<%= f.submit "Save changes", class: "btn btn-lg btn-primary pull right", id: "account-user-submit-button" %>
 			</div>
 		<% end %>
 

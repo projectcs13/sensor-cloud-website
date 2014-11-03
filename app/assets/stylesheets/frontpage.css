@@ -1,5 +1,5 @@
 .list_carousel {
-	
+
 	width: 100%;
 }
 .list_carousel ul {
@@ -12,7 +12,7 @@
     font-size: 17px;
     color: #666;
     text-align: center;
-    background-image:url('blue_cloud.svg');
+    /*background-image:url('blue_cloud.svg');*/
     background-repeat:no-repeat;
     width: 220px;
     height: 125px;
@@ -36,7 +36,7 @@
     left: 50%;
     /* top: 50%; */
 }
- 
+
 #carousel {
     width: 735px;
     position: relative;
@@ -60,13 +60,13 @@
     float: left;
     position: relative;
 }
- 
+
 #carousel li img {
     width: 201px;
     height: 127px;
     margin-top: 14px;
 }
-/* 
+/*
 #carousel li span {
     background: transparent url(carousel_shine.png) no-repeat 0 0;
     text-indent: -999px;
@@ -78,8 +78,8 @@
     z-index: 2;
     top: 14px;
     left: 16px;
-}           
-*/ 
+}
+*/
 .clearfix {
     float: none;
     clear: both;
@@ -93,7 +93,7 @@
     height: 21px;
     margin-left: 10px;
     position: absolute;
-    top: 70px;              
+    top: 70px;
 }
 #carousel .prev {
     background-position: 0 0;
@@ -101,14 +101,14 @@
 }
 #carousel .prev:hover {
     left: -31px;
-}           
+}
 #carousel .next {
     background-position: -18px 0;
     right: -20px;
 }
 #carousel .next:hover {
     right: -21px;
-}               
+}
 #carousel .pager {
     text-align: center;
     margin: 0 auto;
@@ -130,9 +130,9 @@
 }
 #carousel .pager a.selected {
     background: transparent url(carousel_control.png) no-repeat -12px -32px;
-    text-decoration: underline;             
+    text-decoration: underline;
 }
- 
+
 #source {
     text-align: center;
     width: 100%;
