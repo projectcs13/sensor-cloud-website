@@ -13,8 +13,6 @@
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,600,300,400,700,800' rel='stylesheet' type='text/css'>
 </head>
 <body class="<%= @home_page ? 'homepage' : ''%>" data-controller="<%=params[:controller]%>" data-action="<%=params[:action]%>">
-	<%#= render 'layouts/modal' %>
-
 	<div id="container">
 		<div id="header">
 			<%= render 'layouts/header' %>
@@ -42,56 +40,6 @@
 		</div>
 	</div>
 
-	<!-- DEBUG -->
 	<%= hidden_field_tag 'state', @state %>
-  <!-- <div id="authOps" style="display:none">
-    <h2>User is now signed in to the app using Google+</h2>
-    <p>If the user chooses to disconnect, the app must delete all stored
-    information retrieved from Google for the given user.</p>
-
-    <h2>User's profile information</h2>
-    <p>This data is retrieved client-side by using the Google JavaScript API
-    client library.</p>
-    <div id="profile"></div>
-
-    <h2>User's friends that are visible to this app</h2>
-    <p>This data is retrieved from your server, where your server makes
-    an authorized HTTP request on the user's behalf.</p>
-    <p>If your app uses server-side rendering, this is the section you
-    would change using your server-side templating system.</p>
-    <div id="visiblePeople"></div>
-
-    <h2>Authentication Logs</h2>
-    <pre id="authResult"></pre>
-  </div> -->
-
-
-	<script type="text/javascript">
-		(function() {
-			var po = document.createElement('script');
-			po.type = 'text/javascript'; po.async = true;
-			po.src = 'https://plus.google.com/js/client:plusone.js';
-			var s = document.getElementsByTagName('script')[0];
-			s.parentNode.insertBefore(po, s);
-		})();
-
-		// (function() {
-		// 	var po = document.createElement('script');
-		// 	po.type = 'text/javascript'; po.async = true;
-		// 	po.src = 'https://plus.google.com/js/client:plusone.js?onload=render';
-		// 	var s = document.getElementsByTagName('script')[0];
-		// 	s.parentNode.insertBefore(po, s);
-		// })();
-
-		// function render() {
-		//    gapi.signin.render('google-btn', {
-		//      'callback': 'signinCallback',
-		//      'clientid': '995342763478-fh8bd2u58n1tl98nmec5jrd76dkbeksq.apps.googleusercontent.com',
-		//      'cookiepolicy': 'single_host_origin',
-		//      'scope': 'https://www.googleapis.com/auth/plus.login',
-		//      'accesstype': 'offline'
-		//    });
-		//  };
-	</script>
 </body>
 </html>
