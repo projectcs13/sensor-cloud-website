@@ -1,12 +1,10 @@
 class UsersController < ApplicationController
 
-	before_action :signed_in_user, only: [:index, :edit, :update, :destroy, :profile, :following]
+	@@STATUS_REQUESTS_LIMIT_FAIL = 429
+
+	before_action :signed_in_user, only: [:edit, :update, :destroy, :profile, :following]
 	before_action :correct_user,   only: [:edit, :update]
 	before_action :admin_user,     only: :destroy
-
-	def index
-		@users = User.where(:private => false).paginate(page: params[:page])
-	end
 
 	def edit
 		@user.private = if @user.private == true then "1" else "0" end
@@ -22,12 +20,21 @@ class UsersController < ApplicationController
 			if res["status"] == 401
 				flash[:warning] = "Not authorized access to private resources."
 				redirect_to "/not_allowed_access"
+
+	    elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+	      flash[:warning] = res["body"]["error"]
+	      redirect_to "/not_allowed_access"
+
 			else
 				@streams = res["body"]["streams"]
 				@nb_streams = @streams.length if @streams
 
 				res2 = Api.get "/users/#{@user.username}", openid_metadata
 				check_new_token res2
+		    if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+		      flash[:warning] = res["body"]["error"]
+		      redirect_to "/not_allowed_access"
+		    end
 
 				@notifications = res2["body"]["notifications"]
 				sorted = @notifications.sort_by { |hsh| hsh[:timestamp] }.reverse if @notifications
@@ -45,33 +52,38 @@ class UsersController < ApplicationController
 		if res["status"] == 401
 			flash[:warning] = "Not authorized access to private resources."
 			redirect_to "/not_allowed_access"
+
+		elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+      flash[:warning] = res["body"]["error"]
+      redirect_to "/not_allowed_access"
+
 		else
 			@subscriptions = res["body"]["subscriptions"]
-			@stream_ids = @subscriptions.map { |e| e["stream_id"] }
-			@streams = @stream_ids.map do |sid|
-				res = Api.get "/streams/#{sid}", openid_metadata
-				check_new_token res
-				res["body"]
+			unless @subscriptions
+				@streams = []
+			else
+				@stream_ids = @subscriptions.map { |e| e["stream_id"] }
+				@streams = @stream_ids.map do |sid|
+					res = Api.get "/streams/#{sid}", openid_metadata
+					check_new_token res
+					res["body"]
+				end
 			end
 		end
 	end
-
-	def new
-		@user = User.new
-		attributes = ["username", "firstname", "lastname", "description", "password", "email", "private"]
-		attributes.each do |attr|
-		@user.send("#{attr}=", nil)
-	end
-end
 
 	def create
 		@user = User.new(user_params)
 		params[:user][:private] = !(params[:user][:private].to_i).zero?
 		if @user.save
 			sign_in @user
-			userdata = params[:user].slice(:username, :email, :password, :firstname, :lastname, :description, :private)
+			userdata = params[:user].slice(:username, :email, :firstname, :lastname, :description, :private)
 			res = Api.post "/users", userdata, {}
 			check_new_token res
+	    if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+	      flash[:warning] = res["body"]["error"]
+	      redirect_to "/not_allowed_access"
+	    end
 
 			# Store security tokens locally
 			@user.access_token = res["body"]["access_token"]
@@ -91,9 +103,14 @@ end
 		if @user.update_attributes(user_params)
 			flash[:success] = "Account updated"
 			@user.save
-			userdata = params[:user].slice(:email, :password, :firstname, :lastname, :description, :private)
+			userdata = params[:user].slice(:email, :firstname, :lastname, :description, :private)
 			res = Api.put "/users/#{@user.username}", userdata, openid_metadata
-			redirect_to @user
+			if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+		    flash[:warning] = res["body"]["error"]
+		    redirect_to "/not_allowed_access"
+			else
+				redirect_to @user
+		  end
 		else
 			render 'edit'
 		end
@@ -109,7 +126,7 @@ end
 
 	private
 		def user_params
-			params.require(:user).permit(:username, :email, :password, :password_confirmation, :firstname, :lastname, :description, :private)
+			params.require(:user).permit(:username, :email, :firstname, :lastname, :description, :private)
 		end
 
 		# Before filters

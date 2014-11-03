@@ -12,23 +12,25 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :min_val, class: "left" %>
-    <label class="explanation">Specify the minimum value expected to measure</label>
-    <%= f.text_field :min_val, class: "form-control input clearfix", placeholder: "e.g: -30" %>
+    <%= f.label "Min Val (only numbers)", class: "left" %>
+    <label class="explanation">The minimum value expected to measure</label>
+    <%= f.text_field :min_val, id: "min_val", class: "form-control input clearfix", placeholder: "e.g: -30" %>
   </div>
 
   <div class="form-group">
-    <%= f.label :max_val, class: "left" %>
+    <%= f.label "Max Val (only numbers)", class: "left" %>
     <label class="explanation">Specify the maximum value expected to measure</label>
-    <%= f.text_field :max_val, class: "form-control input clearfix", placeholder: "e.g: 40" %>
+    <%= f.text_field :max_val, id: "max_val", class: "form-control input clearfix", placeholder: "e.g: 40" %>
   </div>
 
   <div class="form-group">
-    <%= f.label :accuracy, class: "left" %>
-    <label class="explanation">Also, please remark the accuracy of the device used</label>
+    <%= f.label "Accuracy (only numbers)", class: "left" %>
+    <label class="explanation">Also, please remark the accuracy of the device</label>
     <div class="input-group clearfix">
       <span class="input-group-addon" style="padding: 9px 12px; width: 1em;">±</span>
-      <%= f.text_field :accuracy, class: "form-control input", placeholder: "e.g: 0.5" %>
+      <%= f.text_field :accuracy, id: "accuracy", class: "form-control input", placeholder: "e.g: 0.5" %>
     </div>
   </div>
+
+  <p style="display:none;" class="left form-error">The "min_val" should be lesser than "max_val"</p>
 </div>

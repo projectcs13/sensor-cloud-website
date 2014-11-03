@@ -1,12 +1,7 @@
 def save_remote remoteusers
 	remoteusers.each do |user|
-		fields = ['id', 'notifications', 'rankings', 'subscriptions', 'triggers', 'admin']
+		fields = ['id', 'notifications', 'rankings', 'subscriptions', 'triggers', 'admin', 'password']
 		fields.each { |attr| user.delete attr }
-
-		## TODO Fix this security issue
-		user['password'] = "password" if user['password'] == ""
-		user['password_confirmation'] = user['password']
-		## END TODO
 
 		newuser = User.create user
   	if newuser.save
@@ -17,12 +12,8 @@ def save_remote remoteusers
 	end
 end
 
-
-def delete_old remoteusers
-	User.all.each do |user|
-		matches = remoteusers.select { |ru| user.username == ru['username'] }
-		user.destroy if matches.length == 0
-	end
+def delete_all
+	User.destroy_all
 end
 
 def authenticate username
@@ -62,17 +53,18 @@ unless SensorCloud.rake?
 	# Get all users
 	res = Api.get "/users/?admin=true", token
 	new_access_token = res["body"]["new_access_token"]
+	puts "before: new_access_token: #{new_access_token}"
 
 	if new_access_token                                # If there's a new access token, keep it
 	  token[:access_token] = new_access_token
-		user.save if user.update_attributes access_token: new_access_token
+		# user.save if user.update_attribute(access_token: new_access_token)
 	end
 
 	# Sync local DB with remote data
 	users = res["body"]["users"]
 	unless users.nil?
+		delete_all
 		save_remote users
-		delete_old users
   end
 
 	# Finally, make the token global to be used in other controllers (i.e. "static_pages_controller.rb")
