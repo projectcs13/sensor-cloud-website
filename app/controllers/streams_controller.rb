@@ -237,7 +237,7 @@ class StreamsController < ApplicationController
     streamid = params[:id]
     filetype = params[:type]
 
-    fmt = if filetype == "ns3" then "" else "?format=#{filetype}" end
+    fmt = if filetype == "n3" then "" else "?format=#{filetype}" end
     url = "/datapoints/#{streamid}#{fmt}"
     res = Api.semantics_get url
 
