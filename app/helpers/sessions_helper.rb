@@ -1,11 +1,15 @@
 module SessionsHelper
 
 	def openid_metadata
-		{
-			:access_token  => current_user.access_token,
-			:refresh_token => current_user.refresh_token,
-			:username      => current_user.username
-		}
+		unless current_user
+			FRONTEND_TOKEN
+		else
+			{
+				:access_token  => current_user.access_token,
+				:refresh_token => current_user.refresh_token,
+				:username      => current_user.username
+			}
+		end
 	end
 
 	def openid_frontend_metadata
