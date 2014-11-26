@@ -1,6 +1,17 @@
 #!/bin/bash --login
 touch ~/.bash_profile
 
+install_boot_script() {  # $1 is the script
+   sudo cp $PWD/scripts/boot/$1 /etc/init.d
+   if [ $? -ne 0 ]; then
+      echo "Call the script from the project folder"
+   else
+      echo "Success!"
+      sudo chmod +x /etc/init.d/$1
+      sudo update-rc.d $1 defaults
+   fi
+}
+
 echo "=============================================================================="
 echo "Downloading RVM"
 echo "=============================================================================="
@@ -65,3 +76,8 @@ echo "==========================================================================
 echo "Creates the database to be used for Ruby on Rails"
 echo "=============================================================================="
 bundle exec rake db:migrate
+
+echo "=============================================================================="
+echo "Install a script to run the app as a Linux service"
+echo "=============================================================================="
+install_boot_script "iotf-gui"
