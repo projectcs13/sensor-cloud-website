@@ -99,7 +99,8 @@
 
     <h4>Tags: </h4>
     <div class="stream-tags well">
-      <% tagslist = @stream.tags.split(/,/) %>
+<% tagslist = if @stream.tags.nil? then [] else @stream.tags.split(/,/)
+ end %>
       <% for tag in tagslist %>
         <span class="label label-default <%= tag.downcase %>"><%= tag %></span>
       <% end %>
