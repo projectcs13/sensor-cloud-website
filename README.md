@@ -10,7 +10,8 @@ demo](https://vimeo.com/98966770).
 ## Requirements
 
 * Linux (Ubuntu 14.04.2)
-* 
+* [IoT-Framework-engine](https://github.com/EricssonResearch/iot-framework-engine)
+
 ## Installation
 
 1. You need to set an option for your shell in order for all of the software to work. Run 
