@@ -1,12 +1,4 @@
 language: ruby
-before_install:
-  - git clone https://github.com/EricssonResearch/iot-framework-engine.git
-install:
-  - cd iot-framework-engine
-  - make install
-before_script:
-  - sh scripts/sensec_light.sh start
-  - cd ..
 script: make test
 rvm:
   - "2.0.0"
