@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/johnbintz/caroufredsel-rails.git
-  revision: 81bb0c362e26ac76c714d49a2e02e076a433a039
+  remote: git://github.com/konstantino/caroufredsel-rails.git
+  revision: b82eebbeff28ffbbaf1a498c2ea2ee16c93f28d1
   specs:
     caroufredsel-rails (6.1.0)
       coffee-script
@@ -259,3 +259,6 @@ DEPENDENCIES
   uglifier (= 2.1.1)
   will_paginate (~> 3.0)
   will_paginate-bootstrap
+
+BUNDLED WITH
+   1.10.6
