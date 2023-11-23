@@ -1,29 +1,11 @@
 class SessionsController < ApplicationController
 
-	before_action :create_openid_state, only: [:new]
+	before_action :gen_openid_state, only: [:new]
 
 	def new
 	end
 
 	def create
-		user = User.find_by(email: params[:session][:email].downcase)
-		if user && user.authenticate(params[:session][:password])
-			sign_in user
-			gen_token_pair user
-			redirect_back_or user
-		else
-			flash.now[:danger] = 'Invalid email/password combination'
-			render 'new'
-		end
-	end
-
-	def destroy
-		revoke_access_token if signed_in_openid?
-		sign_out
-		redirect_to root_url
-	end
-
-	def auth_openid_connect
 		if current_user
 			logger.debug "current_user"
 			render json: {"url" => "/users/#{current_user.username}/streams"}, status: 200
@@ -33,31 +15,44 @@ class SessionsController < ApplicationController
 				logger.debug "state does not match"
 				render json: {"error" => "The client state does not match the server state."}, status: 401
 			else
-				fetch_access_token(params[:refresh_token]) if not session[:token]
-				# fetch_access_token
-				json = fetch_user_info
-				user = load_from_db json
+				sign_out
 
-				if not user
-					user = store_user json
-					store_on_remote_db user
+				fetch_openid_tokens if not session[:token]
+				user = fetch_user_info
+
+				logger.debug "user"
+				logger.debug user
+
+				if remote_users_exists? user
+					renew_access_token user
+				else
+					ok = store_remotely user
+					# user = if ok then store_locally user else load_from_db user end
+					user = store_locally user
+					unless user
+						logger.debug "ERROR"
+						# redirect_to root_url
+						redirect_to root_path
+					end
 				end
 
+				logger.debug "before sign in"
 				sign_in user
+				logger.debug "after sign in"
 				render json: {"url" => "/users/#{user.username}/streams"}, status: 200
 			end
 		end
 	end
 
-	def auth_openid_disconnect
-		# access_token = Api.renew_access_token "l9kvXPzMLEek0ynvi9f_AA3EnkxiJ6mJa3j2A99L0c4"
+	def destroy
 		sign_out
 		revoke_access_token
-		render json: {"success" => "true"}, status: 200
+		redirect_to root_url
 	end
 
 	private
-		def fetch_access_token refresh_token
+
+		def fetch_openid_tokens
 			# Upgrade the code into a token object.
 			$authorization.code = request.body.read
 			$authorization.fetch_access_token!
@@ -67,86 +62,136 @@ class SessionsController < ApplicationController
 			encoded_json_body = id_token.split('.')[1]
 			# Base64 must be a multiple of 4 characters long, trailing with '='
 			encoded_json_body += (['='] * (encoded_json_body.length % 4)).join('')
-			json_body = Base64.decode64(encoded_json_body)
-			body = JSON.parse(json_body)
-			# You can read the Google user ID in the ID token.
-			# "sub" represents the ID token subscriber which in our case
-			# is the user ID. This sample does not use the user ID.
-			gplus_id = body['sub']
+			json_body = Base64.decode64 encoded_json_body
+			body = JSON.parse json_body
 
 			# Serialize and store the token in the user's session.
 			token_pair = TokenPair.new
 			token_pair.update_token! $client.authorization
-			token_pair.refresh_token = refresh_token
 			session[:token] = token_pair
+			puts "token_pair.to_hash"
+			puts token_pair.to_hash
 		end
 
-	def fetch_user_info
-		# Authorize the client and construct a Google+ service.
-		$client.authorization.update_token!(session[:token].to_hash)
-		plus = $client.discovered_api('plus', 'v1')
+		def fetch_user_info
+			# Authorize the client and construct a Google+ service.
+			$client.authorization.update_token! session[:token].to_hash
+			plus = $client.discovered_api 'plus', 'v1'
 
-		# Get the list of people as JSON and return it.
-		response = $client.execute!(plus.people.get,
-				:collection => 'visible',
-				:userId => 'me')
+			# Get the list of people as JSON and return it.
+			response = $client.execute!(plus.people.get,
+					:collection => 'visible',
+					:userId => 'me')
 
-		JSON.parse response.body
-	end
-
-	# Disconnect the user by revoking the stored token and removing session objects.
-	def revoke_access_token
-		if session[:token]
-			# Use either the refresh or access token to revoke if present.
-			token = session[:token].to_hash[:refresh_token]
-			token = session[:token].to_hash[:access_token] unless token
-
-			# You could reset the state at this point, but as-is it will still stay unique
-			# to this user and we're avoiding resetting the client state.
-			session.delete(:state)
-			session.delete(:token)
-
-			# Send the revocation request and return the result.
-			revokePath = 'https://accounts.google.com/o/oauth2/revoke?token=' + token
-			uri = URI.parse revokePath
-			request = Net::HTTP.new uri.host, uri.port
-			request.use_ssl = true
-			request.get uri.request_uri
+			json = JSON.parse response.body
+			build_sanitize_user json
 		end
-	end
 
-	def create_openid_state
-		revoke_access_token
-		# Create a string for verification
-		session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join unless session[:state]
-		@state = session[:state]
-	end
+		def build_sanitize_user json
+			user = User.new
+			user.email         = json["emails"][0]["value"]
+			user.username      = json["id"]
+			user.firstname     = json["name"]["givenName"]
+			user.lastname      = json["name"]["familyName"]
+			user.image_url     = json["image"]["url"]
+			user.description   = "#{json["occupation"]} \n#{json["skills"]}"
+			user.private       = false
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
+			user
+		end
 
-	def store_user json
-		user = User.new
-		user.email       = json["id"] + "@openid.ericsson"
-		user.username    = json["id"]
-		user.firstname   = json["name"]["givenName"]
-		user.lastname    = json["name"]["familyName"]
-		user.description = ""
-		user.password    = "pa55w0rd"
-		user.private     = false
-		user.save
-		user
-	end
+		def remote_users_exists? user
+			logger.debug "remote_users_exists?"
+			res = Api.get "/users/#{user.username}", session[:token].to_hash
+			# check_new_token_frontend res
+			logger.debug res
+			res["status"] == 200
+		end
 
-	def load_from_db json
-		user_email = json["id"] + "@openid.ericsson"
-		User.find_by_email user_email
-	end
+		def renew_access_token user
+			user.access_token  = session[:token].access_token
+			user.refresh_token = session[:token].refresh_token
+			Api.renew_token user.access_token, user.refresh_token
+			user.save!
+		rescue ActiveRecord::StatementInvalid
+			logger.debug "statement invalid"
+			replace_old user
+		end
 
-	def store_on_remote_db user
-		# data = user.attributes.slice("username", "email", "password", "firstname", "lastname", "description", "private")
-		data = {}
-		attrs = ["username", "email", "password", "firstname", "lastname", "description", "private"]
-		attrs.each do |attr| data[attr] = user.send(attr) end
-		data["access_token"]  = session[:token].access_token
-		data["refresh_token"] = session[:token].refresh_token
-		Api.post "/users", data, {}
-	end
+		# Disconnect the user by revoking the stored token and removing session objects.
+		def revoke_access_token
+			if session[:token]
+				# Use either the refresh or access token to revoke if present.
+				token = session[:token].to_hash[:refresh_token]
+				token = session[:token].to_hash[:access_token] unless token
+
+				# You could reset the state at this point, but as-is it will still stay unique
+				# to this user and we're avoiding resetting the client state.
+				session.delete(:state)
+				session.delete(:token)
+
+				# Send the revocation request and return the result.
+				revokePath = 'https://accounts.google.com/o/oauth2/revoke?token=' + token
+				uri = URI.parse revokePath
+				request = Net::HTTP.new uri.host, uri.port
+				request.use_ssl = true
+				request.get uri.request_uri
+			end
+		end
+
+		def gen_openid_state
+			revoke_access_token
+			# Create a string for verification
+			session[:state] = (0...13).map{('a'..'z').to_a[rand(26)]}.join unless session[:state]
+			@state = session[:state]
+		end
+
+		def replace_old user
+			old = User.find_by_username user.username
+			old.delete if old
+			user.save!
+			user
+		end
+
+		def store_locally user
+			# logger.debug "store locally"
+			# dbu = User.find_by_username user.username
+			# if dbu
+			# 	# dbu.access_token = user.access_token
+			# 	# dbu.refresh_token = user.refresh_token
+			# 	# dbu.save!
+			# 	logger.debug "dbu"
+			# 	dbu
+			# else
+			# 	logger.debug "user"
+			# 	user.save!
+			# 	user
+			# end
+			user.save!
+			user
+		rescue ActiveRecord::StatementInvalid
+			logger.debug "statement invalid"
+			replace_old user
+		rescue ActiveRecord::RecordNotSaved
+			logger.debug "not saved"
+			replace_old user
+		rescue ActiveRecord::RecordNotUnique
+			logger.debug "not unique"
+			replace_old user
+		end
+
+		def store_remotely user
+			logger.debug "store_remotely"
+			data = {}
+			attrs = ["username", "email", "firstname", "lastname", "description", "private", "image_url", "access_token", "refresh_token"]
+			attrs.each do |attr| data[attr] = user.send(attr) end
+			puts data
+			res = Api.post "/users", data, {}
+			# res = Api.post "/users", user.attributes, {}
+			logger.debug "User created remotely"
+			ok = res["status"] == 200
+			puts "OK: #{ok}"
+			ok
+		end
 end

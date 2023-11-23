@@ -9,8 +9,7 @@ window.newStreamForm = (form) ->
 
   descriptions = [
     "First, tell us the basic information which might describe your stream"
-    "Now, please fill in the fields below with the technical details of your new stream"
-    "Finally, we need you to set up the format and the communication mechanism"
+    "Now, please fill in the fields below with technical details of your stream"
   ]
 
   stepLabel       = form.find ".step-label"
@@ -22,15 +21,12 @@ window.newStreamForm = (form) ->
   btnBack   = form.find ".btn-back"
   btnNext   = form.find ".btn-next"
   btnCreate = form.find ".btn-create"
-  btnPreview = form.find ".btn-preview"
 
-  textUri = form.find "#stream_uri"
-  areaPreview = form.find "#preview-area"
-
-  polling = form.find ".polling"
   progress = form.find ".progress-bar"
-
+  errorMsg = form.find '.form-error'
   explanations = form.find '.explanation'
+
+  numericInputs = ['#min_val', '#max_val', '#accuracy']
 
   #
   # Auxiliary Functions
@@ -53,9 +49,6 @@ window.newStreamForm = (form) ->
 
   setInputFocus = -> steps.eq(currentStep).find('.input').first().focus()
 
-  showPollingPanel = -> polling.toggle TIME * 2
-
-
   goBack = -> moveToNextStep false
   goNext = -> moveToNextStep true
 
@@ -76,21 +69,18 @@ window.newStreamForm = (form) ->
     btnCreate.css 'display', 'none'
     btnNext.css 'display', 'inline-block'
 
-
   analyzeRequiredField = (input) ->
     if input.val().length is 0
       btnNext.addClass 'disabled'
-
     else if input.val().length > 0
-      form.find('#error_explanation').hide()
       btnNext.removeClass 'disabled'
 
 
   post = (url, data) ->
     $.ajax
-      type: "post",
-      dataType: "json",
-      url: url,
+      type: "post"
+      dataType: "json"
+      url: url
       data: data
 
   #
@@ -130,26 +120,17 @@ window.newStreamForm = (form) ->
 
   create = (event) ->
     do event.preventDefault
-    do increaseBar
+    valid = do sanitizeNumericFields
 
-    setTimeout ->
-      form.trigger 'submit'
-    , TIME * 2
+    if not valid
+      errorMsg.show TIME
+    else
+      errorMsg.hide TIME
+      do increaseBar
+      setTimeout ->
+        form.trigger 'submit'
+      , TIME * 2
 
-
-  preview = (event) ->
-    do event.preventDefault
-
-    p = post "/preview", { uri: textUri.val() }
-    p.done (data) ->
-      json = JSON.stringify data, undefined, 2
-      areaPreview.val json
-
-
-  switchChanged = (event) ->
-    do event.preventDefault
-    do showPollingPanel
-    do setInputFocus
 
 
   explain = (event) ->
@@ -161,9 +142,25 @@ window.newStreamForm = (form) ->
       exp.show TIME
 
 
-  inputChanged = (event) ->
+  checkRequiredField = (event) ->
     do event.preventDefault
     analyzeRequiredField $(this)
+
+
+  checkNumericField = (event) ->
+    key = event.key
+    console.log event
+    do event.preventDefault if "a" <= key <= "z"
+
+
+  sanitizeNumericFields = ->
+    values = numericInputs.map (elem) ->
+      $elem = $(elem)
+      value = parseFloat $elem.val()
+      $elem.val value unless isNaN value
+      value
+
+    values[0] < values[1]  # min < max
 
 
   initBootstrapSwitches = ->
@@ -172,15 +169,6 @@ window.newStreamForm = (form) ->
     sw = form.find('.switch-private').wrap(html).parent().bootstrapSwitch()
     sw.bootstrapSwitch 'setOnLabel', 'Yes'
     sw.bootstrapSwitch 'setOffLabel', 'No'
-
-    sw = form.find('.switch-polling').wrap(html).parent().bootstrapSwitch()
-    sw.bootstrapSwitch 'setOnLabel', 'Push'
-    sw.bootstrapSwitch 'setOffLabel', 'Poll'
-
-    if sw.bootstrapSwitch('status') is false
-      do showPollingPanel
-
-    sw.on 'switch-change', switchChanged
 
 
   #
@@ -193,19 +181,18 @@ window.newStreamForm = (form) ->
 
   form.find('.input').on 'focus', explain
   form.find('.input-name')
-    .on('keyup', inputChanged)
-    .on('input', inputChanged)
+    .on('keyup', checkRequiredField)
+    .on('input', checkRequiredField)
 
   analyzeRequiredField form.find('.input-name')
+  numericInputs.forEach (elem) -> $(elem).on 'keypress', checkNumericField
 
   btnBack.on    'click', back
   btnNext.on    'click', next
   btnCreate.on  'click', create
-  btnPreview.on 'click', preview
 
   do updateStepInformation
   do setInputFocus
   do initBootstrapSwitches
 
-  steps.each (i) ->
-    steps.eq(i).css 'display', 'none' if i isnt 0
+  steps.each (i) -> steps.eq(i).css 'display', 'none' if i isnt 0

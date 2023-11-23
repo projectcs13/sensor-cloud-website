@@ -9,8 +9,8 @@ demo](https://vimeo.com/98966770).
 
 ## Requirements
 
-* Linux
-* Ruby 1.9.3 (Ruby 2.0 preferred) [To install Ruby 2.0.0-p247 on Ubuntu 12.04 LTS you may want to consider these steps: http://stackoverflow.com/questions/9056008/installed-ruby-1-9-3-with-rvm-but-command-line-doesnt-show-ruby-v/9056395#9056395]
+* Linux (Ubuntu 14.04.2)
+* [IoT-Framework-engine](https://github.com/EricssonResearch/iot-framework-engine)
 
 ## Installation
 
@@ -40,7 +40,7 @@ and read the 'Important' section and follow the instructions.
 
         bundle exec rake db:migrate
         
-3. Download and start the IoT-Framework API hosted here: https://github.com/projectcs13/sensor-cloud
+3. Download and start the IoT-Framework API hosted here: https://github.com/EricssonResearch/iot-framework-engine
 
 4. Modify the API_URL variable declared in the config/config.yml file to reflect the hostname/port of the API (by default the API uses port 8000):
 
@@ -84,7 +84,7 @@ Next time you reboot your computer, the Rails server should be running and the w
 
 ## More information
 
-You can take a look at the wiki [here] (https://github.com/projectcs13/sensor-cloud-website/wiki).
+You can take a look at the wiki [here] (https://github.com/EricssonResearch/iot-framework-gui/wiki).
 
 ## Contributing
 
@@ -96,7 +96,7 @@ You can take a look at the wiki [here] (https://github.com/projectcs13/sensor-cl
 
 ## Code Status
 
-[![Build Status](https://travis-ci.org/projectcs13/sensor-cloud-website.png)](https://travis-ci.org/projectcs13/sensor-cloud-website)
+[![Build Status](https://travis-ci.org/EricssonResearch/iot-framework-gui.png)](https://travis-ci.org/EricssonResearch/iot-framework-gui)
 
 ## Licence
 

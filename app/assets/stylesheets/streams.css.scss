@@ -103,13 +103,20 @@
 
 .explanation {
   display: none;
-  color: lightseagreen;
   font-weight: normal;
   float: left;
   margin-left: 1em;
 }
 
-.required {
+.explanation {
+  color: lightseagreen;
+}
+
+.form-error {
+  color: red;
+}
+
+.required, .key-label {
   color: $custom-red;
 }
 

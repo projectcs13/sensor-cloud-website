@@ -10,7 +10,10 @@
   </div>
 
   <div class="btn btn-primary btn-create">
-    <%= if params[:action] == "new" or params[:action] == "new_from_resource" then "Create" else "Edit" end %>
-    a stream
+    <% if params[:action] == "new" or params[:action] == "new_from_resource" %>
+      Create stream
+    <% else %>
+      Save changes
+    <% end %>
   </div>
 </div>

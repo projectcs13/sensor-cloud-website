@@ -22,7 +22,6 @@ var helper = (function() {
         helper.connectServer();
         // After we load the Google+ API, render the profile data from Google+.
         // gapi.client.load('plus','v1',this.renderProfile);
-        gapi.auth.signOut();
       } else if (authResult['error']) {
         // There was an error, which means the user is not signed in.
         // As an example, you can troubleshoot by writing to the console:
@@ -31,7 +30,8 @@ var helper = (function() {
         $('#authOps').hide('slow');
         $('#gConnect').show();
       }
-      console.log('authResult', authResult);
+      console.log('authResult');
+      console.log(authResult);
     },
 
     /**
@@ -47,7 +47,7 @@ var helper = (function() {
 
       $.ajax({
         type: 'POST',
-        url: window.location.origin + '/auth/in?state=' + state + '&refresh_token=' + refresh,
+        url: window.location.origin + '/sessions?state=' + state,
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(res) {
           if (res.url) {
@@ -78,6 +78,30 @@ $(document).ready(function() {
           'YOUR_CLIENT_SECRET with your client secret in the project sources.'
     );
   }
+
+  var initSignIn = function() {
+    var po = document.createElement('script');
+    po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://plus.google.com/js/client:plusone.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(po, s);
+  };
+
+
+  var handler = function() {
+    TIME = 500;
+    checked = $(this)[0].checked;
+
+    if (checked) {
+      initSignIn();
+      $('#gConnect').show(TIME);
+    } else {
+      $('#gConnect').hide(TIME);
+    }
+  };
+
+  $('#tos-agree').on('change', handler);
+
 });
 
 /**
@@ -89,3 +113,4 @@ $(document).ready(function() {
 window.signinCallback = function(authResult) {
   helper.onSignInCallback(authResult);
 }
+

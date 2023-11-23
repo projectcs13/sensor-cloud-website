@@ -1,96 +1,102 @@
-<% provide(:title, @user.username) %>
+<% provide(:title, "#{@user.firstname} #{@user.lastname}") %>
 
 <div class="row">
 	<aside class="user-profile-aside">
     <%= gravatar_for(@user, { size: 250, img_class: "img-rounded" }) %>
 
+<!--
     <div class="user-alerts panel panel-default">
       <div class="panel-heading">Alerts</div>
-      <ul class="list alerts-list">
-        <!-- TODO Change this and make it dynamic!!! -->
-        <% if current_user != nil and @user.username == current_user.username %>
-          <% @notifications.each do |notification| %>
+        <ul class="list alerts-list">
+        TODO Change this and make it dynamic!!!
+        <%# if current_user != nil and @user.username == current_user.username %>
+          <%# @notifications.each do |notification| %>
 
             <li class="list-group-item">
-                <% if notification.has_key?("trigger") then %>
-                  <% if notification["trigger"]["type"] == "stream" then %>
+                <%# if notification.has_key?("trigger") then %>
+                  <%# if notification["trigger"]["type"] == "stream" then %>
                     Alert from trigger on stream: <br>
-                    <%= notification["trigger"]["timestamp"] %> <br>
-                    Value : <%= notification["trigger"]["value"] %> <br>
-                    Stream: <%= link_to notification["trigger"]["stream_id"] , "/streams/#{notification["trigger"]["stream_id"]}" %>
-                  <% else %>
+                    <%#= notification["trigger"]["timestamp"] %> <br>
+                    Value : <%#= notification["trigger"]["value"] %> <br>
+                    Stream: <%#= link_to notification["trigger"]["stream_id"] , "/streams/#{notification["trigger"]["stream_id"]}" %>
+                  <%# else %>
                     Alert from trigger on virtual stream: <br>
-                    <%= notification["trigger"]["timestamp"] %> <br>
-                    Value : <%= notification["trigger"]["value"] %> <br>
-                    Stream: <%= link_to notification["trigger"]["stream_id"] , "/users/#{@user.username}/vstreams/#{notification["trigger"]["stream_id"]}" %>
-                  <% end %>
-                <% else %>
+                    <%#= notification["trigger"]["timestamp"] %> <br>
+                    Value : <%#= notification["trigger"]["value"] %> <br>
+                    Stream: <%#= link_to notification["trigger"]["stream_id"] , "/users/#{@user.username}/vstreams/#{notification["trigger"]["stream_id"]}" %>
+                  <%# end %>
+                <%# else %>
                   Alert from polling system: <br>
-                  <%= notification["polling"]["timestamp"] %> <br>
-                  <%= notification["polling"]["message"] %> <br>
-                  Stream: <%= link_to notification["polling"]["stream"] , "/streams/#{notification["polling"]["stream"]}" %>
-                <% end %>
+                  <%#= notification["polling"]["timestamp"] %> <br>
+                  <%#= notification["polling"]["message"] %> <br>
+                  Stream: <%#= link_to notification["polling"]["stream"] , "/streams/#{notification["polling"]["stream"]}" %>
+                <%# end %>
             </li>
 
-         <% end %>
-        <% end %>
+         <%# end %>
+        <%# end %>
       </ul>
     </div>
+-->
   </aside>
-
   <div class="col-lg-9">
     <div class="row">
       <div class="col-lg-6">
         <h2 class="actual-name">
           <%= @user.firstname %> <%= @user.lastname %>
-          <small>(<%= @user.username %>)</small>
         </h2>
-
-        <h5><%= @user.email unless signed_in_openid? %></h5>
       </div>
     </div>
 
     <div class="row">
       <div class="col-lg-9">
-        <div class="user-profile-lengthfix panel panel-default">
+        <div class="user-profile-lengthfix panel panel-default" style="margin-top: 10px; height: 200px;">
           <div class="panel-heading">Description</div>
             <div class="panel-body">
               <%= @user.description %>
             </div>
         </div>
+
+        <% if current_user != nil and @user.username == current_user.username %>
+        <div class="user-profile-lengthfix panel panel-default user-alerts" style="height: 352px">
+          <div class="panel-heading">Examples of API calls</div>
+            <div class="panel-body">
+              <% base_link = "#{CONF['API_URL']}/users/#{current_user.username}" %>
+              <div>
+                <h5><strong>Profile link</strong></h5>
+                <i>
+                  curl -XGET <a href="<%= base_link %>"><%= base_link %></a> \ <br>
+                  -H "Access-Token: <%= current_user.access_token %>"
+                </i>
+              </div>
+              <br>
+              <div>
+                <h5><strong>Streams link</strong></h5>
+                <i>
+                  <% streams_link = "#{base_link}/streams" %>
+                  curl -XGET <a href="<%= streams_link %>"><%= streams_link %></a> \ <br>
+                  -H "Access-Token: <%= current_user.access_token %>"
+                </i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
       </div>
 
-      <div class="col-lg-3 right">
+      <!-- <div class="col-lg-3 right">
         <div class="panel panel-default">
           <div class="panel-heading">Statistics</div>
           <div class="list">
             <a href="/users/<%=@user.username%>/streams" class="list-group-item">
-              <span class="badge"><%= @nb_streams %></span>Streams Owned
+              <span class="badge"><%#= @nb_streams %></span>Streams Owned
             </a>
             <a href="/users/<%=@user.username%>/following" class="list-group-item">
               <span class="badge">20</span>Streams Following
             </a>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="user-graphs row">
-      <div class="col-lg-4">
-        <div class="graph-placeholder">
-          Placeholder which will be replaced by an actual graph in the future!
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="graph-placeholder">
-          Placeholder which will be replaced by an actual graph in the future!
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="graph-placeholder">
-          Placeholder which will be replaced by an actual graph in the future!
-        </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>

@@ -1,5 +1,7 @@
 class StreamsController < ApplicationController
 
+  @@STATUS_REQUESTS_LIMIT_FAIL = 429
+
   before_action :correct_user,     only: [:edit, :update, :destroy]
   before_action :get_current_user, only: [:index, :get_streams, :show, :new, :edit, :create, :update, :destroy, :destroyAll, :post, :put, :deleteAll, :new_connection]
   before_action :new_stream,       only: [:new, :new_from_resource]
@@ -9,13 +11,22 @@ class StreamsController < ApplicationController
   def index
     res = Api.get "/users/#{params[:id]}/streams", openid_metadata
     check_new_token res
-    @streams = res["body"]["streams"]
+    if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+      flash[:warning] = res["body"]["error"]
+      redirect_to "/not_allowed_access"
+    else
+      @streams = res["body"]["streams"]
+      logger.debug "STREAMS: #{@streams}"
+      @streams
+    end
   end
 
   def new
     if session[:stream]
       @stream = session[:stream]
       session[:stream] = nil
+    else
+      @stream.private = true
     end
   end
 
@@ -27,35 +38,53 @@ class StreamsController < ApplicationController
     @stream_id = params[:id]
     res = Api.get "/streams/#{@stream_id}", openid_metadata
     check_new_token res
-    @stream = Stream.new
-    res["body"].each do |k, v|
-      @stream.send("#{k}=", v)
-    end
-    stream_owner_id = res["body"]["user_id"]
-    @stream_owner = User.find_by(username: stream_owner_id)
+    if res["status"] == 401
+      flash[:warning] = "Not authorized access to private resources."
+      redirect_to "/not_allowed_access"
 
-    @triggers = nil
-    if signed_in? and current_user.username == @stream_owner.username then
-      triggers = "/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers"
-      response = Api.get triggers, openid_metadata
-      check_new_token response
-      @triggers = response['body']['triggers']
-    end
-    @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
+    elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+      flash[:warning] = res["body"]["error"]
+      redirect_to "/not_allowed_access"
 
-    @prediction = {:in => "50", :out => "25"}
-    @polling_history = nil
-    if res["body"]["polling"] == true then
-      res2 = Api.get "/streams/#{@stream_id}/pollinghistory", openid_metadata
-      check_new_token res2
-      @polling_history = res2["body"]["history"]
-      sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
-      @polling_history = sorted_history
-    end
+    else
+      @stream = Stream.new
+      res["body"].each do |k, v|
+        @stream.send("#{k}=", v)
+      end
+      stream_owner_id = res["body"]["user_id"]
+      @stream_owner = User.find_by(username: stream_owner_id)
 
-    res = Api.get "/streams/#{params[:id]}/data/_count", openid_metadata
-    check_new_token res
-    @count_history = res["body"]["count"]
+      @triggers = nil
+      if signed_in? and current_user.username == @stream_owner.username then
+        triggers = "/users/#{@stream_owner.username}/streams/#{@stream_id}/triggers"
+        response = Api.get triggers, openid_metadata
+        check_new_token response
+        if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+          flash[:warning] = res["body"]["error"]
+          redirect_to "/not_allowed_access"
+        end
+        @triggers = response['body']['triggers']
+      end
+      @functions = {"greater_than" => "Greater than", "less_than" => "Less than", "span" => "Span"}
+
+      @prediction = {:in => "50", :out => "25"}
+      @polling_history = nil
+      if res["body"]["polling"] == true then
+        res2 = Api.get "/streams/#{@stream_id}/pollinghistory", openid_metadata
+        check_new_token res2
+        if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+          flash[:warning] = res["body"]["error"]
+          redirect_to "/not_allowed_access"
+        end
+        @polling_history = res2["body"]["history"]
+        sorted_history = @polling_history.sort_by { |hsh| hsh[:timestamp] }.reverse
+        @polling_history = sorted_history
+      end
+
+      res = Api.get "/streams/#{params[:id]}/data/_count", openid_metadata
+      check_new_token res
+      @count_history = res["body"]["count"]
+    end
   end
 
   def suggest
@@ -87,7 +116,7 @@ class StreamsController < ApplicationController
     end
 
     ['accuracy', 'min_val', 'max_val', 'polling_freq'].each do |method|
-      if @stream.send(method) == "" then @stream.send(method, nil) end
+      if @stream.send(method) == "" then @stream.send("#{method}=", nil) end
       if method == 'polling_freq'   then @stream.polling_freq = @stream.polling_freq.to_i end
     end
   end
@@ -102,7 +131,6 @@ class StreamsController < ApplicationController
         res["response"].on_complete do
           check_new_token res
           if res["status"] == 200
-
             @stream.id = res["body"]["_id"]
             # TODO
             # The API is currently sending back the response before the database has
@@ -110,6 +138,11 @@ class StreamsController < ApplicationController
             sleep(1.0)
             format.html { redirect_to stream_path(@stream.id) }
             format.json { render json: {"id" => @stream.id}, status: res.status }
+
+          elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+            flash[:warning] = res["body"]["error"]
+            redirect_to "/not_allowed_access"
+
           else
             format.html { render new_stream_path, :flash => { :error => "Insufficient rights!" } }
             format.json { render json: {"error" => @stream.errors}, status: :unprocessable_entity }
@@ -127,9 +160,7 @@ class StreamsController < ApplicationController
 
   def update
     @stream.assign_attributes stream_params
-    logger.debug "BEFORE CORRECTFEILDS: #{@stream.attributes}"
     correctModelFields
-    logger.debug "AFTER CORRECTFEILDS: #{@stream.attributes}"
 
     respond_to do |format|
       stream_id = params[:id]
@@ -144,6 +175,11 @@ class StreamsController < ApplicationController
 
           format.html { redirect_to stream_path(stream_id) }
           format.json { head :no_content }
+
+        elsif res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+          flash[:warning] = res["body"]["error"]
+          redirect_to "/not_allowed_access"
+
         else
           format.html { render action: 'edit' }
           format.json { render json: @stream.errors, status: :unprocessable_entity }
@@ -153,17 +189,21 @@ class StreamsController < ApplicationController
   end
 
   def edit
-    longitude = @stream.location['lon']
-    latitude = @stream.location['lat']
-    @stream.attributes = {:latitude => latitude}
-    @stream.attributes = {:longitude => longitude}
+    logger.debug "location"
+    # longitude = @json["location"]["lon"]
+    # latitude = @json["location"]["lat"]
+    # @stream.attributes = {:latitude => latitude}
+    # @stream.attributes = {:longitude => longitude}
   end
 
   def destroy
     @user = current_user
-    #@stream.destroy(_user_id: current_user.username)
-    @stream.destroy
-
+    res = Api.delete "/streams/#{params[:id]}", nil, openid_metadata
+    check_new_token res
+    if res["status"] == @@STATUS_REQUESTS_LIMIT_FAIL
+      flash[:warning] = res["body"]["error"]
+      redirect_to "/not_allowed_access"
+    end
     # TODO
     # The API is currently sending back the response before the database has
     # been updated. The line below will be removed once this bug is fixed.
@@ -175,23 +215,6 @@ class StreamsController < ApplicationController
     end
   end
 
-  def destroyAll
-    @user = current_user
-    res = Api.delete "/users/#{@user.username}/streams/", nil, openid_metadata
-    check_new_token res
-    # TODO
-    # The API is currently sending back the response before the database has
-    # been updated. The line below will be removed once this bug is fixed.
-    sleep(1.0)
-
-    respond_to do |format|
-      res["response"].on_complete do
-        format.html { redirect_to "/users/#{@user.username}/streams" }
-        format.json { head :no_content }
-      end
-    end
-  end
-
   def fetch_datapoints
     res = Api.get "/streams/#{params[:id]}/data/_search", openid_metadata
     check_new_token res
@@ -199,8 +222,6 @@ class StreamsController < ApplicationController
       format.json { render json: res["body"], status: res["status"] }
     end
   end
-
-
 
   def fetch_prediction
     prediction = "/streams/#{params[:id]}/_analyse?nr_values=#{params[:in]}&nr_preds=#{params[:out]}"
@@ -212,40 +233,30 @@ class StreamsController < ApplicationController
     end
   end
 
-
   def fetch_semantics
-    if "#{params[:type]}"=="ns3"
-	res = Api.semantics_get "http://localhost:5000/datapoints/#{params[:id]}"
-    else
-	res = Api.semantics_get "http://localhost:5000/datapoints/#{params[:id]}?format=#{params[:type]}"
-    end
-  end
+    streamid = params[:id]
+    filetype = params[:type]
 
+    fmt = if filetype == "n3" then "" else "?format=#{filetype}" end
+    url = "/datapoints/#{streamid}#{fmt}"
+    res = Api.semantics_get url
 
-  def fetch_datapreview
-    res = Api.get "#{params[:uri]}", openid_metadata
-    check_new_token res
-    respond_to do |format|
-      format.json { render json: res["body"], status: res["status"] }
-    end
+    filename = "semantics_output.#{filetype}"
+    send_data res["body"], :filename => filename, :disposition => 'attachment'
   end
 
   private
-    # Aux Functions
-
     # Never trust parameters from the scary internet, only allow the white list through.
     def stream_params
       params.require(:stream).permit(:name, :description, :type, :private, :tags, :accuracy, :unit, :min_val, :max_val, :longitude, :latitude, :polling, :uri, :polling_freq, :data_type, :parser, :resource_type, :uuid)
     end
-
-    # Before filters
 
     def correct_user
       if current_user.nil?
         redirect_to("/streams/#{params[:id]}")
       else
         stream = Stream.find(params[:id], :_user_id => current_user.username)
-        user = User.find_by_username(stream.user_id)
+        user = User.find_by_username(current_user.username)
         redirect_to("/streams/#{params[:id]}") unless current_user?(user)
       end
     end
@@ -259,7 +270,18 @@ class StreamsController < ApplicationController
     end
 
     def set_stream
-      @stream = Stream.find(params[:id])
+      logger.debug "set_stream"
+      res = Api.get "/streams/#{params[:id]}", openid_metadata
+      @stream = Stream.new
+      res["body"].each do |k, v|
+        if k == "location"
+          @stream.send "longitude=", res["body"]["location"]["lon"]
+          @stream.send "latitude=", res["body"]["location"]["lat"]
+        else
+          @stream.send("#{k}=", v)
+        end
+      end
+      logger.debug @stream
     end
 
     def signed_in_user

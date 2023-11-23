@@ -11,9 +11,9 @@ SensorCloud::Application.routes.draw do
     end
   end
 
-  resources :users do
-    resources :vstreams
-  end
+  # resources :users do
+  #   resources :vstreams
+  # end
 
   resources :streams do
     collection do
@@ -29,7 +29,7 @@ SensorCloud::Application.routes.draw do
 
   # resources :vstreams
   resources :searches
-	resources :sessions, only: [:new, :create, :destroy]
+	resources :sessions, only: [:create]
   resources :contacts, only: [:new, :create]
 
   get '/triggers'           => 'triggers#index'
@@ -50,8 +50,8 @@ SensorCloud::Application.routes.draw do
   get '/prediction/:id' => 'streams#fetch_prediction'
   get '/semantics/:id'  => 'streams#fetch_semantics'
 
-  get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
-  get '/vsprediction/:id' => 'vstreams#fetch_prediction'
+  # get '/vsdatapoints/:id' => 'vstreams#fetch_datapoints'
+  # get '/vsprediction/:id' => 'vstreams#fetch_prediction'
 
   get '/filter'         => 'searches#filter'
   get '/autocomplete'   => 'searches#fetch_autocomplete'
@@ -59,22 +59,18 @@ SensorCloud::Application.routes.draw do
   put '/userranking'    => 'searches#update_user_ranking'
   post '/get_more_info' => 'searches#create'
 
-  get    '/signup'   => 'users#new'
   get    '/signin'   => 'sessions#new'
-  post   '/auth/in'  => 'sessions#auth_openid_connect'
-  get    '/auth/out' => 'sessions#auth_openid_disconnect'
-  delete '/auth/out' => 'sessions#auth_openid_disconnect'
   delete '/signout'  => 'sessions#destroy'
 
-  get '/terms'    => 'static_pages#terms'
-  get '/privacy'  => 'static_pages#privacy'
-  get '/security' => 'static_pages#security'
-  get '/api'      => 'static_pages#api'
-  get '/faq'      => 'static_pages#faq'
-  get '/manual'   => 'static_pages#manual'
-  get '/help'     => 'static_pages#help'
-  get '/about'    => 'static_pages#about'
-
+  get '/terms'              => 'static_pages#terms'
+  get '/privacy'            => 'static_pages#privacy'
+  get '/security'           => 'static_pages#security'
+  get '/api'                => 'static_pages#api'
+  get '/faq'                => 'static_pages#faq'
+  get '/manual'             => 'static_pages#manual'
+  get '/help'               => 'static_pages#help'
+  get '/about'              => 'static_pages#about'
+  get '/not_allowed_access' => 'static_pages#not_allowed_access'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

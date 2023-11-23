@@ -1,4 +1,5 @@
 <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+
 	<div class="margin">
   	<div class="left">
 			<button class="navbar-toggle" type="button" data-toggle="collapse"
@@ -34,41 +35,26 @@
     	<ul class="nav navbar-nav">
 				<% if signed_in? %>
 					<li><%= link_to "My Streams", "/users/#{current_user.username}/streams" %></li>
-					<li><%= link_to "My Virtual Streams", "/users/#{current_user.username}/vstreams" %></li>
+					<!--<li>--><%#= link_to "My Virtual Streams", "/users/#{current_user.username}/vstreams" %><!--</li>-->
 					<li><%= link_to "Following", "/users/#{current_user.username}/following" %></li>
-					<li><%= link_to "My Triggers", "/users/#{current_user.username}/triggers" %></li>
+					<!--li--><%#= link_to "My Triggers", "/users/#{current_user.username}/triggers" %><!--/li-->
 				<% end %>
 			</ul>
 
 			<ul class="nav navbar-nav right">
 				<% if signed_in? %>
-					<li>
-						<%= link_to user_path(current_user), id: "username" do %>
-							<%= gravatar_for(current_user, {size: 32}) %>
-							<%= current_user.username %>
-						<% end %>
-					</li>
-				<% end %>
-				<!--
-				<li>
-					<%= link_to '#' do %>
-						<%= image_tag("anonymous.jpg", alt: "User's Avatar", :height => '32', :width => '32') %>
-						Anonymous
-					<% end %>
-				</li>
-				-->
-				<li><%#= link_to "Home",    root_path %></li>
-				<li><%#= link_to "Help", help_path %></li>
-				<% if signed_in? %>
-					<li><%#= link_to "Users", users_path %></li>
 					<li id="fat-menu" class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							Account <b class="caret"></b>
+						<a href="#" style="padding-left: 0;" class="dropdown-toggle right" data-toggle="dropdown">
+							<b class="caret"></b>
 						</a>
+
+				   	<%= link_to user_path(current_user.username), id: "username", class: "right" do %>
+							<%= gravatar_for(current_user, {size: 32}) %>
+							<%= current_user.firstname %>
+						<% end %>
+
 						<ul class="dropdown-menu">
-							<li><%= link_to "Profile", current_user %></li>
-							<li><%= link_to "Settings", edit_user_path(current_user) %></li>
-							<!-- <li><%#= link_to "Profile Settings", url_for([:profile, @user]) %></li> -->
+							<li><%= link_to "Settings", edit_user_path(current_user.username) %></li>
 							<li class="divider"></li>
 							<li>
 								<%= link_to "Sign out", signout_path, method: "delete" %>
@@ -77,9 +63,26 @@
 					</li>
 				<% else %>
 					<li><%= link_to "Sign in", signin_path %></li>
-          <li><%= link_to "Sign up", signup_path %></li>
 				<% end %>
       </ul>
     </nav>
+
+    <div style="display:none;" id="cookies-info">
+  		<p style="color: white;">We use cookies to provide you with the best possible user experience. If you continue to use the site without changing your cookie settings, we assume you are fine with our cookies and the way we use them. The cookies store information about how you use our website, and help you use some of the functions on the site. Our cookies do not store any sensitive information, and we never use your cookies for targeted advertising. If you want, you can change your computer’s settings so that it does not accept cookies. We have information here on how you can do that.</p>
+
+	  	<div>
+	  		<a href="#" id="btn-cookies-continue" class="btn btn-primary right">Continue</a>
+	  		<a style="margin-top: 8px; margin-right: 15px;" class="right" href="http://www.ericsson.com/cookies">Cookies on Ericsson</a>
+	  	</div>
+  	</div>
   </div>
+
+<!-- 	<div class="margin">
+  	<p style="color: white;">We use cookies to provide you with the best possible user experience. If you continue to use the site without changing your cookie settings, we assume you are fine with our cookies and the way we use them. The cookies store information about how you use our website, and help you use some of the functions on the site. Our cookies do not store any sensitive information, and we never use your cookies for targeted advertising. If you want, you can change your computer’s settings so that it does not accept cookies. We have information here on how you can do that.</p>
+  	<div>
+  		<button class="btn right">Accept</button>
+  		<a style="margin-top: 8px; margin-right: 15px;" class="right" href="http://www.ericsson.com/cookies">Cookies on Ericsson</a>
+  	</div>
+  </div> -->
+
 </header>
